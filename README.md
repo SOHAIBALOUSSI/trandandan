@@ -1,3 +1,4 @@
+```bash
 .
 ├── 📁 client/                      # Frontend app (TypeScript + Tailwind CSS)
 │   ├── 📁 public/                  # Static assets (favicon, images, etc.)
@@ -38,3 +39,4 @@
 ├── 📄 .gitignore
 ├── 📄 README.md
 └── 📄 package.json               # Root package.json for shared scripts/configs
+```
