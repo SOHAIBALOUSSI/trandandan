@@ -66,8 +66,8 @@ fastify.register(async function (fastify) {
         obj.paddelRightY -= 8;
 
 
-      let ballSpeed = 8;
-      if (flagX || (obj.ballX >= 800 && obj.ballY >= obj.paddelRightY && obj.ballY <= (obj.paddelRightY + 150)))
+      let ballSpeed = 9;
+      if (flagX || (obj.ballX >= 890 && obj.ballY >= obj.paddelRightY && obj.ballY <= (obj.paddelRightY + 150)))
         obj.ballX -= ballSpeed, flagX = true;
       if (!flagX || (obj.ballX <= 0 && obj.ballY >= obj.paddleLeftY && obj.ballY <= (obj.paddleLeftY + 150)))
         obj.ballX += ballSpeed, flagX = false;
@@ -79,11 +79,11 @@ fastify.register(async function (fastify) {
       
       obj.keypressd = [];
 
-      if (obj.ballX > 800 || obj.ballX <= 0)
+      if (obj.ballX > 900 || obj.ballX <= 0)
       {
         obj.paddleLeftY = 240;
         obj.paddelRightY = 240;
-        obj.ballX = 400; 
+        obj.ballX = 900 / 2; 
         obj.ballY = 300;
       }
           
@@ -92,7 +92,7 @@ fastify.register(async function (fastify) {
   });
 });
 
-fastify.listen({ port: 5000, host: '0.0.0.0' }, (err) => {
+fastify.listen({ port: 5000, host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);

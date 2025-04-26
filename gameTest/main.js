@@ -39,7 +39,7 @@ class FlowField {
   constructor(ctx, keys) {
     this.#width = 10;
     this.#height = 150;
-    this.#canvasWidth = 800;
+    this.#canvasWidth = 900;
     this.#canvasHeight = 600;
     this.#ctx = ctx;
     this.#keys = keys;
@@ -55,8 +55,8 @@ class FlowField {
     this.#ctx.strokeRect(0, this.#paddleStat.paddleLeftY, this.#width, this.#height);
 
     //paddle right
-    this.#ctx.fillRect(790, this.#paddleStat.paddelRightY, this.#width, this.#height);
-    this.#ctx.strokeRect(790, this.#paddleStat.paddelRightY, this.#width, this.#height);
+    this.#ctx.fillRect(890, this.#paddleStat.paddelRightY, this.#width, this.#height);
+    this.#ctx.strokeRect(890, this.#paddleStat.paddelRightY, this.#width, this.#height);
 
 
     //ball
