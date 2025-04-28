@@ -1,42 +1,77 @@
 ```bash
-.
-├── 📁 client/                      # Frontend app (TypeScript + Tailwind CSS)
-│   ├── 📁 public/                  # Static assets (favicon, images, etc.)
-│   ├── 📁 src/
-│   │   ├── 📁 assets/             # Images, fonts, etc.
-│   │   ├── 📁 components/         # Reusable React components
-│   │   ├── 📁 pages/              # SPA route views (Home, Game, Profile, etc.)
-│   │   ├── 📁 styles/             # Tailwind CSS config and custom CSS
-│   │   ├── 📁 hooks/              # Custom hooks
-│   │   ├── 📁 utils/              # Utility functions
-│   │   └── 📄 main.tsx           # App entry point
-│   ├── 📄 index.html              # Main HTML file
-│   └── 📄 tailwind.config.js      # Tailwind configuration
-
-├── 📁 server/                     # Backend app (Fastify)
-│   ├── 📁 api/                    # Route definitions
-│   │   ├── 📄 auth.ts            # Authentication routes
-│   │   ├── 📄 user.ts            # User-related routes
-│   │   ├── 📄 game.ts            # Game logic routes
-│   │   └── 📄 chat.ts            # Chat routes
-│   ├── 📁 controllers/           # Route handlers
-│   ├── 📁 middlewares/          # Auth, validation, etc.
-│   ├── 📁 services/             # Business logic (e.g., matchmaking, AI, chat)
-│   ├── 📁 models/               # DB models (if using Prisma or raw SQL)
-│   ├── 📁 utils/                # Helpers like password hashing, JWT, etc.
-│   ├── 📄 index.ts              # Fastify entry point
-│   └── 📄 db.ts                 # SQLite DB connection setup
-
-├── 📁 docker/                    # Docker-related files
-│   ├── 📄 Dockerfile
-│   ├── 📄 docker-compose.yml
-│   └── 📄 .dockerignore
-
-├── 📁 scripts/                   # Custom scripts (e.g., seed db, reset tournaments)
-│   └── 📄 seed.ts
-
-├── 📄 .env                       # Environment variables (ignored in git)
-├── 📄 .gitignore
-├── 📄 README.md
-└── 📄 package.json               # Root package.json for shared scripts/configs
+ft_transcendence/
+├── docker/                      # Docker configuration files
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   └── nginx/                   # Nginx config for production
+├── src/                         # Source code
+│   ├── client/                  # Frontend code
+│   │   ├── assets/              # Static assets (images, fonts)
+│   │   ├── components/          # Reusable UI components
+│   │   │   ├── common/          # Shared components (buttons, inputs)
+│   │   │   ├── layout/          # Layout components (header, footer)
+│   │   │   ├── game/            # Game-specific components
+│   │   │   ├── chat/            # Chat-specific components
+│   │   │   └── user/            # User-related components
+│   │   ├── views/               # Page components
+│   │   │   ├── Home.ts
+│   │   │   ├── Game.ts
+│   │   │   ├── Tournament.ts
+│   │   │   ├── Profile.ts
+│   │   │   └── Chat.ts
+│   │   ├── controllers/         # Frontend controllers
+│   │   │   ├── GameController.ts
+│   │   │   ├── UserController.ts
+│   │   │   ├── ChatController.ts
+│   │   │   └── TournamentController.ts
+│   │   ├── services/            # Frontend services
+│   │   │   ├── ApiService.ts    # API communication
+│   │   │   ├── AuthService.ts   # Authentication
+│   │   │   ├── WebSocketService.ts # Real-time communication
+│   │   │   └── RouterService.ts # Client-side routing
+│   │   ├── utils/               # Utility functions
+│   │   ├── types/               # TypeScript type definitions
+│   │   ├── styles/              # CSS/Tailwind styles
+│   │   └── index.ts             # Main entry point
+│   │
+│   ├── server/                  # Backend code
+│       ├── controllers/         # Route controllers
+│       │   ├── userController.ts
+│       │   ├── gameController.ts
+│       │   ├── tournamentController.ts
+│       │   └── chatController.ts
+│       ├── models/              # Data models
+│       │   ├── User.ts
+│       │   ├── Game.ts
+│       │   ├── Tournament.ts
+│       │   └── Chat.ts
+│       ├── services/            # Business logic
+│       │   ├── authService.ts
+│       │   ├── gameService.ts
+│       │   └── chatService.ts
+│       ├── routes/              # API route definitions
+│       │   ├── userRoutes.ts
+│       │   ├── gameRoutes.ts
+│       │   ├── tournamentRoutes.ts
+│       │   └── chatRoutes.ts
+│       ├── middleware/          # Express middleware
+│       ├── websocket/           # WebSocket handlers
+│       ├── database/            # Database configuration
+│       │   ├── migrations/      # SQLite migrations
+│       │   ├── seeds/           # Seed data
+│       │   └── connection.ts    # Database connection setup
+│       ├── utils/               # Utility functions
+│       ├── types/               # TypeScript type definitions
+│       └── server.ts            # Main server entry point
+│
+├── public/                      # Public static files
+├── dist/                        # Compiled output
+├── node_modules/                # Dependencies
+├── .env                         # Environment variables
+├── .env.example                 # Example environment variables
+├── tsconfig.json                # TypeScript configuration
+├── package.json                 # Dependencies and scripts
+├── tailwind.config.js           # Tailwind CSS configuration
+├── webpack.config.js            # Webpack configuration
+└── README.md                    # Project documentation
 ```
