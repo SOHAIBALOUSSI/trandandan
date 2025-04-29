@@ -1,0 +1,17 @@
+services:
+  authentication:
+    container_name: auth-service
+    build: ./auth-service
+    image: auth-service
+    restart: always
+    env_file:
+      - ./auth-service/.env
+    networks:
+      - back-end
+    ports:
+      - "3000:3000"
+    
+networks:
+  back-end:
+    name: backend
+    driver: bridge
