@@ -4,6 +4,7 @@ import Fastify from 'fastify';
 import websocket from '@fastify/websocket';
 import Ajv from 'ajv';
 
+
 const fastify = Fastify();
 const ajv = new Ajv();
 
@@ -23,19 +24,17 @@ const validateMessage = ajv.compile(messageSchema);
 
 let flagX = false;
 let flagY = false;
+let ballSpeed = 2;
 
 fastify.register(websocket);
 
+// local games
 fastify.register(async function (fastify) {
   fastify.get('/ws', { websocket: true }, (connection, req) => {
 
-
-    console.log('Client connected');
     connection.on('close', () => {
       console.log('Client disconnected');
     });
-
-
     connection.on('message', (msg) => {
       let obj;
 
@@ -53,7 +52,7 @@ fastify.register(async function (fastify) {
         return;
       }
 
-      console.log('Client says:', obj);
+      // console.log('Client says:', obj);
       
       if (obj.keypressd.includes("w"))
         obj.paddleLeftY -= 8;
@@ -66,7 +65,7 @@ fastify.register(async function (fastify) {
         obj.paddelRightY -= 8;
 
 
-      let ballSpeed = 9;
+      
       if (flagX || (obj.ballX >= 890 && obj.ballY >= obj.paddelRightY && obj.ballY <= (obj.paddelRightY + 150)))
         obj.ballX -= ballSpeed, flagX = true;
       if (!flagX || (obj.ballX <= 0 && obj.ballY >= obj.paddleLeftY && obj.ballY <= (obj.paddleLeftY + 150)))
@@ -92,7 +91,112 @@ fastify.register(async function (fastify) {
   });
 });
 
-fastify.listen({ port: 5000, host: '0.0.0.0'}, (err) => {
+
+
+
+
+
+
+//-------------------------------- remote games
+function gameLogic(gameState) {
+
+
+  if (gameState.keypressd[0] === "w" && gameState.playerId === 1)
+    gameState.paddleLeftY -= 5;
+  if (gameState.keypressd[0] === "s" && gameState.playerId === 1)
+      gameState.paddleLeftY += 5;
+
+  if (gameState.keypressd[0] === "w" && gameState.playerId === 2)
+      gameState.paddelRightY = Math.max(0, gameState.paddelRightY - 5);
+  if (gameState.keypressd[0] === "s" && gameState.playerId === 2)
+      gameState.paddelRightY = Math.min(450, gameState.paddelRightY + 5);
+
+  if (flagX || (gameState.ballX >= 890 && gameState.ballY >= gameState.paddelRightY && gameState.ballY <= (gameState.paddelRightY + 150)))
+    gameState.ballX -= ballSpeed, flagX = true;
+  if (!flagX || (gameState.ballX <= 0 && gameState.ballY >= gameState.paddleLeftY && gameState.ballY <= (gameState.paddleLeftY + 150)))
+    gameState.ballX += ballSpeed, flagX = false;
+
+      
+  if (gameState.ballY >= 600 || flagY)
+    gameState.ballY -= ballSpeed, flagY = true;
+  if (gameState.ballY <= 0 || !flagY)
+    gameState.ballY += ballSpeed, flagY = false;
+  
+  gameState.keypressd = [];
+
+  if (gameState.ballX > 900 || gameState.ballX <= 0)
+  {
+    gameState.paddleLeftY = 240;
+    gameState.paddelRightY = 240;
+    gameState.ballX = 900 / 2; 
+    gameState.ballY = 300;
+  }
+  return gameState;
+}
+
+const rooms = {};
+
+function generateNewRoomId(params) {
+  let roomId = "";
+  
+  const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
+  
+  for (let index = 0; index < 12; index++) {
+    roomId += stringOfChar[Math.floor(Math.random() * stringOfChar.length)]; 
+  }
+  return roomId;
+}
+
+
+
+fastify.register(async function (fastify) {
+  fastify.get('/remoteGame', { websocket: true }, (connection) => {
+      let roomId;
+      let joined = false;
+
+
+      for (const [id, connections] of Object.entries(rooms)) {
+          if (connections.length < 2) {
+              roomId = id;
+              connections.push(connection);
+              joined = true;
+              break;
+          }
+      }
+
+      if (!joined) {
+          roomId = generateNewRoomId();
+          rooms[roomId] = [connection];
+      }
+
+      if (rooms[roomId].length === 2) {
+          const [player1, player2] = rooms[roomId];
+          
+          const handleMessage = (player, playerId) => (msg) => {
+              try {
+                  const gameState = JSON.parse(msg);
+                  gameState.playerId = playerId;
+                  const updatedState = gameLogic(gameState);
+                  player1.send(JSON.stringify(updatedState));
+                  player2.send(JSON.stringify(updatedState));
+              } catch (error) {
+                  console.error('Invalid JSON format', error);
+              }
+          };
+
+          player1.on('message', handleMessage(player1, 1));
+          player2.on('message', handleMessage(player2, 2));
+      }
+  });
+});
+
+
+
+
+
+
+
+fastify.listen({ port: 5000, host:'0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);
