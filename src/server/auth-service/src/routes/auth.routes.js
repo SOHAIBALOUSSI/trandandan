@@ -1,4 +1,4 @@
-import { loginHandler, registerHandler, logoutHandler, meHandler } from '../controllers/auth.controller.js';
+import { loginHandler, registerHandler, logoutHandler, meHandler, refreshHandler } from '../controllers/auth.controller.js';
 import { registerSchema, loginSchema } from '../schemas/auth.schema.js';
 
 
@@ -25,6 +25,10 @@ async function authRoutes(fastify) {
     fastify.get('/me',{
         preHandler: fastify.authenticate,
         handler: meHandler
+    } );
+
+    fastify.post('/refresh',{
+        handler: refreshHandler
     } );
 }
 

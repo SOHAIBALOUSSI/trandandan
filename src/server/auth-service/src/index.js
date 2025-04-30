@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import sqlitePlugin from './plugins/sqlite-plugin.js'
 import jwtPlugin from './plugins/jwt-plugin.js'
 import { createUserTable } from './migrations/createUserTable.js';
+import { createTokenTable } from './migrations/createTokenTable.js';
 import authRoutes from './routes/auth.routes.js';
 
 const server = fastify();
@@ -10,9 +11,13 @@ const server = fastify();
 dotenv.config();
 
 await server.register(sqlitePlugin);
-await server.register(jwtPlugin, { secretKey: process.env.JWT_SECRET_KEY });
+await server.register(jwtPlugin, {
+    accessTokenKey: process.env.AJWT_SECRET_KEY,
+    refreshTokenKey: process.env.RJWT_SECRET_KEY
+});
 
 await createUserTable(server.db);
+await createTokenTable(server.db);
 
 await server.register(authRoutes, { prefix: '/auth' });
 
