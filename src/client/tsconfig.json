@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+	  "target": "ES6",
+	  "module": "ESNext",
+	  "moduleResolution": "node",
+	  "strict": true,
+	  "esModuleInterop": true,
+	  "forceConsistentCasingInFileNames": true,
+	  "skipLibCheck": true,
+	  "outDir": "./dist"
+	},
+	"include": [
+	  "./main.ts",
+	  "./views/*.ts",
+	  "./components/**/*.ts"
+	]
+  }
+  

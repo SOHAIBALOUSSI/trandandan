@@ -19,11 +19,11 @@ ft_transcendence/
 │   │   │   ├── Tournament.ts
 │   │   │   ├── Profile.ts
 │   │   │   └── Chat.ts
-│   │   ├── controllers/         # Frontend controllers
-│   │   │   ├── GameController.ts
-│   │   │   ├── UserController.ts
-│   │   │   ├── ChatController.ts
-│   │   │   └── TournamentController.ts
+│   │   ├── handlers/         # Frontend handlers (view logic)
+│   │   │   ├── GameHandler.ts
+│   │   │   ├── UserHandler.ts
+│   │   │   ├── ChatHandler.ts
+│   │   │   └── TournamentHandler.ts
 │   │   ├── services/            # Frontend services
 │   │   │   ├── ApiService.ts    # API communication
 │   │   │   ├── AuthService.ts   # Authentication

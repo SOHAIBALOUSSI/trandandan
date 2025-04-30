@@ -1,4 +1,4 @@
-export function renderProfile(container: HTMLElement): void {
+export function renderSignIn(container: HTMLElement): void {
 	const section = document.createElement("section");
 	section.className = "p-8 text-center";
 	section.innerHTML = `
