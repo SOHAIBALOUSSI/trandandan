@@ -59,7 +59,6 @@ export async function meHandler(request, reply) {
         const user = await findUserById(this.db, userId);
         if (!user)
             return reply.status(404).send({ error: 'User not found.' });
-        
         return reply.status(200).send({ id: user.id, username: user.username, email: user.email });
     } catch (error) {
         return reply.status(500).send({ error: 'Internal server error.' });

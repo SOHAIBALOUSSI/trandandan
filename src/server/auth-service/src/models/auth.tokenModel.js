@@ -37,5 +37,5 @@ export async function revokeToken(db, token) {
         }
     );
     console.log("Token revoked: affected rows =>", result.changes);
-    return result.lastID;
+    return result.changes;
 }
