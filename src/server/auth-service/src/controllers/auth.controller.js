@@ -50,6 +50,11 @@ export async function registerHandler(request, reply) {
 }
 
 export async function logoutHandler(request, reply) {
+    const userId = request.user;
+    const user = await findUserById(this.db, userId);
+    if (!user)
+        return reply.status(404).send({ error: 'User not found.' });
+    await revokeToken(this.db, )
     return reply.status(200).send({ message: `User logged out.` });
 }
 
@@ -78,8 +83,8 @@ export async function refreshHandler(request, reply) {
 
         const payload = await this.jwt.verifyRT(tokenExist.token);
         await revokeToken(this.db, refreshToken);
-        const accessToken = this.jwt.signAT(payload);
-        const newRefreshToken = this.jwt.signRT(payload);
+        const accessToken = this.jwt.signAT({ id: payload.id });
+        const newRefreshToken = this.jwt.signRT({ id: payload.id });
         await addToken(this.db, newRefreshToken, payload.id);
 
         return reply.status(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });
