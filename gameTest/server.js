@@ -100,16 +100,16 @@ fastify.register(async function (fastify) {
 //-------------------------------- remote games
 function gameLogic(gameState) {
 
+  let step = 8;
+  if (gameState.keypressd[0] === "w" && gameState.playerId === 1 && gameState.paddleLeftY > 0)
+    gameState.paddleLeftY -= step;
+  if (gameState.keypressd[0] === "s" && gameState.playerId === 1 && gameState.paddleLeftY < 600 - 150)
+      gameState.paddleLeftY += step;
 
-  if (gameState.keypressd[0] === "w" && gameState.playerId === 1)
-    gameState.paddleLeftY -= 5;
-  if (gameState.keypressd[0] === "s" && gameState.playerId === 1)
-      gameState.paddleLeftY += 5;
-
-  if (gameState.keypressd[0] === "w" && gameState.playerId === 2)
-      gameState.paddelRightY = Math.max(0, gameState.paddelRightY - 5);
-  if (gameState.keypressd[0] === "s" && gameState.playerId === 2)
-      gameState.paddelRightY = Math.min(450, gameState.paddelRightY + 5);
+  if (gameState.keypressd[0] === "w" && gameState.playerId === 2 && gameState.paddelRightY > 0)
+      gameState.paddelRightY -= step
+  if (gameState.keypressd[0] === "s" && gameState.playerId === 2 && gameState.paddelRightY < 600 - 150)
+      gameState.paddelRightY += step;
 
   if (flagX || (gameState.ballX >= 890 && gameState.ballY >= gameState.paddelRightY && gameState.ballY <= (gameState.paddelRightY + 150)))
     gameState.ballX -= ballSpeed, flagX = true;
@@ -186,17 +186,18 @@ fastify.register(async function (fastify) {
 
           player1.on('message', handleMessage(player1, 1));
           player2.on('message', handleMessage(player2, 2));
+
+          player1.on('close', (msg) => {
+            console.log('player1 disconnected');
+          })
+          player2.on('close', () => {
+            console.log('player2 disconnected');
+          })
       }
   });
 });
 
-
-
-
-
-
-
-fastify.listen({ port: 5000, host:'0.0.0.0'}, (err) => {
+fastify.listen({ port: 5000}, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);

@@ -10,6 +10,9 @@ window.onload = () => {
     };
     socket.onclose = () => {
       console.log('[client] Disconnected from server');
+      setTimeout(() => {
+        console.log('reconnecting...');
+      }, 10000);
     };
     socket.onerror = (err) => {
       console.error('[client] WebSocket error:', err);
@@ -73,11 +76,11 @@ class FlowField {
     
     keysFunction() 
     {
-        if (this.#keys["w"] === true  && this.#paddleStat.paddleLeftY > 0)
+        if (this.#keys["w"] === true)
         {
           this.#paddleStat.keypressd.push("w");
         }
-        if (this.#keys["s"] === true && this.#paddleStat.paddleLeftY < this.#canvasHeight - this.#height)
+        if (this.#keys["s"] === true)
         {
           this.#paddleStat.keypressd.push("s");
         }
