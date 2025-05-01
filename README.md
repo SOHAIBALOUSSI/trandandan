@@ -34,36 +34,29 @@ ft_transcendence/
 │   │   ├── styles/              # CSS/Tailwind styles
 │   │   └── index.ts             # Main entry point
 │   │
-│   ├── server/                  # Backend code
-│       ├── controllers/         # Route controllers
-│       │   ├── userController.ts
-│       │   ├── gameController.ts
-│       │   ├── tournamentController.ts
-│       │   └── chatController.ts
-│       ├── models/              # Data models
-│       │   ├── User.ts
-│       │   ├── Game.ts
-│       │   ├── Tournament.ts
-│       │   └── Chat.ts
-│       ├── services/            # Business logic
-│       │   ├── authService.ts
-│       │   ├── gameService.ts
-│       │   └── chatService.ts
-│       ├── routes/              # API route definitions
-│       │   ├── userRoutes.ts
-│       │   ├── gameRoutes.ts
-│       │   ├── tournamentRoutes.ts
-│       │   └── chatRoutes.ts
-│       ├── middleware/          # Express middleware
-│       ├── websocket/           # WebSocket handlers
-│       ├── database/            # Database configuration
-│       │   ├── migrations/      # SQLite migrations
-│       │   ├── seeds/           # Seed data
-│       │   └── connection.ts    # Database connection setup
-│       ├── utils/               # Utility functions
-│       ├── types/               # TypeScript type definitions
-│       └── server.ts            # Main server entry point
-│
+│   ├── server/                 # Backend code
+│       ├── auth-service/
+│       │   ├── src
+│       │   │   ├── controllers/              # Route controllers
+│       │   │   │   └── auth.controller.js
+│       │   │   ├── migrations/               # SQLite migrations
+│       │   │   │   └── createUserTable.js
+│       │   │   ├── models/                   # Data models
+│       │   │   │   └── auth.model.js
+│       │   │   ├── plugins/                  # Custom plugins
+│       │   │   │   ├── jwt-plugin.js
+│       │   │   │   └── sqlite-plugin.js
+│       │   │   ├── routes/                   # API route definitions
+│       │   │   │   └── auth.routes.js
+│       │   │   ├── schemas/                  # Validation JSON Schemas
+│       │   │   │   └── auth.schema.js
+│       │   │   └── index.js
+│       │   ├── .dockerignore
+│       │   ├── Dockerfile
+│       │   ├── package-lock.json
+│       │   └── package.json
+│       ├── docker-compose.yml
+│       └── dockerfileGenerator.sh
 ├── public/                      # Public static files
 ├── dist/                        # Compiled output
 ├── node_modules/                # Dependencies
