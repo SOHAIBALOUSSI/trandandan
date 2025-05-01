@@ -40,9 +40,11 @@ ft_transcendence/
 │       │   │   ├── controllers/              # Route controllers
 │       │   │   │   └── auth.controller.js
 │       │   │   ├── migrations/               # SQLite migrations
+│       │   │   │   ├── createTokenTable.js
 │       │   │   │   └── createUserTable.js
 │       │   │   ├── models/                   # Data models
-│       │   │   │   └── auth.model.js
+│       │   │   │   ├── auth.tokenModle.js
+│       │   │   │   └── auth.userModel.js
 │       │   │   ├── plugins/                  # Custom plugins
 │       │   │   │   ├── jwt-plugin.js
 │       │   │   │   └── sqlite-plugin.js
