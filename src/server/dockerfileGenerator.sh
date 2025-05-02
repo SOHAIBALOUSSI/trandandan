@@ -9,7 +9,7 @@ SERVICE_NAME=$1
 SERVICE_PORT=$2
 DOCKERFILE_PATH="./$SERVICE_NAME/Dockerfile"
 
-mkdir -p $SERVICE_NAME
+mkdir -p $SERVICE_NAME/src
 
 cat > $DOCKERFILE_PATH << EOL
 FROM node:slim

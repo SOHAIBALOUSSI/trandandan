@@ -36,6 +36,13 @@ export async function revokeToken(db, token) {
             $token: token
         }
     );
-    console.log("Token revoked: affected rows =>", result.changes);
-    return result.changes;
+}
+
+export async function findTokenByUid(db, uid) {
+    const result = await db.get(
+        'SELECT * FROM token WHERE user_id = $uid AND revoked = 0',
+        {
+            $uid: uid
+        }
+    );
 }

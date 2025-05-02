@@ -52,7 +52,7 @@ async function jwtPlugin(fastify, options) {
             return reply.status(401).send({ error: `Authorization token is required.` });
         try {
             const decoded = await fastify.jwt.verifyAT(token);
-            request.user = decoded;
+            request.user = decoded.id;
         } catch (error) {
             return reply.status(401).send({ error: `Invalid or expired token.` });
         }

@@ -15,10 +15,3 @@ export async function createTokenTable(db){
         console.error("Error creating table:", err.message);
     }
 }
-
-/*
-{
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ2MDM0ODkwLCJleHAiOjE3NDYwMzU3OTB9.AxxMApuQar-bWhsMl3cdSX_U8GAIgdJb-IjHL2dQR2E",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ2MDM0ODkwLCJleHAiOjE3NDY2Mzk2OTB9.tpn_XogiruBtNY92XCVQPI0xMrfG-cDmB8FsbBvyQag"
-}
-*/

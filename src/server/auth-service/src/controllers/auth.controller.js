@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { findUser, addUser, findUserById } from '../models/auth.userModel.js';
-import { findToken, findTokenById, addToken, revokeToken } from '../models/auth.tokenModel.js'; 
+import { findToken, findTokenById, addToken, revokeToken, findTokenByUid } from '../models/auth.tokenModel.js'; 
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -15,9 +15,8 @@ export async function loginHandler(request, reply) {
         if (!matched)
             return reply.status(400).send({ error: 'Invalid credentials.' });
         
-        const payload = { id: user.id }
-        const accessToken = this.jwt.signAT(payload);
-        const refreshToken = this.jwt.signRT(payload);
+        const accessToken = this.jwt.signAT({ id: user.id });
+        const refreshToken = this.jwt.signRT({ id: user.id });
         await addToken(this.db, refreshToken, user.id);
 
         return reply.status(200).send({ accessToken: accessToken, refreshToken: refreshToken });
@@ -38,9 +37,8 @@ export async function registerHandler(request, reply) {
         const hashedPassword = await hash(password, 10);
         const userId = await addUser(this.db, username, email, hashedPassword);
         
-        const payload = { id: userId }
-        const accessToken = this.jwt.signAT(payload);
-        const refreshToken = this.jwt.signRT(payload);
+        const accessToken = this.jwt.signAT({ id: userId });
+        const refreshToken = this.jwt.signRT({ id: userId });
         await addToken(this.db, refreshToken, userId);
         
         return reply.status(200).send({ accessToken: accessToken, refreshToken: refreshToken });
@@ -50,6 +48,14 @@ export async function registerHandler(request, reply) {
 }
 
 export async function logoutHandler(request, reply) {
+    const userId = request.user;
+    const user = await findUserById(this.db, userId);
+    if (!user)
+        return reply.status(404).send({ error: 'User not found.' });
+    const token = await findTokenByUid(this.db, userId);
+    if (!token)
+        return reply.status(401).send({ error: 'Invalid token.' });
+    await revokeToken(this.db, token.token);
     return reply.status(200).send({ message: `User logged out.` });
 }
 
@@ -78,8 +84,8 @@ export async function refreshHandler(request, reply) {
 
         const payload = await this.jwt.verifyRT(tokenExist.token);
         await revokeToken(this.db, refreshToken);
-        const accessToken = this.jwt.signAT(payload);
-        const newRefreshToken = this.jwt.signRT(payload);
+        const accessToken = this.jwt.signAT({ id: payload.id });
+        const newRefreshToken = this.jwt.signRT({ id: payload.id });
         await addToken(this.db, newRefreshToken, payload.id);
 
         return reply.status(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });
