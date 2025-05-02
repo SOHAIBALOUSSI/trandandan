@@ -17,7 +17,9 @@ const messageSchema = {
     ballX: {type: 'number'},
     ballY: {type: 'number'},
     gameStat: {type: 'number'},
-    keypressd: {type: 'array', items: {type: "string"}}
+    keypressd: {type: 'array', items: {type: "string"}},
+    rightPlayerScore: {type: 'number'},
+    rightPlayerScore: {type: 'number'}
   },
 }
 const validateMessage = ajv.compile(messageSchema);
@@ -25,6 +27,7 @@ const validateMessage = ajv.compile(messageSchema);
 let flagX = false;
 let flagY = false;
 let ballSpeed = 2;
+let count = 0;
 
 fastify.register(websocket);
 
@@ -53,23 +56,36 @@ fastify.register(async function (fastify) {
       }
 
       // console.log('Client says:', obj);
-      
+      let  step = 10;
       if (obj.keypressd.includes("w"))
-        obj.paddleLeftY -= 8;
+        obj.paddleLeftY -= step;
       if (obj.keypressd.includes("s"))
-        obj.paddleLeftY += 8;
+        obj.paddleLeftY += step;
 
       if (obj.keypressd.includes("ArrowDown"))
-        obj.paddelRightY += 8;
+        obj.paddelRightY += step;
       if (obj.keypressd.includes("ArrowUp"))
-        obj.paddelRightY -= 8;
+        obj.paddelRightY -= step;
 
 
       
       if (flagX || (obj.ballX >= 890 && obj.ballY >= obj.paddelRightY && obj.ballY <= (obj.paddelRightY + 150)))
+      {
+        if (obj.ballX >= 890 && obj.ballY >= obj.paddelRightY && obj.ballY <= (obj.paddelRightY + 150))
+        {
+          count++;
+          if (count === 2)
+          {
+            ballSpeed += 2;
+            count = 0;
+          }
+        }
         obj.ballX -= ballSpeed, flagX = true;
+      }
       if (!flagX || (obj.ballX <= 0 && obj.ballY >= obj.paddleLeftY && obj.ballY <= (obj.paddleLeftY + 150)))
+      {
         obj.ballX += ballSpeed, flagX = false;
+      }
           
       if (obj.ballY >= 600 || flagY)
         obj.ballY -= ballSpeed, flagY = true;
@@ -80,12 +96,16 @@ fastify.register(async function (fastify) {
 
       if (obj.ballX > 900 || obj.ballX <= 0)
       {
+        if (obj.ballX > 900)
+          obj.leftPlayerScore += 1;
+          if (obj.ballX <= 0)
+            obj.rightPlayerScore += 1;
         obj.paddleLeftY = 240;
         obj.paddelRightY = 240;
         obj.ballX = 900 / 2; 
         obj.ballY = 300;
+        ballSpeed = 5;
       }
-          
       connection.send(JSON.stringify(obj));
     });
   });
@@ -98,8 +118,9 @@ fastify.register(async function (fastify) {
 
 
 //-------------------------------- remote games
-function gameLogic(gameState) {
+const rooms = {};
 
+function gameLogic(gameState) {
   let step = 8;
   if (gameState.keypressd[0] === "w" && gameState.playerId === 1 && gameState.paddleLeftY > 0)
     gameState.paddleLeftY -= step;
@@ -111,16 +132,16 @@ function gameLogic(gameState) {
   if (gameState.keypressd[0] === "s" && gameState.playerId === 2 && gameState.paddelRightY < 600 - 150)
       gameState.paddelRightY += step;
 
-  if (flagX || (gameState.ballX >= 890 && gameState.ballY >= gameState.paddelRightY && gameState.ballY <= (gameState.paddelRightY + 150)))
-    gameState.ballX -= ballSpeed, flagX = true;
-  if (!flagX || (gameState.ballX <= 0 && gameState.ballY >= gameState.paddleLeftY && gameState.ballY <= (gameState.paddleLeftY + 150)))
-    gameState.ballX += ballSpeed, flagX = false;
+  if (gameState.flagX || (gameState.ballX >= 890 && gameState.ballY >= gameState.paddelRightY && gameState.ballY <= (gameState.paddelRightY + 150)))
+    gameState.ballX -= ballSpeed, gameState.flagX = true;
+  if (!gameState.flagX || (gameState.ballX <= 0 && gameState.ballY >= gameState.paddleLeftY && gameState.ballY <= (gameState.paddleLeftY + 150)))
+    gameState.ballX += ballSpeed, gameState.flagX = false;
 
       
-  if (gameState.ballY >= 600 || flagY)
-    gameState.ballY -= ballSpeed, flagY = true;
-  if (gameState.ballY <= 0 || !flagY)
-    gameState.ballY += ballSpeed, flagY = false;
+  if (gameState.ballY >= 600 || gameState.flagY)
+    gameState.ballY -= ballSpeed, gameState.flagY = true;
+  if (gameState.ballY <= 0 || !gameState.flagY)
+    gameState.ballY += ballSpeed, gameState.flagY = false;
   
   gameState.keypressd = [];
 
@@ -134,7 +155,7 @@ function gameLogic(gameState) {
   return gameState;
 }
 
-const rooms = {};
+
 
 function generateNewRoomId(params) {
   let roomId = "";
@@ -148,54 +169,183 @@ function generateNewRoomId(params) {
 }
 
 
-
 fastify.register(async function (fastify) {
-  fastify.get('/remoteGame', { websocket: true }, (connection) => {
-      let roomId;
-      let joined = false;
+    fastify.get('/remoteGame', { websocket: true }, (connection, req) => {
+  
+        const token = req.query.token;
+        let roomId;
+        let joined = false;
+        
 
 
-      for (const [id, connections] of Object.entries(rooms)) {
-          if (connections.length < 2) {
-              roomId = id;
-              connections.push(connection);
-              joined = true;
-              break;
-          }
-      }
-
-      if (!joined) {
-          roomId = generateNewRoomId();
-          rooms[roomId] = [connection];
-      }
-
-      if (rooms[roomId].length === 2) {
-          const [player1, player2] = rooms[roomId];
+        for (const [id] of Object.entries(rooms)) {
           
-          const handleMessage = (player, playerId) => (msg) => {
-              try {
-                  const gameState = JSON.parse(msg);
-                  gameState.playerId = playerId;
-                  const updatedState = gameLogic(gameState);
-                  player1.send(JSON.stringify(updatedState));
-                  player2.send(JSON.stringify(updatedState));
-              } catch (error) {
-                  console.error('Invalid JSON format', error);
-              }
+          rooms[id].players.forEach(element => {
+            
+            if (element.token == token)
+              {
+              element.connection = connection;
+              joined = true;
+              roomId = id;
+              return true;
+            }
+          });
+          if (rooms[id].players.length < 2 && !joined)
+          {
+            rooms[id].players.push({token: token, connection: connection});
+            joined = true;
+            roomId = id;
+            break;
+          }
+          
+          
+        }
+        
+        if (!joined) {
+          roomId = generateNewRoomId();
+          rooms[roomId] = {
+            players: [{token: token, connection: connection}],
+            gameStat:{
+              playerId: 1,
+              ballX: 0,
+              ballY: 0,
+              ballSpeed: 0,
+              flagX: false,
+              flagY: false,
+              paddleLeftY: 0,
+              paddelRightY: 0,
+              keypressd: []
+            }
           };
+        }
 
-          player1.on('message', handleMessage(player1, 1));
-          player2.on('message', handleMessage(player2, 2));
 
-          player1.on('close', (msg) => {
-            console.log('player1 disconnected');
-          })
-          player2.on('close', () => {
-            console.log('player2 disconnected');
-          })
-      }
+        if (rooms[roomId].players.length === 2) {
+
+          const [{ token: token1, connection: player1 }, { token: token2, connection: player2 }] = rooms[roomId].players;
+
+
+            const handleMessage = (playerId) => (msg) => {
+                try {
+                    rooms[roomId].gameState = JSON.parse(msg);
+                    rooms[roomId].gameState.playerId = playerId;
+
+                    const updatedState = gameLogic(rooms[roomId].gameState);
+                    player1.send(JSON.stringify(updatedState));
+                    player2.send(JSON.stringify(updatedState));
+                } catch (error) {
+                    console.error('Invalid JSON format', error);
+                }
+            };
+  
+            player1.on('message', handleMessage(1));
+            player2.on('message', handleMessage(2));
+  
+        //     player1.on('close', () => {
+        //       player1.close();
+        //       console.log('Player 1 disconnected');
+        //       // rooms[roomId] = rooms[roomId].filter((player) => player.connection !== player1);
+      
+        //       // if (rooms[roomId].length === 0) {
+        //       //   delete rooms[roomId];
+        //       //   console.log(`Room ${roomId} deleted`);
+        //       // } else {
+        //       //   player2.send(JSON.stringify({ type: 'playerDisconnected', message: 'Player 1 has disconnected' }));
+        //       // }
+        //     });
+      
+        //     // Handle disconnection of player2
+        //     player2.on('close', () => {
+        //       player2.close();
+        //       console.log('Player 2 disconnected');
+        //       // rooms[roomId] = rooms[roomId].filter((player) => player.connection !== player2);
+      
+        //       // if (rooms[roomId].length === 0) {
+        //       //   delete rooms[roomId];
+        //       //   console.log(`Room ${roomId} deleted`);
+        //       // } 
+        //     });
+        }
+    });
   });
-});
+
+// fastify.register(async function (fastify) {
+//   fastify.get('/remoteGame', { websocket: true }, (connection, req) => {
+
+//       const token = req.query.token;
+//       let roomId;
+//       let joined = false;
+
+
+//       for (const [id, connections] of Object.entries(rooms)) {
+//           connections.forEach(element => {
+//             if (element.token == token)
+//             {
+//               element.connection = connection;
+//               joined = true;
+//               roomId = id;
+//               return true;
+//             }
+//           });
+//           if (connections.length < 2 && !joined) {
+//               roomId = id;
+//               connections.push({token: token, connection: connection});
+//               joined = true;
+//               break;
+//           }
+//       }
+
+//       if (!joined) {
+//           roomId = generateNewRoomId();
+//           rooms[roomId] = [{token: token, connection: connection}];
+//       }
+//       console.log(rooms);
+//       console.log('----------------------------------')
+//       if (rooms[roomId].length === 2) {
+//           const [{ token: token1, connection: player1 }, { token: token2, connection: player2 }] = rooms[roomId];
+          
+//           const handleMessage = (playerId) => (msg) => {
+//               try {
+//                   const gameState = JSON.parse(msg);
+//                   gameState.playerId = playerId;
+//                   const updatedState = gameLogic(gameState);
+//                   player1.send(JSON.stringify(updatedState));
+//                   player2.send(JSON.stringify(updatedState));
+//               } catch (error) {
+//                   console.error('Invalid JSON format', error);
+//               }
+//           };
+
+//           player1.on('message', handleMessage(1));
+//           player2.on('message', handleMessage(2));
+
+//           player1.on('close', () => {
+//             player1.close();
+//             console.log('Player 1 disconnected');
+//             // rooms[roomId] = rooms[roomId].filter((player) => player.connection !== player1);
+    
+//             // if (rooms[roomId].length === 0) {
+//             //   delete rooms[roomId];
+//             //   console.log(`Room ${roomId} deleted`);
+//             // } else {
+//             //   player2.send(JSON.stringify({ type: 'playerDisconnected', message: 'Player 1 has disconnected' }));
+//             // }
+//           });
+    
+//           // Handle disconnection of player2
+//           player2.on('close', () => {
+//             player2.close();
+//             console.log('Player 2 disconnected');
+//             // rooms[roomId] = rooms[roomId].filter((player) => player.connection !== player2);
+    
+//             // if (rooms[roomId].length === 0) {
+//             //   delete rooms[roomId];
+//             //   console.log(`Room ${roomId} deleted`);
+//             // } 
+//           });
+//       }
+//   });
+// });
 
 fastify.listen({ port: 5000}, (err) => {
   if (err) {

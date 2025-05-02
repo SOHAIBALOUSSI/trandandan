@@ -1,8 +1,11 @@
+const rightPlayerScore = document.getElementById('rightScore');
+const leftPlayerScore = document.getElementById('leftScore');
 let socket
 window.onload = () => {
   socket = new WebSocket('ws://localhost:5000/ws');
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
+  
 
   socket.onmessage = (event) => {
     console.log('[client] Message from server:', event.data);
@@ -22,7 +25,9 @@ window.onload = () => {
   window.addEventListener('keyup', (key) => {
     keys[key.key] = false;
   })
-
+  socket.onmessage = (event) => {
+    flow.updateGameState(event.data); 
+  };
   const flow = new FlowField(ctx, keys);
   flow.animate();
 
@@ -43,7 +48,16 @@ class FlowField {
     this.#canvasHeight = 600;
     this.#ctx = ctx;
     this.#keys = keys;
-    this.#paddleStat = {paddleLeftY: 0,paddelRightY: 0, ballX: 0, ballY: 300,gameStat: 1, keypressd: []};
+    this.#paddleStat = {
+      paddleLeftY: 240,
+      paddelRightY: 240,
+      ballX: 450,
+      ballY: 300,
+      gameStat: 1,
+      keypressd: [],
+      rightPlayerScore: 0,
+      leftPlayerScore: 0
+    };
   }
 
   #draw() 
@@ -85,11 +99,17 @@ class FlowField {
         this.#paddleStat.keypressd.push("ArrowDown");
       }
     }
+    updateGameState(data) {
+      this.#paddleStat = JSON.parse(data);
+      rightPlayerScore.textContent = this.#paddleStat.rightPlayerScore;
+      leftPlayerScore.textContent = this.#paddleStat.leftPlayerScore;
+
+      if (this.#paddleStat.rightPlayerScore === 5 || this.#paddleStat.leftPlayerScore === 5)
+          socket.close();
+
+    }
     ballPositionUpdate()
     {
-      socket.onmessage = (event) => {
-        this.#paddleStat = JSON.parse(event.data);     
-      };
       if (socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify(this.#paddleStat));
       }

@@ -1,4 +1,21 @@
-const socket = new WebSocket('ws://localhost:5000/remoteGame');
+function generateToken(params) {
+  let roomId = "";
+  
+  const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
+  
+  for (let index = 0; index < 12; index++) {
+    roomId += stringOfChar[Math.floor(Math.random() * stringOfChar.length)]; 
+  }
+  return roomId;
+}
+let token = generateToken();
+console.log(token);
+const test = localStorage.getItem('player');
+if (test === null)
+  localStorage.setItem('player', token);
+
+const socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
+
 window.onload = () => {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -48,10 +65,21 @@ class FlowField {
       this.#canvasHeight = 600;
       this.#ctx = ctx;
       this.#keys = keys;
-      this.#paddleStat = {playerId: 1, paddleLeftY: 0,paddelRightY: 0, ballX: 0, ballY: 300,gameStat: 1, keypressd: []};
+      this.#paddleStat = {
+        playerId: 0,
+        ballX: 0,
+        ballY: 300,
+        ballSpeed: 5,
+        flagX: false,
+        flagY: false, 
+        paddleLeftY: 0, 
+        paddelRightY: 0,
+        keypressd: []
+      };
     }
     updateGameState(data) {
         this.#paddleStat = JSON.parse(data);
+        console.log(this.#paddleStat.playerId);
     }
       
     #draw() 
