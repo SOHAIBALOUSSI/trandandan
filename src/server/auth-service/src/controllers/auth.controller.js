@@ -41,6 +41,7 @@ export async function registerHandler(request, reply) {
         const payload = { id: userId }
         const accessToken = this.jwt.signAT(payload);
         const refreshToken = this.jwt.signRT(payload);
+        
         await addToken(this.db, refreshToken, userId);
         
         return reply.status(200).send({ accessToken: accessToken, refreshToken: refreshToken });
@@ -50,20 +51,40 @@ export async function registerHandler(request, reply) {
 }
 
 export async function logoutHandler(request, reply) {
-    const userId = request.user;
-    const user = await findUserById(this.db, userId);
-    if (!user)
-        return reply.status(404).send({ error: 'User not found.' });
-    await revokeToken(this.db, )
-    return reply.status(200).send({ message: `User logged out.` });
+    try {
+        const userId = request.user?.id;
+        
+        const user = await findUserById(this.db, userId);
+        if (!user)
+            return reply.status(404).send({ error: 'User not found.' });
+        
+        const { token } = request.body;
+        if (!token)
+            return reply.status(401).send({ error: 'Token required.' });
+        
+        const tokenExist = await findToken(this.db, token);
+        if (!tokenExist)
+            return reply.status(401).send({ error: 'Invalid token.' });
+
+        if (tokenExist.revoked)
+            return reply.status(403).send({ error: 'Token revoked.' });
+        
+        await revokeToken(this.db, token);
+        
+        return reply.status(200).send({ message: `User logged out.` });
+    } catch (error) {
+        return reply.status(500).send({ error: 'Internal server error.' });
+    }
 }
 
 export async function meHandler(request, reply) {
     try {
         const userId = request.user;
+        
         const user = await findUserById(this.db, userId);
         if (!user)
             return reply.status(404).send({ error: 'User not found.' });
+        
         return reply.status(200).send({ id: user.id, username: user.username, email: user.email });
     } catch (error) {
         return reply.status(500).send({ error: 'Internal server error.' });
@@ -75,16 +96,21 @@ export async function refreshHandler(request, reply) {
         const { refreshToken } = request.body;
         if (!refreshToken)
             return reply.status(401).send({ error: 'Refresh token required.' });
+        
         const tokenExist = await findToken(this.db, refreshToken);
         if (!tokenExist)
             return reply.status(401).send({ error: 'Invalid token.' });
+        
         if (tokenExist.revoked)
             return reply.status(403).send({ error: 'Token revoked.' });
 
         const payload = await this.jwt.verifyRT(tokenExist.token);
+
         await revokeToken(this.db, refreshToken);
+        
         const accessToken = this.jwt.signAT({ id: payload.id });
         const newRefreshToken = this.jwt.signRT({ id: payload.id });
+        
         await addToken(this.db, newRefreshToken, payload.id);
 
         return reply.status(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });
