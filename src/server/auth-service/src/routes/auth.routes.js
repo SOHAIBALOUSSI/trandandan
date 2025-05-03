@@ -1,5 +1,5 @@
 import { loginHandler, registerHandler, logoutHandler, meHandler, refreshHandler } from '../controllers/auth.controller.js';
-import { registerSchema, loginSchema } from '../schemas/auth.schema.js';
+import { registerSchema, loginSchema, tokenSchema } from '../schemas/auth.schema.js';
 
 
 async function authRoutes(fastify) {
@@ -18,16 +18,22 @@ async function authRoutes(fastify) {
     });
 
     fastify.post('/logout', {
+        schema: {
+            body: tokenSchema
+        }, 
         preHandler: fastify.authenticate,
         handler: logoutHandler
     });
     
-    fastify.get('/me',{
+    fastify.get('/me',{ 
         preHandler: fastify.authenticate,
         handler: meHandler
     } );
 
     fastify.post('/refresh',{
+        schema: {
+            body: tokenSchema
+        },
         handler: refreshHandler
     } );
 }
