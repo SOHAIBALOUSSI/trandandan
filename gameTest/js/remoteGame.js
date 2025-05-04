@@ -27,9 +27,11 @@ window.onload = () => {
     };
     socket.onclose = () => {
       console.log('[client] Disconnected from server');
-      setTimeout(() => {
-        console.log('reconnecting...');
-      }, 10000);
+      // setTimeout(() => {
+        // const ws = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
+        // ws.onopen = () => {
+        // }
+      // }, 2000);
     };
     socket.onerror = (err) => {
       console.error('[client] WebSocket error:', err);
@@ -74,12 +76,26 @@ class FlowField {
         flagY: false, 
         paddleLeftY: 0, 
         paddelRightY: 0,
-        keypressd: []
+        keypressd: [],
+        disconnected: false
       };
     }
     updateGameState(data) {
+      try {
         this.#paddleStat = JSON.parse(data);
-        console.log(this.#paddleStat.playerId);
+        
+      } catch (error) {
+        console.log(data);
+        if (data === 'player disconnected')
+        {
+          // setTimeout(() => {
+          //   const ws = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
+          //   ws.onopen = () => {
+          //     console.log('reconnect');
+          //   }
+          // }, 2000);
+        }
+      }
     }
       
     #draw() 
