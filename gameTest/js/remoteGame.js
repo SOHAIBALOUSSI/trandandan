@@ -1,3 +1,6 @@
+const rightPlayerScore = document.getElementById('rightScore');
+const leftPlayerScore = document.getElementById('leftScore');
+const gameEnd = document.getElementById('gameEnd');
 function generateToken(params) {
   let roomId = "";
   
@@ -71,29 +74,31 @@ class FlowField {
         playerId: 0,
         ballX: 0,
         ballY: 300,
-        ballSpeed: 5,
+        ballSpeed: 3,
         flagX: false,
         flagY: false, 
-        paddleLeftY: 0, 
-        paddelRightY: 0,
+        paddleLeftY: 240, 
+        paddelRightY: 240,
         keypressd: [],
-        disconnected: false
+        disconnected: false,
+        leftPlayerScore: 0,
+        rightPlayerScore: 0,
+        winner: '',
+        rounds: 5
       };
     }
     updateGameState(data) {
       try {
         this.#paddleStat = JSON.parse(data);
-        
+        rightPlayerScore.textContent = this.#paddleStat.rightPlayerScore;
+        leftPlayerScore.textContent = this.#paddleStat.leftPlayerScore;
+        if (!this.#paddleStat.winner.length)
+          gameEnd.textContent = this.#paddleStat.gameEnd;
       } catch (error) {
         console.log(data);
         if (data === 'player disconnected')
         {
-          // setTimeout(() => {
-          //   const ws = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
-          //   ws.onopen = () => {
-          //     console.log('reconnect');
-          //   }
-          // }, 2000);
+
         }
       }
     }

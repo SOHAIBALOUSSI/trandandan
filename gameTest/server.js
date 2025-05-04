@@ -151,27 +151,44 @@ function gameLogic(gameState) {
       gameState.ballY >= gameState.paddelRightY &&
       gameState.ballY <= gameState.paddelRightY + 150)
   )
-    (gameState.ballX -= ballSpeed), (gameState.flagX = true);
+  {
+    if (
+      gameState.ballX >= 890 &&
+      gameState.ballY >= gameState.paddelRightY &&
+      gameState.ballY <= gameState.paddelRightY + 150
+    ) {
+      gameState.hitCount++;
+      if (gameState.hitCount === 2) {
+        gameState.ballSpeed += 2;
+        gameState.hitCount = 0;
+      }
+      console.log(gameState.ballSpeed);
+    }
+    (gameState.ballX -= gameState.ballSpeed), (gameState.flagX = true);
+  }
   if (
     !gameState.flagX ||
     (gameState.ballX <= 0 &&
       gameState.ballY >= gameState.paddleLeftY &&
       gameState.ballY <= gameState.paddleLeftY + 150)
   )
-    (gameState.ballX += ballSpeed), (gameState.flagX = false);
+    (gameState.ballX += gameState.ballSpeed), (gameState.flagX = false);
 
   if (gameState.ballY >= 600 || gameState.flagY)
-    (gameState.ballY -= ballSpeed), (gameState.flagY = true);
+    (gameState.ballY -= gameState.ballSpeed), (gameState.flagY = true);
   if (gameState.ballY <= 0 || !gameState.flagY)
-    (gameState.ballY += ballSpeed), (gameState.flagY = false);
+    (gameState.ballY += gameState.ballSpeed), (gameState.flagY = false);
 
   gameState.keypressd = [];
 
   if (gameState.ballX > 900 || gameState.ballX <= 0) {
+    if (gameState.ballX > 900) gameState.leftPlayerScore += 1;
+    if (gameState.ballX <= 0) gameState.rightPlayerScore += 1;
     gameState.paddleLeftY = 240;
     gameState.paddelRightY = 240;
     gameState.ballX = 900 / 2;
     gameState.ballY = 300;
+    gameState.ballSpeed = 3;
   }
   return gameState;
 }
@@ -227,29 +244,57 @@ fastify.register(async function (fastify) {
           ballSpeed: 0,
           flagX: false,
           flagY: false,
-          paddleLeftY: 0,
-          paddelRightY: 0,
+          paddleLeftY: 240,
+          paddelRightY: 240,
           keypressd: [],
-          disconnected: false
+          disconnected: false,
+          leftPlayerScore: 0,
+          rightPlayerScore: 0,
+          rounds: 5,
+          ballSpeed: 3,
+          hitCount: 0,
+          gameEnd: ''
         },
       };
     }
 
     if (rooms[roomId].players.length === 2) {
       const [
-        { token: token1, connection: player1 },
-        { token: token2, connection: player2 },
+        { connection: player1 },
+        { connection: player2 },
       ] = rooms[roomId].players;
 
       const handleMessage = (playerId) => (msg) => {
         try {
           const gameState = JSON.parse(msg);
           if (!rooms[roomId].gameState.disconnected)
+          {
             rooms[roomId].gameState = gameState;
+          }
           rooms[roomId].gameState.keypressd = gameState.keypressd;
           rooms[roomId].gameState.playerId = playerId;
 
           const updatedState = gameLogic(rooms[roomId].gameState);
+          if (updatedState.rightPlayerScore === updatedState.rounds)
+          {
+            updatedState.gameEnd = 'You Lost';
+            player1.send(JSON.stringify(updatedState));
+            updatedState.gameEnd = 'You Won';
+            player2.send(JSON.stringify(updatedState));
+            player1.close();
+            player2.close();
+            return;
+          }
+          if (updatedState.leftPlayerScore === updatedState.rounds)
+          {
+            updatedState.gameEnd = 'You Won';
+            player1.send(JSON.stringify(updatedState));
+            updatedState.gameEnd = 'You Lost';
+            player2.send(JSON.stringify(updatedState));
+            player1.close();
+            player2.close();
+            return;
+          }
           player1.send(JSON.stringify(updatedState));
           player2.send(JSON.stringify(updatedState));
         } catch (error) {
@@ -264,7 +309,6 @@ fastify.register(async function (fastify) {
         player2.send("player 1 disconnected");
       });
 
-      //     // Handle disconnection of player2
       player2.on("close", () => {
         player1.send("player 2 disconnected");
       });
