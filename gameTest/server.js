@@ -150,8 +150,7 @@ function gameLogic(gameState) {
     (gameState.ballX >= 890 &&
       gameState.ballY >= gameState.paddelRightY &&
       gameState.ballY <= gameState.paddelRightY + 150)
-  )
-  {
+  ) {
     if (
       gameState.ballX >= 890 &&
       gameState.ballY >= gameState.paddelRightY &&
@@ -211,11 +210,8 @@ fastify.register(async function (fastify) {
 
     for (const [id] of Object.entries(rooms)) {
       rooms[id].players.forEach((player) => {
-        if (player.connection) {
-          player.connection.removeAllListeners("message");
-          player.connection.removeAllListeners("close");
-        }
         if (player.token == token) {
+
           player.connection = connection;
           rooms[id].gameState.disconnected = true; // reconnnected
           joined = true;
@@ -240,7 +236,6 @@ fastify.register(async function (fastify) {
           playerId: 1,
           ballX: 0,
           ballY: 0,
-          ballSpeed: 0,
           flagX: false,
           flagY: false,
           paddleLeftY: 240,
@@ -250,48 +245,47 @@ fastify.register(async function (fastify) {
           leftPlayerScore: 0,
           rightPlayerScore: 0,
           rounds: 5,
-          ballSpeed: 3,
+          ballSpeed: 5,
           hitCount: 0,
-          gameEnd: ''
+          gameEnd: "",
+          stop: false,
         },
       };
     }
 
     if (rooms[roomId].players.length === 2) {
       const [
-        { connection: player1 },
-        { connection: player2 },
+        { toke1: token1, connection: player1 },
+        { token2: token2, connection: player2 },
       ] = rooms[roomId].players;
 
       const handleMessage = (playerId) => (msg) => {
         try {
           const gameState = JSON.parse(msg);
-          if (!rooms[roomId].gameState.disconnected)
-          {
+          if (!rooms[roomId].gameState.disconnected) {
             rooms[roomId].gameState = gameState;
           }
           rooms[roomId].gameState.keypressd = gameState.keypressd;
           rooms[roomId].gameState.playerId = playerId;
 
           const updatedState = gameLogic(rooms[roomId].gameState);
-          if (updatedState.rightPlayerScore === updatedState.rounds)
-          {
-            updatedState.gameEnd = 'You Lost';
+          if (updatedState.rightPlayerScore === updatedState.rounds) {
+            updatedState.gameEnd = "You Lost";
             player1.send(JSON.stringify(updatedState));
-            updatedState.gameEnd = 'You Won';
+            updatedState.gameEnd = "You Won";
             player2.send(JSON.stringify(updatedState));
             return;
           }
-          if (updatedState.leftPlayerScore === updatedState.rounds)
-          {
-            updatedState.gameEnd = 'You Won';
+          if (updatedState.leftPlayerScore === updatedState.rounds) {
+            updatedState.gameEnd = "You Won";
             player1.send(JSON.stringify(updatedState));
-            updatedState.gameEnd = 'You Lost';
+            updatedState.gameEnd = "You Lost";
             player2.send(JSON.stringify(updatedState));
             return;
           }
           player1.send(JSON.stringify(updatedState));
           player2.send(JSON.stringify(updatedState));
+
         } catch (error) {
           console.error("Invalid JSON format", error);
         }
@@ -302,10 +296,16 @@ fastify.register(async function (fastify) {
 
       player1.on("close", () => {
         player2.send("player 1 disconnected");
+
+        player1.removeAllListeners();
+        player2.removeAllListeners();
       });
 
       player2.on("close", () => {
         player1.send("player 2 disconnected");
+
+        player1.removeAllListeners();
+        player2.removeAllListeners();
       });
     }
   });

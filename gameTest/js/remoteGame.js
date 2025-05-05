@@ -1,6 +1,9 @@
 const rightPlayerScore = document.getElementById('rightScore');
 const leftPlayerScore = document.getElementById('leftScore');
 const gameEnd = document.getElementById('gameEnd');
+const restartButton = document.getElementById('restartButton');
+const exitButton = document.getElementById('exitButton');
+
 function generateToken(params) {
   let roomId = "";
   
@@ -74,7 +77,7 @@ class FlowField {
         playerId: 0,
         ballX: 0,
         ballY: 300,
-        ballSpeed: 3,
+        ballSpeed: 5,
         flagX: false,
         flagY: false, 
         paddleLeftY: 240, 
@@ -84,7 +87,8 @@ class FlowField {
         leftPlayerScore: 0,
         rightPlayerScore: 0,
         winner: '',
-        rounds: 5
+        rounds: 5,
+        stop: false,
       };
     }
     updateGameState(data) {
@@ -92,11 +96,27 @@ class FlowField {
         this.#paddleStat = JSON.parse(data);
         rightPlayerScore.textContent = this.#paddleStat.rightPlayerScore;
         leftPlayerScore.textContent = this.#paddleStat.leftPlayerScore;
-        if (this.#paddleStat.gameEnd.length  != 0)
-        {
-          gameEnd.textContent = this.#paddleStat.gameEnd;
-          socket.close();
-        }
+        // if (this.#paddleStat.gameEnd.length != 0) {
+        //   this.#paddleStat.stop = true;
+        //   gameEnd.textContent = this.#paddleStat.gameEnd;
+        //   this.#paddleStat.leftPlayerScore = 0;
+        //   this.#paddleStat.rightPlayerScore = 0;
+        //   rightPlayerScore.textContent = this.#paddleStat.rightPlayerScore;
+        //   leftPlayerScore.textContent = this.#paddleStat.leftPlayerScore;
+        //   this.#paddleStat.gameEnd = '';
+        //   gameEnd.textContent = ''; // Clear game end message
+        //   gameEnd.innerHTML = ''; // Remove buttons
+
+        //   // Wait for user input to restart or exit
+        //   restartButton.addEventListener('click', () => {
+        //     this.#paddleStat.stop = false;
+        //   });
+
+        //   exitButton.addEventListener('click', () => {
+        //     this.#paddleStat.stop = false;
+
+        //   });
+        // }
       } catch (error) {
         // console.log(data);
       }
