@@ -63,7 +63,7 @@ class FlowField {
     #width;
     #height;
     #keys;
-    #paddleStat;
+    #gameState;
     #canvasWidth;
     #canvasHeight;
     constructor(ctx, keys) {
@@ -73,7 +73,7 @@ class FlowField {
       this.#canvasHeight = 600;
       this.#ctx = ctx;
       this.#keys = keys;
-      this.#paddleStat = {
+      this.#gameState = {
         playerId: 0,
         ballX: 0,
         ballY: 300,
@@ -93,30 +93,32 @@ class FlowField {
     }
     updateGameState(data) {
       try {
-        this.#paddleStat = JSON.parse(data);
-        rightPlayerScore.textContent = this.#paddleStat.rightPlayerScore;
-        leftPlayerScore.textContent = this.#paddleStat.leftPlayerScore;
-        // if (this.#paddleStat.gameEnd.length != 0) {
-        //   this.#paddleStat.stop = true;
-        //   gameEnd.textContent = this.#paddleStat.gameEnd;
-        //   this.#paddleStat.leftPlayerScore = 0;
-        //   this.#paddleStat.rightPlayerScore = 0;
-        //   rightPlayerScore.textContent = this.#paddleStat.rightPlayerScore;
-        //   leftPlayerScore.textContent = this.#paddleStat.leftPlayerScore;
-        //   this.#paddleStat.gameEnd = '';
-        //   gameEnd.textContent = ''; // Clear game end message
-        //   gameEnd.innerHTML = ''; // Remove buttons
+        this.#gameState = JSON.parse(data);
+        rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
+        leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
+        if (this.#gameState.gameEnd.length != 0) {
+          this.#gameState.stop = true;
+          gameEnd.textContent = this.#gameState.gameEnd;
+          this.#gameState.leftPlayerScore = 0;
+          this.#gameState.rightPlayerScore = 0;
+          rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
+          leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
+          this.#gameState.gameEnd = '';
+          
+          setTimeout(() => {
+            gameEnd.textContent = ''; // Clear game end message
+            gameEnd.innerHTML = ''; // Remove buttons
+          }, 3000);
+          // Wait for user input to restart or exit
+          restartButton.addEventListener('click', () => {
+            this.#gameState.stop = false;
+          });
 
-        //   // Wait for user input to restart or exit
-        //   restartButton.addEventListener('click', () => {
-        //     this.#paddleStat.stop = false;
-        //   });
+          // exitButton.addEventListener('click', () => {
+          //   this.#gameState.stop = false;
 
-        //   exitButton.addEventListener('click', () => {
-        //     this.#paddleStat.stop = false;
-
-        //   });
-        // }
+          // });
+        }
       } catch (error) {
         // console.log(data);
       }
@@ -127,17 +129,17 @@ class FlowField {
       this.#ctx.clearRect(0, 0, this.#canvasWidth, this.#canvasHeight);
   
     //   paddle left 
-      this.#ctx.fillRect(0, this.#paddleStat.paddleLeftY, this.#width, this.#height);
-      this.#ctx.strokeRect(0, this.#paddleStat.paddleLeftY, this.#width, this.#height);
+      this.#ctx.fillRect(0, this.#gameState.paddleLeftY, this.#width, this.#height);
+      this.#ctx.strokeRect(0, this.#gameState.paddleLeftY, this.#width, this.#height);
   
       //paddle right
-      this.#ctx.fillRect(890, this.#paddleStat.paddelRightY, this.#width, this.#height);
-      this.#ctx.strokeRect(890, this.#paddleStat.paddelRightY, this.#width, this.#height);
+      this.#ctx.fillRect(890, this.#gameState.paddelRightY, this.#width, this.#height);
+      this.#ctx.strokeRect(890, this.#gameState.paddelRightY, this.#width, this.#height);
   
   
       //ball
       this.#ctx.beginPath();
-      this.#ctx.arc(this.#paddleStat.ballX, this.#paddleStat.ballY, 13, 0, Math.PI * 2);
+      this.#ctx.arc(this.#gameState.ballX, this.#gameState.ballY, 13, 0, Math.PI * 2);
       this.#ctx.fill();
       this.#ctx.stroke();
     }
@@ -146,17 +148,17 @@ class FlowField {
     {
         if (this.#keys["w"] === true)
         {
-          this.#paddleStat.keypressd.push("w");
+          this.#gameState.keypressd.push("w");
         }
         if (this.#keys["s"] === true)
         {
-          this.#paddleStat.keypressd.push("s");
+          this.#gameState.keypressd.push("s");
         }
     }
     ballPositionUpdate()
     {
         if (socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify(this.#paddleStat));
+          socket.send(JSON.stringify(this.#gameState));
         }
     }
   

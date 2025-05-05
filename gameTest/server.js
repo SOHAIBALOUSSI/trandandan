@@ -182,6 +182,7 @@ function gameLogic(gameState) {
   if (gameState.ballX > 900 || gameState.ballX <= 0) {
     if (gameState.ballX > 900) gameState.leftPlayerScore += 1;
     if (gameState.ballX <= 0) gameState.rightPlayerScore += 1;
+
     gameState.paddleLeftY = 240;
     gameState.paddelRightY = 240;
     gameState.ballX = 900 / 2;
@@ -252,7 +253,6 @@ fastify.register(async function (fastify) {
         },
       };
     }
-
     if (rooms[roomId].players.length === 2) {
       const [
         { toke1: token1, connection: player1 },
@@ -262,12 +262,13 @@ fastify.register(async function (fastify) {
       const handleMessage = (playerId) => (msg) => {
         try {
           const gameState = JSON.parse(msg);
+        if (gameState.stop)
+            return;
           if (!rooms[roomId].gameState.disconnected) {
             rooms[roomId].gameState = gameState;
           }
           rooms[roomId].gameState.keypressd = gameState.keypressd;
           rooms[roomId].gameState.playerId = playerId;
-
           const updatedState = gameLogic(rooms[roomId].gameState);
           if (updatedState.rightPlayerScore === updatedState.rounds) {
             updatedState.gameEnd = "You Lost";

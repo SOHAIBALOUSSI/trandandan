@@ -38,7 +38,7 @@ class FlowField {
   #width;
   #height;
   #keys;
-  #paddleStat;
+  #gameState;
   #canvasWidth;
   #canvasHeight;
   constructor(ctx, keys) {
@@ -48,7 +48,7 @@ class FlowField {
     this.#canvasHeight = 600;
     this.#ctx = ctx;
     this.#keys = keys;
-    this.#paddleStat = {
+    this.#gameState = {
       paddleLeftY: 240,
       paddelRightY: 240,
       ballX: 450,
@@ -65,53 +65,53 @@ class FlowField {
     this.#ctx.clearRect(0, 0, this.#canvasWidth, this.#canvasHeight);
 
     //paddle left 
-    this.#ctx.fillRect(0, this.#paddleStat.paddleLeftY, this.#width, this.#height);
-    this.#ctx.strokeRect(0, this.#paddleStat.paddleLeftY, this.#width, this.#height);
+    this.#ctx.fillRect(0, this.#gameState.paddleLeftY, this.#width, this.#height);
+    this.#ctx.strokeRect(0, this.#gameState.paddleLeftY, this.#width, this.#height);
 
     //paddle right
-    this.#ctx.fillRect(890, this.#paddleStat.paddelRightY, this.#width, this.#height);
-    this.#ctx.strokeRect(890, this.#paddleStat.paddelRightY, this.#width, this.#height);
+    this.#ctx.fillRect(890, this.#gameState.paddelRightY, this.#width, this.#height);
+    this.#ctx.strokeRect(890, this.#gameState.paddelRightY, this.#width, this.#height);
 
 
     //ball
     this.#ctx.beginPath();
-    this.#ctx.arc(this.#paddleStat.ballX, this.#paddleStat.ballY, 13, 0, Math.PI * 2);
+    this.#ctx.arc(this.#gameState.ballX, this.#gameState.ballY, 13, 0, Math.PI * 2);
     this.#ctx.fill();
     this.#ctx.stroke();
   }
 
   keysFunction() 
   {
-    if (this.#keys["w"] === true && !this.#paddleStat.keypressd.includes("w") && this.#paddleStat.paddleLeftY > 0)
+    if (this.#keys["w"] === true && !this.#gameState.keypressd.includes("w") && this.#gameState.paddleLeftY > 0)
       {
-        this.#paddleStat.keypressd.push("w");
+        this.#gameState.keypressd.push("w");
       }
-      if (this.#keys["s"] === true && !this.#paddleStat.keypressd.includes("s") && this.#paddleStat.paddleLeftY < this.#canvasHeight - this.#height)
+      if (this.#keys["s"] === true && !this.#gameState.keypressd.includes("s") && this.#gameState.paddleLeftY < this.#canvasHeight - this.#height)
       {
-        this.#paddleStat.keypressd.push("s");
+        this.#gameState.keypressd.push("s");
       }
-      if (this.#keys["ArrowUp"] === true && !this.#paddleStat.keypressd.includes("ArrowUp") && this.#paddleStat.paddelRightY > 0)
+      if (this.#keys["ArrowUp"] === true && !this.#gameState.keypressd.includes("ArrowUp") && this.#gameState.paddelRightY > 0)
       {
-        this.#paddleStat.keypressd.push("ArrowUp");
+        this.#gameState.keypressd.push("ArrowUp");
       }
-      if (this.#keys["ArrowDown"] === true && !this.#paddleStat.keypressd.includes("ArrowDown") && this.#paddleStat.paddelRightY < this.#canvasHeight - this.#height)
+      if (this.#keys["ArrowDown"] === true && !this.#gameState.keypressd.includes("ArrowDown") && this.#gameState.paddelRightY < this.#canvasHeight - this.#height)
       {
-        this.#paddleStat.keypressd.push("ArrowDown");
+        this.#gameState.keypressd.push("ArrowDown");
       }
     }
     updateGameState(data) {
-      this.#paddleStat = JSON.parse(data);
-      rightPlayerScore.textContent = this.#paddleStat.rightPlayerScore;
-      leftPlayerScore.textContent = this.#paddleStat.leftPlayerScore;
+      this.#gameState = JSON.parse(data);
+      rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
+      leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
 
-      if (this.#paddleStat.rightPlayerScore === 5 || this.#paddleStat.leftPlayerScore === 5)
+      if (this.#gameState.rightPlayerScore === 5 || this.#gameState.leftPlayerScore === 5)
           socket.close();
 
     }
     ballPositionUpdate()
     {
       if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(this.#paddleStat));
+        socket.send(JSON.stringify(this.#gameState));
       }
     }
 
