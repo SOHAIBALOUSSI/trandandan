@@ -75,7 +75,7 @@ export const tokenSchema = {
     properties: {
         token: {
             type: 'string',
-            pattern: '^[a-zA-Z0-9.]+$'
+            pattern: '^[a-zA-Z0-9\.]+$'
         }
     },
     additionalProperties: false
