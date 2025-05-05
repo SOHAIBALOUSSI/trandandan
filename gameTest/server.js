@@ -281,6 +281,7 @@ fastify.register(async function (fastify) {
             player1.send(JSON.stringify(updatedState));
             updatedState.gameEnd = 'You Won';
             player2.send(JSON.stringify(updatedState));
+            delete rooms[roomId];
             player1.close();
             player2.close();
             return;
@@ -291,6 +292,7 @@ fastify.register(async function (fastify) {
             player1.send(JSON.stringify(updatedState));
             updatedState.gameEnd = 'You Lost';
             player2.send(JSON.stringify(updatedState));
+            delete rooms[roomId];
             player1.close();
             player2.close();
             return;
@@ -316,7 +318,7 @@ fastify.register(async function (fastify) {
   });
 });
 
-fastify.listen({ port: 5000 }, (err) => {
+fastify.listen({ port: 5000, host: '0.0.0.0' }, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);
