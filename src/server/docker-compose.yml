@@ -10,7 +10,18 @@ services:
       - back-end
     ports:
       - "3000:3000"
-    
+  
+  profile:
+    container_name: profile-service
+    build: ./profile-service
+    image: profile-service
+    restart: always
+    env_file:
+      - ./profile-service/.env
+    networks:
+      - back-end
+    ports:
+      - "3001:3001"
 networks:
   back-end:
     name: backend

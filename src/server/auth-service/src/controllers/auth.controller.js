@@ -112,7 +112,7 @@ export async function refreshHandler(request, reply) {
         
         await addToken(this.db, newRefreshToken, payload.id);
 
-        return reply.status(200).send({ accessToken: accessToken, token: newRefreshToken });
+        return reply.status(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });
     } catch (error) {
         return reply.status(500).send({ error: 'Internal server error.' });
     }
