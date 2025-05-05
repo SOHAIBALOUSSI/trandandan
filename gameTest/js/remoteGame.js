@@ -92,14 +92,13 @@ class FlowField {
         this.#paddleStat = JSON.parse(data);
         rightPlayerScore.textContent = this.#paddleStat.rightPlayerScore;
         leftPlayerScore.textContent = this.#paddleStat.leftPlayerScore;
-        if (!this.#paddleStat.winner.length)
-          gameEnd.textContent = this.#paddleStat.gameEnd;
-      } catch (error) {
-        console.log(data);
-        if (data === 'player disconnected')
+        if (this.#paddleStat.gameEnd.length  != 0)
         {
-
+          gameEnd.textContent = this.#paddleStat.gameEnd;
+          socket.close();
         }
+      } catch (error) {
+        // console.log(data);
       }
     }
       

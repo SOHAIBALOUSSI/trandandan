@@ -162,7 +162,6 @@ function gameLogic(gameState) {
         gameState.ballSpeed += 2;
         gameState.hitCount = 0;
       }
-      console.log(gameState.ballSpeed);
     }
     (gameState.ballX -= gameState.ballSpeed), (gameState.flagX = true);
   }
@@ -281,9 +280,6 @@ fastify.register(async function (fastify) {
             player1.send(JSON.stringify(updatedState));
             updatedState.gameEnd = 'You Won';
             player2.send(JSON.stringify(updatedState));
-            delete rooms[roomId];
-            player1.close();
-            player2.close();
             return;
           }
           if (updatedState.leftPlayerScore === updatedState.rounds)
@@ -292,9 +288,6 @@ fastify.register(async function (fastify) {
             player1.send(JSON.stringify(updatedState));
             updatedState.gameEnd = 'You Lost';
             player2.send(JSON.stringify(updatedState));
-            delete rooms[roomId];
-            player1.close();
-            player2.close();
             return;
           }
           player1.send(JSON.stringify(updatedState));
@@ -318,7 +311,7 @@ fastify.register(async function (fastify) {
   });
 });
 
-fastify.listen({ port: 5000, host: '0.0.0.0' }, (err) => {
+fastify.listen({ port: 5000 }, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);
