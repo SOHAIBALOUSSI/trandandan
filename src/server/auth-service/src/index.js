@@ -6,7 +6,7 @@ import { createUserTable } from './migrations/createUserTable.js';
 import { createTokenTable } from './migrations/createTokenTable.js';
 import authRoutes from './routes/auth.routes.js';
 
-const server = fastify();
+const server = fastify({logger: true});
 
 dotenv.config();
 
@@ -20,6 +20,7 @@ await createUserTable(server.db);
 await createTokenTable(server.db);
 
 await server.register(authRoutes, { prefix: '/auth' });
+console.log("server initialization is done...");
 
 const start = async () => {
     try {

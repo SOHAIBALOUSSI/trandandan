@@ -71,9 +71,12 @@ export const loginSchema = {
 
 export const tokenSchema = {
     type: 'object',
+    required: ['token'],
     properties: {
-        type: 'string',
-        pattern: '^[a-zA-Z0-9]+$'
+        token: {
+            type: 'string',
+            pattern: '^[a-zA-Z0-9.]+$'
+        }
     },
     additionalProperties: false
 }

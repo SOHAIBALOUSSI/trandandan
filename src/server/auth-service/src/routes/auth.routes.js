@@ -10,7 +10,7 @@ async function authRoutes(fastify) {
         handler: loginHandler
     });
 
-    fastify.post('/register', { 
+    fastify.post('/register', {
         schema: {
             body: registerSchema
         },

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { findUser, addUser, findUserById } from '../models/auth.userModel.js';
-import { findToken, findTokenById, addToken, revokeToken, findTokenByUid } from '../models/auth.tokenModel.js'; 
+import { findToken, addToken, revokeToken } from '../models/auth.tokenModel.js'; 
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -17,6 +17,7 @@ export async function loginHandler(request, reply) {
         
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
+        
         await addToken(this.db, refreshToken, user.id);
 
         return reply.status(200).send({ accessToken: accessToken, refreshToken: refreshToken });
@@ -37,9 +38,8 @@ export async function registerHandler(request, reply) {
         const hashedPassword = await hash(password, 10);
         const userId = await addUser(this.db, username, email, hashedPassword);
         
-        const payload = { id: userId }
-        const accessToken = this.jwt.signAT(payload);
-        const refreshToken = this.jwt.signRT(payload);
+        const accessToken = this.jwt.signAT({ id: userId });
+        const refreshToken = this.jwt.signRT({ id: userId });
         
         await addToken(this.db, refreshToken, userId);
         
@@ -78,7 +78,7 @@ export async function logoutHandler(request, reply) {
 
 export async function meHandler(request, reply) {
     try {
-        const userId = request.user;
+        const userId = request.user?.id;
         
         const user = await findUserById(this.db, userId);
         if (!user)
@@ -92,11 +92,11 @@ export async function meHandler(request, reply) {
 
 export async function refreshHandler(request, reply) {
     try {
-        const { refreshToken } = request.body;
-        if (!refreshToken)
+        const { token } = request.body;
+        if (!token)
             return reply.status(401).send({ error: 'Refresh token required.' });
         
-        const tokenExist = await findToken(this.db, refreshToken);
+        const tokenExist = await findToken(this.db, token);
         if (!tokenExist)
             return reply.status(401).send({ error: 'Invalid token.' });
         
@@ -105,14 +105,14 @@ export async function refreshHandler(request, reply) {
 
         const payload = await this.jwt.verifyRT(tokenExist.token);
 
-        await revokeToken(this.db, refreshToken);
+        await revokeToken(this.db, token);
         
         const accessToken = this.jwt.signAT({ id: payload.id });
         const newRefreshToken = this.jwt.signRT({ id: payload.id });
         
         await addToken(this.db, newRefreshToken, payload.id);
 
-        return reply.status(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });
+        return reply.status(200).send({ accessToken: accessToken, token: newRefreshToken });
     } catch (error) {
         return reply.status(500).send({ error: 'Internal server error.' });
     }

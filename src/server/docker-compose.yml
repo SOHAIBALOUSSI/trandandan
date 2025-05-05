@@ -1,5 +1,5 @@
 services:
-  authentication:
+  auth:
     container_name: auth-service
     build: ./auth-service
     image: auth-service
