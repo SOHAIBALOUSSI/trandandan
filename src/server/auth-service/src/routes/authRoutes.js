@@ -1,5 +1,5 @@
-import { loginHandler, registerHandler, logoutHandler, meHandler, refreshHandler } from '../controllers/auth.controller.js';
-import { registerSchema, loginSchema, tokenSchema } from '../schemas/auth.schema.js';
+import { loginHandler, registerHandler, logoutHandler, meHandler, refreshHandler } from '../controllers/authController.js';
+import { registerSchema, loginSchema, tokenSchema } from '../schemas/authSchema.js';
 
 
 async function authRoutes(fastify) {

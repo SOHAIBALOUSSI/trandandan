@@ -5,7 +5,7 @@ import { open } from 'sqlite';
 
 async function sqlitePlugin(fastify, options) {
     const db = await open({
-        filename: './auth.db.sqlite',
+        filename: './profile.db.sqlite',
         driver: sqlite3.Database
     });
     fastify.decorate('db', db);

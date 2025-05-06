@@ -9,7 +9,9 @@ export async function createTokenTable(db){
             expires_at DATETIME NOT NULL,
             revoked INTEGER DEFAULT 0,
             user_id INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES user(id))`);
+            FOREIGN KEY (user_id) REFERENCES user(id)
+            )`
+        );
         console.log("Tokens table created.");
     } catch (err) {
         console.error("Error creating table:", err.message);

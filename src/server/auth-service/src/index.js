@@ -4,7 +4,7 @@ import sqlitePlugin from './plugins/sqlite-plugin.js'
 import jwtPlugin from './plugins/jwt-plugin.js'
 import { createUserTable } from './migrations/createUserTable.js';
 import { createTokenTable } from './migrations/createTokenTable.js';
-import authRoutes from './routes/auth.routes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const server = fastify({logger: true});
 
