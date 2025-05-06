@@ -1,4 +1,4 @@
-export const profileSchema = {
+export const createProfileSchema = {
     type: 'object',
     required: ['username'],
     properties: {
@@ -10,3 +10,4 @@ export const profileSchema = {
         }
     }
 }
+

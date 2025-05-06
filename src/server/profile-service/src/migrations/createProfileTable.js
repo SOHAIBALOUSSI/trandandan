@@ -6,10 +6,11 @@ export async function createProfileTable(db){
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             userId INTEGER NOT NULL UNIQUE,
             username TEXT NOT NULL UNIQUE,
-            display_name TEXT DEFAULT '',
+            email TEXT NOT NULL UNIQUE,
             avatar_url TEXT DEFAULT '',
-            bio TEXT DEFAULT '',
             status TEXT DEFAULT 'offline',
+            solde INTEGER DEFAULT 5,
+            gender TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`

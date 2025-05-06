@@ -28,7 +28,7 @@ export async function loginHandler(request, reply) {
 
 export async function registerHandler(request, reply) {
     try {
-        const { email, username, password, confirmPassword } = request.body;
+        const { email, username, password, confirmPassword, gender } = request.body;
         if (password !== confirmPassword)
             return reply.code(400).send({ error: 'Passwords don\'t match.'});
         const userExist = await findUser(this.db, username, email);
@@ -48,14 +48,14 @@ export async function registerHandler(request, reply) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify( { username })
+            body: JSON.stringify( { username, email, gender })
         });
       
         if (!response.ok) {
         const errorText = await response.text()
         console.error('Failed to create profile:', errorText);
         }
-        return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
+        return reply.code(201).send({ accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
         return reply.code(500).send({ err: 'Internal server error.', details: error });
     }

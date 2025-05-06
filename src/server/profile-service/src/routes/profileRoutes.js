@@ -1,11 +1,11 @@
 import { createProfile, getProfile } from "../controllers/profileController.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
-import { profileSchema } from "../schemas/profileSchema.js";
+import { createProfileSchema } from "../schemas/profileSchema.js";
 
 async function profileRoutes(fastify) {
     fastify.post('/register', {
         schema: {
-            body: profileSchema
+            body: createProfileSchema
         },
         preHandler: verifyToken,
         handler: createProfile
@@ -15,6 +15,14 @@ async function profileRoutes(fastify) {
         preHandler: verifyToken,
         handler: getProfile
     })
+
+    // fastify.put('/:id', {
+    //     schema: {
+    //         body: updateProfileSchema
+    //     },
+    //     preHandler: verifyToken,
+    //     handler: updateProfile
+    // })
 }
 
 export default profileRoutes;
