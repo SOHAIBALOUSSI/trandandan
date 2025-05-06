@@ -3,7 +3,8 @@ export async function createProfileTable(db){
     try {
         await db.exec(
             `CREATE TABLE IF NOT EXISTS profile (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            userId INTEGER NOT NULL UNIQUE,
             username TEXT NOT NULL UNIQUE,
             display_name TEXT DEFAULT '',
             avatar_url TEXT DEFAULT '',

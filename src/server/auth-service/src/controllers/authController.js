@@ -22,7 +22,7 @@ export async function loginHandler(request, reply) {
 
         return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.' });
+        return reply.code(500).send({ err: 'Internal server error.', details: error });
     }
 }
 
@@ -46,17 +46,18 @@ export async function registerHandler(request, reply) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Auhtorization': accessToken
+                'Authorization': `Bearer ${accessToken}`
             },
             body: JSON.stringify( { username })
-          });
+        });
       
-          if (!response.ok) {
-            console.error('Failed to create profile:', await response.text());
-          }
+        if (!response.ok) {
+        const errorText = await response.text()
+        console.error('Failed to create profile:', errorText);
+        }
         return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.' });
+        return reply.code(500).send({ err: 'Internal server error.', details: error });
     }
 }
 
@@ -83,7 +84,7 @@ export async function logoutHandler(request, reply) {
         
         return reply.code(200).send({ message: `User logged out.` });
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.' });
+        return reply.code(500).send({ err: 'Internal server error.', details: error });
     }
 }
 
@@ -97,7 +98,7 @@ export async function meHandler(request, reply) {
         
         return reply.code(200).send({ id: user.id, username: user.username, email: user.email });
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.' });
+        return reply.code(500).send({ err: 'Internal server error.', details: error });
     }
 }
 
@@ -125,6 +126,6 @@ export async function refreshHandler(request, reply) {
 
         return reply.code(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.' });
+        return reply.code(500).send({ err: 'Internal server error.', details: error });
     }
 }

@@ -1,11 +1,7 @@
 export const profileSchema = {
     type: 'object',
-    required: ['id', 'username'],
+    required: ['username'],
     properties: {
-        id: {
-            type: 'integer',
-            minimum: 1
-        },
         username: {
             type: 'string',
             minLength: 3,
