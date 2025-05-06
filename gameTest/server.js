@@ -215,8 +215,6 @@ fastify.register(async function (fastify) {
           player.connection = connection;
           rooms[id].gameState.disconnected = true; // reconnnected
           rooms[id].gameState.alive = true;
-          // console.log('site is refreshed')
-          // rooms[id].gameState.restart = false;
           joined = true;
           roomId = id;
           return true;
@@ -248,7 +246,7 @@ fastify.register(async function (fastify) {
           leftPlayerScore: 0,
           rightPlayerScore: 0,
           rounds: 5,
-          ballSpeed: 5,
+          ballSpeed: 3,
           hitCount: 0,
           gameEnd: "",
           restart: false,
@@ -264,20 +262,27 @@ fastify.register(async function (fastify) {
 
       const handleMessage = (playerId) => (msg) => {
         try {
+          // parse the game stat from the client
           const gameState = JSON.parse(msg);
-          // if (!gameState.restart)
-          //   console.log(gameState.restart);
-          // if (gameState.restart)
-          // {
-          //   return;
-            
-          // }
+
+          // stop the game after it ends
+          if (gameState.restart) {
+            delete rooms[roomId];
+            player1.close();
+            player2.close();
+            return ;
+          }
+            // check if the client reconnected so i will not give him the startUp game stat
           if (!rooms[roomId].gameState.disconnected) {
             rooms[roomId].gameState = gameState;
           }
           rooms[roomId].gameState.keypressd = gameState.keypressd;
           rooms[roomId].gameState.playerId = playerId;
+
+          // game logic 
           const updatedState = gameLogic(rooms[roomId].gameState);
+
+          // check score
           if (updatedState.rightPlayerScore === updatedState.rounds) {
             updatedState.gameEnd = "You Lost";
             player1.send(JSON.stringify(updatedState));
@@ -300,16 +305,21 @@ fastify.register(async function (fastify) {
         }
       };
 
+      // socket message event
       player1.on("message", handleMessage(1));
       player2.on("message", handleMessage(2));
 
       player1.on("close", () => {
-        
+        if (!rooms[roomId])
+          return ;
         rooms[roomId].gameState.alive = false;
         setTimeout(() => {
-            if (!rooms[roomId].gameState.alive)
+            if (!rooms[roomId] && !rooms[roomId].gameState.alive)
             {
               player2.send("player 1 disconnected");
+              delete rooms[roomId];
+              player1.close();
+              player2.close();
             }
           }, 5000);
           player1.removeAllListeners();
@@ -317,11 +327,16 @@ fastify.register(async function (fastify) {
       });
 
       player2.on("close", () => {
+        if (!rooms[roomId])
+          return ;
         rooms[roomId].gameState.alive = false;
         setTimeout(() => {
-          if (!rooms[roomId].gameState.alive)
+          if (!rooms[roomId] && !rooms[roomId].gameState.alive)
           {
             player1.send("player 2 disconnected");
+            delete rooms[roomId];
+            player2.close();
+            player1.close();
           }
 
         }, 5000);

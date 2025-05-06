@@ -56,9 +56,6 @@ const socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
           flow.updateGameState(event.data); 
       };
       const flow = new FlowField(ctx, keys);
-      restartButton.addEventListener('click', () => {
-        flow.restart();
-      });
       flow.animate();
   }
 
@@ -81,7 +78,7 @@ class FlowField {
         playerId: 0,
         ballX: 0,
         ballY: 300,
-        ballSpeed: 5,
+        ballSpeed: 3,
         flagX: false,
         flagY: false, 
         paddleLeftY: 240, 
@@ -101,41 +98,24 @@ class FlowField {
         this.#gameState = JSON.parse(data);
         rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
         leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
-        // if (this.#gameState.gameEnd.length != 0) {
-        //   this.#gameState.restart = true;
-        //   gameEnd.textContent = this.#gameState.gameEnd;
-        //   this.#gameState.leftPlayerScore = 0;
-        //   this.#gameState.rightPlayerScore = 0;
-        //   rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
-        //   leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
-        //   this.#gameState.gameEnd = '';
+        if (this.#gameState.gameEnd.length != 0) {
+          this.#gameState.restart = true;
+          gameEnd.textContent = this.#gameState.gameEnd;
+          this.#gameState.leftPlayerScore = 0;
+          this.#gameState.rightPlayerScore = 0;
+          rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
+          leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
+          this.#gameState.gameEnd = '';
           
-        //   setTimeout(() => {
-        //     gameEnd.textContent = ''; // Clear game end message
-        //     gameEnd.innerHTML = ''; // Remove buttons
-        //   }, 3000);
+          setTimeout(() => {
+            gameEnd.textContent = ''; // Clear game end message
+            gameEnd.innerHTML = ''; // Remove buttons
+          }, 3000);
 
-        //   // Wait for user input to restart or exit
-
-
-        //   // exitButton.addEventListener('click', () => {
-        //   //   this.#gameState.restart = false;
-
-        //   // });
-        // }
+        }
       } catch (error) {
-        console.log(data);
+        // console.log(data);
       }
-    }
-    restart()
-    {
-      this.#gameState.restart = false;
-      this.#gameState.ballX = 450; // Reset ball position
-      this.#gameState.ballY = 300;
-      this.#gameState.flagX = false;
-      this.#gameState.flagY = false;
-      this.#gameState.keypressd = [];
-      socket.send(JSON.stringify(this.#gameState));
     }
     #draw() 
     {
