@@ -212,9 +212,11 @@ fastify.register(async function (fastify) {
     for (const [id] of Object.entries(rooms)) {
       rooms[id].players.forEach((player) => {
         if (player.token == token) {
-
           player.connection = connection;
           rooms[id].gameState.disconnected = true; // reconnnected
+          rooms[id].gameState.alive = true;
+          // console.log('site is refreshed')
+          // rooms[id].gameState.restart = false;
           joined = true;
           roomId = id;
           return true;
@@ -249,7 +251,8 @@ fastify.register(async function (fastify) {
           ballSpeed: 5,
           hitCount: 0,
           gameEnd: "",
-          stop: false,
+          restart: false,
+          alive: true
         },
       };
     }
@@ -262,8 +265,13 @@ fastify.register(async function (fastify) {
       const handleMessage = (playerId) => (msg) => {
         try {
           const gameState = JSON.parse(msg);
-        if (gameState.stop)
-            return;
+          // if (!gameState.restart)
+          //   console.log(gameState.restart);
+          // if (gameState.restart)
+          // {
+          //   return;
+            
+          // }
           if (!rooms[roomId].gameState.disconnected) {
             rooms[roomId].gameState = gameState;
           }
@@ -296,14 +304,27 @@ fastify.register(async function (fastify) {
       player2.on("message", handleMessage(2));
 
       player1.on("close", () => {
-        player2.send("player 1 disconnected");
-
-        player1.removeAllListeners();
-        player2.removeAllListeners();
+        
+        rooms[roomId].gameState.alive = false;
+        setTimeout(() => {
+            if (!rooms[roomId].gameState.alive)
+            {
+              player2.send("player 1 disconnected");
+            }
+          }, 5000);
+          player1.removeAllListeners();
+          player2.removeAllListeners();
       });
 
       player2.on("close", () => {
-        player1.send("player 2 disconnected");
+        rooms[roomId].gameState.alive = false;
+        setTimeout(() => {
+          if (!rooms[roomId].gameState.alive)
+          {
+            player1.send("player 2 disconnected");
+          }
+
+        }, 5000);
 
         player1.removeAllListeners();
         player2.removeAllListeners();

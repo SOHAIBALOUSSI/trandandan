@@ -1,8 +1,8 @@
 const rightPlayerScore = document.getElementById('rightScore');
 const leftPlayerScore = document.getElementById('leftScore');
 const gameEnd = document.getElementById('gameEnd');
-const restartButton = document.getElementById('restartButton');
 const exitButton = document.getElementById('exitButton');
+const restartButton = document.getElementById("restartButton");
 
 function generateToken(params) {
   let roomId = "";
@@ -22,41 +22,45 @@ if (test === null)
 
 const socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
 
-window.onload = () => {
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    socket.onopen = () => {
-        console.log('connected');
-    }
-    socket.onmessage = (event) => {
-        console.log('[client] Message from server:', event.data);
-    };
-    socket.onclose = () => {
-      console.log('[client] Disconnected from server');
-      // setTimeout(() => {
-        // const ws = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
-        // ws.onopen = () => {
-        // }
-      // }, 2000);
-    };
-    socket.onerror = (err) => {
-      console.error('[client] WebSocket error:', err);
-    };
+  window.onload = () => {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      socket.onopen = () => {
+          console.log('connected');
+      }
+      socket.onmessage = (event) => {
+          console.log('[client] Message from server:', event.data);
+      };
+      socket.onclose = () => {
+        console.log('[client] Disconnected from server');
+        socket.close();
+        // setTimeout(() => {
+          // const ws = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
+          // ws.onopen = () => {
+          // }
+        // }, 2000);
+      };
+      socket.onerror = (err) => {
+        console.error('[client] WebSocket error:', err);
+      };
 
 
-    let keys = {};
-    window.addEventListener('keydown', (key) => {
-      keys[key.key] = true;
-    })
-    window.addEventListener('keyup', (key) => {
-      keys[key.key] = false;
-    })
-    socket.onmessage = (event) => {
-        flow.updateGameState(event.data); 
-    };
-    const flow = new FlowField(ctx, keys);
-    flow.animate();
-}
+      let keys = {};
+      window.addEventListener('keydown', (key) => {
+        keys[key.key] = true;
+      })
+      window.addEventListener('keyup', (key) => {
+        keys[key.key] = false;
+      })
+      socket.onmessage = (event) => {
+          flow.updateGameState(event.data); 
+      };
+      const flow = new FlowField(ctx, keys);
+      restartButton.addEventListener('click', () => {
+        flow.restart();
+      });
+      flow.animate();
+  }
 
 class FlowField {
     #ctx;
@@ -88,7 +92,8 @@ class FlowField {
         rightPlayerScore: 0,
         winner: '',
         rounds: 5,
-        stop: false,
+        restart: false,
+        alive: true
       };
     }
     updateGameState(data) {
@@ -96,34 +101,42 @@ class FlowField {
         this.#gameState = JSON.parse(data);
         rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
         leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
-        if (this.#gameState.gameEnd.length != 0) {
-          this.#gameState.stop = true;
-          gameEnd.textContent = this.#gameState.gameEnd;
-          this.#gameState.leftPlayerScore = 0;
-          this.#gameState.rightPlayerScore = 0;
-          rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
-          leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
-          this.#gameState.gameEnd = '';
+        // if (this.#gameState.gameEnd.length != 0) {
+        //   this.#gameState.restart = true;
+        //   gameEnd.textContent = this.#gameState.gameEnd;
+        //   this.#gameState.leftPlayerScore = 0;
+        //   this.#gameState.rightPlayerScore = 0;
+        //   rightPlayerScore.textContent = this.#gameState.rightPlayerScore;
+        //   leftPlayerScore.textContent = this.#gameState.leftPlayerScore;
+        //   this.#gameState.gameEnd = '';
           
-          setTimeout(() => {
-            gameEnd.textContent = ''; // Clear game end message
-            gameEnd.innerHTML = ''; // Remove buttons
-          }, 3000);
-          // Wait for user input to restart or exit
-          restartButton.addEventListener('click', () => {
-            this.#gameState.stop = false;
-          });
+        //   setTimeout(() => {
+        //     gameEnd.textContent = ''; // Clear game end message
+        //     gameEnd.innerHTML = ''; // Remove buttons
+        //   }, 3000);
 
-          // exitButton.addEventListener('click', () => {
-          //   this.#gameState.stop = false;
+        //   // Wait for user input to restart or exit
 
-          // });
-        }
+
+        //   // exitButton.addEventListener('click', () => {
+        //   //   this.#gameState.restart = false;
+
+        //   // });
+        // }
       } catch (error) {
-        // console.log(data);
+        console.log(data);
       }
     }
-      
+    restart()
+    {
+      this.#gameState.restart = false;
+      this.#gameState.ballX = 450; // Reset ball position
+      this.#gameState.ballY = 300;
+      this.#gameState.flagX = false;
+      this.#gameState.flagY = false;
+      this.#gameState.keypressd = [];
+      socket.send(JSON.stringify(this.#gameState));
+    }
     #draw() 
     {
       this.#ctx.clearRect(0, 0, this.#canvasWidth, this.#canvasHeight);
