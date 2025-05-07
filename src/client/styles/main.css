@@ -39,6 +39,7 @@
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  font-weight: normal;
 }
 html {
   scroll-behavior: smooth;
@@ -95,29 +96,34 @@ a {
   font-size: 280px;
   color: rgba(170, 183, 184, 0.1);
   position: absolute;
+  z-index: -1;
 }
 @media (max-width: 767px) {
   .light-page > i {
-    font-size: 200px;
+    display: none;
+    font-size: 78em;
+  }
+  .light-page > i:nth-child(1) {
+    display: block;
   }
 }
 @media (max-width: 474px) {
   .light-page > i {
-    font-size: 150px;
+    font-size: 60em;
   }
 }
 .light-page > i:nth-child(1) {
-  top: 10px;
-  left: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .light-page > i:nth-child(2) {
   top: -20px;
   right: 50px;
 }
 .light-page > i:nth-child(3) {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 10px;
+  left: 20px;
 }
 .light-page > i:nth-child(4) {
   bottom: -15px;
@@ -142,11 +148,11 @@ a {
   cursor: pointer;
 }
 .btn-primary i {
-  margin-right: 12px;
+  transform: translateX(-12px);
   transition-duration: var(--tr-duration);
 }
 .btn-primary:hover i {
-  margin-right: 5px;
+  transform: translateX(-5px);
 }
 @media (max-width: 767px) {
   .btn-primary {
@@ -154,7 +160,7 @@ a {
     font-size: var(--paragraph-size-m);
   }
   .btn-primary i {
-    margin-right: 5px;
+    transform: translateX(-5px);
   }
 }
 @media (max-width: 474px) {
@@ -320,6 +326,72 @@ a {
 }
 
 /* End Custom Classes */
+
+/* Start Welcome Section */
+.wlcm-sec p {
+  font-size: var(--paragraph-size-xl);
+  text-transform: lowercase;
+  font-family: var(--body-font);
+  color: var(--pong-primary);
+}
+@media (max-width: 768px) {
+  .wlcm-sec p {
+    font-size: var(--paragraph-size-m);
+  }
+}
+@media (max-width: 474px) {
+  .wlcm-sec p {
+    font-size: var(--paragraph-size-s);
+  }
+}
+.wlcm-sec h1 {
+  font-size: 148px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--pong-primary);
+  line-height: 175px;
+  font-family: var(--heading-font);
+}
+@media (max-width: 768px) {
+  .wlcm-sec h1 {
+    font-size: 122px;
+    line-height: 100px;
+  }
+}
+@media (max-width: 640px) {
+  .wlcm-sec h1 {
+    font-size: 100px;
+    line-height: 80px;
+  }
+}
+@media (max-width: 475px) {
+  .wlcm-sec h1 {
+    font-size: 80px;
+    line-height: 60px;
+  }
+}
+.wlcm-sec h3 {
+  font-size: var(--subheading-size-xl);
+  font-family: var(--body-font);
+  font-weight: bold;
+  color: #7391a1;
+  text-transform: capitalize;
+}
+@media (max-width: 768px) {
+  .wlcm-sec h3 {
+    font-size: var(--subheading-size-m);
+  }
+}
+@media (max-width: 640px) {
+  .wlcm-sec h3 {
+    font-size: var(--subheading-size-s);
+  }
+}
+/* 
+	-- Switch font size to min max function to be responsive
+ */
+
+/* End Welcome Section */
 
 /* Start Media Queries */
 /* sx */
