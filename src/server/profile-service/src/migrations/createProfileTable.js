@@ -10,12 +10,11 @@ export async function createProfileTable(db){
             avatar_url TEXT DEFAULT '',
             status TEXT DEFAULT 'offline',
             solde INTEGER DEFAULT 5,
-            gender TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`
         );
-        console.log("Profile table created.");
+        console.log("Profiles table created.");
     } catch (err) {
         console.error("Error creating table:", err.message);
     }

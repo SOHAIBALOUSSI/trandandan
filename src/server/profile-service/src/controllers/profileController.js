@@ -1,14 +1,14 @@
-import { addProfile, getProfileById } from "../models/profileDAO.js";
+import { addProfile, getProfileById, searchProfile } from "../models/profileDAO.js";
 
 export async function createProfile(request, reply) {
     try {
         const id = request.user?.id;
-        const { username } = request.body;
-        const profileExists = await getProfileById(this.db, id);
+        const { username, email } = request.body;
+        const profileExists = await searchProfile(this.db, id, username, email);
         if (profileExists)
             return reply.code(400).send({ error: 'Profile already exists' });
         
-        await addProfile(this.db, id, username);
+        await addProfile(this.db, id, username, email);
 
         return reply.code(201).send({ message: 'Profile created successfully' })
     } catch (error) {

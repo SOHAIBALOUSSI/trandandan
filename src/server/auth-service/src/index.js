@@ -20,7 +20,7 @@ await createUserTable(server.db);
 await createTokenTable(server.db);
 
 await server.register(authRoutes, { prefix: '/auth' });
-console.log("server initialization is done...");
+console.log("auth service initialization is done...");
 
 const start = async () => {
     try {

@@ -28,7 +28,7 @@ export async function loginHandler(request, reply) {
 
 export async function registerHandler(request, reply) {
     try {
-        const { email, username, password, confirmPassword, gender } = request.body;
+        const { email, username, password, confirmPassword} = request.body;
         if (password !== confirmPassword)
             return reply.code(400).send({ error: 'Passwords don\'t match.'});
         const userExist = await findUser(this.db, username, email);
@@ -48,7 +48,7 @@ export async function registerHandler(request, reply) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify( { username, email, gender })
+            body: JSON.stringify( { username, email })
         });
       
         if (!response.ok) {
@@ -74,11 +74,8 @@ export async function logoutHandler(request, reply) {
             return reply.code(401).send({ error: 'Token required.' });
         
         const tokenExist = await findToken(this.db, token);
-        if (!tokenExist)
-            return reply.code(401).send({ error: 'Invalid token.' });
-
-        if (tokenExist.revoked)
-            return reply.code(403).send({ error: 'Token revoked.' });
+        if (!tokenExist || tokenExist.revoke)
+            return reply.code(401).send({ error: 'Invalid or revoked token.' });
         
         await revokeToken(this.db, token);
         
@@ -109,19 +106,16 @@ export async function refreshHandler(request, reply) {
             return reply.code(401).send({ error: 'Refresh token required.' });
         
         const tokenExist = await findToken(this.db, token);
-        if (!tokenExist)
-            return reply.code(401).send({ error: 'Invalid token.' });
-        
-        if (tokenExist.revoked)
-            return reply.code(403).send({ error: 'Token revoked.' });
+        if (!tokenExist || tokenExist.revoked)
+            return reply.code(401).send({ error: 'Invalid or revoked token.' });
 
         const payload = await this.jwt.verifyRT(tokenExist.token);
 
         await revokeToken(this.db, token);
-        
+
         const accessToken = this.jwt.signAT({ id: payload.id });
         const newRefreshToken = this.jwt.signRT({ id: payload.id });
-        
+
         await addToken(this.db, newRefreshToken, payload.id);
 
         return reply.code(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });

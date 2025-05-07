@@ -13,7 +13,8 @@ await server.register(sqlitePlugin);
 await createProfileTable(server.db);
 
 await server.register(profileRoutes, { prefix: '/profile' });
-console.log("server initialization is done...");
+
+console.log("profile service initialization is done...");
 
 const start = async () => {
     try {

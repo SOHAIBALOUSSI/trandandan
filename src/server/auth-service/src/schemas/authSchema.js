@@ -1,6 +1,6 @@
 export const registerSchema = {
     type: 'object',
-    required: ['username', 'email', 'password', 'confirmPassword', 'gender'],
+    required: ['username', 'email', 'password', 'confirmPassword'],
     properties: {
         username: {
             type: 'string',
@@ -21,10 +21,6 @@ export const registerSchema = {
             type: 'string',
             minLength: 6,
             maxLength: 50
-        },
-        gender: {
-            type: 'string',
-            enum: ['F', 'M']
         }
     },
     additionalProperties: false

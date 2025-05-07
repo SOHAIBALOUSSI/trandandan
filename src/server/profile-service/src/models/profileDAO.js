@@ -4,17 +4,17 @@ export async function getProfileById(db, id) {
     );
 }
 
-export async function getProfile(db, id, username) {
-    return await db.get('SELECT * FROM profile WHERE userId = ? AND username = ?',
-        [id, username]
+export async function searchProfile(db, id, username, email) {
+    return await db.get('SELECT * FROM profile WHERE userId = ? OR username = ? OR email = ?',
+        [id, username, email]
     );
 }
 
 
 
-export async function addProfile(db, id, username) {
-    const result = await db.run('INSERT INTO profile (userId, username) VALUES (?, ?)',
-        [id, username]
+export async function addProfile(db, id, username, email) {
+    const result = await db.run('INSERT INTO profile (userId, username, email) VALUES (?, ?, ?)',
+        [id, username, email]
     );
 
     console.log("Proile inserted with ID:", result.lastID);
