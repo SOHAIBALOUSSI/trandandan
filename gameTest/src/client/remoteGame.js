@@ -28,7 +28,7 @@ window.onload = () => {
         console.log('connected');
     };
     socket.onclose = () => {
-        console.log('[client] Disconnected from server');
+        console.log('match ended');
         socket.close();
     };
     socket.onerror = (err) => {

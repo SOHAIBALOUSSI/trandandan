@@ -212,9 +212,9 @@ fastify.register(async function (fastify) {
     for (const [id] of Object.entries(rooms)) {
       rooms[id].players.forEach((player) => {
         if (player.token == token) {
-          player.connection = connection;
-          rooms[id].gameState.disconnected = true; // reconnnected
           rooms[id].gameState.alive = true;
+          rooms[id].gameState.disconnected = true; // reconnnected
+          player.connection = connection;
           joined = true;
           roomId = id;
           return true;
@@ -314,14 +314,14 @@ fastify.register(async function (fastify) {
           return ;
         rooms[roomId].gameState.alive = false;
         setTimeout(() => {
-            if (!rooms[roomId].gameState.alive)
+            if (rooms[roomId] && !rooms[roomId].gameState.alive)
             {
               player2.send("player 1 disconnected");
               delete rooms[roomId];
               player1.close();
               player2.close();
             }
-          }, 5000);
+          }, 10000);
           player1.removeAllListeners();
           player2.removeAllListeners();
       });
@@ -331,15 +331,14 @@ fastify.register(async function (fastify) {
           return ;
         rooms[roomId].gameState.alive = false;
         setTimeout(() => {
-          if (!rooms[roomId].gameState.alive)
+          if (rooms[roomId] && !rooms[roomId].gameState.alive)
           {
             player1.send("player 2 disconnected");
             delete rooms[roomId];
             player2.close();
             player1.close();
           }
-
-        }, 5000);
+        }, 10000);
 
         player1.removeAllListeners();
         player2.removeAllListeners();

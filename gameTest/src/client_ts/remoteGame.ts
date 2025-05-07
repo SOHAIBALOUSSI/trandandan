@@ -34,7 +34,7 @@ window.onload = () => {
   }
 
   socket.onclose = () => {
-    console.log('[client] Disconnected from server');
+    console.log('match ended');
     socket.close();
   };
 
