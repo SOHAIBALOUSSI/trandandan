@@ -32,7 +32,7 @@ const validateMessage = ajv.compile(messageSchema);
 
 let flagX = false;
 let flagY = false;
-let ballSpeed = 2;
+let ballSpeed = 5;
 let count = 0;
 
 fastify.register(websocket);
