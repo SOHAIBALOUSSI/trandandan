@@ -2,7 +2,7 @@
   "name": "javascript",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server/server.js",
   "type": "module",
   "scripts": {
     "start": "node server",

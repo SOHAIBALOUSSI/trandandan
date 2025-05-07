@@ -21,7 +21,7 @@ if (test === null)
   localStorage.setItem('player', token);
 
 const socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
-
+console.log("reconnected")
   window.onload = () => {
       const canvas = document.getElementById('canvas');
       const ctx = canvas.getContext('2d');
@@ -111,10 +111,12 @@ class FlowField {
             gameEnd.textContent = ''; // Clear game end message
             gameEnd.innerHTML = ''; // Remove buttons
           }, 3000);
-
+          restartButton.addEventListener('click', () => {
+            this.#gameState.restart = false;
+          })
         }
       } catch (error) {
-        // console.log(data);
+        console.log(data);
       }
     }
     #draw() 

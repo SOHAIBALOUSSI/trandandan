@@ -314,7 +314,7 @@ fastify.register(async function (fastify) {
           return ;
         rooms[roomId].gameState.alive = false;
         setTimeout(() => {
-            if (!rooms[roomId] && !rooms[roomId].gameState.alive)
+            if (!rooms[roomId].gameState.alive)
             {
               player2.send("player 1 disconnected");
               delete rooms[roomId];
@@ -331,7 +331,7 @@ fastify.register(async function (fastify) {
           return ;
         rooms[roomId].gameState.alive = false;
         setTimeout(() => {
-          if (!rooms[roomId] && !rooms[roomId].gameState.alive)
+          if (!rooms[roomId].gameState.alive)
           {
             player1.send("player 2 disconnected");
             delete rooms[roomId];
