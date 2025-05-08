@@ -32,7 +32,7 @@ export async function updateProfileById(db, id, updatedFields) {
         }
     }
 
-    const sql = `UPDATE profile SET ${setStatments.join(', ')} WHERE user_id = ?`;
+    const sql = `UPDATE profile SET ${setStatments.join(', ')}, updated_at = DATETIME('now') WHERE userId = ?`;
     values.push(id);
 
     const result = await db.run(sql, values);

@@ -4,6 +4,11 @@ export async function createProfile(request, reply) {
     try {
         const id = request.user?.id;
         const { username, email } = request.body;
+        console.log("Body received from profile:", request.body);
+        this.log.info(`username: ${username}, email: ${email}`);
+        if (!username || !email)
+            return reply.code(400).send({ err: 'Missing required fields' });
+
         const profileExists = await searchProfile(this.db, id, username, email);
         if (profileExists)
             return reply.code(400).send({ error: 'Profile already exists' });

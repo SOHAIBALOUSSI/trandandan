@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { findUser, addUser, findUserById } from '../models/userDAO.js';
+import { findUser, addUser, findUserById, deleteUser } from '../models/userDAO.js';
 import { findToken, addToken, revokeToken } from '../models/tokenDAO.js'; 
 
 const hash = bcrypt.hash;
@@ -29,6 +29,7 @@ export async function loginHandler(request, reply) {
 export async function registerHandler(request, reply) {
     try {
         const { email, username, password, confirmPassword} = request.body;
+        console.log("Body received from auth:", request.body);
         if (password !== confirmPassword)
             return reply.code(400).send({ error: 'Passwords don\'t match.'});
         const userExist = await findUser(this.db, username, email);
@@ -48,12 +49,18 @@ export async function registerHandler(request, reply) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify( { username, email })
+            body: JSON.stringify({
+                username: username,
+                email: email
+            })
+
         });
       
         if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Failed to create profile:', errorText);
+            const errorText = await response.text();
+            await deleteUser(this.db, userId);
+            await revokeToken(this.db, refreshToken);
+            return reply.code(400).send({ err: 'Failed to create profile', error: errorText.err });
         }
         return reply.code(201).send({ accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {

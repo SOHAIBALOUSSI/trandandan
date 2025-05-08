@@ -2,7 +2,7 @@ import fastify from 'fastify';
 import dotenv from 'dotenv';
 import sqlitePlugin from './plugins/sqlite-plugin.js'
 import profileRoutes from './routes/profileRoutes.js';
-import { createProfileTable } from './migrations/createProfileTable.js';
+import { createProfileTable } from './database/createProfileTable.js';
 
 const server = fastify({ logger: true });
 

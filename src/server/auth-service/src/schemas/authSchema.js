@@ -1,4 +1,4 @@
-import { emailValidation, passwordValidation, usernameValidation } from "./validationSchemas"
+import { emailValidation, passwordValidation, usernameValidation } from "./validationSchemas.js"
 
 export const registerSchema = {
     type: 'object',

@@ -2,8 +2,8 @@ import fastify from 'fastify';
 import dotenv from 'dotenv';
 import sqlitePlugin from './plugins/sqlite-plugin.js'
 import jwtPlugin from './plugins/jwt-plugin.js'
-import { createUserTable } from './migrations/createUserTable.js';
-import { createTokenTable } from './migrations/createTokenTable.js';
+import { createUserTable } from './database/createUserTable.js';
+import { createTokenTable } from './database/createTokenTable.js';
 import authRoutes from './routes/authRoutes.js';
 
 const server = fastify({logger: true});
