@@ -2,7 +2,7 @@ const rightPlayerScore = document.getElementById('rightScore') as HTMLElement;
 const leftPlayerScore = document.getElementById('leftScore') as HTMLElement;
 const gameEnd = document.getElementById('gameEnd') as HTMLElement;
 const exitButton = document.getElementById('exitButton') as HTMLButtonElement;
-const restartButton = document.getElementById("restartButton") as HTMLButtonElement;
+const endGameButton = document.getElementById("endGameButton") as HTMLButtonElement;
 
 function generateToken(): string {
   let roomId = "";
@@ -76,7 +76,7 @@ interface GameState {
   rightPlayerScore: number;
   winner: string;
   rounds: number;
-  restart: boolean;
+  endGame: boolean;
   alive: boolean;
   gameEnd?: string;
 }
@@ -108,7 +108,7 @@ class FlowField {
       rightPlayerScore: 0,
       winner: '',
       rounds: 5,
-      restart: false,
+      endGame: false,
       alive: true
     };
   }
@@ -122,7 +122,7 @@ class FlowField {
       leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
 
       if (this.gameState.gameEnd && this.gameState.gameEnd.length !== 0) {
-        this.gameState.restart = true;
+        this.gameState.endGame = true;
         gameEnd.textContent = this.gameState.gameEnd;
         this.gameState.leftPlayerScore = 0;
         this.gameState.rightPlayerScore = 0;
@@ -135,8 +135,8 @@ class FlowField {
           gameEnd.innerHTML = '';
         }, 3000);
 
-        restartButton.addEventListener('click', () => {
-          this.gameState.restart = false;
+        endGameButton.addEventListener('click', () => {
+          this.gameState.endGame = false;
         });
       }
     } catch (error) {

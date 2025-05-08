@@ -249,7 +249,7 @@ fastify.register(async function (fastify) {
           ballSpeed: 3,
           hitCount: 0,
           gameEnd: "",
-          restart: false,
+          endGame: false,
           alive: true
         },
       };
@@ -262,11 +262,17 @@ fastify.register(async function (fastify) {
 
       const handleMessage = (playerId) => (msg) => {
         try {
+
+          if (!rooms[roomId]) {
+            console.error(`Room ${roomId} does not exist.`);
+            
+          }
+
           // parse the game stat from the client
           const gameState = JSON.parse(msg);
 
           // stop the game after it ends
-          if (gameState.restart) {
+          if (gameState.endGame) {
             delete rooms[roomId];
             player1.close();
             player2.close();
@@ -312,18 +318,20 @@ fastify.register(async function (fastify) {
       player1.on("close", () => {
         if (!rooms[roomId])
           return ;
+
         rooms[roomId].gameState.alive = false;
         setTimeout(() => {
             if (rooms[roomId] && !rooms[roomId].gameState.alive)
             {
               player2.send("player 1 disconnected");
+              console.log(rooms[roomId]);
               delete rooms[roomId];
               player1.close();
               player2.close();
             }
-          }, 10000);
-          player1.removeAllListeners();
-          player2.removeAllListeners();
+        }, 30000);
+        player1.removeAllListeners();
+        player2.removeAllListeners();
       });
 
       player2.on("close", () => {
@@ -334,12 +342,12 @@ fastify.register(async function (fastify) {
           if (rooms[roomId] && !rooms[roomId].gameState.alive)
           {
             player1.send("player 2 disconnected");
+            console.log(rooms[roomId]);
             delete rooms[roomId];
             player2.close();
             player1.close();
           }
-        }, 10000);
-
+        }, 30000);
         player1.removeAllListeners();
         player2.removeAllListeners();
       });

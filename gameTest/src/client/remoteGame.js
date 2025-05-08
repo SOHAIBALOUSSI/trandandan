@@ -3,7 +3,7 @@ const rightPlayerScore = document.getElementById('rightScore');
 const leftPlayerScore = document.getElementById('leftScore');
 const gameEnd = document.getElementById('gameEnd');
 const exitButton = document.getElementById('exitButton');
-const restartButton = document.getElementById("restartButton");
+const endGameButton = document.getElementById("endGameButton");
 function generateToken() {
     let roomId = "";
     const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -70,7 +70,7 @@ class FlowField {
             rightPlayerScore: 0,
             winner: '',
             rounds: 5,
-            restart: false,
+            endGame: false,
             alive: true
         };
     }
@@ -81,7 +81,7 @@ class FlowField {
             rightPlayerScore.textContent = String(this.gameState.rightPlayerScore);
             leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
             if (this.gameState.gameEnd && this.gameState.gameEnd.length !== 0) {
-                this.gameState.restart = true;
+                this.gameState.endGame = true;
                 gameEnd.textContent = this.gameState.gameEnd;
                 this.gameState.leftPlayerScore = 0;
                 this.gameState.rightPlayerScore = 0;
@@ -92,8 +92,8 @@ class FlowField {
                     gameEnd.textContent = '';
                     gameEnd.innerHTML = '';
                 }, 3000);
-                restartButton.addEventListener('click', () => {
-                    this.gameState.restart = false;
+                endGameButton.addEventListener('click', () => {
+                    this.gameState.endGame = false;
                 });
             }
         }
