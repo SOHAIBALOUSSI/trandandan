@@ -1,27 +1,13 @@
+import { emailValidation, passwordValidation, usernameValidation } from "./validationSchemas"
+
 export const registerSchema = {
     type: 'object',
     required: ['username', 'email', 'password', 'confirmPassword'],
     properties: {
-        username: {
-            type: 'string',
-            minLength: 3,
-            maxLength: 15,
-            pattern: '^[a-zA-Z0-9_]+$'
-        },
-        email: {
-            type: 'string',
-            format: 'email'
-        },
-        password: {
-            type: 'string',
-            minLength: 6,
-            maxLength: 50
-        },
-        confirmPassword: {
-            type: 'string',
-            minLength: 6,
-            maxLength: 50
-        }
+        username:usernameValidation,
+        email: emailValidation,
+        password: passwordValidation,
+        confirmPassword: passwordValidation,
     },
     additionalProperties: false
 }
@@ -32,17 +18,8 @@ export const loginSchema = {
             type: 'object',
             required: ['username', 'password'],
             properties: {
-                username: {
-                    type: 'string',
-                    minLength: 3,
-                    maxLength: 15,
-                    pattern: '^[a-zA-Z0-9_]+$'
-                },
-                password: {
-                    type: 'string',
-                    minLength: 6,
-                    maxLength: 50
-                }
+                username:usernameValidation,
+                password: passwordValidation
             },
             additionalProperties: false
         },
@@ -50,15 +27,8 @@ export const loginSchema = {
             type: 'object',
             required: ['email', 'password'],
             properties: {
-                email: {
-                    type: 'string',
-                    format: 'email'
-                },
-                password: {
-                    type: 'string',
-                    minLength: 6,
-                    maxLength: 50
-                }
+                email: emailValidation,
+                password: passwordValidation
             },
             additionalProperties: false
         }

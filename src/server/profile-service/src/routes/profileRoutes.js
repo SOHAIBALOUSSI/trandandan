@@ -1,6 +1,6 @@
 import { createProfile, getProfile } from "../controllers/profileController.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
-import { createProfileSchema } from "../schemas/profileSchema.js";
+import { createProfileSchema, updateProfileSchema } from "../schemas/profileSchema.js";
 
 async function profileRoutes(fastify) {
     fastify.post('/register', {
@@ -16,13 +16,13 @@ async function profileRoutes(fastify) {
         handler: getProfile
     })
 
-    // fastify.put('/:id', {
-    //     schema: {
-    //         body: updateProfileSchema
-    //     },
-    //     preHandler: verifyToken,
-    //     handler: updateProfile
-    // })
+    fastify.patch('/:id', {
+        schema: {
+            body: updateProfileSchema
+        },
+        preHandler: verifyToken,
+        handler: updateProfile
+    })
 }
 
 export default profileRoutes;
