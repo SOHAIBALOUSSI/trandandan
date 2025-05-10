@@ -218,6 +218,7 @@ export function remoteGame(connection, req) {
         if (!rooms[roomId])
           return ;
 
+
         rooms[roomId].gameState.alive = false;
         setTimeout(() => {
             if (rooms[roomId] && !rooms[roomId].gameState.alive)

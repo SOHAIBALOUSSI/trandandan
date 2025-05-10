@@ -2,7 +2,7 @@ const rightPlayerScore = document.getElementById('rightScore') as HTMLElement;
 const leftPlayerScore = document.getElementById('leftScore') as HTMLElement;
 const gameEndResult = document.getElementById('gameEndResult') as HTMLElement;
 const exitButton = document.getElementById('exitButton') as HTMLButtonElement;
-const endGameButton = document.getElementById("endGameButton") as HTMLButtonElement;
+const restartButton = document.getElementById("restartButton") as HTMLButtonElement;
 
 function generateToken(): string {
   let roomId = "";
@@ -101,6 +101,7 @@ class FlowField {
   private canvasHeight: number = 600;
   private keys: Record<string, boolean>;
   private gameState: GameState;
+  private animationFrameId: number | null = null;
   
   constructor(ctx: CanvasRenderingContext2D, keys: Record<string, boolean>) {
     this.ctx = ctx;
@@ -128,6 +129,7 @@ class FlowField {
     };
     
   }
+
   sendPlayerData(playerData: object): void {
     fetch('http://localhost:5000/storePlayerData', {
       method: 'POST',
@@ -138,7 +140,7 @@ class FlowField {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('Server response:', data);
+        // console.log('Server response:', data);
       })
       .catch((error) => {
         console.error('Error sending player data:', error);
@@ -153,21 +155,23 @@ class FlowField {
       leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
 
       if (this.gameState.gameEndResult && this.gameState.gameEndResult.length !== 0) {
-        this.gameState.endGame = true;
-        
+        this.gameState.endGame = true;  
         gameEndResult.textContent = "You " + this.gameState.gameEndResult;
-  
+      
         // send this remoteGameRoute to store it to the database
-        const playerData: PlayerData = {
-          playerId: this.gameState.playerId,
-          leftPlayerScore: this.gameState.leftPlayerScore,
-          rightPlayerScore: this.gameState.rightPlayerScore,
-          gameDuration: this.gameState.endTime ,// Duration in seconds
-          gameEndResult: this.gameState.gameEndResult,
-          leftPlayerBallHit: this.gameState.leftPlayerBallHit,
-          rightPlayerBallHit: this.gameState.rightPlayerBallHit,
-        };
-        this.sendPlayerData(playerData);
+        restartButton.addEventListener('click', (event) => {
+          event.preventDefault();
+          const playerData: PlayerData = {
+            playerId: this.gameState.playerId,
+            leftPlayerScore: this.gameState.leftPlayerScore,
+            rightPlayerScore: this.gameState.rightPlayerScore,
+            gameDuration: this.gameState.endTime ,// Duration in seconds
+            gameEndResult: this.gameState.gameEndResult,
+            leftPlayerBallHit: this.gameState.leftPlayerBallHit,
+            rightPlayerBallHit: this.gameState.rightPlayerBallHit,
+          };
+          this.sendPlayerData(playerData);
+        })
       }
     } catch (error) {
       console.log(data);

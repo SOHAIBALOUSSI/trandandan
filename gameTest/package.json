@@ -5,8 +5,8 @@
   "main": "src/server/server.js",
   "type": "module",
   "scripts": {
-    "start": "node server",
-    "dev": "nodemon server"
+    "start": "node src/server/server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +23,8 @@
     "install": "^0.13.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "uuid": "^11.1.0",
     "wss": "^3.3.4"
   },

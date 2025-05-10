@@ -138,6 +138,7 @@ fastify.register(async function (fastify) {
   });
 });
 
+// route to store the game stats
 
 import { savePlayerData } from "./routes/storePlayerData.js";
 fastify.register(async function name(fastify) {
