@@ -39,10 +39,12 @@
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  font-weight: normal;
 }
 html {
   scroll-behavior: smooth;
+}
+body {
+  font-family: var(--body-font);
 }
 ul {
   list-style: none;
@@ -87,29 +89,63 @@ a {
   }
 }
 .light-page .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   height: 100%;
   width: 100%;
   padding: 60px 0;
+  /* position: relative; */
+  /* background-color: #eee; */
 }
-.light-page > i {
-  font-size: 280px;
-  color: rgba(170, 183, 184, 0.1);
+@media (min-width: 640px) {
+  .light-page .container {
+    position: relative;
+  }
+}
+.light-page .container img {
   position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
   z-index: -1;
 }
-@media (max-width: 767px) {
+.light-page > i {
+  color: rgba(170, 183, 184, 0.18);
+  position: absolute;
+  z-index: 0;
+  display: none;
+  font-size: 17em;
+}
+.light-page > i:nth-child(1) {
+  display: block;
+}
+@media (min-width: 640px) {
   .light-page > i {
-    display: none;
-    font-size: 78em;
-  }
-  .light-page > i:nth-child(1) {
-    display: block;
+    font-size: 20em;
   }
 }
-@media (max-width: 474px) {
+@media (min-width: 768px) {
   .light-page > i {
-    font-size: 60em;
+    display: block;
+    font-size: 18em;
+  }
+}
+@media (min-width: 1024px) {
+  .light-page > i {
+    font-size: 20em;
+  }
+}
+@media (min-width: 1280px) {
+  .light-page > i {
+    font-size: 24em;
+  }
+}
+@media (min-width: 1536px) {
+  .light-page > i {
+    font-size: 30em;
   }
 }
 .light-page > i:nth-child(1) {
@@ -118,20 +154,20 @@ a {
   transform: translate(-50%, -50%);
 }
 .light-page > i:nth-child(2) {
-  top: -20px;
-  right: 50px;
+  top: -2%;
+  right: 0;
 }
 .light-page > i:nth-child(3) {
-  top: 10px;
-  left: 20px;
+  top: 5%;
+  left: 6%;
 }
 .light-page > i:nth-child(4) {
-  bottom: -15px;
-  right: -5px;
+  bottom: 1%;
+  right: 1%;
 }
 .light-page > i:nth-child(5) {
-  bottom: 30px;
-  left: 0;
+  bottom: -5%;
+  left: -5%;
 }
 .btn-primary {
   text-align: center;
@@ -324,72 +360,48 @@ a {
     display: none;
   }
 }
-
 /* End Custom Classes */
 
 /* Start Welcome Section */
-.wlcm-sec p {
-  font-size: var(--paragraph-size-xl);
-  text-transform: lowercase;
-  font-family: var(--body-font);
+.wlcm-page {
+  justify-content: center;
+  gap: 3em;
+}
+.wlcm-page .signin-action p {
+  margin-top: 15px;
+  font-size: clamp(1rem, 2.5vw, 1.375rem);
   color: var(--pong-primary);
+  text-transform: capitalize;
 }
-@media (max-width: 768px) {
-  .wlcm-sec p {
-    font-size: var(--paragraph-size-m);
-  }
+.wlcm-page .main-title {
+  width: 100%;
+  max-width: 1200px;
 }
-@media (max-width: 474px) {
-  .wlcm-sec p {
-    font-size: var(--paragraph-size-s);
-  }
-}
-.wlcm-sec h1 {
-  font-size: 148px;
+.wlcm-page .main-title h1 {
+  font-size: clamp(2.5rem, 10vw, 9.25rem);
+  line-height: 1.2;
   font-weight: bold;
   text-transform: uppercase;
   color: var(--pong-primary);
-  line-height: 175px;
   font-family: var(--heading-font);
 }
-@media (max-width: 768px) {
-  .wlcm-sec h1 {
-    font-size: 122px;
-    line-height: 100px;
-  }
-}
-@media (max-width: 640px) {
-  .wlcm-sec h1 {
-    font-size: 100px;
-    line-height: 80px;
-  }
-}
-@media (max-width: 475px) {
-  .wlcm-sec h1 {
-    font-size: 80px;
-    line-height: 60px;
-  }
-}
-.wlcm-sec h3 {
-  font-size: var(--subheading-size-xl);
-  font-family: var(--body-font);
+.wlcm-page .main-title h3 {
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-family: var(--body-font, sans-serif);
   font-weight: bold;
   color: #7391a1;
   text-transform: capitalize;
+  margin-top: 1rem;
 }
-@media (max-width: 768px) {
-  .wlcm-sec h3 {
-    font-size: var(--subheading-size-m);
+@media (max-width: 375px) {
+  .wlcm-page .main-title h1 {
+    font-size: 2.3rem;
+    line-height: 1.1;
+  }
+  .wlcm-page .main-title h3 {
+    font-size: 1rem;
   }
 }
-@media (max-width: 640px) {
-  .wlcm-sec h3 {
-    font-size: var(--subheading-size-s);
-  }
-}
-/* 
-	-- Switch font size to min max function to be responsive
- */
 
 /* End Welcome Section */
 

@@ -1,9 +1,8 @@
 export function renderSignUp(container: HTMLElement): void {
-	const section = document.createElement("section");
-	section.className = "p-8 text-center";
-	section.innerHTML = `
+  const section = document.createElement("section");
+  section.className = "light-page";
+  section.innerHTML = `
 
 	`;
-	container.appendChild(section);
-  }
-  
+  container.appendChild(section);
+}

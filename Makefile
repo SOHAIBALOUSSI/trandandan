@@ -1,8 +1,8 @@
-all:
-	@docker compose up --build -d
+build:
+	@docker build -t pong-client src/client/
 
-down:
-	@docker compose down
+run:
+	@docker run --rm -p 8080:3000 pong-client
 
 fclean:
 	@docker system prune -af
