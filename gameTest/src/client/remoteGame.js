@@ -1,7 +1,7 @@
 "use strict";
 const rightPlayerScore = document.getElementById('rightScore');
 const leftPlayerScore = document.getElementById('leftScore');
-const gameEnd = document.getElementById('gameEnd');
+const gameEndResult = document.getElementById('gameEndResult');
 const exitButton = document.getElementById('exitButton');
 const endGameButton = document.getElementById("endGameButton");
 function generateToken() {
@@ -68,11 +68,30 @@ class FlowField {
             disconnected: false,
             leftPlayerScore: 0,
             rightPlayerScore: 0,
-            winner: '',
             rounds: 5,
             endGame: false,
-            alive: true
+            alive: true,
+            leftPlayerBallHit: 0,
+            rightPlayerBallHit: 0,
+            startTime: Date.now(),
+            endTime: 0
         };
+    }
+    sendPlayerData(playerData) {
+        fetch('http://localhost:5000/storePlayerData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(playerData),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+            console.log('Server response:', data);
+        })
+            .catch((error) => {
+            console.error('Error sending player data:', error);
+        });
     }
     updateGameState(data) {
         try {
@@ -80,21 +99,20 @@ class FlowField {
             this.gameState = parsedData;
             rightPlayerScore.textContent = String(this.gameState.rightPlayerScore);
             leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
-            if (this.gameState.gameEnd && this.gameState.gameEnd.length !== 0) {
+            if (this.gameState.gameEndResult && this.gameState.gameEndResult.length !== 0) {
                 this.gameState.endGame = true;
-                gameEnd.textContent = this.gameState.gameEnd;
-                this.gameState.leftPlayerScore = 0;
-                this.gameState.rightPlayerScore = 0;
-                rightPlayerScore.textContent = '0';
-                leftPlayerScore.textContent = '0';
-                this.gameState.gameEnd = '';
-                setTimeout(() => {
-                    gameEnd.textContent = '';
-                    gameEnd.innerHTML = '';
-                }, 3000);
-                endGameButton.addEventListener('click', () => {
-                    this.gameState.endGame = false;
-                });
+                gameEndResult.textContent = "You " + this.gameState.gameEndResult;
+                // send this remoteGameRoute to store it to the database
+                const playerData = {
+                    playerId: this.gameState.playerId,
+                    leftPlayerScore: this.gameState.leftPlayerScore,
+                    rightPlayerScore: this.gameState.rightPlayerScore,
+                    gameDuration: this.gameState.endTime, // Duration in seconds
+                    gameEndResult: this.gameState.gameEndResult,
+                    leftPlayerBallHit: this.gameState.leftPlayerBallHit,
+                    rightPlayerBallHit: this.gameState.rightPlayerBallHit,
+                };
+                this.sendPlayerData(playerData);
             }
         }
         catch (error) {
