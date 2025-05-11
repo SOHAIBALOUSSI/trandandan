@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/server/server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon --watch src --ignore src/db/intro.db"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +29,7 @@
     "wss": "^3.3.4"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "nodemon": "^3.1.10"
   }
 }
