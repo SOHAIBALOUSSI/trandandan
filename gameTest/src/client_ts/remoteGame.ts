@@ -154,6 +154,7 @@ class FlowField {
         console.error("Error sending player data:", error);
       });
   }
+
   updateGameState(data: string): void {
     try {
       const parsedData: GameState = JSON.parse(data);
@@ -185,10 +186,10 @@ class FlowField {
           rightPlayerBallHit: this.gameState.rightPlayerBallHit,
         };
         if (this.gameState.playerId === 0) {
-          // this.sendPlayerData(playerData);
+          this.sendPlayerData(playerData);
           console.log(playerData);
         } else {
-          // this.sendPlayerData(playerData);
+          this.sendPlayerData(playerData);
           console.log(playerData);
         }
         restartButton.addEventListener("click", () => {

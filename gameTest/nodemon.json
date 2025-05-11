@@ -1,0 +1,5 @@
+{
+    "watch": ["src"],
+    "ignore": ["/home/ousabbar/Desktop/trandenden/gameTest/src/server/routes/storePlayerData.js"],
+    "ext": "js,json"
+  }

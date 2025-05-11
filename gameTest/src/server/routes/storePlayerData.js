@@ -1,37 +1,55 @@
-import Database from 'better-sqlite3';
-
-const db = new Database('/home/ousabbar/Desktop/trandenden/gameTest/src/db/intro.db');
 
 
 
-export function savePlayerData(req, reply) {
+
+export function savePlayerData(req, reply, db) {
   try {
     const data = req.body;
-    console.log(data);
-    // db.prepare(`
-    //   CREATE TABLE IF NOT EXISTS  (
-    //     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    //     user_name VARCHAR(100) NOT NULL,
-    //     match_id VARCHAR(100) NOT NULL,
-    //     player_id INTEGER NOT NULL,
-    //     left_player_score INTEGER NOT NULL,
-    //     right_player_score INTEGER NOT NULL,
-    //     game_duration INTEGER NOT NULL,
-    //     game_end_result VARCHAR(100) NOT NULL,
-    //     left_player_ball_hit INTEGER NOT NULL,
-    //     right_player_ball_hit INTEGER NOT NULL,
-    //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    //   )
-    //   `).run();
-    //   try {
-    //     db.prepare('INSERT INTO users (name) VALUES (?)').run('John');
-    //   } catch (error) {
-    //     console.error('Error inserting data into the database:', error);
-    //   }
+    // console.log(data);
+    db.prepare(`
+      CREATE TABLE IF NOT EXISTS games (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_name VARCHAR(100) NOT NULL,
+        match_id VARCHAR(100) NOT NULL,
+        player_id INTEGER NOT NULL,
+        left_player_score INTEGER NOT NULL,
+        right_player_score INTEGER NOT NULL,
+        game_duration INTEGER NOT NULL,
+        game_end_result VARCHAR(100) NOT NULL,
+        left_player_ball_hit INTEGER NOT NULL,
+        right_player_ball_hit INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
 
-    // const users = db.prepare('SELECT * FROM users').all();
-    // console.log(users);
-    return reply.status(200).send(data);
+      db.prepare(`
+        INSERT INTO games (
+          user_name,
+          match_id,
+          player_id,
+          left_player_score,
+          right_player_score,
+          game_duration,
+          game_end_result,
+          left_player_ball_hit,
+          right_player_ball_hit
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        data.userName,
+        data.matchId,
+        data.playerId,
+        data.leftPlayerScore,
+        data.rightPlayerScore,
+        data.gameDuration,
+        data.gameEndResult,
+        data.leftPlayerBallHit,
+        data.rightPlayerBallHit
+      );
+
+    // const games = db.prepare('SELECT * FROM games').all();
+    // console.log(games);
+    // console.log('--------------')
+    return reply.status(200);
   } catch (error) {
     return reply.status(500).send({ error: 'Server error' });
   }

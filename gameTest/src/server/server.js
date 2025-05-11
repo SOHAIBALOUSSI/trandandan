@@ -12,6 +12,8 @@ const ajv = new Ajv();
 
 fastify.register(cors, {
   origin: "*", // Allow all origins
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allow specific HTTP methods
+  allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
 });
 
 
@@ -141,9 +143,12 @@ fastify.register(async function (fastify) {
 // route to store the game stats
 
 import { savePlayerData } from "./routes/storePlayerData.js";
+import Database from 'better-sqlite3';
+
+const db = new Database('/home/ousabbar/Desktop/trandenden/gameTest/db/.gameData.db');
 fastify.register(async function name(fastify) {
   fastify.post('/storePlayerData', (req, reply) => {
-    return savePlayerData(req, reply);
+    return savePlayerData(req, reply, db);
   })  
 })
 
