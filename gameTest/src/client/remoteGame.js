@@ -4,6 +4,8 @@ const leftPlayerScore = document.getElementById('leftScore');
 const gameEndResult = document.getElementById('gameEndResult');
 const exitButton = document.getElementById('exitButton');
 const restartButton = document.getElementById("restartButton");
+restartButton.style.display = 'none';
+exitButton.style.display = 'none';
 function generateToken() {
     let roomId = "";
     const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -19,7 +21,7 @@ if (test === null) {
     localStorage.setItem('player', token);
     test = token;
 }
-const socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
+let socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
 console.log("reconnected");
 window.onload = () => {
     const canvas = document.getElementById('canvas');
@@ -53,10 +55,11 @@ class FlowField {
         this.height = 150;
         this.canvasWidth = 900;
         this.canvasHeight = 600;
-        this.animationFrameId = null;
+        this.games = [];
         this.ctx = ctx;
         this.keys = keys;
         this.gameState = {
+            matchId: '',
             playerId: 0,
             ballX: 0,
             ballY: 300,
@@ -103,19 +106,78 @@ class FlowField {
             if (this.gameState.gameEndResult && this.gameState.gameEndResult.length !== 0) {
                 this.gameState.endGame = true;
                 gameEndResult.textContent = "You " + this.gameState.gameEndResult;
+                restartButton.style.display = 'block';
+                exitButton.style.display = 'block';
+                this.games.push(this.gameState.matchId);
                 // send this remoteGameRoute to store it to the database
-                restartButton.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const playerData = {
-                        playerId: this.gameState.playerId,
-                        leftPlayerScore: this.gameState.leftPlayerScore,
-                        rightPlayerScore: this.gameState.rightPlayerScore,
-                        gameDuration: this.gameState.endTime, // Duration in seconds
-                        gameEndResult: this.gameState.gameEndResult,
-                        leftPlayerBallHit: this.gameState.leftPlayerBallHit,
-                        rightPlayerBallHit: this.gameState.rightPlayerBallHit,
+                const handleExitClick = () => {
+                    this.games.forEach((matchId) => {
+                        if (this.gameState.playerId === 0)
+                            console.log(matchId);
+                        else
+                            console.log(matchId);
+                        // const playerData: PlayerData = {
+                        //   playerId: this.gameState.playerId,
+                        //   leftPlayerScore: this.gameState.leftPlayerScore,
+                        //   rightPlayerScore: this.gameState.rightPlayerScore,
+                        //   gameDuration: this.gameState.endTime ,// Duration in seconds
+                        //   gameEndResult: this.gameState.gameEndResult,
+                        //   leftPlayerBallHit: this.gameState.leftPlayerBallHit,
+                        //   rightPlayerBallHit: this.gameState.rightPlayerBallHit,
+                        // };
+                        // this.sendPlayerData(playerData);
+                        // location.href = '../resources/home.html';
+                    });
+                    // Additional logic for the exit button
+                };
+                exitButton.addEventListener('click', handleExitClick);
+                restartButton.addEventListener('click', () => {
+                    restartButton.style.display = 'none';
+                    exitButton.style.display = 'none';
+                    // Remove the exit button event listener
+                    exitButton.removeEventListener('click', handleExitClick);
+                    // Reset the game state
+                    this.gameState = {
+                        matchId: '',
+                        playerId: 0,
+                        ballX: 0,
+                        ballY: 300,
+                        ballSpeed: 3,
+                        flagX: false,
+                        flagY: false,
+                        paddleLeftY: 240,
+                        paddelRightY: 240,
+                        keypressd: [],
+                        disconnected: false,
+                        leftPlayerScore: 0,
+                        rightPlayerScore: 0,
+                        rounds: 5,
+                        endGame: false,
+                        alive: true,
+                        leftPlayerBallHit: 0,
+                        rightPlayerBallHit: 0,
+                        startTime: Date.now(),
+                        endTime: 0,
                     };
-                    this.sendPlayerData(playerData);
+                    // Reconnect the WebSocket if it is closed
+                    if (socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
+                        const newSocket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
+                        newSocket.onopen = () => {
+                            console.log('WebSocket reconnected');
+                            newSocket.send(JSON.stringify(this.gameState)); // Send the reset game state
+                        };
+                        newSocket.onmessage = (event) => {
+                            this.updateGameState(event.data);
+                        };
+                        newSocket.onerror = (err) => {
+                            console.error('[client] WebSocket error:', err);
+                        };
+                        newSocket.onclose = () => {
+                            console.log('WebSocket closed');
+                        };
+                        // Replace the old socket with the new one
+                        socket = newSocket;
+                    }
                 });
             }
         }

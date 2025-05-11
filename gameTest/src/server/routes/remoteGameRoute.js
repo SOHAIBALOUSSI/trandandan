@@ -119,9 +119,11 @@ export function remoteGame(connection, req) {
 
     if (!joined) {
       roomId = generateNewRoomId();
+      console.log("matchId: ", roomId);
       rooms[roomId] = {
         players: [{ token: token, connection: connection }],
         gameState: {
+          matchId: '',
           playerId: 1,
           ballX: 0,
           ballY: 0,
@@ -172,7 +174,7 @@ export function remoteGame(connection, req) {
           }
           rooms[roomId].gameState.keypressd = gameState.keypressd;
           rooms[roomId].gameState.playerId = playerId;
-
+          rooms[roomId].gameState.matchId = roomId;
           // game logic 
           const updatedState = gameLogic(rooms[roomId].gameState);
 
