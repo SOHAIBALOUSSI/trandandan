@@ -26,7 +26,12 @@ if (test === null) {
   localStorage.setItem("player", token);
   test = token;
 }
-let userName = generateToken();
+
+let userName = localStorage.getItem("userName") || generateToken();
+if (!localStorage.getItem("userName")) {
+  localStorage.setItem("userName", userName);
+}
+
 let socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
 console.log("reconnected");
 
@@ -109,7 +114,6 @@ class FlowField {
   private canvasHeight: number = 600;
   private keys: Record<string, boolean>;
   private gameState: GameState;
-  private games: PlayerData[] = [];
 
   constructor(ctx: CanvasRenderingContext2D, keys: Record<string, boolean>) {
     this.ctx = ctx;
@@ -167,6 +171,8 @@ class FlowField {
         this.gameState.gameEndResult &&
         this.gameState.gameEndResult.length !== 0
       ) {
+
+
         // set a flag that to tell server that the game ended
         this.gameState.endGame = true;
 

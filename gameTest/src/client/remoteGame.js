@@ -21,7 +21,10 @@ if (test === null) {
     localStorage.setItem("player", token);
     test = token;
 }
-let userName = generateToken();
+let userName = localStorage.getItem("userName") || generateToken();
+if (!localStorage.getItem("userName")) {
+    localStorage.setItem("userName", userName);
+}
 let socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
 console.log("reconnected");
 window.onload = () => {
@@ -56,7 +59,6 @@ class FlowField {
         this.height = 150;
         this.canvasWidth = 900;
         this.canvasHeight = 600;
-        this.games = [];
         this.ctx = ctx;
         this.keys = keys;
         this.gameState = {
