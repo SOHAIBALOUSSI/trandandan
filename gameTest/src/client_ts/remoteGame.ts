@@ -81,7 +81,7 @@ interface GameState {
   flagY: boolean;
   paddleLeftY: number;
   paddelRightY: number;
-  keypressd: string[];
+  keypressd: string;
   disconnected: boolean;
   leftPlayerScore: number;
   rightPlayerScore: number;
@@ -128,7 +128,7 @@ class FlowField {
       flagY: false,
       paddleLeftY: 240,
       paddelRightY: 240,
-      keypressd: [],
+      keypressd: "",
       disconnected: false,
       leftPlayerScore: 0,
       rightPlayerScore: 0,
@@ -214,7 +214,7 @@ class FlowField {
             flagY: false,
             paddleLeftY: 240,
             paddelRightY: 240,
-            keypressd: [],
+            keypressd: "",
             disconnected: false,
             leftPlayerScore: 0,
             rightPlayerScore: 0,
@@ -297,10 +297,11 @@ class FlowField {
 
   private keysFunction(): void {
     if (this.keys["w"]) {
-      this.gameState.keypressd.push("w");
-    }
-    if (this.keys["s"]) {
-      this.gameState.keypressd.push("s");
+      this.gameState.keypressd = "w";
+    } else if (this.keys["s"]) {
+      this.gameState.keypressd = "s";
+    } else {
+      this.gameState.keypressd = "";
     }
   }
 

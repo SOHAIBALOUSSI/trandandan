@@ -1,32 +1,32 @@
 function gameLogic(gameState) {
   let step = 8;
   if (
-    gameState.keypressd[0] === "w" &&
+    gameState.keypressd === "w" &&
     gameState.playerId === 1 &&
     gameState.paddleLeftY > 0
   )
     gameState.paddleLeftY -= step;
   if (
-    gameState.keypressd[0] === "s" &&
+    gameState.keypressd === "s" &&
     gameState.playerId === 1 &&
     gameState.paddleLeftY < 600 - 150
   )
     gameState.paddleLeftY += step;
 
   if (
-    gameState.keypressd[0] === "w" &&
+    gameState.keypressd === "w" &&
     gameState.playerId === 2 &&
     gameState.paddelRightY > 0
   )
     gameState.paddelRightY -= step;
   if (
-    gameState.keypressd[0] === "s" &&
+    gameState.keypressd === "s" &&
     gameState.playerId === 2 &&
     gameState.paddelRightY < 600 - 150
   )
     gameState.paddelRightY += step;
 
-  gameState.keypressd = [];
+  gameState.keypressd = "";
 
   if (
     gameState.flagX ||
@@ -41,7 +41,7 @@ function gameLogic(gameState) {
     ) {
       gameState.hitCount++;
       if (gameState.hitCount === 2) {
-        gameState.ballSpeed += 2;
+        gameState.ballSpeed += 1;
         gameState.hitCount = 0;
       }
       gameState.rightPlayerBallHit++;

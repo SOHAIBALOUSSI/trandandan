@@ -71,7 +71,7 @@ class FlowField {
             flagY: false,
             paddleLeftY: 240,
             paddelRightY: 240,
-            keypressd: [],
+            keypressd: "",
             disconnected: false,
             leftPlayerScore: 0,
             rightPlayerScore: 0,
@@ -146,7 +146,7 @@ class FlowField {
                         flagY: false,
                         paddleLeftY: 240,
                         paddelRightY: 240,
-                        keypressd: [],
+                        keypressd: "",
                         disconnected: false,
                         leftPlayerScore: 0,
                         rightPlayerScore: 0,
@@ -201,10 +201,13 @@ class FlowField {
     }
     keysFunction() {
         if (this.keys["w"]) {
-            this.gameState.keypressd.push("w");
+            this.gameState.keypressd = "w";
         }
-        if (this.keys["s"]) {
-            this.gameState.keypressd.push("s");
+        else if (this.keys["s"]) {
+            this.gameState.keypressd = "s";
+        }
+        else {
+            this.gameState.keypressd = "";
         }
     }
     ballPositionUpdate() {
