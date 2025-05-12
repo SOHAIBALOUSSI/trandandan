@@ -2,13 +2,8 @@ export function renderWelcome(container: HTMLElement): void {
   const section = document.createElement("section");
   section.className = "light-page";
   section.innerHTML = `
-        <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-        <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-        <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-        <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-        <i class="fa-solid fa-table-tennis-paddle-ball"></i>
         <div class="container wlcm-page">
-          <img src="assets/bg.jpg" alt="" />
+          <img src="assets/bg.jpg" alt="Background illustration" />
           <div class="signin-action">
             <button class="btn-primary">
               <i class="fa-solid fa-ticket"></i>
@@ -17,9 +12,13 @@ export function renderWelcome(container: HTMLElement): void {
             <p>“Take your first step into the court”</p>
           </div>
           <div class="main-title">
-            <h1>welcome to the bhv ping pong club</h1>
-            <h3>play like it’s 1901. compete like a champion.</h3>
+            <h1>Welcome to the bhv ping pong club</h1>
+            <h3>Play like it’s 1901. Compete like a champion.</h3>
           </div>
+          <footer>
+            Est. in Spirit — Reviving the Golden Age of the Game. © 2025 BHV
+            Club
+          </footer>
         </div>
 	`;
   container.appendChild(section);
