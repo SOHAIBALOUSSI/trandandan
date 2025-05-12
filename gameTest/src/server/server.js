@@ -3,20 +3,16 @@
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import Ajv from "ajv";
-import cors from "@fastify/cors"; 
-
+import cors from "@fastify/cors";
 
 const fastify = Fastify();
 const ajv = new Ajv();
-
 
 fastify.register(cors, {
   origin: "*", // Allow all origins
   methods: ["GET", "POST", "PUT", "DELETE"], // Allow specific HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
 });
-
-
 
 // local game
 const messageSchema = {
@@ -126,10 +122,6 @@ fastify.register(async function (fastify) {
   });
 });
 
-//-------------------------------- remote games
-
-
-
 
 
 // remote games route
@@ -141,16 +133,25 @@ fastify.register(async function (fastify) {
 });
 
 // route to store the game stats
-
+import sqlite3 from "sqlite3";
 import { savePlayerData } from "./routes/storePlayerData.js";
-import Database from 'better-sqlite3';
 
-const db = new Database('/home/ousabbar/Desktop/trandenden/gameTest/db/.gameData.db');
+const db = new sqlite3.Database(
+  "/home/ousabbar/Desktop/trandenden/gameTest/db/.gameData.db",
+  (err) => {
+    if (err) {
+      console.error("Error connecting to the database:", err.message);
+    } else {
+      console.log("Connected to the SQLite database.");
+    }
+  }
+);
+
 fastify.register(async function name(fastify) {
-  fastify.post('/storePlayerData', (req, reply) => {
-    return savePlayerData(req, reply, db);
-  })  
-})
+  fastify.post("/storePlayerData", (req, reply) => {
+    savePlayerData(req, reply, db);
+  });
+});
 
 fastify.listen({ port: 5000 }, (err) => {
   if (err) {
