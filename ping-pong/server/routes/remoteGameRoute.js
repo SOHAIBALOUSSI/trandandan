@@ -1,0 +1,251 @@
+function gameLogic(gameState) {
+  let step = 8;
+  if (
+    gameState.keypressd === "w" &&
+    gameState.playerId === 1 &&
+    gameState.paddleLeftY > 0
+  )
+    gameState.paddleLeftY -= step;
+  if (
+    gameState.keypressd === "s" &&
+    gameState.playerId === 1 &&
+    gameState.paddleLeftY < 600 - 150
+  )
+    gameState.paddleLeftY += step;
+
+  if (
+    gameState.keypressd === "w" &&
+    gameState.playerId === 2 &&
+    gameState.paddelRightY > 0
+  )
+    gameState.paddelRightY -= step;
+  if (
+    gameState.keypressd === "s" &&
+    gameState.playerId === 2 &&
+    gameState.paddelRightY < 600 - 150
+  )
+    gameState.paddelRightY += step;
+
+  gameState.keypressd = "";
+
+  if (
+    gameState.flagX ||
+    (gameState.ballX >= 890 &&
+      gameState.ballY >= gameState.paddelRightY &&
+      gameState.ballY <= gameState.paddelRightY + 150)
+  ) {
+    if (
+      gameState.ballX >= 890 &&
+      gameState.ballY >= gameState.paddelRightY &&
+      gameState.ballY <= gameState.paddelRightY + 150
+    ) {
+      gameState.hitCount++;
+      if (gameState.hitCount === 2) {
+        gameState.ballSpeed += 1;
+        gameState.hitCount = 0;
+      }
+      gameState.rightPlayerBallHit++;
+    }
+    (gameState.ballX -= gameState.ballSpeed), (gameState.flagX = true);
+  }
+  if (
+    !gameState.flagX ||
+    (gameState.ballX <= 0 &&
+      gameState.ballY >= gameState.paddleLeftY &&
+      gameState.ballY <= gameState.paddleLeftY + 150)
+  ) {
+    if (
+      gameState.ballX <= 0 &&
+      gameState.ballY >= gameState.paddleLeftY &&
+      gameState.ballY <= gameState.paddleLeftY + 150
+    )
+      gameState.leftPlayerBallHit++;
+    (gameState.ballX += gameState.ballSpeed), (gameState.flagX = false);
+  }
+
+  if (gameState.ballY >= 600 || gameState.flagY)
+    (gameState.ballY -= gameState.ballSpeed), (gameState.flagY = true);
+  if (gameState.ballY <= 0 || !gameState.flagY)
+    (gameState.ballY += gameState.ballSpeed), (gameState.flagY = false);
+
+  if (gameState.ballX > 900 || gameState.ballX <= 0) {
+    if (gameState.ballX > 900) gameState.leftPlayerScore += 1;
+    if (gameState.ballX <= 0) gameState.rightPlayerScore += 1;
+
+    gameState.paddleLeftY = 240;
+    gameState.paddelRightY = 240;
+    gameState.ballX = 900 / 2;
+    gameState.ballY = 300;
+    gameState.ballSpeed = 3;
+  }
+  return gameState;
+}
+
+const rooms = {};
+
+function generateNewRoomId(params) {
+  let roomId = "";
+
+  const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (let index = 0; index < 12; index++) {
+    roomId += stringOfChar[Math.floor(Math.random() * stringOfChar.length)];
+  }
+  return roomId;
+}
+export function remoteGame(connection, req) {
+  let roomId;
+  const token = req.query.token;
+  let joined = false;
+
+  for (const [id] of Object.entries(rooms)) {
+    rooms[id].players.forEach((player) => {
+      if (player.token == token) {
+        rooms[id].gameState.alive = true;
+        rooms[id].gameState.disconnected = true; // reconnnected
+        player.connection = connection;
+        joined = true;
+        roomId = id;
+        return true;
+      }
+    });
+
+    if (rooms[id].players.length < 2 && !joined) {
+      rooms[id].players.push({ token: token, connection: connection });
+      joined = true;
+      roomId = id;
+      break;
+    }
+  }
+
+  if (!joined) {
+    roomId = generateNewRoomId();
+    console.log("matchId: ", roomId);
+    rooms[roomId] = {
+      players: [{ token: token, connection: connection }],
+      gameState: {
+        matchId: "",
+        playerId: 1,
+        ballX: 0,
+        ballY: 0,
+        flagX: false,
+        flagY: false,
+        paddleLeftY: 240,
+        paddelRightY: 240,
+        keypressd: [],
+        disconnected: false,
+        leftPlayerScore: 0,
+        rightPlayerScore: 0,
+        rounds: 5,
+        ballSpeed: 3,
+        hitCount: 0,
+        gameEndResult: "",
+        endGame: false,
+        alive: true,
+        leftPlayerBallHit: 0,
+        rightPlayerBallHit: 0,
+        startTime: Date.now(),
+        endTime: 0,
+      },
+    };
+  }
+  if (rooms[roomId].players.length === 2) {
+    const [
+      { toke1: token1, connection: player1 },
+      { token2: token2, connection: player2 },
+    ] = rooms[roomId].players;
+
+    rooms[roomId].gameState.startTime = Date.now();
+
+    const handleMessage = (playerId) => (msg) => {
+      try {
+        // parse the game stat from the client
+        const gameState = JSON.parse(msg);
+
+        // stop the game after it ends
+        if (gameState.endGame) {
+          delete rooms[roomId];
+          player1.close();
+          player2.close();
+          return;
+        }
+        // check if the client reconnected so i will not give him the startUp game stat
+        if (!rooms[roomId].gameState.disconnected) {
+          rooms[roomId].gameState = gameState;
+        }
+        rooms[roomId].gameState.keypressd = gameState.keypressd;
+        rooms[roomId].gameState.playerId = playerId;
+        rooms[roomId].gameState.matchId = roomId;
+        // game logic
+        const updatedState = gameLogic(rooms[roomId].gameState);
+
+        // check score
+        if (updatedState.rightPlayerScore === updatedState.rounds) {
+          updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
+          //send data to first player
+          updatedState.playerId = 1;
+          updatedState.gameEndResult = "Lost";
+          player1.send(JSON.stringify(updatedState));
+
+          //send data to second player
+          updatedState.playerId = 2;
+          updatedState.gameEndResult = "Won";
+          player2.send(JSON.stringify(updatedState));
+          return;
+        }
+        if (updatedState.leftPlayerScore === updatedState.rounds) {
+          updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
+          updatedState.playerId = 1;
+          updatedState.gameEndResult = "Won";
+          player1.send(JSON.stringify(updatedState));
+
+          updatedState.playerId = 2;
+          updatedState.gameEndResult = "Lost";
+          player2.send(JSON.stringify(updatedState));
+          return;
+        }
+        player1.send(JSON.stringify(updatedState));
+        player2.send(JSON.stringify(updatedState));
+      } catch (error) {
+        console.error("Invalid JSON format", error);
+      }
+    };
+
+    // socket message event
+    player1.on("message", handleMessage(1));
+    player2.on("message", handleMessage(2));
+
+    player1.on("close", () => {
+      if (!rooms[roomId]) return;
+
+      rooms[roomId].gameState.alive = false;
+      setTimeout(() => {
+        if (rooms[roomId] && !rooms[roomId].gameState.alive) {
+          player2.send("player 1 disconnected");
+          delete rooms[roomId];
+          player1.close();
+          player2.close();
+        }
+      }, 30000);
+      player1.removeAllListeners();
+      player2.removeAllListeners();
+    });
+
+    player2.on("close", () => {
+      if (!rooms[roomId]) return;
+
+      rooms[roomId].gameState.alive = false;
+
+      setTimeout(() => {
+        if (rooms[roomId] && !rooms[roomId].gameState.alive) {
+          player1.send("player 2 disconnected");
+          delete rooms[roomId];
+          player2.close();
+          player1.close();
+        }
+      }, 30000);
+      player1.removeAllListeners();
+      player2.removeAllListeners();
+    });
+  }
+}

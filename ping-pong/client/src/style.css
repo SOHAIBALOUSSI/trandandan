@@ -1,0 +1,15 @@
+@import "tailwindcss";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
