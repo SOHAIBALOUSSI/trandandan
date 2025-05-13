@@ -38,10 +38,13 @@ class FlowFieldLocal {
             paddelRightY: 240,
             ballX: 450,
             ballY: 300,
-            gameStat: 1,
             keypressd: [],
             rightPlayerScore: 0,
             leftPlayerScore: 0,
+            flagX: false,
+            flagY: false,
+            ballSpeed: 5,
+            count: 0
         };
     }
     draw() {

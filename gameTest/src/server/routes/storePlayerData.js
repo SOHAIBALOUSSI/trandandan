@@ -1,4 +1,16 @@
-export function savePlayerData(req, reply, db) {
+import sqlite3 from "sqlite3";
+
+const db = new sqlite3.Database(
+  "/home/ousabbar/Desktop/trandenden/gameTest/db/.gameData.db",
+  (err) => {
+    if (err) {
+      console.error("Error connecting to the database:", err.message);
+    } else {
+      console.log("Connected to the SQLite database.");
+    }
+  }
+);
+export function savePlayerData(req, reply) {
   try {
     const data = req.body;
 

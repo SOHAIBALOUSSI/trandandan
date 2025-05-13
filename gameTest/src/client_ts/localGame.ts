@@ -40,10 +40,13 @@ interface GameStateLocal {
   paddelRightY: number;
   ballX: number;
   ballY: number;
-  gameStat: number;
   keypressd: string[];
   rightPlayerScore: number;
   leftPlayerScore: number;
+  flagX: boolean;
+  flagY: boolean;
+  ballSpeed: number;
+  count: number;
 }
 
 class FlowFieldLocal {
@@ -67,10 +70,13 @@ class FlowFieldLocal {
       paddelRightY: 240,
       ballX: 450,
       ballY: 300,
-      gameStat: 1,
       keypressd: [],
       rightPlayerScore: 0,
       leftPlayerScore: 0,
+      flagX: false,
+			flagY: false,
+			ballSpeed: 5,
+			count: 0
     };
   }
 
