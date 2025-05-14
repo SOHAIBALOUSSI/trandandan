@@ -1,4 +1,4 @@
-import { addProfile, getProfileById, searchProfile, updateProfileById } from "../models/profileDAO.js";
+import { addProfile, getProfileById, searchProfile, updateProfileById } from "../../../server/profile-service/src/models/profileDAO.js";
 
 export async function createProfile(request, reply) {
     try {

@@ -1,37 +1,26 @@
-import fastify from 'fastify';
 import dotenv from 'dotenv';
-import sqlitePlugin from './plugins/sqlite-plugin.js'
-import jwtPlugin from './plugins/jwt-plugin.js'
+import { db } from './libs/sqlite.js'
 import { createUserTable } from './database/createUserTable.js';
-import { createTokenTable } from './database/createTokenTable.js';
-import authRoutes from './routes/authRoutes.js';
-
-const server = fastify({logger: true});
+import RabbitMQClient from './libs/rabbitmq.js';
+import { loginHandler, logoutHandler, meHandler, refreshHandler, registerHandler } from './handlers/authHandler.js';
 
 dotenv.config();
 
-await server.register(sqlitePlugin);
-await server.register(jwtPlugin, {
-    accessTokenKey: process.env.AJWT_SECRET_KEY,
-    refreshTokenKey: process.env.RJWT_SECRET_KEY
-});
+await createUserTable(db);
 
-await createUserTable(server.db);
-await createTokenTable(server.db);
+const authQueue = new RabbitMQClient('auth');
 
-await server.register(authRoutes, { prefix: '/auth' });
-console.log("auth service initialization is done...");
+await authQueue.connect();
+await authQueue.consumeMessage(handleMessage);
 
-const start = async () => {
-    try {
-        await server.listen({ host: '0.0.0.0', port: 3000 });
-        server.log.info("Server is listening on port 3000");
+const handleMessage = async (payload) => {
+    switch (payload.type)
+    {
+        case 'REGISTER' : return registerHandler(payload);
+        case 'LOGIN' : return loginHandler(payload);
+        case 'LOGOUT' : return logoutHandler(payload);
+        case 'ME' : return meHandler(payload);
+        case 'REFRESH' : return refreshHandler(payload);
     }
-    catch (err) {
-        server.log.error(err);
-        process.exit(1);
-    }
-};
-
-start();
+}
 

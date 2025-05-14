@@ -1,5 +1,4 @@
-import { createProfile, getProfile, updateProfile } from "../controllers/profileController.js";
-import { verifyToken } from "../middleware/authMiddleware.js";
+import { createProfile, getProfile, updateProfile } from '../../../server/profile-service/src/controllers/profileController.js';
 import { createProfileSchema, updateProfileSchema } from "../schemas/profileSchema.js";
 
 async function profileRoutes(fastify) {
@@ -7,12 +6,12 @@ async function profileRoutes(fastify) {
         schema: {
             body: createProfileSchema
         },
-        preHandler: verifyToken,
+        preHandler: fastify.authenticate,
         handler: createProfile
     })
 
     fastify.get('/:id', {
-        preHandler: verifyToken,
+        preHandler: fastify.authenticate,
         handler: getProfile
     })
 
@@ -20,7 +19,7 @@ async function profileRoutes(fastify) {
         schema: {
             body: updateProfileSchema
         },
-        preHandler: verifyToken,
+        preHandler: fastify.authenticate,
         handler: updateProfile
     })
 }

@@ -15,3 +15,15 @@ export const passwordValidation = {
     minLength: 6,
     maxLength: 50
 }
+
+export const avatarUrlValidation = {
+    type: 'string',
+    format: 'uri',
+    maxLength: 255
+}
+
+export const soldeValidation = {
+    type: 'integer',
+    minimum: 0,
+    maximum: 10000
+}

@@ -1,4 +1,3 @@
-
 export async function createUserTable(db){
     try {
         await db.exec(
