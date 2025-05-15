@@ -1,12 +1,17 @@
 const rooms = {};
 
+const ROOM_ID_LENGTH = 12;
+const CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
+const PADDLE_INITIAL_Y = 240;
+const PADDLE_HEIGHT = 100;
+const RIGHT_PADDLE_X = 975;
+const LEFT_PADDLE_X = 20;
+
 function generateNewRoomId(params) {
   let roomId = "";
 
-  const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
-
-  for (let index = 0; index < 12; index++) {
-    roomId += stringOfChar[Math.floor(Math.random() * stringOfChar.length)];
+  for (let index = 0; index < ROOM_ID_LENGTH; index++) {
+    roomId += CHARACTERS[Math.floor(Math.random() * CHARACTERS.length)];
   }
   return roomId;
 }
@@ -15,9 +20,9 @@ export function localGame(connection) {
   let roomId = generateNewRoomId();
 
   rooms[roomId] = {
-    paddleLeftY: 240,
-    paddelRightY: 240,
-    ballX: 450,
+    paddleLeftY: PADDLE_INITIAL_Y,
+    paddelRightY: PADDLE_INITIAL_Y,
+    ballX: 500,
     ballY: 300,
     keypressd: [],
     rightPlayerScore: 0,
@@ -51,18 +56,18 @@ export function localGame(connection) {
 
     if (
       rooms[roomId].flagX ||
-      (rooms[roomId].ballX >= 890 &&
+      (rooms[roomId].ballX >= RIGHT_PADDLE_X &&
         rooms[roomId].ballY >= rooms[roomId].paddelRightY &&
-        rooms[roomId].ballY <= rooms[roomId].paddelRightY + 150)
+        rooms[roomId].ballY <= rooms[roomId].paddelRightY + PADDLE_HEIGHT)
     ) {
       if (
-        rooms[roomId].ballX >= 890 &&
+        rooms[roomId].ballX >= RIGHT_PADDLE_X &&
         rooms[roomId].ballY >= rooms[roomId].paddelRightY &&
-        rooms[roomId].ballY <= rooms[roomId].paddelRightY + 150
+        rooms[roomId].ballY <= rooms[roomId].paddelRightY + PADDLE_HEIGHT
       ) {
         rooms[roomId].count++;
         if (rooms[roomId].count === 2) {
-          rooms[roomId].ballSpeed += 1;
+          rooms[roomId].ballSpeed += 2;
           rooms[roomId].count = 0;
         }
       }
@@ -71,9 +76,9 @@ export function localGame(connection) {
     }
     if (
       !rooms[roomId].flagX ||
-      (rooms[roomId].ballX <= 0 &&
+      (rooms[roomId].ballX <= LEFT_PADDLE_X &&
         rooms[roomId].ballY >= rooms[roomId].paddleLeftY &&
-        rooms[roomId].ballY <= rooms[roomId].paddleLeftY + 150)
+        rooms[roomId].ballY <= rooms[roomId].paddleLeftY + PADDLE_HEIGHT)
     ) {
       (rooms[roomId].ballX += rooms[roomId].ballSpeed),
         (rooms[roomId].flagX = false);
@@ -88,12 +93,12 @@ export function localGame(connection) {
 
     rooms[roomId].keypressd = [];
 
-    if (rooms[roomId].ballX > 900 || rooms[roomId].ballX <= 0) {
-      if (rooms[roomId].ballX > 900) rooms[roomId].leftPlayerScore += 1;
+    if (rooms[roomId].ballX > 1000 || rooms[roomId].ballX <= 0) {
+      if (rooms[roomId].ballX > 1000) rooms[roomId].leftPlayerScore += 1;
       if (rooms[roomId].ballX <= 0) rooms[roomId].rightPlayerScore += 1;
       rooms[roomId].paddleLeftY = 240;
       rooms[roomId].paddelRightY = 240;
-      rooms[roomId].ballX = 900 / 2;
+      rooms[roomId].ballX = 1000 / 2;
       rooms[roomId].ballY = 300;
       rooms[roomId].ballSpeed = 5;
     }
