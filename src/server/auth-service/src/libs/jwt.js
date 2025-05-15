@@ -1,4 +1,11 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const accessTokenKey = process.env.AJWT_SECRET_KEY;
+const refreshTokenKey = process.env.RJWT_SECRET_KEY;
+
 
 export function signAT(payload, expiresIn = '15m') {
     try {

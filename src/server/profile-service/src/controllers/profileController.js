@@ -1,66 +1,66 @@
 import { addProfile, getProfileById, searchProfile, updateProfileById } from "../../../server/profile-service/src/models/profileDAO.js";
 
-export async function createProfile(request, reply) {
+export async function createProfile(context, payload) {
     try {
-        const id = request.user?.id;
-        const { username, email } = request.body;
-        console.log("Body received from profile:", request.body);
-        this.log.info(`username: ${username}, email: ${email}`);
+        const { id, username, email } = payload.data;
+        console.log("Body received from profile:", payload.data);
         if (!username || !email)
-            return reply.code(400).send({ err: 'Missing required fields' });
+            return ({code: 400, error: 'Missing required fields' });
 
-        const profileExists = await searchProfile(this.db, id, username, email);
+        const profileExists = await searchProfile(context.db, id, username, email);
         if (profileExists)
-            return reply.code(400).send({ error: 'Profile already exists' });
+            return ({code: 400, error: 'Profile already exists' });
         
-        await addProfile(this.db, id, username, email);
+        await addProfile(context.db, id, username, email);
 
-        return reply.code(201).send({ message: 'Profile created successfully' })
+        return ({ code: 201, message: 'Profile created' })
     } catch (error) {
-        return reply.code(500).send({ err: 'Internal server error', details: error.message });
+        console.log(error);
+        return ({ code: 500, error: 'Internal server error' });
     }
 }
 
-export async function getProfile(request, reply) {
+export async function getProfile(context, payload) {
     try {
         
-        const { id } = request.params;
+        const { id } = payload.data;
         
-        const profile = await getProfileById(this.db, id);
+        const profile = await getProfileById(context.db, id);
         if (!profile)
-            return reply.code(404).send({ error: 'Profile not found' });
+            return ({ code:404, error: 'Profile not found' });
         
-        return reply.code(200).send({ profile })
+        return ({ code: 200, profile })
     } catch (error) {
-        return reply.code(500).send({ err: 'Internal server error', details: error.message });
+        console.log(error);
+        return ({ code: 500, error: 'Internal server error' });
     }
 }
 
-export async function updateProfile(request, reply) {
+export async function updateProfile(context, payload) {
     try {
-        const { id } = request.params;
-        const { username, email, avatar_url, solde } = request.body;
+        const { id, username, email, avatar_url, solde } = payload.data;
         
-        const profile = await getProfileById(this.db, id);
+        const profile = await getProfileById(context.db, id);
         if (!profile)
-            return reply.code(404).send({ error: 'Profile not found' });
+            return ({ code:404, error: 'Profile not found' });
         
         const updatedFields = {};
         if (username) updatedFields.username = username;
         if (email) updatedFields.email = email;
         if (avatar_url) updatedFields.avatar_url = avatar_url;
-        if (solde !== undefined) updatedFields.solde = solde;
+        if (typeof solde === 'number') updatedFields.solde = solde;
 
         if (Object.keys(updatedFields).length === 0)
-            return reply.code(400).send({ err: 'No fields to update' });
+            return ({code: 400, error: 'No fields to update' });
         
-        const changes = await updateProfileById(this.db, id, updatedFields);
+        const changes = await updateProfileById(context.db, id, updatedFields);
         if (changes === 0)
-            return reply.code(400).send({ err: 'No changes were made'});
-        const updatedProfile = await getProfileById(this.db, id);
+            return ({code: 400, error: 'No changes were made'});
+        const updatedProfile = await getProfileById(context.db, id);
 
-        return reply.code(200).send({ message: 'Profile updated.', profile: updatedProfile})
+        return ({ code: 200, message: 'Profile updated.', profile: updatedProfile})
     } catch (error) {
-        return reply.code(500).send({ err: 'Internal server error', details: error.message });
+        console.log(error);
+        return ({ code: 500, error: 'Internal server error' });
     }
 }

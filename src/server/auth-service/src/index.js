@@ -11,16 +11,19 @@ await createUserTable(db);
 const authQueue = new RabbitMQClient('auth');
 
 await authQueue.connect();
-await authQueue.consumeMessage(handleMessage);
+
+const context = { db };
 
 const handleMessage = async (payload) => {
     switch (payload.type)
     {
-        case 'REGISTER' : return registerHandler(payload);
-        case 'LOGIN' : return loginHandler(payload);
-        case 'LOGOUT' : return logoutHandler(payload);
-        case 'ME' : return meHandler(payload);
-        case 'REFRESH' : return refreshHandler(payload);
+        case 'REGISTER' : return registerHandler(context, payload, authQueue);
+        case 'LOGIN' : return loginHandler(context, payload);
+        case 'LOGOUT' : return logoutHandler(context, payload);
+        case 'ME' : return meHandler(context, payload);
+        case 'REFRESH' : return refreshHandler(context, payload);
+        default: return { code: 400, error: 'Unknown message type.' };
     }
 }
 
+await authQueue.consumeMessage(handleMessage);

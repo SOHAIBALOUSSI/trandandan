@@ -1,4 +1,3 @@
-import { loginHandler, registerHandler, logoutHandler, meHandler, refreshHandler } from '../../../server/auth-service/src/controllers/authController.js';
 import { registerSchema, loginSchema, tokenSchema } from '../schemas/authSchema.js';
 
 
