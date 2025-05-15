@@ -1,9 +1,8 @@
 {
-  "name": "bhv-club-frontend",
+  "name": "ft_transcendence",
   "version": "1.0.0",
   "scripts": {
-    "dev": "vite --host --port 3000",
-    "build:css": "tailwindcss -i ./styles/main.css -o ./public/style.css --watch"
+    "dev": "vite --host --port 3000"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",

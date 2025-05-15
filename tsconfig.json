@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "jsxImportSource": "./src/client/",
+    "esModuleInterop": true,
+    "strict": true,
+    "baseUrl": "."
+  },
+  "include": ["src/client"]
+}

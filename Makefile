@@ -1,11 +1,8 @@
-build:
-	@docker build -t pong-client src/client/
-
 run:
-	@docker run --rm --name pong-cont -p 8080:3000 pong-client
+	@docker compose up --build 
 
-stop:
-	@docker stop pong-cont
+down:
+	@docker compose down
 
 fclean:
 	@docker system prune -af
