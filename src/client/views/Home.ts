@@ -115,4 +115,13 @@ export function renderHome(container: HTMLElement): void {
         </div>
   `;
   container.appendChild(section);
+
+  const toggle = document.querySelector(".nav-toggle") as HTMLElement | null;
+  const menu = document.querySelector(".nav-menu") as HTMLElement | null;
+
+  if (toggle && menu) {
+    toggle.addEventListener("click", () => {
+      menu.classList.toggle("show");
+    });
+  }
 }
