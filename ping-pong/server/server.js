@@ -40,7 +40,7 @@ fastify.register(async function name(fastify) {
   });
 });
 
-fastify.listen({ port: 5000 }, (err) => {
+fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);

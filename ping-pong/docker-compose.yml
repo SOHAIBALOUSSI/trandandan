@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    expose:
+      - "5000"  # Makes it reachable from other containers
+    restart: always
+    volumes:
+      - /home/ousabbar/Desktop/trandenden/ping-pong/server/db:/app/db
+
+  client:
+    build: ./client
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+    restart: always
