@@ -2,8 +2,7 @@ export function renderSignIn(container: HTMLElement): void {
   const section = document.createElement("section");
   section.className = "light-page";
   section.innerHTML = `
-	    <div class="container signin-page">
-          <img src="./assets/bg.jpg" alt="Background illustration" />
+        <div class="container signin-page">
           <div class="header">
             <h1 class="main-heading-dark">
               welcome back, <span>champion</span>
@@ -14,7 +13,7 @@ export function renderSignIn(container: HTMLElement): void {
             </p>
           </div>
           <div class="signin-form">
-            <form action="" method="get" class="sign-form">
+            <form action="" method="post" class="sign-form">
               <input
                 type="text"
                 name="login"

@@ -3,7 +3,6 @@ export function renderWelcome(container: HTMLElement): void {
   section.className = "light-page";
   section.innerHTML = `
         <div class="container wlcm-page">
-          <img src="assets/bg.jpg" alt="Background illustration" />
           <div class="signin-action">
             <button class="btn-primary">
               <i class="fa-solid fa-ticket"></i>

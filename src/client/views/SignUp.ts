@@ -3,7 +3,6 @@ export function renderSignUp(container: HTMLElement): void {
   section.className = "light-page";
   section.innerHTML = `
         <div class="container signup-page">
-          <img src="./assets/bg.jpg" alt="Background illustration" />
           <div class="header">
             <h1 class="main-heading-dark">join <span>the club</span></h1>
             <h3 class="subtitle">become a member</h3>
@@ -37,7 +36,7 @@ export function renderSignUp(container: HTMLElement): void {
             <input
               type="password"
               name="password"
-              id="password"
+              id="confirm-password"
               class="input-field"
               placeholder="confirm your password"
               required

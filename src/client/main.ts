@@ -4,12 +4,13 @@ import { renderSignUp } from "./views/SignUp";
 import { renderHome } from "./views/Home";
 import { renderGame } from "./views/Game";
 import { renderDashboard } from "./views/Dashboard";
+import { renderFriends } from "./views/Friends";
 import { renderChat } from "./views/Chat";
 import { renderProfile } from "./views/Profile";
 import { renderSettings } from "./views/Settings";
 
 function router(): void {
-  const app : any = document.querySelector(".app");
+  const app: any = document.querySelector(".app");
   if (!app) return;
 
   const route = location.hash.slice(1);
@@ -30,6 +31,9 @@ function router(): void {
       break;
     case "profile":
       renderProfile(app);
+      break;
+    case "friends":
+      renderFriends(app);
       break;
     case "chat":
       renderChat(app);
