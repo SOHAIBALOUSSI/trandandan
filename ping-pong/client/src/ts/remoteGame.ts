@@ -1,14 +1,17 @@
-const rightPlayerScore = document.getElementById("rightScore") as HTMLElement;
-const leftPlayerScore = document.getElementById("leftScore") as HTMLElement;
-const gameEndResult = document.getElementById("gameEndResult") as HTMLElement;
-const exitButton = document.getElementById("exitButton") as HTMLButtonElement;
+const rightPlayerScore = document.getElementById(
+  "rightPlayerScoreRemote"
+) as HTMLElement;
+const leftPlayerScore = document.getElementById(
+  "leftPlayerScoreRemote"
+) as HTMLElement;
 const restartButton = document.getElementById(
   "restartButton"
 ) as HTMLButtonElement;
 
-restartButton.style.display = "none";
-exitButton.style.display = "none";
-
+const result = document.getElementById("result") as HTMLElement;
+const gameTabe = document.getElementById("gameTab") as HTMLElement;
+const disconnectedResult = document.getElementById("disconnected") as HTMLElement;
+const exit = document.getElementById("exit") as HTMLElement;
 function generateToken(): string {
   let roomId = "";
   const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -105,15 +108,25 @@ interface PlayerData {
   leftPlayerBallHit: number;
   rightPlayerBallHit: number;
 }
+interface Particle {
+  x: number; // X-coordinate of the particle
+  y: number; // Y-coordinate of the particle
+  radius: number; // Size of the particle
+  color: string; // Color of the particle
+  alpha: number; // Transparency (1 = fully visible, 0 = invisible)
+  velocityX: number; // Horizontal movement speed
+  velocityY: number; // Vertical movement speed
+}
 
 class FlowField {
   private ctx: CanvasRenderingContext2D;
   private width: number = 10;
-  private height: number = 150;
-  private canvasWidth: number = 900;
+  private height: number = 100;
+  private canvasWidth: number = 1000;
   private canvasHeight: number = 600;
   private keys: Record<string, boolean>;
   private gameState: GameState;
+  private particles: Particle[] = [];
 
   constructor(ctx: CanvasRenderingContext2D, keys: Record<string, boolean>) {
     this.ctx = ctx;
@@ -121,7 +134,7 @@ class FlowField {
     this.gameState = {
       matchId: "",
       playerId: 0,
-      ballX: 0,
+      ballX: 500,
       ballY: 300,
       ballSpeed: 3,
       flagX: false,
@@ -167,18 +180,15 @@ class FlowField {
       rightPlayerScore.textContent = String(this.gameState.rightPlayerScore);
       leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
 
+      
       if (
         this.gameState.gameEndResult &&
         this.gameState.gameEndResult.length !== 0
       ) {
-
-
         // set a flag that to tell server that the game ended
         this.gameState.endGame = true;
-
-        gameEndResult.textContent = "You " + this.gameState.gameEndResult;
-        restartButton.style.display = "block";
-        exitButton.style.display = "block";
+        result.textContent = "You " + this.gameState.gameEndResult;
+        gameTabe.style.display = "block";
 
         const playerData: PlayerData = {
           userName: userName,
@@ -199,15 +209,13 @@ class FlowField {
           console.log(playerData);
         }
         restartButton.addEventListener("click", () => {
-          restartButton.style.display = "none";
-          exitButton.style.display = "none";
-
+          gameTabe.style.display = "none";
 
           // Reset the game state
           this.gameState = {
             matchId: "",
             playerId: 0,
-            ballX: 0,
+            ballX: 500,
             ballY: 300,
             ballSpeed: 3,
             flagX: false,
@@ -257,32 +265,82 @@ class FlowField {
         });
       }
     } catch (error) {
-      console.log(data);
+      disconnectedResult.style.display = 'block';
+      exit.addEventListener('click', () => {
+        window.location.href = "/";
+      })
+      // console.log(data);
+    }
+  }
+  private ballParticle(x: number, y: number): void {
+    // Generate a new particle at the ball's position
+    for (let i = 0; i < 5; i++) {
+      // Create multiple particles per frame
+      this.particles.push({
+        x: x,
+        y: y,
+        radius: Math.random() * 2 + 1, // Random radius between 1 and 4
+        color: "#C44536", // Random transparency
+        alpha: 1, // Fully visible initially
+        velocityX: (Math.random() - 0.5) * 2, // Random horizontal velocity
+        velocityY: (Math.random() - 0.5) * 2, // Random vertical velocity
+      });
     }
   }
 
+  private updateParticles(): void {
+    this.particles.forEach((particle, index) => {
+      // Update particle position
+      particle.x += particle.velocityX;
+      particle.y += particle.velocityY;
+
+      // Reduce particle transparency
+      particle.alpha -= 0.02;
+
+      // Remove particle if it becomes fully transparent
+      if (particle.alpha <= 0) {
+        this.particles.splice(index, 1);
+      }
+    });
+  }
+
+  private drawParticles(): void {
+    this.particles.forEach((particle) => {
+      this.ctx.beginPath();
+      this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = particle.color.replace("1)", `${particle.alpha})`); // Update alpha
+      this.ctx.fill();
+    });
+  }
   private draw(): void {
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
     // Paddle left
-    this.ctx.fillRect(0, this.gameState.paddleLeftY, this.width, this.height);
-    this.ctx.strokeRect(0, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.fillStyle = "#E0A458";
+    this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.strokeRect(
+      10,
+      this.gameState.paddleLeftY,
+      this.width,
+      this.height
+    );
 
     // Paddle right
     this.ctx.fillRect(
-      890,
+      980,
       this.gameState.paddelRightY,
       this.width,
       this.height
     );
     this.ctx.strokeRect(
-      890,
+      980,
       this.gameState.paddelRightY,
       this.width,
       this.height
     );
 
     // Ball
+    this.ctx.fillStyle = "#C44536";
     this.ctx.beginPath();
     this.ctx.arc(
       this.gameState.ballX,
@@ -293,6 +351,13 @@ class FlowField {
     );
     this.ctx.fill();
     this.ctx.stroke();
+
+    // Generate particles at the ball's position
+    this.ballParticle(this.gameState.ballX, this.gameState.ballY);
+
+    // Update and draw particles
+    this.updateParticles();
+    this.drawParticles();
   }
 
   private keysFunction(): void {

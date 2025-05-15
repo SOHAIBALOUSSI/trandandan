@@ -1,3 +1,9 @@
+
+const PADDLE_INITIAL_Y = 240;
+const PADDLE_HEIGHT = 100;
+const RIGHT_PADDLE_X = 975;
+const LEFT_PADDLE_X = 20;
+
 function gameLogic(gameState) {
   let step = 8;
   if (
@@ -9,7 +15,7 @@ function gameLogic(gameState) {
   if (
     gameState.keypressd === "s" &&
     gameState.playerId === 1 &&
-    gameState.paddleLeftY < 600 - 150
+    gameState.paddleLeftY < 600 - 100
   )
     gameState.paddleLeftY += step;
 
@@ -22,7 +28,7 @@ function gameLogic(gameState) {
   if (
     gameState.keypressd === "s" &&
     gameState.playerId === 2 &&
-    gameState.paddelRightY < 600 - 150
+    gameState.paddelRightY < 600 - 100
   )
     gameState.paddelRightY += step;
 
@@ -30,14 +36,14 @@ function gameLogic(gameState) {
 
   if (
     gameState.flagX ||
-    (gameState.ballX >= 890 &&
+    (gameState.ballX >= 980 &&
       gameState.ballY >= gameState.paddelRightY &&
-      gameState.ballY <= gameState.paddelRightY + 150)
+      gameState.ballY <= gameState.paddelRightY + 100)
   ) {
     if (
-      gameState.ballX >= 890 &&
+      gameState.ballX >= 980 &&
       gameState.ballY >= gameState.paddelRightY &&
-      gameState.ballY <= gameState.paddelRightY + 150
+      gameState.ballY <= gameState.paddelRightY + 100
     ) {
       gameState.hitCount++;
       if (gameState.hitCount === 2) {
@@ -50,14 +56,14 @@ function gameLogic(gameState) {
   }
   if (
     !gameState.flagX ||
-    (gameState.ballX <= 0 &&
+    (gameState.ballX <= 20 &&
       gameState.ballY >= gameState.paddleLeftY &&
-      gameState.ballY <= gameState.paddleLeftY + 150)
+      gameState.ballY <= gameState.paddleLeftY + 100)
   ) {
     if (
-      gameState.ballX <= 0 &&
+      gameState.ballX <= 20 &&
       gameState.ballY >= gameState.paddleLeftY &&
-      gameState.ballY <= gameState.paddleLeftY + 150
+      gameState.ballY <= gameState.paddleLeftY + 100
     )
       gameState.leftPlayerBallHit++;
     (gameState.ballX += gameState.ballSpeed), (gameState.flagX = false);
@@ -68,13 +74,13 @@ function gameLogic(gameState) {
   if (gameState.ballY <= 0 || !gameState.flagY)
     (gameState.ballY += gameState.ballSpeed), (gameState.flagY = false);
 
-  if (gameState.ballX > 900 || gameState.ballX <= 0) {
-    if (gameState.ballX > 900) gameState.leftPlayerScore += 1;
+  if (gameState.ballX > 1000 || gameState.ballX <= 0) {
+    if (gameState.ballX > 1000) gameState.leftPlayerScore += 1;
     if (gameState.ballX <= 0) gameState.rightPlayerScore += 1;
 
     gameState.paddleLeftY = 240;
     gameState.paddelRightY = 240;
-    gameState.ballX = 900 / 2;
+    gameState.ballX = 1000 / 2;
     gameState.ballY = 300;
     gameState.ballSpeed = 3;
   }
@@ -126,8 +132,8 @@ export function remoteGame(connection, req) {
       gameState: {
         matchId: "",
         playerId: 1,
-        ballX: 0,
-        ballY: 0,
+        ballX: 500,
+        ballY: 300,
         flagX: false,
         flagY: false,
         paddleLeftY: 240,
