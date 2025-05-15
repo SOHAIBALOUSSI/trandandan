@@ -1,15 +1,15 @@
-import { addProfile, getProfileById, searchProfile, updateProfileById } from "../../../server/profile-service/src/models/profileDAO.js";
+import { addProfile, getProfileById, searchProfile, updateProfileById } from "../models/profileDAO.js";
 
 export async function createProfile(context, payload) {
     try {
         const { id, username, email } = payload.data;
         console.log("Body received from profile:", payload.data);
         if (!username || !email)
-            return ({code: 400, error: 'Missing required fields' });
+            return ({ code: 400, error: 'Missing required fields' });
 
         const profileExists = await searchProfile(context.db, id, username, email);
         if (profileExists)
-            return ({code: 400, error: 'Profile already exists' });
+            return ({ code: 400, error: 'Profile already exists' });
         
         await addProfile(context.db, id, username, email);
 
@@ -51,11 +51,11 @@ export async function updateProfile(context, payload) {
         if (typeof solde === 'number') updatedFields.solde = solde;
 
         if (Object.keys(updatedFields).length === 0)
-            return ({code: 400, error: 'No fields to update' });
+            return ({ code: 400, error: 'No fields to update' });
         
         const changes = await updateProfileById(context.db, id, updatedFields);
         if (changes === 0)
-            return ({code: 400, error: 'No changes were made'});
+            return ({ code: 400, error: 'No changes were made'});
         const updatedProfile = await getProfileById(context.db, id);
 
         return ({ code: 200, message: 'Profile updated.', profile: updatedProfile})

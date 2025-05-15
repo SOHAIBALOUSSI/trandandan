@@ -17,7 +17,7 @@ class RabbitMQClient {
         }
     }
 
-    async produceMessage(queue, message, correlationId = null) {
+    async produceMessage(queue, message, correlationId = null, replyTo = null) {
         try {
 
             if (!this.channel)
@@ -31,6 +31,9 @@ class RabbitMQClient {
 
             if (correlationId)
                 options.correlationId = correlationId;
+
+            if (replyTo)
+                options.replyTo = replyTo;
 
             this.channel.sendToQueue(queue,
                 Buffer.from(JSON.stringify(message)),
@@ -63,14 +66,7 @@ class RabbitMQClient {
                     }
                 }, { noAck: true })
                 
-                this.channel.sendToQueue(queue,
-                    Buffer.from(JSON.stringify(message)),
-                    {
-                        correlationId,
-                        replyTo: tempQueue.queue,
-                        persistent: true
-                    }
-                );
+                this.produceMessage(queue, message, correlationId, tempQueue.queue);
             } catch (error) {
                 reject(error)
             }

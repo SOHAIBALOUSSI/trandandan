@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { db } from './plugins/sqlite-plugin.js'
 import { createProfileTable } from './database/createProfileTable.js';
 import RabbitMQClient from './libs/rabbitmq.js';
-import { createProfile, getProfile, updateProfile } from './controllers/profileController.js';
+import { createProfile, getProfile, updateProfile } from './handlers/profileHandler.js';
 
 dotenv.config();
 

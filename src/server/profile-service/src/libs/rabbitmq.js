@@ -1,5 +1,4 @@
 import amqp from 'amqplib'
-import { rejects } from 'assert';
 import { randomUUID } from 'crypto'
 
 class RabbitMQClient {

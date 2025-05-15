@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 
 async function jwtPlugin(fastify, options) {
-    const { accessTokenKey, refreshTokenKey } = options;
+    const { accessTokenKey } = options;
 
     fastify.decorate('jwt', {
         verifyAT(token) {

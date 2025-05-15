@@ -51,29 +51,14 @@ export async function registerHandler(context, payload, authQueue) {
             username: username,
             email: email
         };
-        await authQueue.produceMessage('profile', message, payload.correlationId);
-        return ({  code: 201, accessToken: accessToken, refreshToken: refreshToken });
-        // const response = await fetch('http://profile-service:3001/profile/register', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': `Bearer ${accessToken}`
-        //     },
-        //     body: JSON.stringify({
-        //         username: username,
-        //         email: email
-        //     })
-
-        // });
-
-
-      
-        // if (!response.ok) {
-        //     const errorText = await response.text();
-        //     await deleteUser(context.db, userId);
-        //     await revokeToken(context.db, refreshToken);
-        //     return ({ code: 400, error: 'Failed to create profile', error: errorText.err });
-        // }
+        const response = await authQueue.rpcMessage('profile', { type: 'CREATE', data: message });
+        if (response.code != 201)
+        {
+            await deleteUser(context.db, userId);
+            await revokeToken(context.db, refreshToken);
+            return ({ code: 400, error: 'Failed to create profile', error: errorText.err });
+        }
+        return ({  code: 201, accessToken: accessToken, refreshToken: refreshToken }); 
     } catch (error) {
         console.log(error);
         return ({ code: 500, error: 'Internal server error.' });
