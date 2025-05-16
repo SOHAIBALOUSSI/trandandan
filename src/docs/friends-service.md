@@ -22,7 +22,7 @@ The friends-service handles all operations related to friend management, includi
 ## Schemas
 
 - **Friend Request Schema**:
-  - `addresseId`: string, required
+  - `addresseeId`: string, required
 
 - **Friend Decision Schema**:
   - `requesterId`: string, required
