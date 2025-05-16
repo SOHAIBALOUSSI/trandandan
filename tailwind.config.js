@@ -1,7 +1,12 @@
 module.exports = {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        playfair: ["'Playfair Display'", "serif"],
+        lora: ["Lora", "serif"],
+      },
+    },
   },
   plugins: [],
 };
