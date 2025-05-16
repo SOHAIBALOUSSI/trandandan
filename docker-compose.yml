@@ -2,7 +2,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.client
     ports:
       - "8080:3000"
     volumes:

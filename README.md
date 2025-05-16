@@ -1,69 +1,45 @@
-```bash
-ft_transcendence/
-├── docker/
-│   ├── Dockerfile                 # Frontend Docker container
-│   ├── docker-compose.yml         # Optional multi-service setup
-│   └── nginx/                     # For production deployment (SSR or static)
-│       └── default.conf
-│
-├── public/                        # Public static files served directly
-│   └── favicon.ico
-│
-├── src/
-│   ├── client/                    # Frontend
-│   │   ├── assets/                # Static assets (images, fonts)
-│   │   ├── components/            # UI elements in JSX
-│   │   │   ├── common/
-│   │   │   ├── layout/
-│   │   │   ├── game/
-│   │   │   ├── chat/
-│   │   │   └── user/
-│   │   ├── views/                 # Full pages
-│   │   ├── handlers/              # View logic or state
-│   │   ├── services/              # API, Auth, WebSocket
-│   │   ├── styles/                # Tailwind entry CSS
-│   │   ├── types/                 # Global types
-│   │   ├── utils/                 # Helpers
-│   │   ├── App.tsx                # Main component
-│   │   ├── main.tsx               # Entry point
-│   │   └── index.html             # HTML template
-│
-│   ├── server/                    # Backend (optional if separate)
-│       ├── controllers/
-│       ├── models/
-│       ├── services/
-│       ├── routes/
-│       ├── middleware/
-│       ├── websocket/
-│       ├── database/
-│       ├── utils/
-│       ├── types/
-│       └── server.ts
-│
-├── dist/                          # Vite output (auto-generated)
-├── node_modules/
-├── .env
-├── .env.example
-├── tailwind.config.js
-├── postcss.config.js
-├── tsconfig.json
-├── vite.config.ts
-├── package.json
-└── README.md
-```
+# 🧱 Full App Structure Overview
 
 ```bash
-custom-jsx-app/
-├── Dockerfile
-├── docker-compose.yml
-├── package.json
-├── tsconfig.json
-├── postcss.config.js
-├── tailwind.config.js
+ft_transcendence/
+├── docker/                     # Docker-related files
+│   ├── nginx/                  # Nginx configs (optional for SSR or static)
+│   ├── Dockerfile.client       # Frontend Dockerfile
+│   ├── Dockerfile.server       # Backend Dockerfile
+│   └── docker-compose.yml      # Compose to run everything
+│
+├── public/                     # Static files served as-is (favicon, fonts, etc.)
+│   └── assets/                 # Global images (logo, icons)
+│
 ├── index.html
 ├── src/
-│   ├── main.tsx
-│   ├── jsx-runtime.ts
-│   └── styles/
-│       └── main.css
+│   ├── client/                 # Frontend (Vite + TS + Tailwind + custom JSX)
+│   │   ├── assets/             # Local JSX-imported images
+│   │   ├── components/         # UI components (Button, Header, etc.)
+│   │   ├── views/              # Pages (Home, SignIn, Game, etc.)
+│   │   ├── styles/             # Tailwind + normalize.css + main.css
+│   │   ├── main.tsx           # Entry point
+│   │   └── jsx-runtime.ts     # Custom JSX runtime
+│   │
+│   ├── server/                 # Backend (Fastify + TS + SQLite)
+│   │   ├── controllers/        # Route handlers (userController.ts, gameController.ts)
+│   │   ├── services/           # Business logic (authService.ts, matchService.ts)
+│   │   ├── models/             # Database models
+│   │   ├── routes/             # Route definitions
+│   │   ├── websocket/          # Real-time features (game, chat)
+│   │   ├── middleware/         # Auth, validation, error handlers
+│   │   ├── database/           # SQLite setup, migrations, seeds
+│   │   ├── server.ts           # Main Fastify entry
+│   │   └── types/              # Shared server types
+│
+├── types/                      # Global TypeScript definitions (vite-env.d.ts)
+│
+├── .env                        # Environment variables (shared)
+├── .gitignore
+├── tailwind.config.js          # Tailwind setup
+├── postcss.config.js           # PostCSS setup
+├── tsconfig.json               # TypeScript config (can be base)
+├── vite.config.ts              # Vite config
+├── package.json                # Dependencies and scripts (can be root or split)
+└── README.md
 ```
