@@ -5,7 +5,7 @@ services:
     image: auth-service
     restart: always
     env_file:
-      - ./auth-service/.env
+      - .env
     networks:
       - back-end
     ports:
@@ -17,11 +17,25 @@ services:
     image: profile-service
     restart: always
     env_file:
-      - ./profile-service/.env
+      - .env
     networks:
       - back-end
     ports:
       - "3001:3001"
+
+  friends:
+    container_name: friends-service
+    build: ./friends-service
+    image: friends-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - back-end
+    ports:
+      - "3002:3002"
+
+      
 networks:
   back-end:
     name: backend

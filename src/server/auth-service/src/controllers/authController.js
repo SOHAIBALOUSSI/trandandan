@@ -57,10 +57,10 @@ export async function registerHandler(request, reply) {
         });
       
         if (!response.ok) {
-            const errorText = await response.text();
+            const errorText = await response.json();
             await deleteUser(this.db, userId);
             await revokeToken(this.db, refreshToken);
-            return reply.code(400).send({ err: 'Failed to create profile', error: errorText.err });
+            return reply.code(400).send({ err: 'Failed to create profile', details: errorText });
         }
         return reply.code(201).send({ accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
