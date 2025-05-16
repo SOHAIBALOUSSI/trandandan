@@ -1,12 +1,12 @@
 import { defineConfig } from "vite";
-import path from "path";
 
 export default defineConfig({
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src/client/"),
+      "@": new URL("./src/client", import.meta.url).pathname,
     },
   },
+
   esbuild: {
     jsx: "transform",
     jsxDev: false,

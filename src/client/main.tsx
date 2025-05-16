@@ -1,3 +1,9 @@
+// Importing necessary styles
+import "./styles/all.min.css";
+import "./styles/normalize.css";
+import "./styles/main.css";
+
+// Importing views for the application
 import { Welcome } from "./views/Welcome";
 import { Signin } from "./views/Signin";
 import { Signup } from "./views/Signup";
@@ -9,7 +15,11 @@ import { Chat } from "./views/Chat";
 import { Profile } from "./views/Profile";
 import { Settings } from "./views/Settings";
 
-document.getElementById("app")?.appendChild(<Home />);
+// Selecting the root element for the application
+const app = document.getElementById("app");
+
+// Rendering views manually for testing
+app?.append(<Home />);
 
 // function router(): void {
 //   const app: any = document.querySelector(".app");
