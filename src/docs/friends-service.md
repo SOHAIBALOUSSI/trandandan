@@ -2,6 +2,7 @@
 
 ## Overview
 The friends-service handles all operations related to friend management, including sending, accepting, and rejecting friend requests, listing friends, and removing friends.
+
 ---
 
 ## Endpoints
