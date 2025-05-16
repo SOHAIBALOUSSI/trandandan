@@ -6,14 +6,14 @@ async function authRoutes(fastify) {
         schema: {
             body: loginSchema
         },
-        handler: loginHandler
+        handler: loginController
     });
 
     fastify.post('/register', {
         schema: {
             body: registerSchema
         },
-        handler: registerHandler
+        handler: registerController
     });
 
     fastify.post('/logout', {
@@ -21,19 +21,19 @@ async function authRoutes(fastify) {
             body: tokenSchema
         }, 
         preHandler: fastify.authenticate,
-        handler: logoutHandler
+        handler: logoutController
     });
     
     fastify.get('/me',{ 
         preHandler: fastify.authenticate,
-        handler: meHandler
+        handler: meController
     } );
 
     fastify.post('/refresh',{
         schema: {
             body: tokenSchema
         },
-        handler: refreshHandler
+        handler: refreshController
     } );
 }
 
