@@ -65,5 +65,51 @@ export function Signup() {
       </div>
     </section>
   );
+
+  // Handle form submission
+  const form = signupSection.querySelector("form");
+  if (form) {
+    form.addEventListener("submit", async (e: any) => {
+      e.preventDefault();
+
+      const username = signupSection.querySelector("#username").value;
+      const email = signupSection.querySelector("#email").value;
+      const password = signupSection.querySelector("#password").value;
+      const confirmPassword =
+        signupSection.querySelector("#confirm-password").value;
+
+      try {
+        const response = await fetch("http://localhost:3000/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+            confirmPassword,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          // Success
+          console.log("Registered successfully:", result);
+          localStorage.setItem("accessToken", result.accessToken);
+          localStorage.setItem("refreshToken", result.refreshToken);
+          location.hash = "home"; // switch later to signin
+        } else {
+          // Error backend
+          alert(result.error || "Registration failed.");
+        }
+      } catch (err) {
+        console.error("Error registering:", err);
+        alert("Server error. Try again later.");
+      }
+    });
+  }
+
   return signupSection;
 }
