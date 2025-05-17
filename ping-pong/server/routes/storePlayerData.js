@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
 
 const db = new sqlite3.Database(
-  "/home/ousabbar/Desktop/trandenden/ping-pong/server/db/.gameData.db",
+  "/app/db/.gameData.db",
   (err) => {
     if (err) {
       console.error("Error connecting to the database:", err.message);

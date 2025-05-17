@@ -12,6 +12,7 @@ const result = document.getElementById("result") as HTMLElement;
 const gameTabe = document.getElementById("gameTab") as HTMLElement;
 const disconnectedResult = document.getElementById("disconnected") as HTMLElement;
 const exit = document.getElementById("exit") as HTMLElement;
+const playerSide = document.getElementById("playerSide") as HTMLElement;
 function generateToken(): string {
   let roomId = "";
   const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -35,7 +36,7 @@ if (!localStorage.getItem("userName")) {
   localStorage.setItem("userName", userName);
 }
 
-let socket = new WebSocket(`ws://localhost:5000/remoteGame?token=${test}`);
+let socket = new WebSocket(`ws://10.0.2.15:5000/remoteGame?token=${test}`);
 console.log("reconnected");
 
 window.onload = () => {
@@ -177,6 +178,14 @@ class FlowField {
       const parsedData: GameState = JSON.parse(data);
       this.gameState = parsedData;
 
+      if (this.gameState.playerId === 1)
+      {
+        playerSide.innerText = 'YOU ARE LEFT SIDE';
+      }
+      else if (this.gameState.playerId === 2)
+      {
+        playerSide.innerText = 'YOU ARE RIGHT SIDE';
+      }
       rightPlayerScore.textContent = String(this.gameState.rightPlayerScore);
       leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
 
@@ -241,7 +250,7 @@ class FlowField {
             socket.readyState === WebSocket.CLOSING
           ) {
             const newSocket = new WebSocket(
-              `ws://localhost:5000/remoteGame?token=${test}`
+              `ws://10.0.2.15:5000/remoteGame?token=${test}`
             );
             newSocket.onopen = () => {
               console.log("WebSocket reconnected");
@@ -365,8 +374,6 @@ class FlowField {
       this.gameState.keypressd = "w";
     } else if (this.keys["s"]) {
       this.gameState.keypressd = "s";
-    } else {
-      this.gameState.keypressd = "";
     }
   }
 

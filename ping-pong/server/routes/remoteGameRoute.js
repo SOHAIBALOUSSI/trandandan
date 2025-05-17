@@ -184,13 +184,13 @@ export function remoteGame(connection, req) {
         rooms[roomId].gameState.matchId = roomId;
         // game logic
         const updatedState = gameLogic(rooms[roomId].gameState);
-
+        
         // check score
         if (updatedState.rightPlayerScore === updatedState.rounds) {
           updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
           //send data to first player
-          updatedState.playerId = 1;
           updatedState.gameEndResult = "Lost";
+          updatedState.playerId = 1;
           player1.send(JSON.stringify(updatedState));
 
           //send data to second player
@@ -210,7 +210,9 @@ export function remoteGame(connection, req) {
           player2.send(JSON.stringify(updatedState));
           return;
         }
+        updatedState.playerId = 1;
         player1.send(JSON.stringify(updatedState));
+        updatedState.playerId = 2;
         player2.send(JSON.stringify(updatedState));
       } catch (error) {
         console.error("Invalid JSON format", error);
