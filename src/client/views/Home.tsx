@@ -7,37 +7,37 @@ export function Home() {
         </button>
         <ul className="nav-menu">
           <li className="nav-item active">
-            <a href="#" className="nav-item-link">
+            <a href="#home" className="nav-item-link">
               <i className="fa-solid fa-house"></i>
               <span>salon</span>
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-item-link">
+            <a href="#game" className="nav-item-link">
               <i className="fa-solid fa-table-tennis-paddle-ball"></i>
               <span>arena</span>
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-item-link">
+            <a href="#dashboard" className="nav-item-link">
               <i className="fa-solid fa-ranking-star"></i>
               <span>honor</span>
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-item-link">
+            <a href="#chat" className="nav-item-link">
               <i className="fa-solid fa-message"></i>
               <span>lounge</span>
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-item-link">
+            <a href="#friends" className="nav-item-link">
               <i className="fa-solid fa-user-group"></i>
               <span>members</span>
             </a>
           </li>
           <li className="nav-item">
-            <a href="#" className="nav-item-link">
+            <a href="#settings" className="nav-item-link">
               <i className="fa-solid fa-gear"></i>
               <span>mechanics</span>
             </a>
@@ -153,6 +153,13 @@ export function Home() {
     toggle.addEventListener("click", () => {
       menu.classList.toggle("show");
     });
+  }
+
+  const profilePic = homeSection.querySelector(".profile-pic");
+  if (profilePic) {
+    profilePic.onclick = () => {
+      window.location.hash = "profile";
+    };
   }
 
   return homeSection;
