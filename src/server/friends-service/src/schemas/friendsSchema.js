@@ -3,7 +3,8 @@ export const friendRequestSchema = {
     required: ['addresseeId'],
     properties: {
         addresseeId: { type: 'integer', minimum: 1 }
-    }
+    },
+    additionalProperties: false
 };
 
 export const friendDecisionSchema = {
@@ -11,7 +12,8 @@ export const friendDecisionSchema = {
     required: ['requesterId'],
     properties: {
         requesterId: { type: 'integer', minimum: 1 }
-    }
+    },
+    additionalProperties: false
 };
 
 
@@ -19,6 +21,7 @@ export const deleteFriendSchema = {
     type: 'object',
     required: ['friendId'],
     properties: {
-        friendId: { type: 'number', minimum: 1 }
-    }
+        friendId: { type: 'number' }
+    },
+    additionalProperties: false
 };
