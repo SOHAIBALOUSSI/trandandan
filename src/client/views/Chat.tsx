@@ -1,9 +1,4 @@
-export function renderChat(container: HTMLElement): void {
-	const section = document.createElement("section");
-	section.className = "p-8 text-center";
-	section.innerHTML = `
-
-	`;
-	container.appendChild(section);
-  }
-  
+export function Chat() {
+  const chatSection = <section className="dark-page"></section>;
+  return chatSection;
+}

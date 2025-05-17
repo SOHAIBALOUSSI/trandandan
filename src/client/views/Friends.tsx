@@ -1,8 +1,4 @@
-export function renderFriends(container: HTMLElement): void {
-  const section = document.createElement("section");
-  section.className = "p-8 text-center";
-  section.innerHTML = `
-
-	`;
-  container.appendChild(section);
+export function Friends() {
+  const friendsSection = <section className="dark-page"></section>;
+  return friendsSection;
 }

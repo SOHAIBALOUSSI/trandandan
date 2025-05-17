@@ -1,9 +1,4 @@
-export function renderGame(container: HTMLElement): void {
-	const section = document.createElement("section");
-	section.className = "p-8 text-center";
-	section.innerHTML = `
-
-	`;
-	container.appendChild(section);
-  }
-  
+export function Game() {
+  const gameSection = <section></section>;
+  return gameSection;
+}

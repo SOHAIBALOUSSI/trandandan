@@ -132,15 +132,14 @@ footer {
 .light-page,
 .dark-page {
   width: 100%;
+  min-height: 100vh;
 }
 .light-page {
   padding: 0 var(--padding-xs);
-  height: 100vh;
   background: linear-gradient(to bottom, #fdfdfc 0%, #faf8f5 30%, #f8f6f2 60%);
   color: var(--color-primary);
 }
 .dark-page {
-  min-height: 100vh;
   background: linear-gradient(to bottom, #1b1b1b 0%, #141414 30%, #0a0a0a 60%);
   color: var(--color-dark-primary);
 }
@@ -180,12 +179,15 @@ footer {
   align-items: center;
   justify-content: space-between;
   text-align: center;
-  height: 100%;
+  min-height: 100vh;
   width: 100%;
   padding: 60px 15px;
 }
+.light-page .my-container {
+  gap: 2.5rem;
+}
 .dark-page .my-container {
-  padding: 1rem 15px;
+  padding: 1rem 15px 2.5rem;
 }
 /* === Forms Design === */
 .sign-form {
@@ -211,6 +213,7 @@ footer {
   background-color: var(--color-accent);
   border: none;
   border-radius: var(--border-radius);
+  text-transform: capitalize;
   cursor: pointer;
   transition-duration: var(--transition-duration);
 }
@@ -246,6 +249,7 @@ footer {
 }
 /* === Inputs Design === */
 .input-field {
+  text-transform: none;
   width: 100%;
   padding: 16px 12px;
   font-size: var(--paragraph-xs);
@@ -507,6 +511,26 @@ footer {
   width: 100%;
   outline: none;
   font-size: var(--paragraph-sm);
+}
+.top-nav-bar .left-controls .search-bar::placeholder {
+  color: #aebabf77;
+  font-weight: normal !important;
+}
+.top-nav-bar .left-controls i {
+  color: #aebabf77;
+  transition: color var(--transition-duration) ease;
+}
+.top-nav-bar .left-controls:focus-within i {
+  color: var(--color-dark-primary);
+}
+.top-nav-bar .left-controls:focus-within .search-bar {
+  text-transform: none !important;
+  font-weight: bold;
+  color: var(--color-dark-primary);
+}
+.top-nav-bar .left-controls:focus-within {
+  border-color: var(--color-dark-primary);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
 }
 .top-nav-bar .right-controls {
   display: flex;

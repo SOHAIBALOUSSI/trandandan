@@ -15,51 +15,32 @@ import { Chat } from "./views/Chat";
 import { Profile } from "./views/Profile";
 import { Settings } from "./views/Settings";
 
+const routes: Record<string, () => HTMLElement> = {
+  signin: Signin,
+  signup: Signup,
+  home: Home,
+  game: Game,
+  dashboard: Dashboard,
+  friends: Friends,
+  chat: Chat,
+  profile: Profile,
+  settings: Settings,
+  welcome: Welcome,
+};
+
+function router(): void {
+  const app = document.getElementById("app");
+  if (!app) return;
+
+  const route = location.hash.slice(1) || "welcome";
+  const render = routes[route] || Welcome;
+
+  app.innerHTML = "";
+  app.appendChild(render());
+}
+
+window.addEventListener("load", router);
+window.addEventListener("hashchange", router);
+
 // Selecting the root element for the application
 const app = document.getElementById("app");
-
-// Rendering views manually for testing
-app?.append(<Home />);
-
-// function router(): void {
-//   const app: any = document.querySelector(".app");
-//   if (!app) return;
-
-//   const route = location.hash.slice(1);
-//   app.innerHTML = "";
-
-//   switch (route) {
-//     case "signin":
-//       renderSignIn(app);
-//       break;
-//     case "signup":
-//       renderSignUp(app);
-//       break;
-//     case "home":
-//       renderHome(app);
-//       break;
-//     case "settings":
-//       renderSettings(app);
-//       break;
-//     case "profile":
-//       renderProfile(app);
-//       break;
-//     case "friends":
-//       renderFriends(app);
-//       break;
-//     case "chat":
-//       renderChat(app);
-//       break;
-//     case "game":
-//       renderGame(app);
-//       break;
-//     case "dashboard":
-//       renderDashboard(app);
-//       break;
-//     default:
-//       renderWelcome(app);
-//   }
-// }
-
-// window.addEventListener("hashchange", router);
-// window.addEventListener("load", router);

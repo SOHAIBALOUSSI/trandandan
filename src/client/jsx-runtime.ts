@@ -1,25 +1,33 @@
-export type Component = (props: Record<string, any>) => any;
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any;
+    }
+  }
+}
 
 export const jsx = {
   component(
-    component: string | Component,
-    props: Record<string, any> | null,
+    component: string | ((props: any) => HTMLElement),
+    props: any,
     ...children: any[]
   ) {
     if (!props) props = {};
-    props.children = children.flat(Infinity);
+    props.children = children.flat();
 
     if (typeof component === "function") return component(props);
 
-    const element = document.createElement(component);
-    for (const [key, value] of Object.entries(props)) {
+    const el = document.createElement(component);
+    for (const [key, val] of Object.entries(props)) {
       if (key === "children") continue;
-      else if (key === "className") element.setAttribute("class", value);
-      else element.setAttribute(key, value);
+      if (key === "className") el.setAttribute("class", String(val));
+      else el.setAttribute(key, String(val));
     }
 
-    element.append(...props.children);
+    props.children.forEach((child: any) =>
+      el.append(child instanceof Node ? child : document.createTextNode(child))
+    );
 
-    return element;
+    return el;
   },
 };

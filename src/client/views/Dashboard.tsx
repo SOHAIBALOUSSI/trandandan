@@ -1,9 +1,4 @@
-export function renderDashboard(container: HTMLElement): void {
-	const section = document.createElement("section");
-	section.className = "p-8 text-center";
-	section.innerHTML = `
-
-	`;
-	container.appendChild(section);
-  }
-  
+export function Dashboard() {
+  const dashboardSection = <section className="dark-page"></section>;
+  return dashboardSection;
+}
