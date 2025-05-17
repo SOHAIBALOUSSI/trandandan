@@ -36,7 +36,7 @@ if (!localStorage.getItem("userName")) {
   localStorage.setItem("userName", userName);
 }
 
-let socket = new WebSocket(`ws://10.0.2.15:5000/remoteGame?token=${test}`);
+let socket = new WebSocket(`ws://10.14.5.8:5000/remoteGame?token=${test}`);
 console.log("reconnected");
 
 window.onload = () => {
@@ -157,7 +157,7 @@ class FlowField {
   }
 
   sendPlayerData(playerData: object): void {
-    fetch("http://localhost:5000/storePlayerData", {
+    fetch("http://10.14.5.8:5000/storePlayerData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -180,11 +180,11 @@ class FlowField {
 
       if (this.gameState.playerId === 1)
       {
-        playerSide.innerText = 'YOU ARE LEFT SIDE';
+        playerSide.innerText = 'YOU ARE ON THE LEFT SIDE';
       }
       else if (this.gameState.playerId === 2)
       {
-        playerSide.innerText = 'YOU ARE RIGHT SIDE';
+        playerSide.innerText = 'YOU ARE ON THE RIGHT SIDE';
       }
       rightPlayerScore.textContent = String(this.gameState.rightPlayerScore);
       leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
@@ -212,10 +212,10 @@ class FlowField {
         };
         if (this.gameState.playerId === 0) {
           this.sendPlayerData(playerData);
-          console.log(playerData);
+          // console.log(playerData);
         } else {
           this.sendPlayerData(playerData);
-          console.log(playerData);
+          // console.log(playerData);
         }
         restartButton.addEventListener("click", () => {
           gameTabe.style.display = "none";
@@ -250,7 +250,7 @@ class FlowField {
             socket.readyState === WebSocket.CLOSING
           ) {
             const newSocket = new WebSocket(
-              `ws://10.0.2.15:5000/remoteGame?token=${test}`
+              `ws://10.14.5.8:5000/remoteGame?token=${test}`
             );
             newSocket.onopen = () => {
               console.log("WebSocket reconnected");

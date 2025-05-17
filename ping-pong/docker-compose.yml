@@ -8,7 +8,7 @@ services:
       - "5000"  # Makes it reachable from other containers
     restart: always
     volumes:
-      - /home/oussama/Desktop/tran/ping-pong/server/db:/app/db
+      - /home/ousabbar/Desktop/trandenden/ping-pong/db:/app/db
 
   client:
     build: ./client
