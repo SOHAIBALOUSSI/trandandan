@@ -157,7 +157,7 @@ class FlowField {
   }
 
   sendPlayerData(playerData: object): void {
-    fetch("http://10.14.5.8:5000/storePlayerData", {
+    fetch("http://10.0.2.15:5000/storePlayerData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
