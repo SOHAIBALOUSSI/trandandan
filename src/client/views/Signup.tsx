@@ -103,7 +103,7 @@ export function Signup() {
           console.log("Registered successfully:", result);
           localStorage.setItem("accessToken", result.accessToken);
           localStorage.setItem("refreshToken", result.refreshToken);
-          location.hash = "home"; // switch later to signin
+          location.hash = "welcome"; // switch later to signin
         } else {
           alert(result.error || "Registration failed.");
         }
