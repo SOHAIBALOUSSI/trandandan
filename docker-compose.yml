@@ -1,11 +1,13 @@
 services:
   frontend:
+    image: frontend
     build:
       context: .
       dockerfile: docker/Dockerfile.client
     ports:
-      - "3000:3000"
+      - "5000:3000"
     volumes:
       - .:/app
       - /app/node_modules
+    restart: always
     command: npm run dev

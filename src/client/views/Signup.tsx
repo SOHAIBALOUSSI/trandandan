@@ -78,6 +78,11 @@ export function Signup() {
       const confirmPassword =
         signupSection.querySelector("#confirm-password").value;
 
+      console.log(`username: ${username}`);
+      console.log(`email: ${email}`);
+      console.log(`password: ${password}`);
+      console.log(`confirmPassword: ${confirmPassword}`);
+
       try {
         const response = await fetch("http://localhost:3000/auth/register", {
           method: "POST",
@@ -95,13 +100,11 @@ export function Signup() {
         const result = await response.json();
 
         if (response.ok) {
-          // Success
           console.log("Registered successfully:", result);
           localStorage.setItem("accessToken", result.accessToken);
           localStorage.setItem("refreshToken", result.refreshToken);
           location.hash = "home"; // switch later to signin
         } else {
-          // Error backend
           alert(result.error || "Registration failed.");
         }
       } catch (err) {
