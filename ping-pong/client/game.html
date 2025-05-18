@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="src/styles/style.css">
+    <link rel="stylesheet" href="src/styles/styleLocal.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
-    <h1 id="count" class="flex text-center">0</h1>
+
+
     <div class="flex flex-col items-center justify-center h-screen">
-        <canvas id="canvas-game" class="cursor-pointer" width="800" height="600"></canvas>
+        <h1 id="tab" class="text-3xl text-blue-950 absolute top-100 hidden">Game Over! Press R to restart</h1>
+        <canvas id="canvas-game" class="cursor-pointer" width="800" height="600">
+
+        </canvas>
     </div>
     <script src="src/ts/game.ts"></script>
 </body>

@@ -2,8 +2,9 @@ const canvas = document.getElementById("canvas-game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
-const score = document.getElementById('count') as HTMLElement;
+
 let counting: number = 0;
+const tab = document.getElementById("tab") as HTMLElement;
 
 // import { BirdArray } from "./assets";
 function PlayerArray(): any[] {
@@ -138,7 +139,7 @@ setInterval(() => {
   grasss.push({
     x: CANVAS_WIDTH + 100,
     y: 405,
-    speed: 4 + Math.random() * 2 // randomize speed a bit
+    speed: 4 + Math.random() * 2, // randomize speed a bit
   });
 }, 800);
 
@@ -156,10 +157,9 @@ setInterval(() => {
   woods.push({
     x: CANVAS_WIDTH + 100,
     y: 405,
-    speed: 4 + Math.random() * 2 // randomize speed a bit
+    speed: 4 + Math.random() * 2, // randomize speed a bit
   });
 }, 1500);
-
 
 let FrogImg = FrogArray();
 let FrogSpeed: number = 0;
@@ -246,34 +246,6 @@ let enemyX: number = 0;
 let enemyY: number = 0;
 let cancel: boolean = false;
 
-function resetGame() {
-  // Reset player state
-  jumpY = 405;
-  isJumping = false;
-  velocityY = 0;
-  playerX = 100;
-  playerY = 405;
-  cancel = false;
-  
-  // Reset game objects
-  frogs = [];
-  birds = [];
-  grasss = [];
-  woods = [];
-  
-  // Reset game speed and score
-  groundSpeed = 9;
-  counting = 0;
-  score.innerText = "0";
-  
-  // Reset animation counters
-  frameCount = 0;
-  PlayerSpeed = 0;
-  FrogSpeed = 0;
-  BirdSpeed = 0;
-  PlayerimgIndex = 1;
-}
-
 function animate() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   ctx.drawImage(backgroundImg, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -283,7 +255,7 @@ function animate() {
     woodObj.x -= groundSpeed;
   }
   // Remove woods that have left the screen
-  woods = woods.filter(woodObj => woodObj.x > -100);
+  woods = woods.filter((woodObj) => woodObj.x > -100);
 
   for (let i = 0; i < grasss.length; i++) {
     let grassObj = grasss[i];
@@ -291,8 +263,7 @@ function animate() {
     grassObj.x -= groundSpeed;
   }
   // Remove grasss that have left the screen
-  grasss = grasss.filter(grassObj => grassObj.x > -100);
-
+  grasss = grasss.filter((grassObj) => grassObj.x > -100);
 
   // frog animation
   for (let i = 0; i < frogs.length; i++) {
@@ -367,29 +338,31 @@ function animate() {
   frameCount++;
   if (frameCount % 500 === 0) groundSpeed++;
   groundX -= groundSpeed;
-  score.innerText = counting.toString();
+
   counting++;
   if (cancel) {
-    // ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    ctx.drawImage(backgroundImg, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    // DrawGround(groundImg, groundX);
+    tab.style.display = "block";
     ctx.drawImage(playerDeath, playerX, playerY, 100, 100);
-    
-    // Show restart message
-    ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("Game Over! Press R to restart", CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+    counting--;
+    localStorage.setItem("highscore", counting.toString());
     return;
   }
+  ctx.fillStyle = "#fb8500"; // gold/yellow
+  ctx.font = "24px 'Orbitron', Arial, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText("Score: " + counting, 20, 40);
+
+  // Draw highscore (top right)
+  ctx.textAlign = "right";
+  const highscore = localStorage.getItem("highscore") || "0";
+  ctx.fillText("Highscore: " + highscore, CANVAS_WIDTH - 20, 40);
   requestAnimationFrame(animate);
 }
 window.addEventListener("keydown", (event: KeyboardEvent) => {
   keys[event.key] = true;
-  
+
   if (event.key === "r" && cancel) {
-    resetGame();
-    animate();
+    window.location.reload();
   }
 });
 
