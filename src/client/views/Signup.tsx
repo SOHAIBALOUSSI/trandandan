@@ -66,7 +66,7 @@ export function Signup() {
     </section>
   );
 
-  // Handle form submission
+  // Handle signup form submission
   const form = signupSection.querySelector("form");
   if (form) {
     form.addEventListener("submit", async (e: any) => {
@@ -84,7 +84,7 @@ export function Signup() {
       console.log(`confirmPassword: ${confirmPassword}`);
 
       try {
-        const response = await fetch("http://localhost:3000/auth/register", {
+        const response = await fetch("/auth/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export function Signup() {
           console.log("Registered successfully:", result);
           localStorage.setItem("accessToken", result.accessToken);
           localStorage.setItem("refreshToken", result.refreshToken);
-          location.hash = "welcome"; // switch later to signin
+          location.hash = "signin"; // redirect the user to the signin page
         } else {
           alert(result.error || "Registration failed.");
         }

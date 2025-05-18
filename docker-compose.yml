@@ -1,13 +1,49 @@
 services:
+  auth:
+    container_name: auth-service
+    build: src/server/auth-service
+    image: auth-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    ports:
+      - "3000:3000"
+
+  profile:
+    container_name: profile-service
+    build: src/server/profile-service
+    image: profile-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    ports:
+      - "3001:3001"
+
   frontend:
-    image: frontend
+    container_name: frontend
     build:
       context: .
       dockerfile: docker/Dockerfile.client
+    image: frontend
     ports:
-      - "5000:3000"
+      - "8080:3000"
     volumes:
       - .:/app
       - /app/node_modules
+    working_dir: /app
+    depends_on:
+      - auth
+      - profile
+    networks:
+      - transcendence
     restart: always
     command: npm run dev
+
+networks:
+  transcendence:
+    name: transcendence
+    driver: bridge

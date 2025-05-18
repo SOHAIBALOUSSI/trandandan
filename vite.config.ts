@@ -14,7 +14,14 @@ export default defineConfig({
     jsxInject: `import { jsx } from '@/jsx-runtime'`,
     jsxFactory: "jsx.component",
   },
+
+  server: {
+    proxy: {
+      '/auth': 'http://auth:3000',
+    },
+  },
 });
+
 
 /*
 Here we have told esbuild that we want it 
