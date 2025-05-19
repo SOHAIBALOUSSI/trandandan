@@ -17,11 +17,10 @@ export default defineConfig({
 
   server: {
     proxy: {
-      '/auth': 'http://auth:3000',
+      "/auth": "http://auth:3000",
     },
   },
 });
-
 
 /*
 Here we have told esbuild that we want it 

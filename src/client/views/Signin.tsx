@@ -1,6 +1,11 @@
-import { Signup } from "./Signup";
+import { Footer } from "@/components/common/footer";
+import { handleSignIN } from "@/services/handle-signin";
 
 export function Signin() {
+  setTimeout(() => {
+    handleSignIN();
+  }, 0);
+
   const signinSection = (
     <section className="light-page">
       <div className="my-container signin-page">
@@ -14,7 +19,7 @@ export function Signin() {
           </p>
         </div>
         <div className="signin-form">
-          <form action="" method="post" className="sign-form">
+          <form action="" method="post" className="sign-form" id="signin-form">
             <input
               type="text"
               name="login"
@@ -51,7 +56,7 @@ export function Signin() {
             </div>
           </form>
           <div className="remote-signin">
-            <button className="btn-primary">
+            <button type="submit" className="btn-primary">
               <i className="fa-solid fa-couch"></i>
               enter with google
             </button>
@@ -61,60 +66,12 @@ export function Signin() {
             </button>
           </div>
         </div>
-        <footer>
-          Est. in Spirit — Reviving the Golden Age of the Game. © 2025 BHV Club
-        </footer>
+        <Footer />
       </div>
     </section>
   );
 
-  // Handle signin form submission
-  const form = signinSection.querySelector("form");
-  if (form) {
-    form.addEventListener("submit", async (e: any) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const loginValue = formData.get("login") as string;
-      const password = formData.get("password") as string;
-
-	  console.log("Login:", loginValue);
-	  console.log("Password:", password);
-
-      // Determine if login is an email or username
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginValue);
-      const payload = isEmail
-        ? { email: loginValue, password }
-        : { username: loginValue, password };
-
-      try {
-        const response = await fetch("/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          if (result.accessToken) {
-            localStorage.setItem("accessToken", result.accessToken);
-          }
-          if (result.refreshToken) {
-            localStorage.setItem("refreshToken", result.refreshToken);
-          }
-		  console.log("Logged in successfully:", result);
-          location.hash = "#home";
-        } else {
-          alert(result.error || "Login failed.");
-        }
-      } catch (err) {
-        console.error("Error logging in:", err);
-        alert("Server error. Try again later.");
-      }
-    });
-  }
+  handleSignIN();
 
   return signinSection;
 }

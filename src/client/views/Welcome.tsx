@@ -1,4 +1,4 @@
-import { Signin } from "./Signin";
+import { Footer } from "@/components/common/footer";
 
 export function Welcome() {
   const welcomeSection = (
@@ -21,9 +21,7 @@ export function Welcome() {
             Play like it’s 1901. Compete like a champion.
           </h3>
         </div>
-        <footer>
-          Est. in Spirit — Reviving the Golden Age of the Game. © 2025 BHV Club
-        </footer>
+        <Footer />
       </div>
     </section>
   );

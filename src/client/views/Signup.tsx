@@ -1,4 +1,11 @@
+import { Footer } from "@/components/common/footer";
+import { handleSignUp } from "@/services/handle-signup";
+
 export function Signup() {
+  setTimeout(() => {
+    handleSignUp();
+  }, 0);
+
   const signupSection = (
     <section className="light-page">
       <div className="my-container signup-page">
@@ -9,7 +16,7 @@ export function Signup() {
           <h3 className="subtitle-h">become a member</h3>
           <p className="subtitle-p">sign your name into club history</p>
         </div>
-        <form action="" method="post" className="sign-form">
+        <form action="" method="post" className="sign-form" id="signup-form">
           <input
             type="text"
             name="username"
@@ -42,7 +49,7 @@ export function Signup() {
             placeholder="confirm your password"
             required
           />
-          <button className="btn-primary">
+          <button type="submit" className="btn-primary">
             <i className="fa-solid fa-table-tennis-paddle-ball"></i>
             register your racket
           </button>
@@ -59,60 +66,10 @@ export function Signup() {
             </p>
           </div>
         </form>
-        <footer>
-          Est. in Spirit — Reviving the Golden Age of the Game. © 2025 BHV Club
-        </footer>
+        <Footer />
       </div>
     </section>
   );
-
-  // Handle signup form submission
-  const form = signupSection.querySelector("form");
-  if (form) {
-    form.addEventListener("submit", async (e: any) => {
-      e.preventDefault();
-
-      const username = signupSection.querySelector("#username").value;
-      const email = signupSection.querySelector("#email").value;
-      const password = signupSection.querySelector("#password").value;
-      const confirmPassword =
-        signupSection.querySelector("#confirm-password").value;
-
-      console.log(`username: ${username}`);
-      console.log(`email: ${email}`);
-      console.log(`password: ${password}`);
-      console.log(`confirmPassword: ${confirmPassword}`);
-
-      try {
-        const response = await fetch("/auth/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            password,
-            confirmPassword,
-          }),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          console.log("Registered successfully:", result);
-          localStorage.setItem("accessToken", result.accessToken);
-          localStorage.setItem("refreshToken", result.refreshToken);
-          location.hash = "signin"; // redirect the user to the signin page
-        } else {
-          alert(result.error || "Registration failed.");
-        }
-      } catch (err) {
-        console.error("Error registering:", err);
-        alert("Server error. Try again later.");
-      }
-    });
-  }
 
   return signupSection;
 }
