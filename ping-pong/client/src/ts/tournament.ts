@@ -7,8 +7,25 @@ const leftPlayerScoreLocal = document.getElementById(
 const gameTab = document.getElementById("gameTab") as HTMLElement;
 const result = document.getElementById("result") as HTMLElement;
 const restart = document.getElementById("restart") as HTMLElement;
+const players8 = document.getElementById("8Players") as HTMLElement;
+const players4 = document.getElementById("4Players") as HTMLElement;
+const selectTab = document.getElementById("selectTab") as HTMLElement;
+const inputPlayers = document.getElementById("inputPlayers") as HTMLElement;
+const playerIdField = document.getElementById("playerIdField") as HTMLElement;
+const addPlayerBtn = document.getElementById("addPlayerBtn") as HTMLElement;
+const tourTab = document.getElementById('tourTab') as HTMLElement;
+const prevMatch = document.getElementById('prevMatch') as HTMLElement;
+const currentMatch = document.getElementById('currentMatch') as HTMLElement;
+const nextMatch = document.getElementById('nextMatch') as HTMLElement;
+const resultTab = document.getElementById('resultTab') as HTMLElement;
+const resultStat = document.getElementById('resultStat') as HTMLElement;
+const restartTournoi = document.getElementById('restartTournoi') as HTMLElement;
 
+const start = document.getElementById('start') as HTMLElement;
+let numberOfPlayers: number = 0;
 let socketLocal: WebSocket;
+let Players: string[] = [];
+let Winners: string[] = [];
 
 window.onload = () => {
   socketLocal = new WebSocket("ws://10.12.12.12:5000/ws");
@@ -25,7 +42,46 @@ window.onload = () => {
     keys[event.key] = false;
   });
 
+  players4.addEventListener("click", () => {
+    selectTab.style.display = "none";
+    inputPlayers.style.display = "block";
+    numberOfPlayers = 4;
+  });
+  players8.addEventListener("click", () => {
+    selectTab.style.display = "none";
+    inputPlayers.style.display = "block";
+    numberOfPlayers = 8;
+  });
+
   const flow = new FlowFieldLocal(ctx, keys);
+
+  addPlayerBtn.addEventListener("click", () => {
+    if (!playerIdField.checkValidity()) {
+      alert("Invalid input! Please enter a valid player ID.");
+      return;
+    }
+    if (Players.includes(playerIdField.value))
+    {
+      alert("Player Already Exist.");
+      return;
+    }
+    Players.push(playerIdField.value);
+		playerIdField.value = "";
+    
+    if (Players.length === numberOfPlayers) {
+      inputPlayers.style.display = "none";
+			tourTab.style.display = "none";
+			gameTab.style.display = "block";
+			currentMatch.innerText = Players[0] + " vs " + Players[1];
+			nextMatch.innerText = "NEXT MATCH: " + Players[2] + " vs " + Players[3]
+			start.addEventListener('click', () => {
+        start.style.display = 'none';
+        restart.style.display = 'block';
+				gameTab.style.display = 'none';
+				flow.animate();
+			})
+    }
+  });
 
   socketLocal.onmessage = (event: MessageEvent) => {
     flow.updateGameState(event.data);
@@ -38,7 +94,6 @@ window.onload = () => {
   socketLocal.onerror = (err: Event) => {
     console.error("[client] WebSocket error:", err);
   };
-  flow.animate();
 };
 
 interface GameStateLocal {
@@ -219,6 +274,36 @@ class FlowFieldLocal {
     }
   }
   private setInitialStat() {
+    if (result.innerText === "Winner: " + Players[1]) Winners.push(Players[1]);
+    else if (result.innerText === "Winner: " + Players[0]) Winners.push(Players[0]);
+		let oldPlayerLeft = Players[0];
+		let oldPlayerRight = Players[1];
+
+    Players.splice(0, 2);
+    if (Players.length < 1) {
+      // Move winners to the next round
+      Players = Winners;
+      Winners = [];
+
+      // If there's only one winner left, declare them as the final winner
+      if (Players.length === 1) {
+        restartTournoi.addEventListener('click', () => {
+          window.location.reload();
+        })
+        resultStat.innerText = "Tournament winner is: " + Players[0];
+        resultTab.style.display = 'block';
+      }
+    }
+    if (Players.length % 2 === 0)
+		{
+			prevMatch.innerText = "PREVIOUS MATCH: " + oldPlayerLeft + " vs " + oldPlayerRight;
+      currentMatch.innerText = Players[0] + " vs " + Players[1];
+			if (Players.length >= 4)
+				nextMatch.innerText = "NEXT MATCH: " + Players[2] + " vs " + Players[3];
+      else
+        nextMatch.innerText = "";
+		}
+
     this.gameState = {
       paddleLeftY: 240,
       paddelRightY: 240,
@@ -235,7 +320,7 @@ class FlowFieldLocal {
     gameTab.style.display = "block";
     socketLocal.close();
     restart.addEventListener("click", () => {
-      gameTab.style.display = 'none';
+      gameTab.style.display = "none";
       const newSocket = new WebSocket("ws://10.12.12.12:5000/ws");
       socketLocal = newSocket;
       socketLocal.onmessage = (event: MessageEvent) => {
@@ -245,6 +330,7 @@ class FlowFieldLocal {
   }
   public updateGameState(data: string): void {
     this.gameState = JSON.parse(data);
+
     if (rightPlayerScoreLocal)
       rightPlayerScoreLocal.textContent =
         this.gameState.rightPlayerScore.toString();
@@ -253,11 +339,11 @@ class FlowFieldLocal {
         this.gameState.leftPlayerScore.toString();
 
     if (this.gameState.rightPlayerScore === 5) {
-      result.innerText = "RIGHT PLAYER WON";
+      result.innerText = "Winner: " + Players[1];
       this.setInitialStat();
     }
     if (this.gameState.leftPlayerScore === 5) {
-      result.innerText = "LEFT PLAYER WON";
+      result.innerText = "Winner: " + Players[0];
       this.setInitialStat();
     }
   }
