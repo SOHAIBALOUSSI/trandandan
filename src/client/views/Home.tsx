@@ -1,77 +1,11 @@
+import { LeftNavBar } from "@/components/layout/left-nav-bar";
+import { TopNavBar } from "@/components/layout/top-nav-bar";
+
 export function Home() {
   const homeSection = (
     <section className="dark-page">
-      <nav className="nav-bar">
-        <button className="nav-toggle" aria-label="Toggle navigation">
-          <i className="fa-solid fa-bars"></i>
-        </button>
-        <ul className="nav-menu">
-          <li className="nav-item active">
-            <a href="#home" className="nav-item-link">
-              <i className="fa-solid fa-house"></i>
-              <span>salon</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#game" className="nav-item-link">
-              <i className="fa-solid fa-table-tennis-paddle-ball"></i>
-              <span>arena</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#dashboard" className="nav-item-link">
-              <i className="fa-solid fa-ranking-star"></i>
-              <span>honor</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#chat" className="nav-item-link">
-              <i className="fa-solid fa-message"></i>
-              <span>lounge</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#friends" className="nav-item-link">
-              <i className="fa-solid fa-user-group"></i>
-              <span>members</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#settings" className="nav-item-link">
-              <i className="fa-solid fa-gear"></i>
-              <span>mechanics</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#" className="nav-item-link">
-              <i className="fa-solid fa-arrow-right-from-bracket"></i>
-              <span>exit</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-      <nav className="top-nav-bar">
-        <div className="left-controls">
-          <i className="fa-solid fa-magnifying-glass"></i>
-          <input
-            className="search-bar"
-            id="search-bar"
-            type="search"
-            placeholder="Find a Racket Companion"
-            aria-label="Search"
-          />
-        </div>
-        <div className="right-controls">
-          <div className="notif">
-            <i className="fa-regular fa-bell"></i>
-          </div>
-          <img
-            src="assets/abel-mqa.jpeg"
-            alt="Profile"
-            className="profile-pic"
-          />
-        </div>
-      </nav>
+      <LeftNavBar />
+      <TopNavBar />
       <div className="my-container home-page">
         <div className="header">
           <h1 className="main-heading-light">
@@ -145,22 +79,6 @@ export function Home() {
       </div>
     </section>
   );
-
-  const toggle = homeSection.querySelector(".nav-toggle");
-  const menu = homeSection.querySelector(".nav-menu");
-
-  if (toggle && menu) {
-    toggle.addEventListener("click", () => {
-      menu.classList.toggle("show");
-    });
-  }
-
-  const profilePic = homeSection.querySelector(".profile-pic");
-  if (profilePic) {
-    profilePic.onclick = () => {
-      window.location.hash = "profile";
-    };
-  }
 
   return homeSection;
 }

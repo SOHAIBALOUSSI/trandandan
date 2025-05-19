@@ -44,3 +44,5 @@ window.addEventListener("hashchange", router);
 
 // Selecting the root element for the application
 const app = document.getElementById("app");
+
+// app?.appendChild(<Welcome />);

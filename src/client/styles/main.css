@@ -572,6 +572,11 @@ footer {
   height: 35px;
   border-radius: 50%;
   cursor: pointer;
+  outline: 4px solid transparent;
+  transition-duration: var(--transition-duration);
+}
+.top-nav-bar .profile-pic:hover {
+  outline: 4px solid var(--color-dark-highlight);
 }
 @media (min-width: 768px) {
   .nav-bar {
