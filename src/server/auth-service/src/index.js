@@ -5,6 +5,7 @@ import jwtPlugin from './plugins/jwt-plugin.js'
 import { createUserTable } from './database/createUserTable.js';
 import { createTokenTable } from './database/createTokenTable.js';
 import authRoutes from './routes/authRoutes.js';
+import twoFARoutes from './routes/2FARoutes.js';
 
 const server = fastify({logger: true});
 
@@ -20,6 +21,7 @@ await createUserTable(server.db);
 await createTokenTable(server.db);
 
 await server.register(authRoutes, { prefix: '/auth' });
+await server.register(twoFARoutes, { prefix: '/2fa' });
 console.log("auth service initialization is done...");
 
 const start = async () => {

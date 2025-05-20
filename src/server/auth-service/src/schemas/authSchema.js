@@ -46,3 +46,15 @@ export const tokenSchema = {
     },
     additionalProperties: false
 }
+
+export const totpCodeSchema = {
+    type: 'object',
+    required: ['totpCode'],
+    properties: {
+        totpCode: {
+            type: 'string',
+            minLength: 6,
+            maxLength: 6
+        }
+    }
+}
