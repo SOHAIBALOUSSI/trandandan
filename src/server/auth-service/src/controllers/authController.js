@@ -11,10 +11,16 @@ export async function loginHandler(request, reply) {
         const user = await findUser(this.db, username, email);
         if (!user)
             return reply.code(404).send({ error: 'User not found.' });
+
         const matched = await compare(password, user.password);
         if (!matched)
             return reply.code(400).send({ error: 'Invalid credentials.' });
         
+        if (user.twofa_enabled)
+        {
+            const tempToken = this.jwt.signTT({ id: user.id });
+            return reply.code(206).send({ message: 'Two-Factor authentication is required', tempToken: tempToken });
+        }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         
@@ -22,7 +28,7 @@ export async function loginHandler(request, reply) {
 
         return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
-        return reply.code(500).send({ err: 'Internal server error.', details: error });
+        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
     }
 }
 
@@ -60,11 +66,11 @@ export async function registerHandler(request, reply) {
             const errorText = await response.json();
             await deleteUser(this.db, userId);
             await revokeToken(this.db, refreshToken);
-            return reply.code(400).send({ err: 'Failed to create profile', details: errorText });
+            return reply.code(400).send({ error: 'Failed to create profile', details: errorText });
         }
         return reply.code(201).send({ accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
-        return reply.code(500).send({ err: 'Internal server error.', details: error });
+        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
     }
 }
 
@@ -88,7 +94,7 @@ export async function logoutHandler(request, reply) {
         
         return reply.code(200).send({ message: `User logged out.` });
     } catch (error) {
-        return reply.code(500).send({ err: 'Internal server error.', details: error });
+        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
     }
 }
 
@@ -102,7 +108,7 @@ export async function meHandler(request, reply) {
         
         return reply.code(200).send({ id: user.id, username: user.username, email: user.email });
     } catch (error) {
-        return reply.code(500).send({ err: 'Internal server error.', details: error });
+        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
     }
 }
 
@@ -127,6 +133,6 @@ export async function refreshHandler(request, reply) {
 
         return reply.code(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });
     } catch (error) {
-        return reply.code(500).send({ err: 'Internal server error.', details: error });
+        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
     }
 }
