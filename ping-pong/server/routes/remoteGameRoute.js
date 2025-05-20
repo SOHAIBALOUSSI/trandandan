@@ -102,6 +102,8 @@ function generateNewRoomId(params) {
 export function remoteGame(connection, req) {
   let roomId;
   const token = req.query.token;
+  const playerRoomdId = req.query.roomId;
+
   let joined = false;
 
   for (const [id] of Object.entries(rooms)) {
@@ -117,16 +119,18 @@ export function remoteGame(connection, req) {
     });
 
     if (rooms[id].players.length < 2 && !joined) {
-      rooms[id].players.push({ token: token, connection: connection });
-      joined = true;
-      roomId = id;
+      if (playerRoomdId === id)
+      {
+        rooms[id].players.push({ token: token, connection: connection });
+        joined = true;
+        roomId = id;
+      }
       break;
     }
   }
 
   if (!joined) {
-    roomId = generateNewRoomId();
-    console.log("matchId: ", roomId);
+    roomId = playerRoomdId;
     rooms[roomId] = {
       players: [{ token: token, connection: connection }],
       gameState: {
@@ -155,6 +159,7 @@ export function remoteGame(connection, req) {
       },
     };
   }
+  
   if (rooms[roomId].players.length === 2) {
     const [
       { toke1: token1, connection: player1 },

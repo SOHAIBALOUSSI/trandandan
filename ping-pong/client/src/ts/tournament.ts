@@ -28,7 +28,7 @@ let Players: string[] = [];
 let Winners: string[] = [];
 
 window.onload = () => {
-  socketLocal = new WebSocket("ws://10.12.12.12:5000/ws");
+  socketLocal = new WebSocket("ws://0.0.0.0:5000/ws");
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
@@ -321,7 +321,7 @@ class FlowFieldLocal {
     socketLocal.close();
     restart.addEventListener("click", () => {
       gameTab.style.display = "none";
-      const newSocket = new WebSocket("ws://10.12.12.12:5000/ws");
+      const newSocket = new WebSocket("ws://0.0.0.0:5000/ws");
       socketLocal = newSocket;
       socketLocal.onmessage = (event: MessageEvent) => {
         this.updateGameState(event.data);
