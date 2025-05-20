@@ -340,22 +340,23 @@ function animate() {
   groundX -= groundSpeed;
 
   counting++;
-  if (cancel) {
-    tab.style.display = "block";
-    ctx.drawImage(playerDeath, playerX, playerY, 100, 100);
-    counting--;
-    localStorage.setItem("highscore", counting.toString());
-    return;
-  }
-  ctx.fillStyle = "#fb8500"; // gold/yellow
-  ctx.font = "24px 'Orbitron', Arial, sans-serif";
-  ctx.textAlign = "left";
-  ctx.fillText("Score: " + counting, 20, 40);
-
   // Draw highscore (top right)
   ctx.textAlign = "right";
   const highscore = localStorage.getItem("highscore") || "0";
   ctx.fillText("Highscore: " + highscore, CANVAS_WIDTH - 20, 40);
+  ctx.fillStyle = "#fb8500"; // gold/yellow
+  ctx.font = "24px 'Orbitron', Arial, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText("Score: " + counting, 20, 40);
+  if (cancel) {
+    tab.style.display = "block";
+    ctx.drawImage(playerDeath, playerX, playerY, 100, 100);
+    counting--;
+    if (counting > parseInt(highscore))
+      localStorage.setItem("highscore", counting.toString());
+    return;
+  }
+
   requestAnimationFrame(animate);
 }
 window.addEventListener("keydown", (event: KeyboardEvent) => {

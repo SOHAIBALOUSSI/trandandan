@@ -22,13 +22,14 @@ function generateToken(): string {
   return roomId;
 }
 
+
 let token = generateToken();
 console.log(token);
 
-let test = localStorage.getItem("player");
-if (test === null) {
+let connectionId = localStorage.getItem("player");
+if (connectionId === null) {
   localStorage.setItem("player", token);
-  test = token;
+  connectionId = token;
 }
 
 let userName = localStorage.getItem("userName") || generateToken();
@@ -36,7 +37,10 @@ if (!localStorage.getItem("userName")) {
   localStorage.setItem("userName", userName);
 }
 
-let socket = new WebSocket(`ws://0.0.0.0:5000/remoteGame?token=${test}`);
+
+let roomdId = '123';
+
+let socket = new WebSocket(`ws://0.0.0.0:5000/remoteGame?token=${connectionId}&roomId=${roomdId}`);
 console.log("reconnected");
 
 window.onload = () => {
@@ -157,7 +161,7 @@ class FlowField {
   }
 
   sendPlayerData(playerData: object): void {
-    fetch("http://10.0.2.15:5000/storePlayerData", {
+    fetch("http://0.0.0.0:5000/storePlayerData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -250,7 +254,7 @@ class FlowField {
             socket.readyState === WebSocket.CLOSING
           ) {
             const newSocket = new WebSocket(
-              `ws://0.0.0.0:5000/remoteGame?token=${test}`
+              `ws://0.0.0.0:5000/remoteGame?token=${connectionId}&roomId=${roomdId}`
             );
             newSocket.onopen = () => {
               console.log("WebSocket reconnected");
