@@ -34,8 +34,7 @@ export function handleSignIN() {
           if (result.refreshToken) {
             localStorage.setItem("refreshToken", result.refreshToken);
           }
-          console.log("Logged in successfully:", result);
-          location.hash = "#home";
+          location.hash = "home";
         } else {
           alert(result.error || "Login failed.");
         }

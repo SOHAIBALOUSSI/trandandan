@@ -152,6 +152,8 @@ footer {
   .light-page {
     padding: 0 var(--padding-md);
   }
+}
+@media (min-width: 768px) and (min-height: 760px) {
   .dark-page {
     padding: 0 var(--padding-md) 0 calc(var(--padding-md) + 100px);
   }
@@ -160,6 +162,8 @@ footer {
   .light-page {
     padding: 0 var(--padding-lg);
   }
+}
+@media (min-width: 992px) and (min-height: 760px) {
   .dark-page {
     padding: 0 var(--padding-lg) 0 calc(var(--padding-lg) + 100px);
   }
@@ -168,6 +172,8 @@ footer {
   .light-page {
     padding: 0 var(--padding-xl);
   }
+}
+@media (min-width: 1200px) and (min-height: 760px) {
   .dark-page {
     padding: 0 var(--padding-xl) 0 calc(var(--padding-xl) + 100px);
   }
@@ -484,6 +490,41 @@ footer {
 .nav-item i {
   font-size: 1.25rem;
 }
+@media (min-width: 768px) and (min-height: 760px) {
+  .nav-bar {
+    width: 100px;
+    min-height: 100vh;
+    position: fixed;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+    background-color: var(--color-dark-secondary);
+    overflow-y: auto;
+  }
+  .nav-toggle {
+    display: none;
+  }
+  .nav-menu {
+    display: flex !important;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+  .nav-item {
+    width: 100%;
+  }
+  .nav-item .nav-item-link {
+    color: #fff;
+    flex-direction: column;
+    font-size: 0.875rem;
+    width: 100%;
+  }
+  .nav-item .nav-item-link:hover,
+  .nav-item.active .nav-item-link {
+    background-color: transparent !important;
+    color: var(--color-dark-accent);
+  }
+}
 .top-nav-bar {
   color: var(--color-dark-primary);
   display: flex;
@@ -577,40 +618,6 @@ footer {
 }
 .top-nav-bar .profile-pic:hover {
   outline: 4px solid var(--color-dark-highlight);
-}
-@media (min-width: 768px) {
-  .nav-bar {
-    width: 100px;
-    height: 100vh;
-    position: fixed;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 0;
-    background-color: var(--color-dark-secondary);
-  }
-  .nav-toggle {
-    display: none;
-  }
-  .nav-menu {
-    display: flex !important;
-    flex-direction: column;
-    gap: 2rem;
-    align-items: center;
-  }
-  .nav-item {
-    width: 100%;
-  }
-  .nav-item .nav-item-link {
-    color: #fff;
-    flex-direction: column;
-    font-size: 0.875rem;
-    width: 100%;
-  }
-  .nav-item .nav-item-link:hover,
-  .nav-item.active .nav-item-link {
-    background-color: transparent !important;
-    color: var(--color-dark-accent);
-  }
 }
 /* === Custom Link Design === */
 .link {
