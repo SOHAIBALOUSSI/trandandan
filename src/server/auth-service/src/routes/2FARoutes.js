@@ -7,7 +7,7 @@ async function twoFARoutes(fastify) {
         handler: setup2FAHandler
     });
 
-    fastify.post('/verif-setup', {
+    fastify.post('/verify-setup', {
         schema: {
             body: totpCodeSchema
         },

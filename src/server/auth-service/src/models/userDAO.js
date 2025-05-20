@@ -34,7 +34,7 @@ export async function deleteUser(db, id) {
     return result.changes;
 }
 
-export async function storeTempSecret(db, id, secret) {
+export async function storeTempSecret(db, secret, id) {
     const result = await db.run('UPDATE user SET twofa_temp_secret = ? WHERE id = ?',
         [secret, id]
     );    

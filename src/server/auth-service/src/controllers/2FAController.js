@@ -42,7 +42,7 @@ export async function verify2FASetupHandler(request, reply) {
             secret: user.twofa_temp_secret,
             encoding: 'base32',
             token: totpCode,
-            window: 6
+            window: 1
         })
         if (!isValid)
             return reply.code(401).send({ error: 'Invalid TOTP code.' });
