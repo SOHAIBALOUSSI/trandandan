@@ -36,7 +36,7 @@ if (!localStorage.getItem("userName")) {
   localStorage.setItem("userName", userName);
 }
 
-let socket = new WebSocket(`ws://10.14.5.8:5000/remoteGame?token=${test}`);
+let socket = new WebSocket(`ws://0.0.0.0:5000/remoteGame?token=${test}`);
 console.log("reconnected");
 
 window.onload = () => {
@@ -250,7 +250,7 @@ class FlowField {
             socket.readyState === WebSocket.CLOSING
           ) {
             const newSocket = new WebSocket(
-              `ws://10.14.5.8:5000/remoteGame?token=${test}`
+              `ws://0.0.0.0:5000/remoteGame?token=${test}`
             );
             newSocket.onopen = () => {
               console.log("WebSocket reconnected");
