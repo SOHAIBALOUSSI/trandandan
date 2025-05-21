@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import dotenv from 'dotenv';
 import sqlitePlugin from './plugins/sqlite-plugin.js'
 import jwtPlugin from './plugins/jwt-plugin.js'
+import nodemailerPlugin from './plugins/nodemailer-plugin.js';
 import { createUserTable } from './database/createUserTable.js';
 import { createTokenTable } from './database/createTokenTable.js';
 import authRoutes from './routes/authRoutes.js';
@@ -16,6 +17,7 @@ await server.register(jwtPlugin, {
     accessTokenKey: process.env.AJWT_SECRET_KEY,
     refreshTokenKey: process.env.RJWT_SECRET_KEY
 });
+await server.register(nodemailerPlugin);
 
 await createUserTable(server.db);
 await createTokenTable(server.db);

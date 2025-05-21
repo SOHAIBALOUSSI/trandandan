@@ -3,7 +3,7 @@ import speakeasy from 'speakeasy'
 import { storeTempSecret, updateUser2FA, findUserById } from '../models/userDAO.js';
 import { addToken } from '../models/tokenDAO.js';
 
-export async function setup2FAHandler(request, reply) {
+export async function setup2FAApp(request, reply) {
     try {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
@@ -26,7 +26,7 @@ export async function setup2FAHandler(request, reply) {
     }
 }
 
-export async function verify2FASetupHandler(request, reply) {
+export async function verify2FAAppSetup(request, reply) {
     try {
         
         const userId = request.user?.id;
@@ -55,7 +55,7 @@ export async function verify2FASetupHandler(request, reply) {
     }
 }
 
-export async function verifyLogin2FAHandler(request, reply) {
+export async function verify2FALogin(request, reply) {
     try {
         
         const userId = request.user?.id;

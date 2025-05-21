@@ -1,27 +1,57 @@
-import { setup2FAHandler, verify2FASetupHandler, verifyLogin2FAHandler } from "../controllers/2FAController.js";
+import { setup2FAApp, verify2FAAppSetup, verify2FALogin } from "../controllers/app2FAController.js";
+import { setup2FAEmail, verify2FAEmailSetup } from "../controllers/email2FAController.js";
+import { setup2FASms, verify2FASmsSetup } from "../controllers/sms2FAController.js";
 import { totpCodeSchema } from "../schemas/authSchema.js";
 
 async function twoFARoutes(fastify) {
-    fastify.post('/setup', {
+    fastify.post('/app/setup', {
         preHandler: fastify.authenticate,
-        handler: setup2FAHandler
+        handler: setup2FAApp
     });
 
-    fastify.post('/verify-setup', {
+    fastify.post('/app/verify-setup', {
         schema: {
             body: totpCodeSchema
         },
         preHandler: fastify.authenticate,
-        handler: verify2FASetupHandler
+        handler: verify2FAAppSetup
     });
+
+    
+    fastify.post('/email/setup', {
+        preHandler: fastify.authenticate,
+        handler: setup2FAEmail
+    });
+    
+    fastify.post('/email/verify-setup', {
+        schema: {
+            body: totpCodeSchema
+        },
+        preHandler: fastify.authenticate,
+        handler: verify2FAEmailSetup
+    });
+    
+    fastify.post('/sms/setup', {
+        preHandler: fastify.authenticate,
+        handler: setup2FASms
+    });
+    
+    fastify.post('/sms/verify-setup', {
+        schema: {
+            body: totpCodeSchema
+        },
+        preHandler: fastify.authenticate,
+        handler: verify2FASmsSetup
+    });
+    
 
     fastify.post('/verify-login', {
         schema: {
             body: totpCodeSchema
         },
         preHandler: fastify.authenticate,
-        handler: verifyLogin2FAHandler
-    })
+        handler: verify2FALogin
+    });
 }
 
 export default twoFARoutes;
