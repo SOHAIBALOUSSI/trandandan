@@ -19,7 +19,7 @@ function Header() {
 
 function Form() {
   const form = (
-    <div className="signin-form">
+    <div className="signin-form relative">
       <form action="" method="post" className="sign-form" id="signin-form">
         <input
           type="text"
@@ -32,16 +32,18 @@ function Form() {
         <input
           type="password"
           name="password"
-		  autocomplete="on"
+          autoComplete="on"
           className="input-field"
           id="password"
           placeholder="password"
           required
         />
-        <button className="btn-primary btn-bottom">
+        <div id="signin-feedback" className="form-message"></div>
+        <button type="submit" className="btn-primary btn-bottom">
           <i className="fa-solid fa-couch"></i>
           enter the lounge
         </button>
+
         <a href="#" className="lost-pass" data-link>
           lost your paddle?
         </a>
@@ -58,7 +60,7 @@ function Form() {
         </div>
       </form>
       <div className="remote-signin">
-        <button type="submit" className="btn-primary">
+        <button type="button" className="btn-primary">
           <i className="fa-solid fa-couch"></i>
           enter with google
         </button>
@@ -75,6 +77,7 @@ function Form() {
 
 export function Signin() {
   setTimeout(() => {
+    console.log("Signin component mounted");
     handleSignIN();
   }, 0);
 

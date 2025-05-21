@@ -1,5 +1,6 @@
 export function handleSignUp() {
   const signupForm = document.querySelector("#signup-form");
+  const feedback = document.querySelector<HTMLDivElement>("#signin-feedback");
 
   if (signupForm) {
     signupForm.addEventListener("submit", async (e: any) => {
@@ -14,6 +15,12 @@ export function handleSignUp() {
       const confirmPassword =
         (document.querySelector("#confirm-password") as HTMLInputElement)
           ?.value || "";
+
+      const showFeedback = (message: string) => {
+        if (!feedback) return;
+        feedback.textContent = message;
+        feedback.style.color = "#ef4444";
+      };
 
       try {
         const response = await fetch("/auth/register", {
@@ -31,17 +38,25 @@ export function handleSignUp() {
 
         const result = await response.json();
 
-        if (response.ok) {
+        if (result.statusCode === 201) {
           console.log("Registered successfully:", result);
           localStorage.setItem("accessToken", result.accessToken);
           localStorage.setItem("refreshToken", result.refreshToken);
-          location.pathname = "signin";
+          setTimeout(() => {
+            history.pushState(null, "", "signin");
+            window.dispatchEvent(new PopStateEvent("popstate"));
+          }, 1200);
+        } else if (result.statusCode === 400 || result.statusCode === 401) {
+          showFeedback(result.message);
+        } else if (result.statusCode === 500) {
+          showFeedback("Server error. Try again later.");
+          console.error(result.details || "No additional error details.");
         } else {
-          alert(result.error || "Registration failed.");
+          showFeedback(result.message || "Unexpected error occurred.");
         }
       } catch (err) {
         console.error("Error registering:", err);
-        alert("Server error. Try again later.");
+        showFeedback("Server error. Please try again later.");
       }
     });
   }

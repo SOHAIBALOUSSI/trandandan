@@ -18,6 +18,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/auth": "http://auth:3000",
+	  "/2fa": "http://auth:3000",
+	  "/profile": "http://profile:3001",
+	  "/friends": "http://friends:3002",
     },
     historyApiFallback: true,
   },

@@ -1,9 +1,13 @@
 export function handleSignIN() {
   const signInForm = document.querySelector<HTMLFormElement>("#signin-form");
-  if (!signInForm) return;
+  const feedback = document.querySelector<HTMLDivElement>("#signin-feedback");
+
+  if (!signInForm || !feedback) return;
 
   signInForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    feedback.textContent = "";
+    feedback.className = "form-message";
 
     const formData = new FormData(signInForm);
     const loginValue = formData.get("login") as string;
@@ -17,32 +21,42 @@ export function handleSignIN() {
     try {
       const response = await fetch("/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       const result = await response.json();
 
-      if (response.ok) {
+      if (response.status === 200) {
         localStorage.setItem("auth", "true");
-
-        if (result.accessToken) {
+        result.accessToken &&
           localStorage.setItem("accessToken", result.accessToken);
-        }
-        if (result.refreshToken) {
+        result.refreshToken &&
           localStorage.setItem("refreshToken", result.refreshToken);
-        }
-
         history.pushState(null, "", "/home");
         window.dispatchEvent(new PopStateEvent("popstate"));
+      } else if (response.status === 206) {
+        result.tempToken && localStorage.setItem("tempToken", result.tempToken);
+        feedback.textContent = "Two-factor authentication required.";
+        feedback.style.color = "#4f46e5";
+        history.pushState(null, "", "/2fa/verify-login");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+      } else if (response.status === 400 || response.status === 404) {
+        feedback.textContent = "Invalid credentials. Try again, champ.";
+        feedback.style.color = "#ef4444";
+      } else if (response.status === 500) {
+        feedback.textContent = "Server's catching its breath. Try again later.";
+        feedback.style.color = "#ef4444";
+        console.error(result.details || "No details provided.");
       } else {
-        alert(result.error || "Login failed.");
+        feedback.textContent =
+          "Something’s off. Ping us if it keeps happening.";
+        feedback.style.color = "#ef4444";
       }
     } catch (err) {
       console.error("Error logging in:", err);
-      alert("Server error. Try again later.");
+      feedback.textContent = "Network issue. Your legacy will have to wait.";
+      feedback.style.color = "#ef4444";
     }
   });
 }

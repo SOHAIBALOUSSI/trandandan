@@ -656,6 +656,32 @@ footer {
 .link .link-a:hover {
   color: var(--color-secondary);
 }
+.form-message {
+  margin-top: -0.25rem;
+  margin-bottom: 1.25rem;
+  font-size: var(--subparagraph-xs);
+  transition: all var(--transition-duration) ease;
+}
+@media (min-width: 576px) {
+  .form-message {
+    font-size: var(--subparagraph-sm);
+  }
+}
+@media (min-width: 768px) {
+  .form-message {
+    font-size: var(--subparagraph-md);
+  }
+}
+@media (min-width: 992px) {
+  .form-message {
+    font-size: var(--subparagraph-lg);
+  }
+}
+@media (min-width: 1200px) {
+  .form-message {
+    font-size: var(--subparagraph-xl);
+  }
+}
 /* End Custom Classes */
 
 /* Start Welcome Section */

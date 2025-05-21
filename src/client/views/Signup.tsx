@@ -37,7 +37,7 @@ function From() {
       <input
         type="password"
         name="password"
-		autocomplete="on"
+        autocomplete="on"
         id="password"
         className="input-field"
         placeholder="enter your password"
@@ -47,11 +47,12 @@ function From() {
         type="password"
         name="password"
         id="confirm-password"
-		autocomplete="on"
+        autocomplete="on"
         className="input-field"
         placeholder="confirm your password"
         required
       />
+      <div id="signin-feedback" className="form-message"></div>
       <button type="submit" className="btn-primary">
         <i className="fa-solid fa-table-tennis-paddle-ball"></i>
         register your racket

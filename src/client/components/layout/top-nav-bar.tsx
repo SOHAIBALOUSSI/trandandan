@@ -1,6 +1,6 @@
 function ProfilePicture() {
   const profilePic = (
-    <img src="assets/abel-mqa.jpeg" alt="Profile" className="profile-pic" />
+    <img src="assets/abel-mqa.jpeg" alt="Profile" className="profile-pic" data-link />
   );
 
   return profilePic;
