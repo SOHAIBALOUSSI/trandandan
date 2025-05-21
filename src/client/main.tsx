@@ -1,9 +1,8 @@
-// Importing necessary styles
 import "./styles/all.min.css";
 import "./styles/normalize.css";
 import "./styles/main.css";
 
-// Importing views for the application
+import { setupSPA } from "./router/router";
 import { Welcome } from "./views/Welcome";
 import { Signin } from "./views/Signin";
 import { Signup } from "./views/Signup";
@@ -28,21 +27,48 @@ const routes: Record<string, () => HTMLElement> = {
   welcome: Welcome,
 };
 
+const publicRoutes = ["signin", "signup", "welcome"];
+
+function isAuthenticated(): boolean {
+  return !!localStorage.getItem("auth");
+}
+
+// Main routing logic
 function router(): void {
   const app = document.getElementById("app");
   if (!app) return;
 
-  const route = location.hash.slice(1) || "welcome";
-  const render = routes[route] || Welcome;
+  const path = location.pathname.slice(1) || "welcome";
+  const isPublic = publicRoutes.includes(path);
+  const render = routes[path] || routes["welcome"];
 
-  app.innerHTML = "";
+  if (!isPublic && !isAuthenticated()) {
+    history.replaceState(null, "", "/signin");
+    router();
+    return;
+  }
+
+  if (isAuthenticated() && publicRoutes.includes(path)) {
+    history.replaceState(null, "", "/home");
+    router();
+    return;
+  }
+
+  while (app.firstChild) app.removeChild(app.firstChild);
   app.appendChild(render());
+
+  const allLinks = document.querySelectorAll(".nav-item");
+  allLinks.forEach((li) => li.classList.remove("active"));
+
+  const activeLink = document.querySelector(`.nav-item-link[href="/${path}"]`);
+  if (activeLink?.parentElement) {
+    activeLink.parentElement.classList.add("active");
+  }
 }
 
+// Setup SPA behavior
+setupSPA(router);
+
+// Handle page load and history changes
 window.addEventListener("load", router);
-window.addEventListener("hashchange", router);
-
-// Selecting the root element for the application
-const app = document.getElementById("app");
-
-// app?.appendChild(<Welcome />);
+window.addEventListener("popstate", router);

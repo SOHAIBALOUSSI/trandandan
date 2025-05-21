@@ -32,6 +32,7 @@ function Form() {
         <input
           type="password"
           name="password"
+		  autocomplete="on"
           className="input-field"
           id="password"
           placeholder="password"
@@ -41,13 +42,13 @@ function Form() {
           <i className="fa-solid fa-couch"></i>
           enter the lounge
         </button>
-        <a href="#" className="lost-pass">
+        <a href="#" className="lost-pass" data-link>
           lost your paddle?
         </a>
         <div className="link">
           <p className="link-p">
             new here?{" "}
-            <a href="#signup" className="link-a">
+            <a href="signup" className="link-a" data-link>
               join the club and make history.
             </a>
           </p>

@@ -1,7 +1,6 @@
 export function handleSignUp() {
   const signupForm = document.querySelector("#signup-form");
 
-  console.log("Signup form:", signupForm);
   if (signupForm) {
     signupForm.addEventListener("submit", async (e: any) => {
       e.preventDefault();
@@ -15,11 +14,6 @@ export function handleSignUp() {
       const confirmPassword =
         (document.querySelector("#confirm-password") as HTMLInputElement)
           ?.value || "";
-
-      console.log(`username: ${username}`);
-      console.log(`email: ${email}`);
-      console.log(`password: ${password}`);
-      console.log(`confirmPassword: ${confirmPassword}`);
 
       try {
         const response = await fetch("/auth/register", {
@@ -41,7 +35,7 @@ export function handleSignUp() {
           console.log("Registered successfully:", result);
           localStorage.setItem("accessToken", result.accessToken);
           localStorage.setItem("refreshToken", result.refreshToken);
-          location.hash = "signin";
+          location.pathname = "signin";
         } else {
           alert(result.error || "Registration failed.");
         }

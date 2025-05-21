@@ -15,8 +15,10 @@ function EnterTheClub() {
 
   const signinBtn = enterBtn.querySelector("#enter-btn");
   if (signinBtn) {
-    signinBtn.addEventListener("click", () => {
-      window.location.hash = "signin";
+    signinBtn.addEventListener("click", (e: any) => {
+      e.preventDefault();
+      history.pushState(null, "", "/signin");
+      window.dispatchEvent(new PopStateEvent("popstate"));
     });
   }
 

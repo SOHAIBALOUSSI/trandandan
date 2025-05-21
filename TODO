@@ -1,0 +1,3 @@
+2. Consider using more secure token storage (httpOnly cookies) if possible.
+3. Sanitize error messages shown to users.
+4. Add client-side validation for form fields.

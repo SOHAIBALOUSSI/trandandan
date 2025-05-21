@@ -37,6 +37,7 @@ function From() {
       <input
         type="password"
         name="password"
+		autocomplete="on"
         id="password"
         className="input-field"
         placeholder="enter your password"
@@ -46,6 +47,7 @@ function From() {
         type="password"
         name="password"
         id="confirm-password"
+		autocomplete="on"
         className="input-field"
         placeholder="confirm your password"
         required
@@ -61,7 +63,7 @@ function From() {
       <div className="link">
         <p className="link-p">
           Already hold a racket?{" "}
-          <a href="#signin" className="link-a">
+          <a href="signin" className="link-a" data-link>
             Sign in here.
           </a>
         </p>

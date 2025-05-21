@@ -19,6 +19,7 @@ export default defineConfig({
     proxy: {
       "/auth": "http://auth:3000",
     },
+    historyApiFallback: true,
   },
 });
 

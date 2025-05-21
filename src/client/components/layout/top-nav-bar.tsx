@@ -31,7 +31,7 @@ export function TopNavBar() {
   const profilePic = topNavBar.querySelector(".profile-pic");
   if (profilePic) {
     profilePic.onclick = () => {
-      window.location.hash = "profile";
+      window.location.pathname = "profile";
     };
   }
 
