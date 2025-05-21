@@ -13,10 +13,12 @@ import { Friends } from "./views/Friends";
 import { Chat } from "./views/Chat";
 import { Profile } from "./views/Profile";
 import { Settings } from "./views/Settings";
+import { Logout } from "./views/Logout";
 
 const routes: Record<string, () => HTMLElement> = {
   signin: Signin,
   signup: Signup,
+  logout: Logout,
   home: Home,
   game: Game,
   dashboard: Dashboard,

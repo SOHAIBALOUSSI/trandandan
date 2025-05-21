@@ -6,7 +6,7 @@ export function LeftNavBar() {
     { path: "/chat", icon: "fa-message", label: "lounge" },
     { path: "/friends", icon: "fa-user-group", label: "members" },
     { path: "/settings", icon: "fa-gear", label: "mechanics" },
-    { path: "/welcome", icon: "fa-arrow-right-from-bracket", label: "exit" },
+    { path: "/logout", icon: "fa-arrow-right-from-bracket", label: "exit" },
   ];
 
   const currentPath = window.location.pathname;
