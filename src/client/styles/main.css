@@ -578,55 +578,6 @@ a {
 }
 /* End Custom Classes */
 
-/* Start Welcome Section */
-/* .signin-action {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.signin-action .signin-action-quote {
-  margin-top: 12px;
-  font-size: 1rem;
-  color: var(--color-primary);
-}
-.main-title {
-  width: 100%;
-  max-width: 1200px;
-  padding: 0;
-  text-align: center;
-}
-.main-title .main-title-header {
-  font-size: 2.3rem;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-.main-title .main-title-subheader {
-  font-size: 1rem;
-  font-weight: normal;
-  margin-top: 1rem;
-}
-@media (min-width: 768px) {
-  .signin-action .signin-action-quote {
-    font-size: clamp(1rem, 2vw, 1.375rem);
-  }
-  .main-title .main-title-header {
-    font-size: clamp(2.5rem, 6vw, 6rem);
-    line-height: 1.2;
-  }
-  .main-title .main-title-subheader {
-    font-size: clamp(1rem, 2vw, 1.5rem);
-  }
-}
-@media (min-width: 1200px) {
-  .main-title .main-title-header {
-    font-size: 9.25rem;
-  }
-  .main-title .main-title-subheader {
-    font-size: 2rem;
-  }
-} */
-/* End Welcome Section */
-
 /* Start Signin Section */
 .signin-page .header,
 .signin-page .signin-form {

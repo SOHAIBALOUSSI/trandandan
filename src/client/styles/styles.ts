@@ -24,6 +24,7 @@ export const styles = {
     mt-3 text-base text-pong-primary
     md:text-[clamp(1rem,2vw,1.375rem)]
     animate-blur-in
+	italic text-pong-secondary
   `,
   heroTitleContainer: "w-full max-w-screen-xl text-center animate-fade-in",
   heroTitle: `
