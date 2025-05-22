@@ -138,7 +138,7 @@ a {
   padding: 1rem 15px 2.5rem;
 }
 /* === Forms Design === */
-.sign-form {
+/* .sign-form {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -146,9 +146,9 @@ a {
   justify-content: center;
   width: 100%;
   padding: 0 0 40px;
-}
+} */
 /* === Inputs Design === */
-.input-field {
+/* .input-field {
   text-transform: none;
   width: 100%;
   padding: 16px 12px;
@@ -164,11 +164,15 @@ a {
   transition: border-color var(--transition-duration),
     background-color var(--transition-duration);
 }
-.input-field:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
-  -webkit-text-fill-color: var(--color-primary) !important;
-  transition: background-color 9999s ease-out, color 9999s ease-out;
+	*/
+@layer utilities {
+  .input-field:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+    -webkit-text-fill-color: theme("colors.primary") !important;
+    transition: background-color 9999s ease-out, color 9999s ease-out;
+  }
 }
+/* 
 .input-field + .btn-bottom {
   margin-top: 15px;
 }
@@ -185,8 +189,8 @@ a {
   .input-field::placeholder {
     font-size: var(--paragraph-sm);
   }
-}
-@media (min-width: 768px) {
+} */
+/* @media (min-width: 768px) {
   .input-field {
     font-size: var(--paragraph-md);
     max-width: 500px;
@@ -215,7 +219,7 @@ a {
 }
 .input-field:focus {
   border-bottom-color: var(--color-accent);
-}
+} */
 /* === Dark and Light Heading Design === */
 .main-heading-dark,
 .main-heading-light {
@@ -514,7 +518,7 @@ a {
   outline: 4px solid var(--color-dark-highlight);
 }
 /* === Custom Link Design === */
-.link {
+/* .link {
   margin: 40px 0;
 }
 .link .link-p {
@@ -550,6 +554,7 @@ a {
 .link .link-a:hover {
   color: var(--color-secondary);
 }
+  */
 .form-message {
   margin-top: -0.25rem;
   margin-bottom: 1.25rem;
@@ -658,7 +663,7 @@ a {
 /* End Signin Section */
 
 /* Start Signup Section */
-.signup-page .sign-form .caption {
+/* .signup-page .sign-form .caption {
   color: var(--color-accent);
   font-size: var(--subparagraph-xs);
   margin-top: 15px;
@@ -685,7 +690,7 @@ a {
 }
 .signup-page .sign-form .link {
   margin-bottom: 0;
-}
+} */
 /* End Signup Section */
 
 /* Start Home Section */

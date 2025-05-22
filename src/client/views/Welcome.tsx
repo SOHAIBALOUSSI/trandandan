@@ -22,7 +22,7 @@ function HeroTitle() {
     <div className={styles.heroTitleContainer}>
       <h1 className={styles.heroTitle}>
         Welcome to the{" "}
-        <span className="text-pong-accent">bhv ping pong club</span>
+        <span className="text-pong-accent font-playfair">bhv ping pong club</span>
       </h1>
       <h3 className={styles.heroTagline}>
         <span className="text-pong-secondary font-semibold">Play</span> like

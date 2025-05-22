@@ -1,5 +1,6 @@
 import { Footer } from "@/components/layout/footer";
 import { handleSignIN } from "@/services/handle-signin";
+import { InputField } from "@/components/common/input-field";
 
 function Header() {
   const header = (
@@ -29,6 +30,7 @@ function Form() {
           placeholder="username or email"
           required
         />
+        <InputField type={"text"} name={"login"} id={"login"} placeholder={"username or email"} />
         <input
           type="password"
           name="password"

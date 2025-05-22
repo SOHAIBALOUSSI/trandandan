@@ -1,25 +1,24 @@
 export function handleSignUp() {
   const signupForm = document.querySelector("#signup-form");
-  const feedback = document.querySelector<HTMLDivElement>("#signin-feedback");
+  const feedback = document.querySelector<HTMLDivElement>("#signup-feedback");
 
   if (signupForm) {
     signupForm.addEventListener("submit", async (e: any) => {
       e.preventDefault();
 
-      const username =
-        (document.querySelector("#username") as HTMLInputElement)?.value || "";
-      const email =
-        (document.querySelector("#email") as HTMLInputElement)?.value || "";
-      const password =
-        (document.querySelector("#password") as HTMLInputElement)?.value || "";
-      const confirmPassword =
-        (document.querySelector("#confirm-password") as HTMLInputElement)
-          ?.value || "";
+      const username = (document.querySelector("#username") as HTMLInputElement)
+        .value;
+      const email = (document.querySelector("#email") as HTMLInputElement)
+        .value;
+      const password = (document.querySelector("#password") as HTMLInputElement)
+        .value;
+      const confirmPassword = (
+        document.querySelector("#confirm-password") as HTMLInputElement
+      ).value;
 
       const showFeedback = (message: string) => {
         if (!feedback) return;
         feedback.textContent = message;
-        feedback.style.color = "#ef4444";
       };
 
       try {

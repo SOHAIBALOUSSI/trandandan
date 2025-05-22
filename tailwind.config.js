@@ -23,6 +23,10 @@ module.exports = {
         "pong-secondary-sport": "#F77F00",
         "pong-highlight-sport": "#FCBF49",
         "pong-footer": "#7391a1",
+		"pong-error" : "#FF4C4C",
+		"pong-success" : "#4CAF50",
+		"pong-warning" : "#FF9800",
+		"pong-info" : "#2196F3",
       },
       backgroundImage: {
         "pong-gradient-light":
