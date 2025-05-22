@@ -1,35 +1,25 @@
 import { Footer } from "@/components/layout/footer";
+import { styles } from "@/styles/styles";
 
-function EnterTheClub() {
-  const enterBtn = (
-    <div className="signin-action">
-      <button className="btn-primary" id="enter-btn">
-        <i className="fa-solid fa-ticket"></i>
+function HeroCTA() {
+  return (
+    <div className={styles.heroCallToAction}>
+      <button className={`group ${styles.primaryButton}`}>
+        <i className={`fa-solid fa-ticket ${styles.primaryButtonIcon}`}></i>
         Enter The Club
       </button>
-      <p className="signin-action-quote">
+      <p className={styles.heroSubtitle}>
         “Take your first step into the court”
       </p>
     </div>
   );
-
-  const signinBtn = enterBtn.querySelector("#enter-btn");
-  if (signinBtn) {
-    signinBtn.addEventListener("click", (e: any) => {
-      e.preventDefault();
-      history.pushState(null, "", "/signin");
-      window.dispatchEvent(new PopStateEvent("popstate"));
-    });
-  }
-
-  return enterBtn;
 }
 
-function MainTitle() {
+function HeroTitle() {
   return (
-    <div className="main-title">
-      <h1 className="main-title-header">Welcome to the bhv ping pong club</h1>
-      <h3 className="main-title-subheader">
+    <div className={styles.heroTitleContainer}>
+      <h1 className={styles.heroTitle}>Welcome to the bhv ping pong club</h1>
+      <h3 className={styles.heroTagline}>
         Play like it’s 1901. Compete like a champion.
       </h3>
     </div>
@@ -37,15 +27,12 @@ function MainTitle() {
 }
 
 export function Welcome() {
-  const welcomeSection = (
-    <section className="light-page">
-      <div className="my-container wlcm-page">
-        <EnterTheClub />
-        <MainTitle />
-        <Footer />
-      </div>
+  return (
+    <section className={`${styles.pageLayoutLight} ${styles.welcomeContent}`}>
+      <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
+      <HeroCTA />
+      <HeroTitle />
+      <Footer />
     </section>
   );
-
-  return welcomeSection;
 }

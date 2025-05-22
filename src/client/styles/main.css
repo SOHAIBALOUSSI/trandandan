@@ -82,12 +82,10 @@
   padding: 0;
   text-transform: capitalize;
   font-family: var(--font-body);
+  scroll-behavior: smooth;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-}
-html {
-  scroll-behavior: smooth;
 }
 h1,
 h2,
@@ -101,66 +99,19 @@ ul {
 a {
   text-decoration: none;
 }
-footer {
-  font-size: var(--subparagraph-xs);
-  color: #7391a1;
-}
-@media (min-width: 576px) {
-  footer {
-    font-size: var(--subparagraph-sm);
-  }
-}
-@media (min-width: 768px) {
-  footer {
-    font-size: var(--subparagraph-md);
-  }
-}
-@media (min-width: 992px) {
-  footer {
-    font-size: var(--subparagraph-lg);
-  }
-}
-@media (min-width: 1200px) {
-  footer {
-    font-size: var(--subparagraph-xl);
-  }
-}
 /* End Global Rules */
 
 /* Start Custom Classes */
 /* === Light Section Design === */
-.light-page,
 .dark-page {
   width: 100%;
   min-height: 100vh;
-}
-.light-page {
-  padding: 0 var(--padding-xs);
-  background: linear-gradient(to bottom, #fdfdfc 0%, #faf8f5 30%, #f8f6f2 60%);
-  color: var(--color-primary);
-}
-.dark-page {
   background: linear-gradient(to bottom, #1b1b1b 0%, #141414 30%, #0a0a0a 60%);
   color: var(--color-dark-primary);
-}
-@media (min-width: 576px) {
-  .light-page {
-    padding: 0 var(--padding-sm);
-  }
-}
-@media (min-width: 768px) {
-  .light-page {
-    padding: 0 var(--padding-md);
-  }
 }
 @media (min-width: 768px) and (min-height: 760px) {
   .dark-page {
     padding: 0 var(--padding-md) 0 calc(var(--padding-md) + 100px);
-  }
-}
-@media (min-width: 992px) {
-  .light-page {
-    padding: 0 var(--padding-lg);
   }
 }
 @media (min-width: 992px) and (min-height: 760px) {
@@ -168,17 +119,11 @@ footer {
     padding: 0 var(--padding-lg) 0 calc(var(--padding-lg) + 100px);
   }
 }
-@media (min-width: 1200px) {
-  .light-page {
-    padding: 0 var(--padding-xl);
-  }
-}
 @media (min-width: 1200px) and (min-height: 760px) {
   .dark-page {
     padding: 0 var(--padding-xl) 0 calc(var(--padding-xl) + 100px);
   }
 }
-.light-page .my-container,
 .dark-page .my-container {
   display: flex;
   flex-direction: column;
@@ -188,9 +133,6 @@ footer {
   min-height: 100vh;
   width: 100%;
   padding: 60px 15px;
-}
-.light-page .my-container {
-  gap: 2.5rem;
 }
 .dark-page .my-container {
   padding: 1rem 15px 2.5rem;
@@ -204,54 +146,6 @@ footer {
   justify-content: center;
   width: 100%;
   padding: 0 0 40px;
-}
-/* === Primary Button Design === */
-.btn-primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 16px;
-  font-size: var(--paragraph-sm);
-  font-weight: 600;
-  color: #fff;
-  background-color: var(--color-accent);
-  border: none;
-  border-radius: var(--border-radius);
-  text-transform: capitalize;
-  cursor: pointer;
-  transition-duration: var(--transition-duration);
-}
-.btn-primary i {
-  transition: transform var(--transition-duration);
-}
-.btn-primary:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-@media (min-width: 768px) {
-  .btn-primary {
-    font-size: var(--paragraph-md);
-    width: 320px;
-    padding: 20px;
-  }
-  .btn-primary:hover {
-    background-color: var(--color-secondary);
-  }
-  .btn-primary:hover i {
-    transform: translateX(-4px);
-  }
-}
-@media (min-width: 992px) {
-  .btn-primary {
-    font-size: var(--paragraph-lg);
-  }
-}
-@media (min-width: 1200px) {
-  .btn-primary {
-    font-size: var(--paragraph-xl);
-  }
 }
 /* === Inputs Design === */
 .input-field {
@@ -685,52 +579,52 @@ footer {
 /* End Custom Classes */
 
 /* Start Welcome Section */
-.wlcm-page .signin-action {
+/* .signin-action {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.wlcm-page .signin-action .signin-action-quote {
+.signin-action .signin-action-quote {
   margin-top: 12px;
   font-size: 1rem;
   color: var(--color-primary);
 }
-.wlcm-page .main-title {
+.main-title {
   width: 100%;
   max-width: 1200px;
   padding: 0;
   text-align: center;
 }
-.wlcm-page .main-title .main-title-header {
+.main-title .main-title-header {
   font-size: 2.3rem;
   line-height: 1.1;
   text-transform: uppercase;
 }
-.wlcm-page .main-title .main-title-subheader {
+.main-title .main-title-subheader {
   font-size: 1rem;
   font-weight: normal;
   margin-top: 1rem;
 }
 @media (min-width: 768px) {
-  .wlcm-page .signin-action .signin-action-quote {
+  .signin-action .signin-action-quote {
     font-size: clamp(1rem, 2vw, 1.375rem);
   }
-  .wlcm-page .main-title .main-title-header {
+  .main-title .main-title-header {
     font-size: clamp(2.5rem, 6vw, 6rem);
     line-height: 1.2;
   }
-  .wlcm-page .main-title .main-title-subheader {
+  .main-title .main-title-subheader {
     font-size: clamp(1rem, 2vw, 1.5rem);
   }
 }
 @media (min-width: 1200px) {
-  .wlcm-page .main-title .main-title-header {
+  .main-title .main-title-header {
     font-size: 9.25rem;
   }
-  .wlcm-page .main-title .main-title-subheader {
+  .main-title .main-title-subheader {
     font-size: 2rem;
   }
-}
+} */
 /* End Welcome Section */
 
 /* Start Signin Section */
