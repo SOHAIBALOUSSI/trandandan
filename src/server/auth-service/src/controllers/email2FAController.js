@@ -1,5 +1,4 @@
-import twofactor from 'node-2fa'
-import { storeTempSecret, findUserById } from '../models/userDAO.js';
+import { storeTempSecret, findUserById, saveTotpCode, updateUser2FA } from '../models/userDAO.js';
 
 
 //generate random code (6 digits) + expiration date(1h) + store them in db to compare with incoming code
@@ -11,16 +10,15 @@ export async function setup2FAEmail(request, reply) {
         if (!user)
             return reply.code(404).send({ error: 'User not found.' });
         
-        // const secret = twofactor.generateSecret({ name: `trandenden (${user.username})` });
+        const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+         
+        await saveTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, userId);
 
-        // const totpCode = twofactor.generateToken(secret.secret);
-        //to add : save token 
-        await storeTempSecret(this.db, secret.secret, userId);
         const mailOptions = {
             from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
             to: `${user.email}`,
             subject: "Hello from M3ayz00",
-            // text: `OTP CODE : <${totpCode.token}>`,
+            text: `OTP CODE : <${totpCode}>`,
         }
         await this.sendMail(mailOptions);
 
@@ -42,14 +40,40 @@ export async function verify2FAEmailSetup(request, reply) {
         if (!totpCode)
             return reply.code(400).send({ error: 'TOTP code is required' })
         
-        // const isValid = twofactor.verifyToken(user.twofa_temp_secret, totpCode);
-        // if (!isValid || isValid.delta != 0)
-        //     return reply.code(401).send({ error: 'Invalid or expired TOTP code.' });
-        
-        //update user in db    
+        console.log(`totpCode : ${user.twofa_totp} | totp_exp : ${user.twofa_totp_exp}`);
+        if (user.twofa_totp !== totpCode || user.twofa_totp_exp < Date.now())
+            return reply.code(401).send({ error: 'Invalid or expired TOTP code' });
+
+        await updateUser2FA(this.db, userId);
 
         return reply.code(200).send({ message: '2FA successfully enabled' });
     } catch (error) {   
+        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+    }
+}
+
+export async function verify2FALogin(request, reply) {
+    try {
+        
+        const userId = request.user?.id;
+        const user = await findUserById(this.db, userId);
+        if (!user)
+            return reply.code(404).send({ error: 'User not found.' });
+        
+        const { totpCode } = request.body;
+        if (!totpCode)
+            return reply.code(400).send({ error: 'TOTP code is required' })
+        
+        if (user.twofa_totp !== totpCode || user.twofa_totp_exp < Date.now())
+            return reply.code(401).send({ error: 'Invalid or expired TOTP code' });
+        
+        const accessToken = this.jwt.signAT({ id: userId });
+        const refreshToken = this.jwt.signRT({ id: userId });
+        
+        await addToken(this.db, refreshToken, userId);
+        
+        return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
+    } catch (error) {
         return reply.code(500).send({ error: 'Internal server error.', details: error.message});
     }
 }

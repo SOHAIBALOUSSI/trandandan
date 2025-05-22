@@ -1,6 +1,6 @@
 import QRCode from 'qrcode'
 import speakeasy from 'speakeasy'
-import { storeTempSecret, updateUser2FA, findUserById } from '../models/userDAO.js';
+import { storeTempSecret, findUserById, updateUserSecret } from '../models/userDAO.js';
 import { addToken } from '../models/tokenDAO.js';
 
 export async function setup2FAApp(request, reply) {
@@ -47,7 +47,7 @@ export async function verify2FAAppSetup(request, reply) {
         if (!isValid)
             return reply.code(401).send({ error: 'Invalid TOTP code.' });
         
-        await updateUser2FA(this.db, userId);
+        await updateUserSecret(this.db, userId);
         
         return reply.code(200).send({ message: '2FA successfully enabled' });
     } catch (error) {   
@@ -55,7 +55,7 @@ export async function verify2FAAppSetup(request, reply) {
     }
 }
 
-export async function verify2FALogin(request, reply) {
+export async function verify2FAAppLogin(request, reply) {
     try {
         
         const userId = request.user?.id;

@@ -19,7 +19,7 @@ export async function loginHandler(request, reply) {
         if (user.twofa_enabled)
         {
             const tempToken = this.jwt.signTT({ id: user.id });
-            return reply.code(206).send({ message: 'Two-Factor authentication is required', tempToken: tempToken });
+            return reply.code(206).send({ message: 'Two-Factor authentication is required', type: `${user.twofa_type}`, tempToken: tempToken });
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
