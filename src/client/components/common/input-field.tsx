@@ -14,7 +14,7 @@ export function InputField(props: {
       id={props.id}
       placeholder={props.placeholder}
       required
-      className={styles.inputField}
+      className={`${styles.inputField} input-field`}
 	  autofocus={props.autofocus || false}
     />
   );

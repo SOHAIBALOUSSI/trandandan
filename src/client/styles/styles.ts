@@ -103,7 +103,7 @@ export const styles = {
 
   //   Start Page Layout styles
   pageLayoutLight:
-    "w-full min-h-screen bg-gradient-to-b from-[#fdfdfc] via-[#faf8f5] to-[#f8f6f2] text-pong-primary px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-8 lg:py-12 xl:py-16",
+    "w-full min-h-screen bg-gradient-to-b from-[#fdfdfc] via-[#faf8f5] to-[#f8f6f2] text-pong-primary px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-8 lg:py-12 xl:py-16 flex flex-col items-center justify-between min-h-screen w-full gap-10",
   pageLayoutDark:
     "w-full min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#0d0d0d] to-[#000000] text-pong-primary px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-8 lg:py-12 xl:py-16",
   //   End Page Layout styles
@@ -125,10 +125,4 @@ export const styles = {
     "font-lora text-pong-dark-primary/80 font-normal text-sm md:text-md lg:text-lg xl:text-xl",
   //    End Title Section styles
 
-  //   Start Custom Content styles
-  welcomeContent:
-    "flex flex-col items-center justify-between min-h-screen w-full gap-10",
-  signupContent:
-    "flex flex-col items-center justify-between min-h-screen w-full gap-10",
-  //   End Custom Content styles
 };

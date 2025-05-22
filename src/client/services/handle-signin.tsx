@@ -38,25 +38,22 @@ export function handleSignIN() {
       } else if (response.status === 206) {
         result.tempToken && localStorage.setItem("tempToken", result.tempToken);
         feedback.textContent = "Two-factor authentication required.";
-        feedback.style.color = "#4f46e5";
+        feedback.classList.remove("pong-error");
+        feedback.classList.add("pong-warning");
         history.pushState(null, "", "/2fa/verify-login");
         window.dispatchEvent(new PopStateEvent("popstate"));
       } else if (response.status === 400 || response.status === 404) {
         feedback.textContent = "Invalid credentials. Try again, champ.";
-        feedback.style.color = "#ef4444";
       } else if (response.status === 500) {
         feedback.textContent = "Server's catching its breath. Try again later.";
-        feedback.style.color = "#ef4444";
         console.error(result.details || "No details provided.");
       } else {
         feedback.textContent =
           "Something’s off. Ping us if it keeps happening.";
-        feedback.style.color = "#ef4444";
       }
     } catch (err) {
       console.error("Error logging in:", err);
       feedback.textContent = "Network issue. Your legacy will have to wait.";
-      feedback.style.color = "#ef4444";
     }
   });
 }

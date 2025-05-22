@@ -138,159 +138,41 @@ a {
   padding: 1rem 15px 2.5rem;
 }
 /* === Forms Design === */
-/* .sign-form {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 0 0 40px;
-} */
-/* === Inputs Design === */
-/* .input-field {
-  text-transform: none;
-  width: 100%;
-  padding: 16px 12px;
-  font-size: var(--paragraph-xs);
-  text-align: center;
-  color: var(--color-primary);
-  background-color: transparent;
-  border: none;
-  border-bottom: 2px solid var(--color-secondary);
-  outline: none;
-  caret-color: var(--color-secondary);
-  margin-bottom: 1.5rem;
-  transition: border-color var(--transition-duration),
-    background-color var(--transition-duration);
-}
-	*/
 @layer utilities {
   .input-field:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
-    -webkit-text-fill-color: theme("colors.primary") !important;
+    -webkit-text-fill-color: theme("colors.pong-primary") !important;
     transition: background-color 9999s ease-out, color 9999s ease-out;
   }
 }
-/* 
-.input-field + .btn-bottom {
-  margin-top: 15px;
-}
-.input-field::placeholder {
-  color: var(--color-highlight);
-  font-size: var(--paragraph-xs);
-  opacity: 0.9;
-}
-@media (min-width: 576px) {
-  .input-field {
-    font-size: var(--paragraph-sm);
-    padding: 20px 14px;
-  }
-  .input-field::placeholder {
-    font-size: var(--paragraph-sm);
-  }
-} */
-/* @media (min-width: 768px) {
-  .input-field {
-    font-size: var(--paragraph-md);
-    max-width: 500px;
-  }
-  .input-field::placeholder {
-    font-size: var(--paragraph-md);
-  }
-}
-@media (min-width: 992px) {
-  .input-field {
-    font-size: var(--paragraph-lg);
-    padding: 20px 14px;
-  }
-  .input-field::placeholder {
-    font-size: var(--paragraph-lg);
-  }
-}
-@media (min-width: 1200px) {
-  .input-field {
-    font-size: var(--paragraph-xl);
-    padding: 20px 14px;
-  }
-  .input-field::placeholder {
-    font-size: var(--paragraph-xl);
-  }
-}
-.input-field:focus {
-  border-bottom-color: var(--color-accent);
-} */
+
 /* === Dark and Light Heading Design === */
-.main-heading-dark,
 .main-heading-light {
   font-size: var(--heading-xs);
   margin-bottom: 2rem;
   text-align: center;
   line-height: 1.2;
-}
-.main-heading-dark {
-  color: var(--color-primary);
-  text-shadow: 2px 2px 3px var(--color-highlight);
-}
-.main-heading-light {
   color: var(--color-dark-primary);
   text-shadow: 2px 2px 3px var(--color-dark-highlight);
 }
 @media (min-width: 576px) {
-  .main-heading-dark,
   .main-heading-light {
     font-size: var(--heading-sm);
   }
 }
 @media (min-width: 768px) {
-  .main-heading-dark,
   .main-heading-light {
     font-size: var(--heading-md);
   }
 }
 @media (min-width: 992px) {
-  .main-heading-dark,
   .main-heading-light {
     font-size: var(--heading-lg);
   }
 }
 @media (min-width: 1200px) {
-  .main-heading-dark,
   .main-heading-light {
     font-size: var(--heading-xl);
-  }
-}
-.main-heading-dark .my-underline,
-.main-heading-light .my-underline {
-  position: relative;
-  display: inline-block;
-}
-.main-heading-dark .my-underline::after,
-.main-heading-light .my-underline::after {
-  content: "";
-  width: 100%;
-  height: 5px;
-  position: absolute;
-  bottom: -2px;
-  right: 0;
-  z-index: 1;
-}
-.main-heading-dark .my-underline::after {
-  background-color: rgba(224, 164, 88, 0.5);
-}
-.main-heading-light .my-underline::after {
-  background-color: rgba(131, 142, 145, 0.5);
-}
-@media (min-width: 768px) {
-  .main-heading-dark .my-underline::after,
-  .main-heading-light .my-underline::after {
-    height: 7px;
-  }
-}
-@media (min-width: 992px) {
-  .main-heading-dark .my-underline::after,
-  .main-heading-light .my-underline::after {
-    height: 8px;
   }
 }
 /* === Subtitle Design === */
@@ -555,98 +437,42 @@ a {
   color: var(--color-secondary);
 }
   */
-.form-message {
-  margin-top: -0.25rem;
-  margin-bottom: 1.25rem;
-  font-size: var(--subparagraph-xs);
-  transition: all var(--transition-duration) ease;
-}
-@media (min-width: 576px) {
-  .form-message {
-    font-size: var(--subparagraph-sm);
-  }
-}
-@media (min-width: 768px) {
-  .form-message {
-    font-size: var(--subparagraph-md);
-  }
-}
-@media (min-width: 992px) {
-  .form-message {
-    font-size: var(--subparagraph-lg);
-  }
-}
-@media (min-width: 1200px) {
-  .form-message {
-    font-size: var(--subparagraph-xl);
-  }
-}
-/* End Custom Classes */
-
-/* Start Signin Section */
-.signin-page .header,
-.signin-page .signin-form {
-  width: 100%;
-}
-.signin-page .signin-form .sign-form .lost-pass {
-  margin-top: 15px;
-  color: var(--color-accent);
-  font-size: var(--paragraph-xs);
-  font-weight: bold;
-  text-decoration: my-underline;
-  transition-duration: var(--transition-duration);
-}
-@media (min-width: 768px) {
-  .signin-page .signin-form .sign-form .lost-pass {
-    font-size: var(--paragraph-sm);
-  }
-}
-.signin-page .signin-form .sign-form .lost-pass:hover {
-  color: var(--color-secondary);
-}
-.signin-page .signin-form .sign-form .line {
-  width: 100%;
-  position: relative;
-}
-.signin-page .signin-form .sign-form .line::before,
-.signin-page .signin-form .sign-form .line::after {
-  content: "";
+.line::before,
+.line::after {
   position: absolute;
+  content: "";
   top: 50%;
   width: calc(50% - var(--paragraph-xl) * 2);
   height: 2px;
   background-color: var(--color-secondary);
 }
-.signin-page .signin-form .sign-form .line::before {
-  left: 0;
-}
-.signin-page .signin-form .sign-form .line::after {
-  right: 0;
-}
-.signin-page .signin-form .sign-form .line i {
+.line i {
   color: var(--color-secondary);
   font-size: var(--icon-size-xs);
 }
 @media (min-width: 576px) {
-  .signin-page .signin-form .sign-form .line i {
+  .line i {
     font-size: var(--icon-size-sm);
   }
 }
 @media (min-width: 768px) {
-  .signin-page .signin-form .sign-form .line i {
+  .line i {
     font-size: var(--icon-size-md);
   }
 }
 @media (min-width: 992px) {
-  .signin-page .signin-form .sign-form .line i {
+  .line i {
     font-size: var(--icon-size-lg);
   }
 }
 @media (min-width: 1200px) {
-  .signin-page .signin-form .sign-form .line i {
+  .line i {
     font-size: var(--icon-size-xl);
   }
 }
+/* End Custom Classes */
+
+/* Start Signin Section */
 .signin-page .signin-form .remote-signin {
   display: flex;
   flex-direction: column;

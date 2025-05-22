@@ -1,77 +1,78 @@
+import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/footer";
 import { handleSignIN } from "@/services/handle-signin";
 import { InputField } from "@/components/common/input-field";
-
-function Header() {
-  const header = (
-    <div className="header">
-      <h1 className="main-heading-dark">
-        welcome back, <span className="my-underline">champion</span>
-      </h1>
-      <h3 className="subtitle-h">step into the club</h3>
-      <p className="subtitle-p">
-        enter your credentials to continue your legacy.
-      </p>
-    </div>
-  );
-
-  return header;
-}
+import { MainHeader } from "@/components/common/main-header";
 
 function Form() {
   const form = (
-    <div className="signin-form relative">
-      <form action="" method="post" className="sign-form" id="signin-form">
-        <input
-          type="text"
-          name="login"
-          className="input-field"
-          id="login"
-          placeholder="username or email"
-          required
-        />
-        <InputField type={"text"} name={"login"} id={"login"} placeholder={"username or email"} />
-        <input
-          type="password"
-          name="password"
-          autoComplete="on"
-          className="input-field"
-          id="password"
-          placeholder="password"
-          required
-        />
-        <div id="signin-feedback" className="form-message"></div>
-        <button type="submit" className="btn-primary btn-bottom">
-          <i className="fa-solid fa-couch"></i>
-          enter the lounge
-        </button>
+    <form
+      action=""
+      method="post"
+      id="signin-form"
+      className={`${styles.form} ${styles.fadeInSection}`}
+    >
+      <InputField
+        type={"text"}
+        name={"login"}
+        id={"login"}
+        placeholder={"username or email"}
+      />
+      <InputField
+        type={"password"}
+        name={"password"}
+        id={"password"}
+        placeholder={"password"}
+      />
+      <div id="signup-feedback" className={styles.formMessageError}>
+        Bad Request
+      </div>
+      <button
+        type="submit"
+		id="signin-btn"
+        className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
+      >
+        <i className={`fa-solid fa-couch ${styles.primaryButtonIcon}`}></i>
+        enter the lounge
+      </button>
 
-        <a href="#" className="lost-pass" data-link>
-          lost your paddle?
-        </a>
-        <div className="link">
-          <p className="link-p">
-            new here?{" "}
-            <a href="signup" className="link-a" data-link>
-              join the club and make history.
-            </a>
-          </p>
-        </div>
-        <div className="line">
-          <i className="fa-solid fa-table-tennis-paddle-ball"></i>
-        </div>
-      </form>
-      <div className="remote-signin">
-        <button type="button" className="btn-primary">
+      <a href="#" className="mt-2 text-pong-accent text-xs md:text-md lg:text-lg xl:text-xl font-bold underline hover:text-pong-secondary transition-all duration-300" data-link>
+        lost your paddle?
+      </a>
+      <div className="mt-2">
+        <p className="text-sm md:text-md lg:text-lg xl:text-xl font-bold">
+          new here?{" "}
+          <a
+            href="signup"
+            className="text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
+            data-link
+          >
+            join the club and make history.
+          </a>
+        </p>
+      </div>
+      <div className="line w-full relative before:left-0 after:right-0">
+        <i className="fa-solid fa-table-tennis-paddle-ball"></i>
+      </div>
+      <div className="flex flex-col gap-6">
+        <button
+          type="button"
+		  id="google-signin-btn"
+          className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
+        >
           <i className="fa-solid fa-couch"></i>
           enter with google
         </button>
-        <button className="btn-primary">
+        <button
+          type="button"
+		  id="ft-signin-btn"
+          className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
+        >
           <i className="fa-solid fa-couch"></i>
           enter with 42
         </button>
       </div>
-    </div>
+    </form>
   );
 
   return form;
@@ -79,17 +80,20 @@ function Form() {
 
 export function Signin() {
   setTimeout(() => {
-    console.log("Signin component mounted");
     handleSignIN();
   }, 0);
 
   const signinSection = (
-    <section className="light-page">
-      <div className="my-container signin-page">
-        <Header />
-        <Form />
-        <Footer />
-      </div>
+    <section className={styles.pageLayoutLight}>
+      <MainHeader
+        isDark={true}
+        title={"welcome back,"}
+        titleSpan={"champion"}
+        subtitle={"step into the club"}
+        subtitleParagraph={"enter your credentials to continue your legacy."}
+      />
+      <Form />
+      <Footer />
     </section>
   );
 

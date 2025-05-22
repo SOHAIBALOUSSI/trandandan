@@ -22,7 +22,9 @@ function HeroTitle() {
     <div className={styles.heroTitleContainer}>
       <h1 className={styles.heroTitle}>
         Welcome to the{" "}
-        <span className="text-pong-accent font-playfair">bhv ping pong club</span>
+        <span className="text-pong-accent font-playfair">
+          bhv ping pong club
+        </span>
       </h1>
       <h3 className={styles.heroTagline}>
         <span className="text-pong-secondary font-semibold">Play</span> like
@@ -36,9 +38,7 @@ function HeroTitle() {
 
 export function Welcome() {
   return (
-    <section
-      className={`${styles.pageLayoutLight} ${styles.welcomeContent} relative overflow-hidden`}
-    >
+    <section className={`${styles.pageLayoutLight} relative overflow-hidden`}>
       <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
       <div className="flex flex-col gap-16 items-center justify-center min-h-[80vh]">
         <HeroTitle />

@@ -42,6 +42,7 @@ function Form() {
       </div>
       <button
         type="submit"
+		id="signin-btn"
         className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
       >
         <i
@@ -58,7 +59,7 @@ function Form() {
           Already hold a racket?{" "}
           <a
             href="signin"
-            className="link-a text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
+            className="text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
             data-link
           >
             Sign in here.
@@ -75,7 +76,7 @@ export function Signup() {
   }, 0);
 
   return (
-    <section className={`${styles.pageLayoutLight} ${styles.signupContent}`}>
+    <section className={styles.pageLayoutLight}>
       <MainHeader
         isDark={true}
         title={"Join"}
