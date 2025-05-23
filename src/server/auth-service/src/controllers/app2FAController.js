@@ -8,7 +8,7 @@ export async function setup2FAApp(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
         const secret = speakeasy.generateSecret({
             name: `trandenden (${user.username})`,
@@ -22,7 +22,7 @@ export async function setup2FAApp(request, reply) {
         
         return reply.code(200).send({ message: 'Scan the QR Code with your authenticator App', qrCode: qrCodeUrl })
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
@@ -32,11 +32,11 @@ export async function verify2FAAppSetup(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
         const { totpCode } = request.body;
         if (!totpCode)
-            return reply.code(400).send({ error: 'TOTP code is required' })
+            return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
         const isValid = speakeasy.totp.verify({
             secret: user.twofa_temp_secret,
@@ -45,13 +45,13 @@ export async function verify2FAAppSetup(request, reply) {
             window: 1
         })
         if (!isValid)
-            return reply.code(401).send({ error: 'Invalid TOTP code.' });
+            return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
         await updateUserSecret(this.db, userId);
         
         return reply.code(200).send({ message: '2FA successfully enabled' });
     } catch (error) {   
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
@@ -61,7 +61,7 @@ export async function verify2FAAppLogin(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
         const { totpCode } = request.body;
         if (!totpCode)
@@ -83,6 +83,6 @@ export async function verify2FAAppLogin(request, reply) {
         
         return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }

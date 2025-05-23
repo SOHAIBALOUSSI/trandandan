@@ -1,7 +1,5 @@
-import { storeTempSecret, findUserById, saveTotpCode, updateUser2FA } from '../models/userDAO.js';
-
-
-//generate random code (6 digits) + expiration date(1h) + store them in db to compare with incoming code
+import { addToken } from '../models/tokenDAO.js';
+import { findUserById, saveTotpCode, updateUser2FA } from '../models/userDAO.js';
 
 export async function setup2FAEmail(request, reply) {
     try {
