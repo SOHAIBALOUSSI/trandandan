@@ -1,4 +1,5 @@
 import { addProfile, getProfileById, searchProfile, updateProfileById } from "../models/profileDAO.js";
+import { createResponse } from "../utils/utils.js";
 
 export async function createProfile(request, reply) {
     try {
@@ -7,35 +8,34 @@ export async function createProfile(request, reply) {
         console.log("Body received from profile:", request.body);
         this.log.info(`username: ${username}, email: ${email}`);
         if (!username || !email)
-            return reply.code(400).send({ error: 'Missing required fields' });
+            return reply.code(400).send(createResponse(400, 'MISSING_FIELDS'));
 
         const profileExists = await searchProfile(this.db, id, username, email);
         if (profileExists)
-            return reply.code(400).send({ error: 'Profile already exists' });
+            return reply.code(400).send(createResponse(400, 'PROFILE_EXISTS'));
         
         await addProfile(this.db, id, username, email);
 
-        return reply.code(201).send({ message: 'Profile created successfully' })
+        return reply.code(201).send(createResponse(201, 'PROFILE_CREATED'));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error', details: error.message });
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
 export async function getProfile(request, reply) {
     try {
-        
         const { id } = request.params;
         const tokenId = request.user?.id;
-        if (tokenId !== id)
-            return reply.code(403).send({ error: 'Unauthorized' });
+        if (tokenId != id)
+            return reply.code(403).send(createResponse(403, 'UNAUTHORIZED'));
         
         const profile = await getProfileById(this.db, id);
         if (!profile)
-            return reply.code(404).send({ error: 'Profile not found' });
+            return reply.code(400).send(createResponse(400, 'PROFILE_NOT_FOUND'));
         
-        return reply.code(200).send({ profile })
+        return reply.code(200).send(createResponse(200, 'PROFILE_FETCHED', { profile: profile }));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error', details: error.message });
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
@@ -43,14 +43,14 @@ export async function updateProfile(request, reply) {
     try {
         const { id } = request.params;
         const tokenId = request.user?.id;
-        if (tokenId !== id)
-            return reply.code(403).send({ error: 'Unauthorized' });
+        if (tokenId != id)
+            return reply.code(403).send(createResponse(403, 'UNAUTHORIZED'));
         
         const { username, email, avatar_url, solde } = request.body;
         
         const profile = await getProfileById(this.db, id);
         if (!profile)
-            return reply.code(404).send({ error: 'Profile not found' });
+            return reply.code(400).send(createResponse(400, 'PROFILE_NOT_FOUND'));
         
         const updatedFields = {};
         if (username) updatedFields.username = username;
@@ -59,15 +59,15 @@ export async function updateProfile(request, reply) {
         if (solde !== undefined) updatedFields.solde = solde;
 
         if (Object.keys(updatedFields).length === 0)
-            return reply.code(400).send({ error: 'No fields to update' });
+            return reply.code(400).send(createResponse(400, 'MISSING_FIELDS'));
         
         const changes = await updateProfileById(this.db, id, updatedFields);
         if (changes === 0)
-            return reply.code(400).send({ error: 'No changes were made'});
+            return reply.code(400).send(createResponse(400, 'ZERO_CHANGES'));
         const updatedProfile = await getProfileById(this.db, id);
 
-        return reply.code(200).send({ message: 'Profile updated.', profile: updatedProfile})
+        return reply.code(200).send(createResponse(200, 'PROFILE_UPDATED', { profile: updatedProfile }));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error', details: error.message });
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }

@@ -1,14 +1,15 @@
 import QRCode from 'qrcode'
 import speakeasy from 'speakeasy'
-import { storeTempSecret, updateUser2FA, findUserById } from '../models/userDAO.js';
+import { storeTempSecret, findUserById, updateUserSecret } from '../models/userDAO.js';
 import { addToken } from '../models/tokenDAO.js';
+import { createResponse } from '../utils/utils.js';
 
-export async function setup2FAHandler(request, reply) {
+export async function setup2FAApp(request, reply) {
     try {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
         const secret = speakeasy.generateSecret({
             name: `trandenden (${user.username})`,
@@ -20,23 +21,24 @@ export async function setup2FAHandler(request, reply) {
         const otpauthUrl = secret.otpauth_url;
         const qrCodeUrl = await QRCode.toDataURL(otpauthUrl);
         
-        return reply.code(200).send({ message: 'Scan the QR Code with your authenticator App', qrCode: qrCodeUrl })
+        return reply.code(200).send(createResponse(200, 'SCAN_QR', { qrCode: qrCodeUrl }));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
-export async function verify2FASetupHandler(request, reply) {
+export async function verify2FAAppSetup(request, reply) {
     try {
         
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
         const { totpCode } = request.body;
         if (!totpCode)
-            return reply.code(400).send({ error: 'TOTP code is required' })
+            return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
         const isValid = speakeasy.totp.verify({
             secret: user.twofa_temp_secret,
@@ -45,27 +47,28 @@ export async function verify2FASetupHandler(request, reply) {
             window: 1
         })
         if (!isValid)
-            return reply.code(401).send({ error: 'Invalid TOTP code.' });
+            return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
-        await updateUser2FA(this.db, userId);
+        await updateUserSecret(this.db, userId);
         
-        return reply.code(200).send({ message: '2FA successfully enabled' });
+        return reply.code(200).send(createResponse(200, '2FA_ENABLED'));
     } catch (error) {   
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
-export async function verifyLogin2FAHandler(request, reply) {
+export async function verify2FAAppLogin(request, reply) {
     try {
         
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
         const { totpCode } = request.body;
         if (!totpCode)
-            return reply.code(400).send({ error: 'TOTP code is required' })
+            return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
         const isValid = speakeasy.totp.verify({
             secret: user.twofa_secret,
@@ -74,15 +77,16 @@ export async function verifyLogin2FAHandler(request, reply) {
             window: 1
         })
         if (!isValid)
-            return reply.code(401).send({ error: 'Invalid TOTP code.' });
+            return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
         const accessToken = this.jwt.signAT({ id: userId });
         const refreshToken = this.jwt.signRT({ id: userId });
         
         await addToken(this.db, refreshToken, userId);
         
-        return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }

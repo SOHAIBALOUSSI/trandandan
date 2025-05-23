@@ -5,24 +5,25 @@ import {
     getFriendsByUserId,
     getPendingRequestsByUserId
   } from '../models/friendshipDAO.js';
+import { createResponse } from '../utils/utils.js';
   
   export async function sendRequest(request, reply) {
       try {
           const requesterId = request.user.id;
           const { addresseeId } = request.body;
   
-          if (!addresseeId) {
-              return reply.code(400).send({ error: 'addresseeId is required' });
-          }
+          if (!addresseeId)
+            return reply.code(400).send(createResponse(400, 'ADDRESSEE_REQUIRED'));
   
           if (requesterId === addresseeId)
-            return reply.code(400).send({ error: 'You cannot friend yourself' });
+            return reply.code(400).send(createResponse(400, 'ADDRESSEE_INVALID'));
     
           await addFriendRequest(this.db, requesterId, addresseeId);
   
-          return reply.code(201).send({ message: 'Friend request sent' });
+          return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_SENT'));
       } catch (error) {
-          return reply.code(500).send({ error: 'Internal server error', details: error.message });
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
       }
   }
   
@@ -32,13 +33,14 @@ import {
           const { requesterId } = request.body;
   
           if (!requesterId)
-            return reply.code(400).send({ error: 'requesterId is required' });
+            return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
   
           await updateFriendRequestStatus(this.db, requesterId, userId, 'accepted');
   
-          return reply.code(200).send({ message: 'Friend request accepted' });
+          return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_ACCEPTED'));
       } catch (error) {
-          return reply.code(500).send({ error: 'Internal server error', details: error.message });
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
       }
   }
   
@@ -48,13 +50,14 @@ import {
           const { requesterId } = request.body;
   
           if (!requesterId)
-            return reply.code(400).send({ error: 'requesterId is required' });
+            return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
   
           await updateFriendRequestStatus(this.db, requesterId, userId, 'rejected');
   
-          return reply.code(200).send({ message: 'Friend request rejected' });
+          return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_REJECTED'));
       } catch (error) {
-          return reply.code(500).send({ error: 'Internal server error', details: error.message });
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
       }
   }
   
@@ -64,13 +67,14 @@ import {
           const friendId = parseInt(request.params.friendId);
   
           if (!friendId)
-            return reply.code(400).send({ error: 'friendId is required' });
+            return reply.code(400).send(createResponse(400, 'FRIEND_REQUIRED'));
   
           await deleteFriend(this.db, userId, friendId);
   
-          return reply.code(200).send({ message: 'Friend removed' });
+          return reply.code(200).send(createResponse(200, 'FRIEND_REMOVED'));
       } catch (error) {
-          return reply.code(500).send({ error: 'Internal server error', details: error.message });
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
       }
   }
   
@@ -80,9 +84,10 @@ import {
   
           const friends = await getFriendsByUserId(this.db, userId);
   
-          return reply.code(200).send({ friends });
+          return reply.code(200).send(createResponse(200, 'FRIENDS_LISTED', { friends: friends }));
       } catch (error) {
-          return reply.code(500).send({ error: 'Internal server error', details: error.message });
+            console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
       }
   }
   
@@ -92,9 +97,10 @@ import {
   
           const requests = await getPendingRequestsByUserId(this.db, userId);
   
-          return reply.code(200).send({ requests });
+          return reply.code(200).send(createResponse(200, 'REQUESTS_LISTED', { requests: requests }));
       } catch (error) {
-          return reply.code(500).send({ error: 'Internal server error', details: error.message });
+            console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
       }
   }
   

@@ -9,6 +9,14 @@ export function handleSignIN() {
 
   if (!signInForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
 
+  // Some error messages for the signin process
+  const signinErrorMessages: Record<string, string> = {
+    USER_NOT_FOUND: "No racket found. Check your details and swing again.",
+    INVALID_PASSWORD:
+      "Invalid paddle pass. Check your details and swing again.",
+    INTERNAL_SERVER_ERROR: "Club doors are jammed! Try again in a moment.",
+  };
+
   signInForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -20,10 +28,6 @@ export function handleSignIN() {
     const payload = isEmail
       ? { email: loginValue, password }
       : { username: loginValue, password };
-
-    const showFeedback = (message: string) => {
-      feedback.textContent = message;
-    };
 
     feedback.textContent = "";
     feedback.className = styles.formMessage;
@@ -65,21 +69,23 @@ export function handleSignIN() {
         setTimeout(() => {
           result.tempToken &&
             localStorage.setItem("tempToken", result.tempToken);
-          showFeedback("Security check! Time to prove it’s really you.");
+          feedback.textContent =
+            "Security check! Time to prove it’s really you.";
           feedback.className = `${styles.formMessage} text-pong-warning block`;
           history.pushState(null, "", "/2fa/verify-login");
           window.dispatchEvent(new PopStateEvent("popstate"));
         }, waitTime);
       } else {
         setTimeout(() => {
-          showFeedback(
-            "Invalid paddle pass. Check your details and swing again."
-          );
+          const msg =
+            signinErrorMessages[result?.code] ||
+            "Invalid paddle pass. Check your details and swing again.";
+          feedback.textContent = msg;
           feedback.className = `${styles.formMessage} text-pong-error block`;
         }, waitTime);
       }
     } catch (err) {
-      feedback.textContent = "Server’s taking a timeout. Try again shortly.";
+      feedback.textContent = signinErrorMessages.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error block`;
     } finally {
       setTimeout(() => {

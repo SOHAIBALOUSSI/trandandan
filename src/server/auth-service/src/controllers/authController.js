@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
-import { findUser, addUser, findUserById, deleteUser } from '../models/userDAO.js';
+import { findUser, addUser, findUserById, deleteUser, saveTotpCode } from '../models/userDAO.js';
 import { findToken, addToken, revokeToken } from '../models/tokenDAO.js'; 
+import { createResponse } from '../utils/utils.js'
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -10,37 +11,49 @@ export async function loginHandler(request, reply) {
         const { username, email, password } = request.body;
         const user = await findUser(this.db, username, email);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
 
         const matched = await compare(password, user.password);
         if (!matched)
-            return reply.code(400).send({ error: 'Invalid credentials.' });
+            return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
         
         if (user.twofa_enabled)
         {
             const tempToken = this.jwt.signTT({ id: user.id });
-            return reply.code(206).send({ message: 'Two-Factor authentication is required', tempToken: tempToken });
+            const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+            await saveTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
+            if (user.twofa_type === 'email')
+            {
+                const mailOptions = {
+                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
+                    to: `${user.email}`,
+                    subject: "Hello from M3ayz00",
+                    text: `OTP CODE : <${totpCode}>`,
+                }
+                await this.sendMail(mailOptions);
+            }
+            return reply.code(206).send(createResponse(206, '2FA_REQUIRED', { tempToken: tempToken }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         
         await addToken(this.db, refreshToken, user.id);
 
-        return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
 export async function registerHandler(request, reply) {
     try {
         const { email, username, password, confirmPassword} = request.body;
-        console.log("Body received from auth:", request.body);
         if (password !== confirmPassword)
-            return reply.code(400).send({ error: 'Passwords don\'t match.'});
+            return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
         const userExist = await findUser(this.db, username, email);
         if (userExist)
-            return reply.code(400).send({ error: 'Username or email already in use.' });
+            return reply.code(400).send(createResponse(400, 'USER_EXISTS'));
         
         const hashedPassword = await hash(password, 10);
         const userId = await addUser(this.db, username, email, hashedPassword);
@@ -59,18 +72,17 @@ export async function registerHandler(request, reply) {
                 username: username,
                 email: email
             })
-
         });
       
         if (!response.ok) {
-            const errorText = await response.json();
             await deleteUser(this.db, userId);
             await revokeToken(this.db, refreshToken);
-            return reply.code(400).send({ error: 'Failed to create profile', details: errorText });
+            return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
         }
-        return reply.code(201).send({ accessToken: accessToken, refreshToken: refreshToken });
+        return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
@@ -80,21 +92,22 @@ export async function logoutHandler(request, reply) {
         
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
         const { token } = request.body;
         if (!token)
-            return reply.code(401).send({ error: 'Token required.' });
+            return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_REQUIRED'));
         
         const tokenExist = await findToken(this.db, token);
-        if (!tokenExist || tokenExist.revoke)
-            return reply.code(401).send({ error: 'Invalid or revoked token.' });
+        if (!tokenExist || tokenExist.revoked)
+            return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_INVALID'));
         
         await revokeToken(this.db, token);
         
-        return reply.code(200).send({ message: `User logged out.` });
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_OUT'));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
@@ -104,11 +117,12 @@ export async function meHandler(request, reply) {
         
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(404).send({ error: 'User not found.' });
+            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
-        return reply.code(200).send({ id: user.id, username: user.username, email: user.email });
+        return reply.code(200).send(createResponse(200, 'USER_FETCHED', { id: user.id, username: user.username, email: user.email }));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
@@ -116,11 +130,11 @@ export async function refreshHandler(request, reply) {
     try {
         const { token } = request.body;
         if (!token)
-            return reply.code(401).send({ error: 'Refresh token required.' });
+            return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_REQUIRED'));
         
         const tokenExist = await findToken(this.db, token);
         if (!tokenExist || tokenExist.revoked)
-            return reply.code(401).send({ error: 'Invalid or revoked token.' });
+            return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_INVALID'));
 
         const payload = await this.jwt.verifyRT(tokenExist.token);
 
@@ -131,8 +145,10 @@ export async function refreshHandler(request, reply) {
 
         await addToken(this.db, newRefreshToken, payload.id);
 
-        return reply.code(200).send({ accessToken: accessToken, refreshToken: newRefreshToken });
+        return reply.code(200).send(createResponse(200, 'TOKEN_REFRESHED', { accessToken: accessToken, refreshToken: newRefreshToken }));
     } catch (error) {
-        return reply.code(500).send({ error: 'Internal server error.', details: error.message});
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
+

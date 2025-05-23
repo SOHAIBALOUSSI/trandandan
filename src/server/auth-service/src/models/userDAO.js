@@ -40,10 +40,29 @@ export async function storeTempSecret(db, secret, id) {
     );    
 }
 
-export async function updateUser2FA(db, id) {
+export async function updateUserSecret(db, id) {
     const result = await db.run(`UPDATE user SET
+        twofa_type = 'app',
         twofa_secret = twofa_temp_secret,
         twofa_temp_secret = NULL,
+        twofa_enabled = TRUE
+        WHERE id = ?`,
+        [id]
+    );   
+}
+
+export async function saveTotpCode(db, totpCode, totpExp, id) {
+    const result = await db.run(`UPDATE user SET
+        twofa_totp = ?,
+        twofa_totp_exp = ?
+        WHERE id = ?`,
+        [totpCode, totpExp, id]
+    );
+}
+
+export async function updateUser2FA(db, id) {
+    const result = await db.run(`UPDATE user SET
+        twofa_type = 'email',
         twofa_enabled = TRUE
         WHERE id = ?`,
         [id]

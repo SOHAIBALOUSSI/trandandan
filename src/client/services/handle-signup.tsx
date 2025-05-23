@@ -9,6 +9,14 @@ export function handleSignUp() {
 
   if (!signupForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
 
+  //  Some error messages for the signup process
+  const signupErrorMessages: Record<string, string> = {
+    USER_EXISTS: "This racket is already in the club. Try signing in.",
+    UNMATCHED_PASSWORDS: "Passwords don’t match. Recheck your grip.",
+    PROFILE_CREATION_FAILED: "We couldn’t build your profile. Try again.",
+    INTERNAL_SERVER_ERROR: "Club doors are jammed! Try again in a moment.",
+  };
+
   signupForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
@@ -58,14 +66,15 @@ export function handleSignUp() {
         }, waitTime);
       } else {
         setTimeout(() => {
-          feedback.textContent =
-            result.message ||
+          const msg =
+            signupErrorMessages[result?.code] ||
             "Couldn’t register your racket. Try again, champ.";
+          feedback.textContent = msg;
           feedback.className = `${styles.formMessage} text-pong-error block`;
         }, waitTime);
       }
     } catch (err) {
-      feedback.textContent = "Club doors are jammed! Try again in a moment.";
+      feedback.textContent = signupErrorMessages.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error block`;
     } finally {
       setTimeout(() => {
