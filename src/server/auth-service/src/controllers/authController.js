@@ -32,7 +32,7 @@ export async function loginHandler(request, reply) {
                 }
                 await this.sendMail(mailOptions);
             }
-            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken }));
+            return reply.code(206).send(createResponse(206, '2FA_REQUIRED', { tempToken: tempToken }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
@@ -41,6 +41,7 @@ export async function loginHandler(request, reply) {
 
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -74,13 +75,13 @@ export async function registerHandler(request, reply) {
         });
       
         if (!response.ok) {
-            const errorText = await response.json();
             await deleteUser(this.db, userId);
             await revokeToken(this.db, refreshToken);
             return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
         }
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -105,6 +106,7 @@ export async function logoutHandler(request, reply) {
         
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_OUT'));
     } catch (error) {
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -119,6 +121,7 @@ export async function meHandler(request, reply) {
         
         return reply.code(200).send(createResponse(200, 'USER_FETCHED', { id: user.id, username: user.username, email: user.email }));
     } catch (error) {
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -144,6 +147,7 @@ export async function refreshHandler(request, reply) {
 
         return reply.code(200).send(createResponse(200, 'TOKEN_REFRESHED', { accessToken: accessToken, refreshToken: newRefreshToken }));
     } catch (error) {
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }

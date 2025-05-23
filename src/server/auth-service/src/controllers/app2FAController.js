@@ -2,6 +2,7 @@ import QRCode from 'qrcode'
 import speakeasy from 'speakeasy'
 import { storeTempSecret, findUserById, updateUserSecret } from '../models/userDAO.js';
 import { addToken } from '../models/tokenDAO.js';
+import { createResponse } from '../utils/utils.js';
 
 export async function setup2FAApp(request, reply) {
     try {
@@ -20,8 +21,9 @@ export async function setup2FAApp(request, reply) {
         const otpauthUrl = secret.otpauth_url;
         const qrCodeUrl = await QRCode.toDataURL(otpauthUrl);
         
-        return reply.code(200).send({ message: 'Scan the QR Code with your authenticator App', qrCode: qrCodeUrl })
+        return reply.code(200).send(createResponse(200, 'SCAN_QR', { qrCode: qrCodeUrl }));
     } catch (error) {
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -49,8 +51,9 @@ export async function verify2FAAppSetup(request, reply) {
         
         await updateUserSecret(this.db, userId);
         
-        return reply.code(200).send({ message: '2FA successfully enabled' });
+        return reply.code(200).send(createResponse(200, '2FA_ENABLED'));
     } catch (error) {   
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -65,7 +68,7 @@ export async function verify2FAAppLogin(request, reply) {
         
         const { totpCode } = request.body;
         if (!totpCode)
-            return reply.code(400).send({ error: 'TOTP code is required' })
+            return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
         const isValid = speakeasy.totp.verify({
             secret: user.twofa_secret,
@@ -74,15 +77,16 @@ export async function verify2FAAppLogin(request, reply) {
             window: 1
         })
         if (!isValid)
-            return reply.code(401).send({ error: 'Invalid TOTP code.' });
+            return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
         const accessToken = this.jwt.signAT({ id: userId });
         const refreshToken = this.jwt.signRT({ id: userId });
         
         await addToken(this.db, refreshToken, userId);
         
-        return reply.code(200).send({ accessToken: accessToken, refreshToken: refreshToken });
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
