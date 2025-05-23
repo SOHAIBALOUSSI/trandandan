@@ -12,7 +12,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 | Method | Path          | Description                           | Authentication Required  | Body required                         |
 | :----: | ------------  | ------------------------------------- | :----------------------: | :-----------------------------------: |
 | POST   | `/register`   | Register a new user profile           | Yes                      | { username, email}                    |
-| PATCH  | `/:id`        | Update a user profile                 | Yes                      | { username, email, avatar_url, solde }|
+| PATCH  | `/:id`        | Update a user profile                 | Yes                      | { username/email/avatar_url/solde } (one or many)|
 | GET    | `/:id`        | Retrieve a user profile by id         | Yes                      | (none)                                |
 
 ---
