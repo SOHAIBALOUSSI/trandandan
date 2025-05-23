@@ -31,29 +31,43 @@ The `profile-service` is responsible for managing user profile data. It handles 
 ```
 
 ## Response Codes
+
+- `/register` (called from auth service)
+
 ```yaml
 
   400: {
-    PROFILE_CREATION_FAILED,
     MISSING_FIELDS,
-    PROFILE_EXISTS,
-    PROFILE_NOT_FOUND,
-    ZERO_CHANGES
+    PROFILE_EXISTS
   },
-
-  403: UNAUTHORIZED,
-
-  200: {
-    PROFILE_FETCHED,
-    PROFILE_UPDATED
-  },
-
   201: PROFILE_CREATED
-
   500: INTERNAL_SERVER_ERROR
 
 ```
 
+- `/:id` (GET)
+```yaml
+
+  403: UNAUTHORIZED,
+  400: PROFILE_NOT_FOUND,
+  200: PROFILE_FETCHED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/:id` (PATCH)
+```yaml
+
+  403: UNAUTHORIZED,
+  400: {
+    PROFILE_NOT_FOUND,
+    MISSING_FIELDS,
+    ZERO_CHANGES
+  },
+  200: PROFILE_UPDATED,
+  500: INTERNAL_SERVER_ERROR
+
+```
 ---
 
 ## Schemas

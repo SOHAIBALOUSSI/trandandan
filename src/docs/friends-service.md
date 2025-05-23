@@ -46,28 +46,60 @@ The friends-service handles all operations related to friend management, includi
 ```
 
 ## Response Codes
+- `/request`
 ```yaml
 
   400: {
     ADDRESSEE_REQUIRED,
-    ADDRESSEE_INVALID,
-    REQUESTER_REQUIRED,
-    FRIEND_REQUIRED
+    ADDRESSEE_INVALID
   },
-
-  200: {
-    FRIEND_REQUEST_SENT,
-    FRIEND_REQUEST_ACCEPTED,
-    FRIEND_REQUEST_REJECTED,
-    FRIEND_REMOVED,
-    FRIENDS_LISTED,
-    REQUESTS_LISTED
-  },
-
+  200: FRIEND_REQUEST_SENT,
   500: INTERNAL_SERVER_ERROR
 
 ```
 
+- `/accept`
+```yaml
+
+  400: REQUESTER_REQUIRED,
+  200: FRIEND_REQUEST_ACCEPTED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/reject`
+```yaml
+
+  400: REQUESTER_REQUIRED,
+  200: FRIEND_REQUEST_REJECTED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/:friendId` (DELETE)
+```yaml
+
+  400: FRIEND_REQUIRED,
+  200: FRIEND_REMOVED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/` (GET)
+```yaml
+
+  200: FRIENDS_LISTED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/requests`
+```yaml
+
+  200: REQUESTS_LISTED,
+  500: INTERNAL_SERVER_ERROR
+
+```
 ---
 
 ## Notes

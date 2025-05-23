@@ -17,9 +17,7 @@ The `auth-service` is responsible for handling user authentication, registration
 | GET    | `/me`         | Get current user profile                                               | Yes                      |
 | GET    | `/refresh`    | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes |
 
----
 **Prefix: /2fa**
-
 
 | Method | Path                  | Description                                    | Authentication Required |
 | :----: | --------------------- | ---------------------------------------------- | :----------------------: |
@@ -49,7 +47,6 @@ The `auth-service` is responsible for handling user authentication, registration
 - **totpCode Schema**:
   - `totpCode`: string, required
 
-
 ---
 
 ## Response Schema
@@ -66,40 +63,133 @@ The `auth-service` is responsible for handling user authentication, registration
 ```
 
 ## Response Codes
+
+**Prefix: /auth**
+
+- `/login`
+
 ```yaml
 
   400: {
     USER_NOT_FOUND,
-    UNMATCHED_PASSWORDS,
-    USER_EXISTS,
-    PROFILE_CREATION_FAILED
+    INVALID_PASSWORD
   },
-
-  401: {
-    ACCESS_TOKEN_REQUIRED,
-    ACCESS_TOKEN_INVALID,
-    REFRESH_TOKEN_REQUIRED,
-    REFRESH_TOKEN_INVALID
-  },
-
-  200: {
-    USER_LOGGED_IN,
-    USER_LOGGED_OUT,
-    USER_FETCHED,
-    TOKEN_REFRESHED,
-    SCAN_QR,
-    2FA_ENABLED,
-    CODE_SENT
-  },
-
-  201: USER_REGISTERED
-
+  200: USER_LOGGED_IN,
+  201: USER_REGISTERED,
   206: 2FA_REQUIRED,
-
   500: INTERNAL_SERVER_ERROR
 
 ```
 
+- `/register`
+
+```yaml
+
+  400: {
+    UNMATCHED_PASSWORDS,
+    USER_EXISTS,
+    PROFILE_CREATION_FAILED
+  },
+  201: USER_REGISTERED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+`/logout`
+
+```yaml
+
+  400: USER_NOT_FOUND,
+  401: {
+    ACCESS_TOKEN_REQUIRED,
+    ACCESS_TOKEN_INVALID
+  },
+  200: USER_LOGGED_OUT,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+`/me`
+
+```yaml
+
+  400: USER_NOT_FOUND,
+  200: USER_FETCHED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+`/refresh`
+
+```yaml
+
+  401: {
+    REFRESH_TOKEN_REQUIRED,
+    REFRESH_TOKEN_INVALID
+  },
+  200: TOKEN_REFRESHED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+**Prefix: /2fa**
+
+`/app/setup`
+```yaml
+
+  400: USER_NOT_FOUND,
+  200: SCAN_QR,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+`/app/verify-setup`
+```yaml
+
+  400: USER_NOT_FOUND,
+  401: {
+    OTP_REQUIRED,
+    OTP_INVALID
+  },
+  200: 2FA_ENABLED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+`/app/verify-login`
+```yaml
+
+  400: USER_NOT_FOUND,
+  401: {
+    OTP_REQUIRED,
+    OTP_INVALID
+  },
+  200: USER_LOGGED_IN,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+`/email/setup`
+```yaml
+
+  400: USER_NOT_FOUND,
+  200: CODE_SENT,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+`/verify-login`
+```yaml
+
+  400: USER_NOT_FOUND,
+  401: {
+    OTP_REQUIRED,
+    OTP_INVALID
+  },
+  200: USER_LOGGED_IN,
+  500: INTERNAL_SERVER_ERROR
+
+```
 ---
 
 ## Notes
