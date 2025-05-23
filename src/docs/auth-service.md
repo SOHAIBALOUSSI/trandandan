@@ -134,7 +134,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 **Prefix: /2fa**
 
-`/app/setup`
+- `/app/setup`
 ```yaml
 
   400: USER_NOT_FOUND,
@@ -143,7 +143,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-`/app/verify-setup`
+- `/app/verify-setup`
 ```yaml
 
   400: USER_NOT_FOUND,
@@ -156,7 +156,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-`/app/verify-login`
+- `/app/verify-login`
 ```yaml
 
   400: USER_NOT_FOUND,
@@ -169,7 +169,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-`/email/setup`
+- `/email/setup`
 ```yaml
 
   400: USER_NOT_FOUND,
@@ -178,7 +178,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-`/verify-login`
+- `/verify-login`
 ```yaml
 
   400: USER_NOT_FOUND,
