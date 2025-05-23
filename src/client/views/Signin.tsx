@@ -24,19 +24,21 @@ function Form() {
         id={"password"}
         placeholder={"password"}
       />
-      <div id="signup-feedback" className={styles.formMessageError}>
-        Bad Request
-      </div>
+      <div id="signin-feedback" className={styles.formMessageError}></div>
       <button
         type="submit"
-		id="signin-btn"
+        id="signin-btn"
         className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
       >
         <i className={`fa-solid fa-couch ${styles.primaryButtonIcon}`}></i>
         enter the lounge
       </button>
 
-      <a href="#" className="mt-2 text-pong-accent text-xs md:text-md lg:text-lg xl:text-xl font-bold underline hover:text-pong-secondary transition-all duration-300" data-link>
+      <a
+        href="#"
+        className="mt-2 text-pong-accent text-xs md:text-md lg:text-lg xl:text-xl font-bold underline hover:text-pong-secondary transition-all duration-300"
+        data-link
+      >
         lost your paddle?
       </a>
       <div className="mt-2">
@@ -57,7 +59,7 @@ function Form() {
       <div className="flex flex-col gap-6">
         <button
           type="button"
-		  id="google-signin-btn"
+          id="google-signin-btn"
           className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
         >
           <i className="fa-solid fa-couch"></i>
@@ -65,7 +67,7 @@ function Form() {
         </button>
         <button
           type="button"
-		  id="ft-signin-btn"
+          id="ft-signin-btn"
           className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
         >
           <i className="fa-solid fa-couch"></i>

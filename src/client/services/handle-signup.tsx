@@ -1,5 +1,5 @@
 export function handleSignUp() {
-  const signupForm = document.querySelector("#signup-form");
+  const signupForm = document.querySelector<HTMLFormElement>("#signup-form");
   const feedback = document.querySelector<HTMLDivElement>("#signup-feedback");
 
   if (signupForm) {
@@ -37,17 +37,17 @@ export function handleSignUp() {
 
         const result = await response.json();
 
-        if (result.statusCode === 201) {
+        if (response.status === 201) {
           console.log("Registered successfully:", result);
           localStorage.setItem("accessToken", result.accessToken);
           localStorage.setItem("refreshToken", result.refreshToken);
           setTimeout(() => {
-            history.pushState(null, "", "signin");
+            history.pushState(null, "", "/signin");
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, 1200);
-        } else if (result.statusCode === 400 || result.statusCode === 401) {
+        } else if (response.status === 400 || response.status === 401) {
           showFeedback(result.message);
-        } else if (result.statusCode === 500) {
+        } else if (response.status === 500) {
           showFeedback("Server error. Try again later.");
           console.error(result.details || "No additional error details.");
         } else {

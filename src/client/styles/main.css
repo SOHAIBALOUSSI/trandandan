@@ -472,22 +472,6 @@ a {
 }
 /* End Custom Classes */
 
-/* Start Signin Section */
-.signin-page .signin-form .remote-signin {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  gap: 25px;
-}
-@media (min-width: 768px) {
-  .signin-page .signin-form .remote-signin {
-    flex-direction: row;
-  }
-}
-/* End Signin Section */
-
 /* Start Signup Section */
 /* .signup-page .sign-form .caption {
   color: var(--color-accent);

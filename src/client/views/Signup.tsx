@@ -37,12 +37,10 @@ function Form() {
         id={"confirm-password"}
         placeholder={"confirm your password"}
       />
-      <div id="signup-feedback" className={styles.formMessageError}>
-        Bad Request
-      </div>
+      <div id="signup-feedback" className={styles.formMessageError}></div>
       <button
         type="submit"
-		id="signin-btn"
+        id="signin-btn"
         className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
       >
         <i
