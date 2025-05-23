@@ -8,14 +8,14 @@ The friends-service handles all operations related to friend management, includi
 ## Endpoints
 ### Prefix: /friends
 
-| Method | Path         | Description                                                           | Authentication Required |
-| :----: | ------------ | --------------------------------------------------------------------- | :----------------------: |
-| POST   | `/request`   | Send a friend request                                                 | Yes                      |
-| POST   | `/accept`    | Accept a friend request                                               | Yes                      |
-| POST   | `/reject`    | Reject a friend request                                               | Yes                      |
-| DELETE | `/:friendId` | Remove a friend by ID                                                 | Yes                      |
-| GET    | `/`          | List all accepted friends of user                                     | Yes                      |
-| GET    | `/requests`  | List all pending friend requests for user                             | Yes                      |
+| Method | Path         | Description                                                           | Authentication Required  | Body Required    |  
+| :----: | ------------ | --------------------------------------------------------------------- | :----------------------: | :--------------: |
+| POST   | `/request`   | Send a friend request                                                 | Yes                      | { addresseeId }  |
+| POST   | `/accept`    | Accept a friend request                                               | Yes                      | { requesterId }  |
+| POST   | `/reject`    | Reject a friend request                                               | Yes                      | { requesterId }  |
+| DELETE | `/:friendId` | Remove a friend by ID                                                 | Yes                      | (none)           |
+| GET    | `/`          | List all accepted friends of user                                     | Yes                      | (none)           |
+| GET    | `/requests`  | List all pending friend requests for user                             | Yes                      | (none)           |
 
 ---
 

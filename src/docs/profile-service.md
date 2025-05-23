@@ -9,11 +9,11 @@ The `profile-service` is responsible for managing user profile data. It handles 
 ### Prefix: /profile
 
 
-| Method | Path         | Description                           | Authentication Required |
-| :----: | ------------ | ------------------------------------- | :----------------------: |
-| POST   | `/register`  | Register a new user profile           | Yes                      |
-| PATCH  | `/:id`       | Update a user profile                 | Yes                      |
-| GET    | `/:id`       | Retrieve a user profile by id         | Yes                      |
+| Method | Path         | Description                           | Authentication Required  | Body required                         |
+| :----: | ------------ | ------------------------------------- | :----------------------: | :-----------------------------------: |
+| POST   | `/register`  | Register a new user profile           | Yes                      | { username, email}                    |
+| PATCH  | `/:id`       | Update a user profile                 | Yes                      | { username, email, avatar_url, solde }|
+| GET    | `/:id`       | Retrieve a user profile by id         | Yes                      | (none)                                |
 
 ---
 
