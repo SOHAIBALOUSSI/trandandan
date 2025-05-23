@@ -32,6 +32,44 @@ The friends-service handles all operations related to friend management, includi
 
 ---
 
+## Response Schema
+
+```yaml
+{
+  statusCode: number,
+  code: string,
+  data: {
+    ...
+  }
+}
+
+```
+
+## Response Codes
+```yaml
+
+  400: {
+    ADDRESSEE_REQUIRED,
+    ADDRESSEE_INVALID,
+    REQUESTER_REQUIRED,
+    FRIEND_REQUIRED
+  },
+
+  200: {
+    FRIEND_REQUEST_SENT,
+    FRIEND_REQUEST_ACCEPTED,
+    FRIEND_REQUEST_REJECTED,
+    FRIEND_REMOVED,
+    FRIENDS_LISTED,
+    REQUESTS_LISTED
+  },
+
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+---
+
 ## Notes
 - Only authenticated users can manage friend operations.
 - Accepting or rejecting requests updates the friendship status.

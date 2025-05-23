@@ -21,11 +21,14 @@ The `auth-service` is responsible for handling user authentication, registration
 **Prefix: /2fa**
 
 
-| Method | Path             | Description                           | Authentication Required |
-| :----: | ---------------- | ------------------------------------- | :----------------------: |
-| POST   | `/setup`         | Set up new 2FA                        | Yes                      |
-| POST   | `/verify-setup`  | Verify 2FA TOPT code for new 2FA      | Yes                      |
-| POST   | `/verify-login`  | Verify 2FA TOPT code for existing 2FA | Yes                      |
+| Method | Path                  | Description                                    | Authentication Required |
+| :----: | --------------------- | ---------------------------------------------- | :----------------------: |
+| POST   | `/app/setup`          | Set up new 2FA for authenticator app           | Yes                      |
+| POST   | `/app/verify-setup`   | Verify 2FA TOPT code for app setup             | Yes                      |
+| POST   | `/app/verify-login`   | Verify TOPT code for login with 2fa using app  | Yes                      |
+| POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      |
+| POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      |
+| POST   | `/verify-login`       | Verify OPT code for login with 2fa using email | Yes                      |
 
 ---
 
@@ -49,132 +52,59 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ---
 
-## Responses
-**Prefix: /auth**
-- `/login`: 
+## Response Schema
+
 ```yaml
-  404:
-    error: string
-  400:
-    error: string
-  206:
-    message: string 
-    tempToken: string 
-  200:
-    accessToken: string 
-    refreshToken: string
-  500:
-    error: string 
-    details: string
-```
-- `/register`:
-```yaml
-  400:
-    error: string
-  401:
-    error: string 
-    details?: string
-  201:
-    accessToken: string 
-    refreshToken: string
-  500:
-    error: string 
-    details: string
+{
+  statusCode: number,
+  code: string,
+  data: {
+    ...
+  }
+}
+
 ```
 
-- `/logout`:
+## Response Codes
 ```yaml
-  404:
-    error: string
-  401:
-    error: string
-  200:
-    message: string
-  500: string 
-    error: string 
-    details: string
-```
 
-- `/me`:
-```yaml
-  404:
-    error: string
-  200:
-    id: integer
-    username: string
-    email: string
-  500:
-    error: string 
-    details: string
-```
+  400: {
+    USER_NOT_FOUND,
+    UNMATCHED_PASSWORDS,
+    USER_EXISTS,
+    PROFILE_CREATION_FAILED
+  },
 
-- `/refresh`:
-```yaml
-  401:
-    error: string
-  200:
-    accessToken: string 
-    newRefreshToken: string
-  500:
-    error: string 
-    details: string
+  401: {
+    ACCESS_TOKEN_REQUIRED,
+    ACCESS_TOKEN_INVALID,
+    REFRESH_TOKEN_REQUIRED,
+    REFRESH_TOKEN_INVALID
+  },
+
+  200: {
+    USER_LOGGED_IN,
+    USER_LOGGED_OUT,
+    USER_FETCHED,
+    TOKEN_REFRESHED,
+    SCAN_QR,
+    2FA_ENABLED,
+    CODE_SENT
+  },
+
+  201: USER_REGISTERED
+
+  206: 2FA_REQUIRED,
+
+  500: INTERNAL_SERVER_ERROR
+
 ```
 
 ---
-
-**Prefix: /2fa**
-- `/setup` :
-```yaml
-  404:
-    error: string
-  200:
-    message: string 
-    qrCode: string 
-  500:
-    error: string 
-    details: string
-```
-
-- `/verify-setup` :
-```yaml
-  404:
-    error: string
-  400:
-    error: string
-  401:
-    error: string
-  200:
-    message: string
-  500: string 
-    error: string 
-    details: string
-```
-
-- `/verify-login` :
-```yaml
-  404:
-    error: string
-  400:
-    error: string
-  401:
-    error: string
-  200:
-    accessToken: string 
-    refreshToken: string
-  500:
-    error: string 
-    details: string
-```
 
 ## Notes
 - Successful login returns a token.
 - Logout clears the session or token.
 - `/me` returns the current user info based on session/token.
-- `/setup` prepares user for enabling 2FA.
-- `/verify-setup` verifies the received TOPT code from the setup.
-- `/verify-login` verifies the code for already 2fa-enabling users
-
-## To Add
-- Authorization code & client credentials flow.
-
-
+- Setting up 2FA for email and app are basically the same, they only differ in how OTP codes are generated.
+- `/verify-login` is a special route dedicated for validating sms/email OTP codes (sms not implemented yet).

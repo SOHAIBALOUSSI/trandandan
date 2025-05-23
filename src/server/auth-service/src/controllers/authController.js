@@ -53,7 +53,7 @@ export async function registerHandler(request, reply) {
             return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
         const userExist = await findUser(this.db, username, email);
         if (userExist)
-            return reply.code(400).send(createResponse(400, 'ALREADY_USED'));
+            return reply.code(400).send(createResponse(400, 'USER_EXISTS'));
         
         const hashedPassword = await hash(password, 10);
         const userId = await addUser(this.db, username, email, hashedPassword);
