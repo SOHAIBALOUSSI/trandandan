@@ -95,7 +95,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-`/logout`
+- `/logout`
 
 ```yaml
 
@@ -109,7 +109,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-`/me`
+- `/me`
 
 ```yaml
 
@@ -119,7 +119,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-`/refresh`
+- `/refresh`
 
 ```yaml
 
