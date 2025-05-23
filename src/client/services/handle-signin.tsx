@@ -1,10 +1,13 @@
+import { styles } from "@/styles/styles";
+
 export function handleSignIN() {
   const signInForm = document.querySelector<HTMLFormElement>("#signin-form");
   const feedback = document.querySelector<HTMLDivElement>("#signin-feedback");
+  const submitBtn = document.querySelector<HTMLButtonElement>("#signin-btn");
+  const spinner = document.querySelector<HTMLSpanElement>("#spinner-in");
+  const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label-in");
 
-  console.log(feedback);
-
-  if (!signInForm || !feedback) return;
+  if (!signInForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
 
   signInForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -13,18 +16,23 @@ export function handleSignIN() {
     const loginValue = formData.get("login") as string;
     const password = formData.get("password") as string;
 
-    console.log(loginValue);
-    console.log(password);
-
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginValue);
     const payload = isEmail
       ? { email: loginValue, password }
       : { username: loginValue, password };
 
     const showFeedback = (message: string) => {
-      if (!feedback) return;
       feedback.textContent = message;
     };
+
+    feedback.textContent = "";
+    feedback.className = styles.formMessage;
+    submitBtn.disabled = true;
+    submitBtn.setAttribute("aria-busy", "true");
+    spinner.classList.remove("hidden");
+    btnLabel.textContent = "Entering...";
+
+    const startTime = Date.now();
 
     try {
       const response = await fetch("/auth/login", {
@@ -35,34 +43,51 @@ export function handleSignIN() {
 
       const result = await response.json();
 
-      if (response.status === 200) {
-        localStorage.setItem("auth", "true");
-        result.accessToken &&
-          localStorage.setItem("accessToken", result.accessToken);
-        result.refreshToken &&
-          localStorage.setItem("refreshToken", result.refreshToken);
+      const elapsed = Date.now() - startTime;
+      const waitTime = Math.max(0, 1200 - elapsed); // Ensure 1.2s minimum spinner
+
+      if (response.ok) {
         setTimeout(() => {
-          history.pushState(null, "", "/home");
-          window.dispatchEvent(new PopStateEvent("popstate"));
-        }, 1200);
+          feedback.textContent = "Welcome back, champ! Entering the lounge...";
+          feedback.className = `${styles.formMessage} text-pong-success block`;
+
+          localStorage.setItem("auth", "true");
+          result.accessToken &&
+            localStorage.setItem("accessToken", result.accessToken);
+          result.refreshToken &&
+            localStorage.setItem("refreshToken", result.refreshToken);
+          setTimeout(() => {
+            history.pushState(null, "", "/home");
+            window.dispatchEvent(new PopStateEvent("popstate"));
+          }, 1500);
+        }, waitTime);
       } else if (response.status === 206) {
-        result.tempToken && localStorage.setItem("tempToken", result.tempToken);
-        showFeedback("Two-factor authentication required.");
-        feedback.classList.remove("pong-error");
-        feedback.classList.add("pong-warning");
-        history.pushState(null, "", "/2fa/verify-login");
-        window.dispatchEvent(new PopStateEvent("popstate"));
-      } else if (response.status === 400 || response.status === 404) {
-        showFeedback("Invalid credentials. Try again, champ.");
-      } else if (response.status === 500) {
-        showFeedback("Server's catching its breath. Try again later.");
-        console.error(result.details || "No details provided.");
+        setTimeout(() => {
+          result.tempToken &&
+            localStorage.setItem("tempToken", result.tempToken);
+          showFeedback("Security check! Time to prove it’s really you.");
+          feedback.className = `${styles.formMessage} text-pong-warning block`;
+          history.pushState(null, "", "/2fa/verify-login");
+          window.dispatchEvent(new PopStateEvent("popstate"));
+        }, waitTime);
       } else {
-        showFeedback("Something’s off. Ping us if it keeps happening.");
+        setTimeout(() => {
+          showFeedback(
+            "Invalid paddle pass. Check your details and swing again."
+          );
+          feedback.className = `${styles.formMessage} text-pong-error block`;
+        }, waitTime);
       }
     } catch (err) {
-      console.error("Error logging in:", err);
-      showFeedback("Network issue. Your legacy will have to wait.");
+      feedback.textContent = "Server’s taking a timeout. Try again shortly.";
+      feedback.className = `${styles.formMessage} text-pong-error block`;
+    } finally {
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.setAttribute("aria-busy", "false");
+        spinner.classList.add("hidden");
+        btnLabel.textContent = "enter the lounge";
+      }, 1300);
     }
   });
 }

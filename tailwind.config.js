@@ -23,16 +23,10 @@ module.exports = {
         "pong-secondary-sport": "#F77F00",
         "pong-highlight-sport": "#FCBF49",
         "pong-footer": "#7391a1",
-		"pong-error" : "#FF4C4C",
-		"pong-success" : "#4CAF50",
-		"pong-warning" : "#FF9800",
-		"pong-info" : "#2196F3",
-      },
-      backgroundImage: {
-        "pong-gradient-light":
-          "linear-gradient(to bottom, #fdfdfc 0%, #faf8f5 30%, #f8f6f2 60%)",
-        "pong-gradient-dark":
-          "linear-gradient(to bottom, #1b1b1b 0%, #141414 30%, #0a0a0a 60%);",
+        "pong-error": "#d90429",
+        "pong-success": "#38b000",
+        "pong-warning": "#ffb703",
+        "pong-info": "#2196F3",
       },
       keyframes: {
         fadeInUp: {

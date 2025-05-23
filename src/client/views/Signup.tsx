@@ -37,23 +37,35 @@ function Form() {
         id={"confirm-password"}
         placeholder={"confirm your password"}
       />
-      <div id="signup-feedback" className={styles.formMessageError}></div>
+      <div
+        id="signup-feedback"
+        className={`${styles.formMessage} hidden`}
+        role="alert"
+        aria-live="polite"
+      ></div>
       <button
         type="submit"
-        id="signin-btn"
-        className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
+        id="signup-btn"
+        className={`group ${styles.primaryButton} shadow-lg hover:animate-none relative flex items-center justify-center`}
+        aria-busy="false"
       >
+        <span
+          id="spinner"
+          className="hidden absolute left-4 w-4 h-4 border-2 border-white border-t-pong-accent rounded-full animate-spin"
+          aria-hidden="true"
+        ></span>
         <i
           className={`fa-solid fa-table-tennis-paddle-ball ${styles.primaryButtonIcon}`}
+          aria-hidden="true"
         ></i>
-        register your racket
+        <span id="btn-label">register your racket</span>
       </button>
       <p className="text-xs text-pong-primary/70 mt-2">
         by joining, you swear on honor to compete fairly and uphold the spirit
         of ping pong.
       </p>
-      <div className="mt-8">
-        <p className="text-sm md:text-md lg:text-lg xl:text-xl font-bold">
+      <div className="mt-6">
+        <p className="text-sm md:text-base font-bold">
           Already hold a racket?{" "}
           <a
             href="signin"

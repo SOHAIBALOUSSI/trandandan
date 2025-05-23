@@ -1,101 +1,149 @@
 export const styles = {
-  //    Start Primary Button styles
+  //   Start Page Layout styles  //
+  pageLayoutLight: `
+  	w-full min-h-screen 
+	flex flex-col items-center justify-between gap-8
+	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
+	py-8 lg:py-12 xl:py-16 
+	text-pong-primary
+	bg-gradient-to-b from-[#fdfdfc] via-[#faf8f5] to-[#f8f6f2] 
+  `,
+  pageLayoutDark: `
+  	w-full min-h-screen 
+	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
+	py-8 lg:py-12 xl:py-16
+	text-pong-dark-primary 
+	bg-gradient-to-b from-[#1a1a1a] via-[#0d0d0d] to-[#000000] 
+  `,
+  //   End Page Layout styles  //
+
+  //  Start Hero styles  //
+  heroTitleContainer: `
+  	w-full max-w-screen-xl 
+	animate-fade-in
+  `,
+  heroTitle: `
+	uppercase leading-tight
+	text-[clamp(2.2rem,6vw,4.5rem)]
+	md:text-[clamp(3rem,8vw,7rem)]
+	xl:text-[clamp(4rem,10vw,9.25rem)]
+	md:leading-[1.1]
+	transition duration-300 hover:text-pong-secondary
+  `,
+  heroTagline: `
+  	mt-4 font-normal
+  	text-[clamp(1rem,2.5vw,1.5rem)]
+  	xl:text-[clamp(1.25rem,3vw,2.25rem)]
+  	text-pong-primary/80
+  	after:content-['...']
+  `,
+  heroCallToAction: `
+  	flex flex-col items-center gap-2 
+	animate-fade-in
+  `,
+  heroSubtitle: `
+    mt-2 text-pong-secondary
+    md:text-[clamp(1rem,2vw,1.375rem)]
+  `,
+  //  End Hero styles  //
+
+  //  Start Primary Button styles  //
   primaryButton: `
     flex items-center justify-center gap-2
-    w-full mx-auto px-6 py-4
-    text-sm lg:text-lg xl:text-xl font-semibold text-white
+    w-full md:w-[320px] mx-auto px-6 py-4 md:px-8 md:py-5
+    text-sm lg:text-base font-semibold text-white
     bg-pong-accent hover:bg-pong-secondary
     rounded-md
     cursor-pointer transform active:scale-[0.97]
     transition-all duration-300
+	hover:shadow-lg
     focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
-    md:w-[320px] md:text-base md:px-8 md:py-5
-	`,
+  `,
   primaryButtonIcon: `
     transition-transform duration-300
     group-hover:-translate-x-1
-	`,
-  //    End Primary Button styles
+  `,
+  //  End Primary Button styles  //
 
-  //    Start Input Field styles
+  //  Start Input Field styles  //
   inputField: `
 	normal-case
 	w-full px-4 py-3
-	text-sm font-semibold
+	text-sm lg:text-base font-semibold
 	bg-pong-secondary/10
 	rounded-md
+	caret-inherit
 	placeholder:text-pong-primary/50 placeholder:capitalize
 	transition-all duration-300
 	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
 	focus:bg-pong-secondary/20
-	`,
-  //    End Input Field styles
+  `,
+  //  End Input Field styles  //
 
-  //    Start Form styles
+  //  Start Form styles  //
   form: `
 	max-w-md w-full mx-auto	
 	bg-white/90 shadow-xl rounded-2xl
 	backdrop-blur
 	flex flex-col text-center align-center justify-center gap-6
 	px-6 py-10
-	transition-all duration-300
-	`,
-  formMessageError: `
-  	-mt-4
-	text-pong-error
-	text-xs
-	`,
-  //    End Form styles
-
-  //   Start Animation styles
-  fadeInSection: "opacity-0 animate-fade-in",
-  blurInText: "opacity-0 animate-blur-in",
-  //   End Animation styles
-
-  heroCallToAction: "flex flex-col items-center gap-2 animate-fade-in",
-  heroSubtitle: `
-    mt-3 text-base text-pong-primary
-    md:text-[clamp(1rem,2vw,1.375rem)]
-    animate-blur-in
-	italic text-pong-secondary
   `,
-  heroTitleContainer: "w-full max-w-screen-xl text-center animate-fade-in",
-  heroTitle: `
-    uppercase leading-tight
-    text-[2.3rem]
-    md:text-[clamp(2.5rem,6vw,6rem)]
-    xl:text-[9.25rem]
-    md:leading-[1.2]
-    transition duration-300 hover:text-pong-secondary
+  formMessage: `
+  	text-center text-sm font-semibold min-h-[1.5rem]
+  	transition-opacity duration-300 ease-in-out
   `,
-  heroTagline: `
-    mt-4 font-normal text-base
-    md:text-[clamp(1rem,2vw,1.5rem)]
-    xl:text-[2rem]
-    text-pong-primary/80
+  //  End Form styles  //
+
+  //  Start Main Header styles  //
+  titleDark: `
+    mb-8
+	text-pong-primary 
+	text-2xl md:text-3xl lg:text-4xl xl:text-5xl
   `,
+  titleLight: `
+  	mb-8 
+	text-pong-dark-primary
+	text-2xl md:text-3xl lg:text-4xl xl:text-5xl
+  `,
+  titleSpanDark: `
+  	font-playfair
+	text-pong-accent
+	relative
+	before:absolute before:w-full before:h-[3px] 
+	before:bg-pong-accent before:rounded-md 
+	before:bottom-[4px] before:left-0 
+	before:scale-x-0 before:transition-transform before:duration-300 
+	hover:before:scale-x-100
+  `,
+  titleSpanLight: `
+  	font-playfair 
+	text-pong-dark-accent
+	relative
+	before:absolute before:w-full before:h-[2px] 
+	before:bg-pong-dark-accent before:rounded-md 
+	before:bottom-0 before:left-0 
+	before:scale-x-0 before:transition-transform before:duration-300 
+	hover:before:scale-x-100
+  `,
+  subtitleDark: `
+  	flex flex-col font-semibold 
+	text-lg md:text-xl lg:text-2xl xl:text-3xl
+  `,
+  subtitleParagraphDark: `
+  	text-pong-primary/80 
+	font-normal 
+	text-sm md:text-base lg:text-lg xl:text-xl
+  `,
+  //  End Main Header styles  //
 
-  //   Start Page Layout styles
-  pageLayoutLight:
-    "w-full min-h-screen bg-gradient-to-b from-[#fdfdfc] via-[#faf8f5] to-[#f8f6f2] text-pong-primary px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-8 lg:py-12 xl:py-16 flex flex-col items-center justify-between min-h-screen w-full gap-10",
-  pageLayoutDark:
-    "w-full min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#0d0d0d] to-[#000000] text-pong-primary px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-8 lg:py-12 xl:py-16",
-  //   End Page Layout styles
-
-  //    Start Title Section styles
-  titleDark:
-    "mb-8 text-pong-primary text-2xl md:text-3xl lg:text-4xl xl:text-5xl",
-  titleLight:
-    "mb-8 text-pong-dark-primary text-2xl md:text-3xl lg:text-4xl xl:text-5xl",
-  titleSpanDark: "font-playfair text-pong-accent",
-  titleSpanLight: "font-playfair text-pong-dark-accent",
-  subtitleDark:
-    "flex flex-col align-center text-pong-primary font-semibold text-lg md:text-xl lg:text-2xl xl:text-3xl",
-  subtitleLight:
-    "flex flex-col align-center text-pong-dark-primary font-semibold text-lg md:text-xl lg:text-2xl xl:text-3xl",
-  subtitleParagraphDark:
-    "font-lora text-pong-primary/80 font-normal text-sm md:text-md lg:text-lg xl:text-xl",
-  subtitleParagraphLight:
-    "font-lora text-pong-dark-primary/80 font-normal text-sm md:text-md lg:text-lg xl:text-xl",
-  //    End Title Section styles
+  //  Start Animation styles  //
+  fadeInSection: `
+  	opacity-0 
+	animate-fade-in
+  `,
+  blurInText: `
+  	opacity-0 
+	animate-blur-in
+  `,
+  //  End Animation styles  //
 };

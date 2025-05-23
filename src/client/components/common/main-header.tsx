@@ -8,7 +8,7 @@ export function MainHeader(props: {
   subtitleParagraph: string;
 }) {
   return (
-    <div className="mb-2 flex flex-col items-center text-center">
+    <div className="flex flex-col text-center">
       <h1 className={props.isDark ? styles.titleDark : styles.titleLight}>
         {props.title}{" "}
         <span
@@ -19,15 +19,9 @@ export function MainHeader(props: {
           {props.titleSpan}
         </span>
       </h1>
-      <h2 className={props.isDark ? styles.subtitleDark : styles.subtitleLight}>
+      <h2 className={styles.subtitleDark}>
         {props.subtitle}
-        <span
-          className={
-            props.isDark
-              ? styles.subtitleParagraphDark
-              : styles.subtitleParagraphLight
-          }
-        >
+        <span className={styles.subtitleParagraphDark}>
           {props.subtitleParagraph}
         </span>
       </h2>

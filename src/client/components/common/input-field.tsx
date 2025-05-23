@@ -14,8 +14,9 @@ export function InputField(props: {
       id={props.id}
       placeholder={props.placeholder}
       required
-      className={`${styles.inputField} input-field`}
+      className={`input-field ${styles.inputField}`}
 	  autofocus={props.autofocus || false}
+	  autoComplete="off"
     />
   );
 }

@@ -24,25 +24,38 @@ function Form() {
         id={"password"}
         placeholder={"password"}
       />
-      <div id="signin-feedback" className={styles.formMessageError}></div>
+      <div
+        id="signin-feedback"
+        className={`${styles.formMessage} hidden`}
+        role="alert"
+        aria-live="polite"
+      ></div>
       <button
         type="submit"
         id="signin-btn"
-        className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
+        className={`group ${styles.primaryButton} shadow-lg hover:animate-none relative flex items-center justify-center`}
+        aria-busy="false"
       >
-        <i className={`fa-solid fa-couch ${styles.primaryButtonIcon}`}></i>
-        enter the lounge
+        <span
+          id="spinner-in"
+          className="hidden absolute left-4 w-4 h-4 border-2 border-white border-t-pong-accent rounded-full animate-spin"
+          aria-hidden="true"
+        ></span>
+        <i
+          className={`fa-solid fa-couch ${styles.primaryButtonIcon}`}
+          aria-hidden="true"
+        ></i>
+        <span id="btn-label-in">enter the lounge</span>
       </button>
-
       <a
         href="#"
-        className="mt-2 text-pong-accent text-xs md:text-md lg:text-lg xl:text-xl font-bold underline hover:text-pong-secondary transition-all duration-300"
+        className="-mt-2 text-pong-accent text-xs lg:text-base font-bold underline hover:text-pong-secondary transition-all duration-300"
         data-link
       >
         lost your paddle?
       </a>
       <div className="mt-2">
-        <p className="text-sm md:text-md lg:text-lg xl:text-xl font-bold">
+        <p className="text-sm lg:text-base font-bold">
           new here?{" "}
           <a
             href="signup"
@@ -53,7 +66,7 @@ function Form() {
           </a>
         </p>
       </div>
-      <div className="line w-full relative before:left-0 after:right-0">
+      <div className="line-divider relative w-full flex items-center justify-center my-6 min-h-[2.5rem]">
         <i className="fa-solid fa-table-tennis-paddle-ball"></i>
       </div>
       <div className="flex flex-col gap-6">
