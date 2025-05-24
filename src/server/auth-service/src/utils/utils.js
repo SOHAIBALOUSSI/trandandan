@@ -5,3 +5,7 @@ export function createResponse(status, code, data) {
         data: data
     });
 }
+
+export function validatePassword(password) {
+    return (/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]{8,15}$/.test(password))
+}

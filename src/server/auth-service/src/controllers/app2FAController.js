@@ -51,7 +51,7 @@ export async function verify2FAAppSetup(request, reply) {
         
         await updateUserSecret(this.db, userId);
         
-        return reply.code(200).send(createResponse(200, '2FA_ENABLED'));
+        return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {   
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { findUser, addUser, findUserById, deleteUser, saveTotpCode } from '../models/userDAO.js';
 import { findToken, addToken, revokeToken } from '../models/tokenDAO.js'; 
-import { createResponse } from '../utils/utils.js'
+import { createResponse, validatePassword } from '../utils/utils.js'
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -32,7 +32,7 @@ export async function loginHandler(request, reply) {
                 }
                 await this.sendMail(mailOptions);
             }
-            return reply.code(206).send(createResponse(206, '2FA_REQUIRED', { tempToken: tempToken }));
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
@@ -51,6 +51,8 @@ export async function registerHandler(request, reply) {
         const { email, username, password, confirmPassword} = request.body;
         if (password !== confirmPassword)
             return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
+        if (!validatePassword(password))
+            return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
         const userExist = await findUser(this.db, username, email);
         if (userExist)
             return reply.code(400).send(createResponse(400, 'USER_EXISTS'));
