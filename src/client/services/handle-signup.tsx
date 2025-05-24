@@ -9,7 +9,7 @@ export function handleSignUp() {
 
   if (!signupForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
 
-  //  Some error messages for the signup process
+  //  Error messages for the signup process
   const signupErrorMessages: Record<string, string> = {
     USER_EXISTS: "This racket is already in the club. Try signing in.",
     UNMATCHED_PASSWORDS: "Passwords don’t match. Recheck your grip.",

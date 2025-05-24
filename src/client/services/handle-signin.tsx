@@ -9,7 +9,7 @@ export function handleSignIN() {
 
   if (!signInForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
 
-  // Some error messages for the signin process
+  // Error messages for the signin process
   const signinErrorMessages: Record<string, string> = {
     USER_NOT_FOUND: "No racket found. Check your details and swing again.",
     INVALID_PASSWORD:
@@ -60,12 +60,16 @@ export function handleSignIN() {
             localStorage.setItem("accessToken", result.accessToken);
           result.refreshToken &&
             localStorage.setItem("refreshToken", result.refreshToken);
+
           setTimeout(() => {
             history.pushState(null, "", "/home");
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, 1500);
         }, waitTime);
       } else if (response.status === 206) {
+        /*
+			still some work to do here 
+		*/
         setTimeout(() => {
           result.tempToken &&
             localStorage.setItem("tempToken", result.tempToken);
