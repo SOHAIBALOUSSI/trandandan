@@ -8,14 +8,14 @@ The friends-service handles all operations related to friend management, includi
 ## Endpoints
 ### Prefix: /friends
 
-| Method | Path         | Description                                                           | Authentication Required |
-| :----: | ------------ | --------------------------------------------------------------------- | :----------------------: |
-| POST   | `/request`   | Send a friend request                                                 | Yes                      |
-| POST   | `/accept`    | Accept a friend request                                               | Yes                      |
-| POST   | `/reject`    | Reject a friend request                                               | Yes                      |
-| DELETE | `/:friendId` | Remove a friend by ID                                                 | Yes                      |
-| GET    | `/`          | List all accepted friends of user                                     | Yes                      |
-| GET    | `/requests`  | List all pending friend requests for user                             | Yes                      |
+| Method | Path         | Description                                                           | Authentication Required  | Body Required    |  
+| :----: | ------------ | --------------------------------------------------------------------- | :----------------------: | :--------------: |
+| POST   | `/request`   | Send a friend request                                                 | Yes                      | { addresseeId }  |
+| POST   | `/accept`    | Accept a friend request                                               | Yes                      | { requesterId }  |
+| POST   | `/reject`    | Reject a friend request                                               | Yes                      | { requesterId }  |
+| DELETE | `/:friendId` | Remove a friend by ID                                                 | Yes                      | (none)           |
+| GET    | `/`          | List all accepted friends of user                                     | Yes                      | (none)           |
+| GET    | `/requests`  | List all pending friend requests for user                             | Yes                      | (none)           |
 
 ---
 
@@ -46,28 +46,60 @@ The friends-service handles all operations related to friend management, includi
 ```
 
 ## Response Codes
+- `/request`
 ```yaml
 
   400: {
     ADDRESSEE_REQUIRED,
-    ADDRESSEE_INVALID,
-    REQUESTER_REQUIRED,
-    FRIEND_REQUIRED
+    ADDRESSEE_INVALID
   },
-
-  200: {
-    FRIEND_REQUEST_SENT,
-    FRIEND_REQUEST_ACCEPTED,
-    FRIEND_REQUEST_REJECTED,
-    FRIEND_REMOVED,
-    FRIENDS_LISTED,
-    REQUESTS_LISTED
-  },
-
+  200: FRIEND_REQUEST_SENT,
   500: INTERNAL_SERVER_ERROR
 
 ```
 
+- `/accept`
+```yaml
+
+  400: REQUESTER_REQUIRED,
+  200: FRIEND_REQUEST_ACCEPTED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/reject`
+```yaml
+
+  400: REQUESTER_REQUIRED,
+  200: FRIEND_REQUEST_REJECTED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/:friendId` (DELETE)
+```yaml
+
+  400: FRIEND_REQUIRED,
+  200: FRIEND_REMOVED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/` (GET)
+```yaml
+
+  200: FRIENDS_LISTED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/requests`
+```yaml
+
+  200: REQUESTS_LISTED,
+  500: INTERNAL_SERVER_ERROR
+
+```
 ---
 
 ## Notes

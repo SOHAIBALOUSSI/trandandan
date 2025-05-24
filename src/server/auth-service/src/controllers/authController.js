@@ -15,7 +15,7 @@ export async function loginHandler(request, reply) {
 
         const matched = await compare(password, user.password);
         if (!matched)
-            return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
+            return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
         
         if (user.twofa_enabled)
         {

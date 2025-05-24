@@ -12,7 +12,6 @@ export const emailValidation = {
 
 export const passwordValidation = {
     type: 'string',
-    pattern: '^[a-z]+[A-Z]+[0-9]+$',
     minLength: 8,
     maxLength: 50
 }
