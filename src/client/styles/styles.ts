@@ -9,11 +9,11 @@ export const styles = {
 	bg-gradient-to-b from-[#fdfdfc] via-[#faf8f5] to-[#f8f6f2] 
   `,
   pageLayoutDark: `
-  	w-full min-h-screen 
-	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
+	w-full min-h-screen
+	text-pong-dark-primary
+	bg-gradient-to-b from-[#1b1b1b] via-[#141414] to-[#0a0a0a]
+	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12
 	py-8 lg:py-12 xl:py-16
-	text-pong-dark-primary 
-	bg-gradient-to-b from-[#1a1a1a] via-[#0d0d0d] to-[#000000] 
   `,
   //   End Page Layout styles  //
 

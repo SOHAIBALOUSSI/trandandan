@@ -167,27 +167,22 @@ button {
 }
 
 /* ////////////////// */
-.dark-page {
-  width: 100%;
-  min-height: 100vh;
-  background: linear-gradient(to bottom, #1b1b1b 0%, #141414 30%, #0a0a0a 60%);
-  color: var(--color-dark-primary);
-}
 @media (min-width: 768px) and (min-height: 760px) {
-  .dark-page {
-    padding: 0 var(--padding-md) 0 calc(var(--padding-md) + 100px);
+  .dark-page-layout {
+    padding-right: calc(2rem + 100px); /* md */
   }
 }
 @media (min-width: 992px) and (min-height: 760px) {
-  .dark-page {
-    padding: 0 var(--padding-lg) 0 calc(var(--padding-lg) + 100px);
+  .dark-page-layout {
+    padding-right: calc(2.5rem + 100px); /* lg */
   }
 }
 @media (min-width: 1200px) and (min-height: 760px) {
-  .dark-page {
-    padding: 0 var(--padding-xl) 0 calc(var(--padding-xl) + 100px);
+  .dark-page-layout {
+    padding-right: calc(3rem + 100px); /* xl */
   }
 }
+
 .dark-page .my-container {
   display: flex;
   flex-direction: column;
@@ -201,6 +196,7 @@ button {
 .dark-page .my-container {
   padding: 1rem 15px 2.5rem;
 }
+
 /* === Navigation Bars Design === */
 .nav-bar {
   width: 100%;

@@ -1,5 +1,6 @@
 import { LeftNavBar } from "@/components/layout/left-nav-bar";
 import { TopNavBar } from "@/components/layout/top-nav-bar";
+import { styles } from "@/styles/styles";
 
 function Header() {
   const header = (
@@ -103,7 +104,7 @@ function HomePage() {
 
 export function Home() {
   const homeSection = (
-    <section className="dark-page">
+    <section className={`${styles.pageLayoutDark} dark-page-layout`}>
       <LeftNavBar />
       <TopNavBar />
       <HomePage />
