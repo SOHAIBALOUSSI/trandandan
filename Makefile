@@ -1,5 +1,5 @@
-all:
-	@docker compose up --build -d
+run:
+	@docker compose up --build 
 
 down:
 	@docker compose down
