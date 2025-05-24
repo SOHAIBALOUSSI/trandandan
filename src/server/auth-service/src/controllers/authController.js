@@ -32,7 +32,7 @@ export async function loginHandler(request, reply) {
                 }
                 await this.sendMail(mailOptions);
             }
-            return reply.code(206).send(createResponse(206, '2FA_REQUIRED', { tempToken: tempToken }));
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });

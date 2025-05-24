@@ -1,5 +1,6 @@
 import fp from 'fastify-plugin';
 import jwt from 'jsonwebtoken';
+import { createResponse } from '../../../profile-service/src/utils/utils';
 
 
 async function jwtPlugin(fastify, options) {

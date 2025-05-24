@@ -76,7 +76,7 @@ The `auth-service` is responsible for handling user authentication, registration
   },
   200: USER_LOGGED_IN,
   201: USER_REGISTERED,
-  206: 2FA_REQUIRED,
+  206: TWOFA_REQUIRED,
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -151,7 +151,7 @@ The `auth-service` is responsible for handling user authentication, registration
     OTP_REQUIRED,
     OTP_INVALID
   },
-  200: 2FA_ENABLED,
+  200: TWOFA_ENABLED,
   500: INTERNAL_SERVER_ERROR
 
 ```
