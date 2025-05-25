@@ -15,7 +15,8 @@ dotenv.config();
 await server.register(sqlitePlugin);
 await server.register(jwtPlugin, {
     accessTokenKey: process.env.AJWT_SECRET_KEY,
-    refreshTokenKey: process.env.RJWT_SECRET_KEY
+    refreshTokenKey: process.env.RJWT_SECRET_KEY,
+    tempTokenKey: process.env.TJWT_SECRET_KEY
 });
 await server.register(nodemailerPlugin);
 
