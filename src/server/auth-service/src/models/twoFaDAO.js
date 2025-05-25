@@ -7,16 +7,21 @@ export async function storeTempSecret(db, secret, id) {
     return result.lastID;
 }
 
-// export async function name(params) {
-    
-// }
+export async function updateTempSecret(db, secret, id) {
+    const result = await db.run('UPDATE twofa SET temp_secret = ? WHERE user_id = ?)',
+        [secret, id]
+    );
+
+    console.log("TwoFa: updated tempSecret in row: ", result.lastID);
+    return result.lastID;
+}
 
 export async function updateUserSecret(db, id) {
     const result = await db.run(`UPDATE twofa SET
         type = 'app',
         secret = temp_secret,
         temp_secret = NULL,
-        enabled = TRUE,
+        enabled = TRUE
         WHERE user_id = ?`,
         [id]
     );   
@@ -39,7 +44,7 @@ export async function updateTotpCode(db, totpCode, id) {
         WHERE user_id = ?`,
         [totpCode, Date.now() + 60 * 60 * 1000, id]
     );
-    console.log("TwoFa: inserted TOTP code in row: ", result.lastID);
+    console.log("TwoFa: updated TOTP code in row: ", result.lastID);
     return result.lastID;
 }
 

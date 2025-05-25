@@ -6,6 +6,7 @@ import { createResponse } from '../utils/utils.js';
 import {
     findTwoFaByUID,
     storeTempSecret,
+    updateTempSecret,
     updateUserSecret
 } from '../models/twoFaDAO.js';
 
@@ -20,7 +21,15 @@ export async function setup2FAApp(request, reply) {
             name: `trandenden (${user.username})`,
             length: 32
         });
-
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            await storeTempSecret(this.db, secret.base32, userId);
+        else
+        {
+            if (twoFa.enabled)
+                return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
+            await updateTempSecret(this.db, secret.base32, userId);
+        }
         await storeTempSecret(this.db, secret.base32, userId);  
         
         const otpauthUrl = secret.otpauth_url;
@@ -44,6 +53,8 @@ export async function verify2FAAppSetup(request, reply) {
         const twoFa = await findTwoFaByUID(this.db, user.id);
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
+        else if (twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
 
         const { totpCode } = request.body;
         if (!totpCode)
@@ -78,7 +89,9 @@ export async function verify2FAAppLogin(request, reply) {
         const twoFa = await findTwoFaByUID(this.db, user.id);
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
-
+        else if (!twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_ENABLED'));
+        
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));

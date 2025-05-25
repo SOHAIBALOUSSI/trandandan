@@ -47,7 +47,9 @@ export async function verify2FAEmailSetup(request, reply) {
         const twoFa = await findTwoFaByUID(this.db, user.id);
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
-        
+        else if (twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
+
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
@@ -76,7 +78,9 @@ export async function verify2FALogin(request, reply) {
         const twoFa = await findTwoFaByUID(this.db, user.id);
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
-
+        else if (!twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_ENABLED'));
+        
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
