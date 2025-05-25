@@ -1,7 +1,20 @@
 import bcrypt from 'bcrypt';
-import { findUser, addUser, findUserById, deleteUser, saveTotpCode } from '../models/userDAO.js';
-import { findToken, addToken, revokeToken } from '../models/tokenDAO.js'; 
-import { createResponse, validatePassword } from '../utils/utils.js'
+import {
+    findUser, 
+    addUser, 
+    findUserById, 
+    deleteUser
+} from '../models/userDAO.js';
+import { 
+    findToken,
+    addToken,
+    revokeToken
+} from '../models/tokenDAO.js'; 
+import { 
+    createResponse, 
+    validatePassword 
+} from '../utils/utils.js'
+import { storeTotpCode } from '../models/twoFaDAO.js';
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -21,7 +34,7 @@ export async function loginHandler(request, reply) {
         {
             const tempToken = this.jwt.signTT({ id: user.id });
             const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-            await saveTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
+            await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
             if (user.twofa_type === 'email')
             {
                 const mailOptions = {

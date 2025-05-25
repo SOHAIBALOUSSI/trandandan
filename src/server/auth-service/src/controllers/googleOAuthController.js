@@ -1,4 +1,4 @@
-import { createResponse } from "../utils/utils";
+import { createResponse } from "../utils/utils.js";
 
 export async function googleSetupHandler(request, reply) {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;

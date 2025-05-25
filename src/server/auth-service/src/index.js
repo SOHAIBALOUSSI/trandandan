@@ -5,6 +5,7 @@ import jwtPlugin from './plugins/jwt-plugin.js'
 import nodemailerPlugin from './plugins/nodemailer-plugin.js';
 import { createUserTable } from './database/createUserTable.js';
 import { createTokenTable } from './database/createTokenTable.js';
+import { createTwoFaTable } from './database/createTwoFaTable.js';
 import authRoutes from './routes/authRoutes.js';
 import twoFARoutes from './routes/2FARoutes.js';
 
@@ -22,6 +23,7 @@ await server.register(nodemailerPlugin);
 
 await createUserTable(server.db);
 await createTokenTable(server.db);
+await createTwoFaTable(server.db);
 
 await server.register(authRoutes, { prefix: '/auth' });
 await server.register(twoFARoutes, { prefix: '/2fa' });

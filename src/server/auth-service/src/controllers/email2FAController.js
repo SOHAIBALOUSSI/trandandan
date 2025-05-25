@@ -1,5 +1,6 @@
 import { addToken } from '../models/tokenDAO.js';
-import { findUserById, saveTotpCode, updateUser2FA } from '../models/userDAO.js';
+import { findTwoFaByUID, storeTotpCode, updateTotpCode, updateUser2FA } from '../models/twoFaDAO.js';
+import { findUserById } from '../models/userDAO.js';
 import { createResponse } from '../utils/utils.js';
 
 export async function setup2FAEmail(request, reply) {
@@ -10,8 +11,15 @@ export async function setup2FAEmail(request, reply) {
             return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
         const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-         
-        await saveTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, userId);
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            await storeTotpCode(this.db, totpCode, userId);
+        else
+        {
+            if (twoFa.enabled)
+                return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
+            await updateTotpCode(this.db, totpCode, userId);
+        }
 
         const mailOptions = {
             from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
@@ -36,12 +44,16 @@ export async function verify2FAEmailSetup(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
+        
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
-        
-        console.log(`totpCode : ${user.twofa_totp} | totp_exp : ${user.twofa_totp_exp}`);
-        if (user.twofa_totp !== totpCode || user.twofa_totp_exp < Date.now())
+
+        console.log(`totpCode : ${twoFa.totp} | totp_exp : ${twoFa.totp_exp}`);
+        if (twoFa.totp !== totpCode || twoFa.totp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
 
         await updateUser2FA(this.db, userId);
@@ -61,11 +73,15 @@ export async function verify2FALogin(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
+
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
-        if (user.twofa_totp !== totpCode || user.twofa_totp_exp < Date.now())
+        if (twoFa.totp !== totpCode || twoFa.totp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
         const accessToken = this.jwt.signAT({ id: userId });

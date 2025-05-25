@@ -1,8 +1,13 @@
 import QRCode from 'qrcode'
 import speakeasy from 'speakeasy'
-import { storeTempSecret, findUserById, updateUserSecret } from '../models/userDAO.js';
+import { findUserById } from '../models/userDAO.js';
 import { addToken } from '../models/tokenDAO.js';
 import { createResponse } from '../utils/utils.js';
+import {
+    findTwoFaByUID,
+    storeTempSecret,
+    updateUserSecret
+} from '../models/twoFaDAO.js';
 
 export async function setup2FAApp(request, reply) {
     try {
@@ -16,7 +21,7 @@ export async function setup2FAApp(request, reply) {
             length: 32
         });
 
-        await storeTempSecret(this.db, secret.base32, userId);
+        await storeTempSecret(this.db, secret.base32, userId);  
         
         const otpauthUrl = secret.otpauth_url;
         const qrCodeUrl = await QRCode.toDataURL(otpauthUrl);
@@ -36,12 +41,16 @@ export async function verify2FAAppSetup(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
+
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
         const isValid = speakeasy.totp.verify({
-            secret: user.twofa_temp_secret,
+            secret: twoFa.temp_secret,
             encoding: 'base32',
             token: totpCode,
             window: 1
@@ -66,12 +75,16 @@ export async function verify2FAAppLogin(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
         
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
+
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
         const isValid = speakeasy.totp.verify({
-            secret: user.twofa_secret,
+            secret: twoFa.secret,
             encoding: 'base32',
             token: totpCode,
             window: 1
