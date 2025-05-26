@@ -101,8 +101,8 @@ The `auth-service` is responsible for handling user authentication, registration
 
   401: {
     UNAUTHORIZED
-    ACCESS_TOKEN_REQUIRED
-    ACCESS_TOKEN_INVALID
+    REFRESH_TOKEN_REQUIRED
+    REFRESH_TOKEN_INVALID
   }
   200: USER_LOGGED_OUT
   500: INTERNAL_SERVER_ERROR
