@@ -1,15 +1,16 @@
 import fp from 'fastify-plugin';
 import jwt from 'jsonwebtoken';
+import { createResponse } from '../utils/utils.js';
 
 
 async function jwtPlugin(fastify, options) {
-    const { accessTokenKey, refreshTokenKey } = options;
+    const { accessTokenKey, refreshTokenKey, tempTokenKey } = options;
 
     fastify.decorate('jwt', {
         //AT = Access Token (15 minutes) \ RT = Refresh Token (7 days) \ TT = Temporary Token (5 minutes)
         signTT(payload, expiresIn = '5m') {
             try {
-                return jwt.sign(payload, accessTokenKey, { expiresIn });
+                return jwt.sign(payload, tempTokenKey, { expiresIn });
             } catch (error) {
                 console.log("Error in signing access token: ", error);
                 throw error;

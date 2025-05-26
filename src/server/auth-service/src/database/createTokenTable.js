@@ -9,7 +9,7 @@ export async function createTokenTable(db){
             expires_at DATETIME NOT NULL,
             revoked INTEGER DEFAULT 0,
             user_id INTEGER NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
             )`
         );
         console.log("Tokens table created.");

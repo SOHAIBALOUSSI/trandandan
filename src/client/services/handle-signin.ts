@@ -11,7 +11,7 @@ export function handleSignIN() {
 
   // Error messages for the signin process
   const signinErrorMessages: Record<string, string> = {
-    USER_NOT_FOUND: "No racket found. Check your details and swing again.",
+    INVALID_CREDENTIALS: "No racket found. Check your details and swing again.",
     INVALID_PASSWORD:
       "Invalid paddle pass. Check your details and swing again.",
     INTERNAL_SERVER_ERROR: "Club doors are jammed! Try again in a moment.",

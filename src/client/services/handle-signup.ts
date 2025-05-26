@@ -11,8 +11,9 @@ export function handleSignUp() {
 
   //  Error messages for the signup process
   const signupErrorMessages: Record<string, string> = {
-    USER_EXISTS: "This racket is already in the club. Try signing in.",
     UNMATCHED_PASSWORDS: "Passwords don’t match. Recheck your grip.",
+	PASSWORD_POLICY: "Password must be at least 8 characters, with uppercase, lowercase, number, and special char.",
+    USER_EXISTS: "This racket is already in the club. Try signing in.",
     PROFILE_CREATION_FAILED: "We couldn’t build your profile. Try again.",
     INTERNAL_SERVER_ERROR: "Club doors are jammed! Try again in a moment.",
   };

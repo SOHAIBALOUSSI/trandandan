@@ -1,7 +1,20 @@
 import bcrypt from 'bcrypt';
-import { findUser, addUser, findUserById, deleteUser, saveTotpCode } from '../models/userDAO.js';
-import { findToken, addToken, revokeToken } from '../models/tokenDAO.js'; 
-import { createResponse } from '../utils/utils.js'
+import {
+    findUser, 
+    addUser, 
+    findUserById, 
+    deleteUser
+} from '../models/userDAO.js';
+import { 
+    findToken,
+    addToken,
+    revokeToken
+} from '../models/tokenDAO.js'; 
+import { 
+    createResponse, 
+    validatePassword 
+} from '../utils/utils.js'
+import { storeTotpCode } from '../models/twoFaDAO.js';
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -11,7 +24,7 @@ export async function loginHandler(request, reply) {
         const { username, email, password } = request.body;
         const user = await findUser(this.db, username, email);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(400, 'INVALID_CREDENTIALS'));
 
         const matched = await compare(password, user.password);
         if (!matched)
@@ -21,7 +34,7 @@ export async function loginHandler(request, reply) {
         {
             const tempToken = this.jwt.signTT({ id: user.id });
             const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-            await saveTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
+            await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
             if (user.twofa_type === 'email')
             {
                 const mailOptions = {
@@ -32,7 +45,7 @@ export async function loginHandler(request, reply) {
                 }
                 await this.sendMail(mailOptions);
             }
-            return reply.code(206).send(createResponse(206, '2FA_REQUIRED', { tempToken: tempToken }));
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
@@ -51,6 +64,8 @@ export async function registerHandler(request, reply) {
         const { email, username, password, confirmPassword} = request.body;
         if (password !== confirmPassword)
             return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
+        if (!validatePassword(password))
+            return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
         const userExist = await findUser(this.db, username, email);
         if (userExist)
             return reply.code(400).send(createResponse(400, 'USER_EXISTS'));
@@ -92,15 +107,15 @@ export async function logoutHandler(request, reply) {
         
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         const { token } = request.body;
         if (!token)
-            return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_REQUIRED'));
+            return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_REQUIRED'));
         
         const tokenExist = await findToken(this.db, token);
         if (!tokenExist || tokenExist.revoked)
-            return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_INVALID'));
+            return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_INVALID'));
         
         await revokeToken(this.db, token);
         
@@ -117,7 +132,7 @@ export async function meHandler(request, reply) {
         
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         return reply.code(200).send(createResponse(200, 'USER_FETCHED', { id: user.id, username: user.username, email: user.email }));
     } catch (error) {

@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { createResponse } from '../utils/utils.js';
 
 export async function verifyToken(request, reply) {
     const authHeader = request.headers["authorization"];

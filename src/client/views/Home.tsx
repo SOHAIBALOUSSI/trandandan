@@ -17,3 +17,8 @@ export function Home() {
 
   return homeSection;
 }
+
+
+function fetchUserData() {
+	
+}

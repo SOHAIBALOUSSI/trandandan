@@ -1,4 +1,5 @@
 import { loginHandler, registerHandler, logoutHandler, meHandler, refreshHandler } from '../controllers/authController.js';
+import { googleLoginHandler, googleSetupHandler } from '../controllers/googleOAuthController.js';
 import { registerSchema, loginSchema, tokenSchema } from '../schemas/authSchema.js';
 
 
@@ -35,6 +36,14 @@ async function authRoutes(fastify) {
             body: tokenSchema
         },
         handler: refreshHandler
+    } );
+
+    fastify.get('/google/setup',{
+        handler: googleSetupHandler
+    } );
+
+    fastify.get('/google/callback',{
+        handler: googleLoginHandler
     } );
 }
 

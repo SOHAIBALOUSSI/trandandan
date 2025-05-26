@@ -1,22 +1,36 @@
 import QRCode from 'qrcode'
 import speakeasy from 'speakeasy'
-import { storeTempSecret, findUserById, updateUserSecret } from '../models/userDAO.js';
+import { findUserById } from '../models/userDAO.js';
 import { addToken } from '../models/tokenDAO.js';
 import { createResponse } from '../utils/utils.js';
+import {
+    findTwoFaByUID,
+    storeTempSecret,
+    updateTempSecret,
+    updateUserSecret
+} from '../models/twoFaDAO.js';
 
 export async function setup2FAApp(request, reply) {
     try {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         const secret = speakeasy.generateSecret({
             name: `trandenden (${user.username})`,
             length: 32
         });
-
-        await storeTempSecret(this.db, secret.base32, userId);
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            await storeTempSecret(this.db, secret.base32, userId);
+        else
+        {
+            if (twoFa.enabled)
+                return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
+            await updateTempSecret(this.db, secret.base32, userId);
+        }
+        await storeTempSecret(this.db, secret.base32, userId);  
         
         const otpauthUrl = secret.otpauth_url;
         const qrCodeUrl = await QRCode.toDataURL(otpauthUrl);
@@ -34,14 +48,20 @@ export async function verify2FAAppSetup(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
+        else if (twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
+
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
         const isValid = speakeasy.totp.verify({
-            secret: user.twofa_temp_secret,
+            secret: twoFa.temp_secret,
             encoding: 'base32',
             token: totpCode,
             window: 1
@@ -51,7 +71,7 @@ export async function verify2FAAppSetup(request, reply) {
         
         await updateUserSecret(this.db, userId);
         
-        return reply.code(200).send(createResponse(200, '2FA_ENABLED'));
+        return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {   
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -64,14 +84,20 @@ export async function verify2FAAppLogin(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+        
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
+        else if (!twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_ENABLED'));
         
         const { totpCode } = request.body;
         if (!totpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
         const isValid = speakeasy.totp.verify({
-            secret: user.twofa_secret,
+            secret: twoFa.secret,
             encoding: 'base32',
             token: totpCode,
             window: 1
