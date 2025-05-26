@@ -111,11 +111,11 @@ export async function logoutHandler(request, reply) {
         
         const { token } = request.body;
         if (!token)
-            return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_REQUIRED'));
+            return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_REQUIRED'));
         
         const tokenExist = await findToken(this.db, token);
         if (!tokenExist || tokenExist.revoked)
-            return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_INVALID'));
+            return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_INVALID'));
         
         await revokeToken(this.db, token);
         
