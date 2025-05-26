@@ -62,7 +62,7 @@ export function handleSignIN() {
             localStorage.setItem("refreshToken", result.refreshToken);
 
           setTimeout(() => {
-            history.pushState(null, "", "/home");
+            history.pushState(null, "", "/salon");
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, 1500);
         }, waitTime);

@@ -1,11 +1,12 @@
-import { LeftNavBar } from "@/components/layout/left-nav-bar";
-import { TopNavBar } from "@/components/layout/top-nav-bar";
+import { NavBar } from "@/components/layout/NavBar";
+import { TopBar } from "@/components/layout/TopBar";
+import { styles } from "@/styles/styles";
 
 export function Settings() {
   const settingsSection = (
-    <section className="dark-page">
-      <LeftNavBar />
-      <TopNavBar />
+    <section className={`${styles.pageLayoutDark} dark-page-layout`}>
+      <NavBar />
+      {/* <TopBar /> */}
     </section>
   );
   return settingsSection;

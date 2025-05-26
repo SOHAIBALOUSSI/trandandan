@@ -1,8 +1,9 @@
 import { styles } from "@/styles/styles";
-import { Footer } from "@/components/layout/footer";
+import { Footer } from "@/components/layout/Footer";
 import { handleSignUp } from "@/services/handle-signup";
-import { MainHeader } from "@/components/common/main-header";
-import { InputField } from "@/components/common/input-field";
+import { MainHeader } from "@/components/common/Header";
+import { InputField } from "@/components/common/InputField";
+import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
 
 function Form() {
   return (
@@ -76,6 +77,7 @@ function Form() {
           </a>
         </p>
       </div>
+      <RemoteSigninLink />
     </form>
   );
 }

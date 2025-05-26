@@ -1,8 +1,9 @@
 import { styles } from "@/styles/styles";
-import { Footer } from "@/components/layout/footer";
+import { Footer } from "@/components/layout/Footer";
 import { handleSignIN } from "@/services/handle-signin";
-import { InputField } from "@/components/common/input-field";
-import { MainHeader } from "@/components/common/main-header";
+import { InputField } from "@/components/common/InputField";
+import { MainHeader } from "@/components/common/Header";
+import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
 
 function Form() {
   const form = (
@@ -66,27 +67,7 @@ function Form() {
           </a>
         </p>
       </div>
-      <div className="line-divider relative w-full flex items-center justify-center my-6 min-h-[2.5rem]">
-        <i className="fa-solid fa-table-tennis-paddle-ball"></i>
-      </div>
-      <div className="flex flex-col gap-6">
-        <button
-          type="button"
-          id="google-signin-btn"
-          className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
-        >
-          <i className="fa-solid fa-couch"></i>
-          enter with google
-        </button>
-        <button
-          type="button"
-          id="ft-signin-btn"
-          className={`group ${styles.primaryButton} shadow-lg hover:animate-none`}
-        >
-          <i className="fa-solid fa-couch"></i>
-          enter with 42
-        </button>
-      </div>
+      <RemoteSigninLink />
     </form>
   );
 

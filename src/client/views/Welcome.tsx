@@ -1,4 +1,4 @@
-import { Footer } from "@/components/layout/footer";
+import { Footer } from "@/components/layout/Footer";
 import { styles } from "@/styles/styles";
 
 function HeroCTA() {
