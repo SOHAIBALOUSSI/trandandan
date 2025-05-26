@@ -24,7 +24,7 @@ export async function loginHandler(request, reply) {
         const { username, email, password } = request.body;
         const user = await findUser(this.db, username, email);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(400, 'INVALID_CREDENTIALS'));
 
         const matched = await compare(password, user.password);
         if (!matched)
@@ -107,7 +107,7 @@ export async function logoutHandler(request, reply) {
         
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         const { token } = request.body;
         if (!token)
@@ -132,7 +132,7 @@ export async function meHandler(request, reply) {
         
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         return reply.code(200).send(createResponse(200, 'USER_FETCHED', { id: user.id, username: user.username, email: user.email }));
     } catch (error) {

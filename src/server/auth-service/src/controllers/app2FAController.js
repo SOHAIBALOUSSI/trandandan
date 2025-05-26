@@ -15,7 +15,7 @@ export async function setup2FAApp(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         const secret = speakeasy.generateSecret({
             name: `trandenden (${user.username})`,
@@ -48,7 +48,7 @@ export async function verify2FAAppSetup(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         const twoFa = await findTwoFaByUID(this.db, user.id);
         if (!twoFa)
@@ -84,7 +84,7 @@ export async function verify2FAAppLogin(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(400, 'USER_NOT_FOUND'));
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         const twoFa = await findTwoFaByUID(this.db, user.id);
         if (!twoFa)

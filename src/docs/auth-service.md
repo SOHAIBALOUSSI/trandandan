@@ -71,13 +71,11 @@ The `auth-service` is responsible for handling user authentication, registration
 ```yaml
 
   400: {
-    USER_NOT_FOUND,
-    INVALID_PASSWORD,
-    PASSWORD_POLICY
-  },
-  200: USER_LOGGED_IN,
-  201: USER_REGISTERED,
-  206: TWOFA_REQUIRED,
+    INVALID_CREDENTIALS
+    INVALID_PASSWORD
+  }
+  200: USER_LOGGED_IN
+  206: TWOFA_REQUIRED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -87,11 +85,12 @@ The `auth-service` is responsible for handling user authentication, registration
 ```yaml
 
   400: {
-    UNMATCHED_PASSWORDS,
-    USER_EXISTS,
+    UNMATCHED_PASSWORDS
+    PASSWORD_POLICY
+    USER_EXISTS
     PROFILE_CREATION_FAILED
-  },
-  201: USER_REGISTERED,
+  }
+  201: USER_REGISTERED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -100,12 +99,12 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```yaml
 
-  400: USER_NOT_FOUND,
   401: {
-    ACCESS_TOKEN_REQUIRED,
+    UNAUTHORIZED
+    ACCESS_TOKEN_REQUIRED
     ACCESS_TOKEN_INVALID
-  },
-  200: USER_LOGGED_OUT,
+  }
+  200: USER_LOGGED_OUT
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -114,8 +113,8 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```yaml
 
-  400: USER_NOT_FOUND,
-  200: USER_FETCHED,
+  401: UNAUTHORIZED
+  200: USER_FETCHED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -125,10 +124,10 @@ The `auth-service` is responsible for handling user authentication, registration
 ```yaml
 
   401: {
-    REFRESH_TOKEN_REQUIRED,
+    REFRESH_TOKEN_REQUIRED
     REFRESH_TOKEN_INVALID
-  },
-  200: TOKEN_REFRESHED,
+  }
+  200: TOKEN_REFRESHED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -138,8 +137,9 @@ The `auth-service` is responsible for handling user authentication, registration
 - `/app/setup`
 ```yaml
 
-  400: USER_NOT_FOUND,
-  200: SCAN_QR,
+  401: UNAUTHORIZED
+  400: TWOFA_ALREADY_ENABLED
+  200: SCAN_QR
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -147,12 +147,16 @@ The `auth-service` is responsible for handling user authentication, registration
 - `/app/verify-setup`
 ```yaml
 
-  400: USER_NOT_FOUND,
+  400: {
+    TWOFA_NOT_SET
+    TWOFA_ALREADY_ENABLED
+  } 
   401: {
-    OTP_REQUIRED,
+    UNAUTHORIZED
+    OTP_REQUIRED
     OTP_INVALID
-  },
-  200: TWOFA_ENABLED,
+  }
+  200: TWOFA_ENABLED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -160,12 +164,16 @@ The `auth-service` is responsible for handling user authentication, registration
 - `/app/verify-login`
 ```yaml
 
-  400: USER_NOT_FOUND,
+  400: {
+    TWOFA_NOT_SET
+    TWOFA_NOT_ENABLED
+  }
   401: {
-    OTP_REQUIRED,
+    UNAUTHORIZED
+    OTP_REQUIRED
     OTP_INVALID
-  },
-  200: USER_LOGGED_IN,
+  }
+  200: USER_LOGGED_IN
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -173,8 +181,26 @@ The `auth-service` is responsible for handling user authentication, registration
 - `/email/setup`
 ```yaml
 
-  400: USER_NOT_FOUND,
-  200: CODE_SENT,
+  401: UNAUTHORIZED
+  400: TWOFA_ALREADY_ENABLED
+  200: CODE_SENT
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/email/verify-setup`
+```yaml
+
+  401: {
+    UNAUTHORIZED
+    OTP_REQUIRED
+    OTP_INVALID
+  }
+  400: {
+    TWOFA_NOT_SET
+    TWOFA_ALREADY_ENABLED
+  }
+  200: TWOFA_ENABLED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -182,12 +208,16 @@ The `auth-service` is responsible for handling user authentication, registration
 - `/verify-login`
 ```yaml
 
-  400: USER_NOT_FOUND,
+  400: {
+    TWOFA_NOT_SET
+    TWOFA_NOT_ENABLED
+  } 
   401: {
-    OTP_REQUIRED,
+    UNAUTHORIZED
+    OTP_REQUIRED
     OTP_INVALID
-  },
-  200: USER_LOGGED_IN,
+  }
+  200: USER_LOGGED_IN
   500: INTERNAL_SERVER_ERROR
 
 ```
