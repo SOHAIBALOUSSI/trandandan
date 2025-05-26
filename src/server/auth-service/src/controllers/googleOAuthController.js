@@ -1,6 +1,7 @@
+import { findUserByName } from "../models/userDAO.js";
 import { createResponse } from "../utils/utils.js";
 
-export async function googleSetupHandler(request, reply) {
+export async function   googleSetupHandler(request, reply) {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
     reply.redirect(url);
 }
@@ -8,7 +9,7 @@ export async function googleSetupHandler(request, reply) {
 export async function googleLoginHandler(request, reply) {
     const { code } = request.query;
     if (!code)
-        return reply.code(400).send(createResponse(400, AUTH_CODE_REQUIRED));
+        return reply.code(400).send(createResponse(400, 'AUTH_CODE_REQUIRED'));
     try {
         const tokens = await fetch('https://oauth2.googleapis.com/token', {
             method: 'POST',
@@ -22,11 +23,12 @@ export async function googleLoginHandler(request, reply) {
             }).toString()
         });
 
+        console.log('Google tokens: ', tokens);
         if (!tokens.ok)
         {
             const errorText = await tokens.text();
             console.log('Google tokens error: ', errorText);
-            return reply.code(500, INTERNAL_SERVER_ERROR);
+            return reply.code(500, 'INTERNAL_SERVER_ERROR');
         }
 
         const { access_token, id_token } = await tokens.json();
@@ -37,6 +39,39 @@ export async function googleLoginHandler(request, reply) {
 
         const userInfo = await userinfo.json();
         console.log('User info: ', userInfo);
+
+        const user = await findUserByName(this.db, null, userInfo.email);
+        if (user)
+        {
+            const accessToken = this.jwt.signAT({ id: user.id });
+            const refreshToken = this.jwt.signRT({ id: user.id });
+            
+            await addToken(this.db, refreshToken, user.id);
+            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+        }
+        const accessToken = this.jwt.signAT({ id: userId });
+        const refreshToken = this.jwt.signRT({ id: userId });
+        
+        await addToken(this.db, refreshToken, userId);
+        const response = await fetch('http://profile-service:3001/profile/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+                username: username,
+                email: email
+            })
+        });
+        
+        if (!response.ok) {
+            await deleteUser(this.db, userId);
+            await revokeToken(this.db, refreshToken);
+            return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
+        }
+        return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
+            
         //check if user exists (match by email) ? assign jwt : register new user + send data & picture to profile
     } catch (error) {
         console.log(error);
