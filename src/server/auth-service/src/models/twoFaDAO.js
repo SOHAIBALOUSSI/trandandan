@@ -12,8 +12,8 @@ export async function updateTempSecret(db, secret, id) {
         [secret, id]
     );
 
-    console.log("TwoFa: updated tempSecret in row: ", result.lastID);
-    return result.lastID;
+    console.log("TwoFa: updated tempSecret in row: ", result.changes);
+    return result.changes;
 }
 
 export async function updateUserSecret(db, id) {
@@ -25,8 +25,8 @@ export async function updateUserSecret(db, id) {
         WHERE user_id = ?`,
         [id]
     );   
-    console.log("TwoFa(app) updated with ID: ", result.lastID);
-    return result.lastID;
+    console.log("TwoFa(app) updated with ID: ", result.changes);
+    return result.changes;
 }
 
 export async function storeTotpCode(db, totpCode, id) {
@@ -44,8 +44,8 @@ export async function updateTotpCode(db, totpCode, id) {
         WHERE user_id = ?`,
         [totpCode, Date.now() + 60 * 60 * 1000, id]
     );
-    console.log("TwoFa: updated TOTP code in row: ", result.lastID);
-    return result.lastID;
+    console.log("TwoFa: updated TOTP code in row: ", result.changes);
+    return result.changes;
 }
 
 export async function updateUser2FA(db, id) {
@@ -55,8 +55,8 @@ export async function updateUser2FA(db, id) {
         WHERE user_id = ?`,
         [id]
     );
-    console.log("TwoFa(email) updated with ID: ", result.lastID);
-    return result.lastID;
+    console.log("TwoFa(email) updated with ID: ", result.changes);
+    return result.changes;
 }
 
 export async function findTwoFaByUID(db, id) {
