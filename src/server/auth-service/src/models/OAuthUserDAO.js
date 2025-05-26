@@ -1,7 +1,7 @@
 
-export async function findOAuthUserByName(db, username) {
-    return await db.get('SELECT * FROM oauth_user WHERE username = ?',
-        [username]
+export async function findOAuthUser(db, email) {
+    return await db.get('SELECT * FROM oauth_user WHERE email = ?',
+        [email]
     );
 }
 
@@ -11,17 +11,17 @@ export async function findOAuthUserById(db, id) {
     );
 }
 
-export async function findOAuthUser(db, username, email) {
-    return await db.get('SELECT * FROM oauth_user WHERE username = ? OR email = ?', 
-        [username, email]
+export async function addOAuthUser(db, userInfo) {
+    const result = await db.run('INSERT INTO oauth_user (provider, provider_sub, email, access_token, refresh_token) VALUES (?, ?, ?, ?, ?)',
+        [
+            userInfo.provider,
+            userInfo.sub,
+            userInfo.email,
+            userInfo.accessToken,
+            userInfo.refreshToken
+        ]
     );
-}
-
-export async function addOAuthUser(db, username, email, password) {
-    const result = await db.run('INSERT INTO oauth_user (username, email, password) VALUES (?, ?, ?)',
-        [username, email, password]
-    );
-    console.log("User inserted with ID: ", result.lastID);
+    console.log("OAuth user inserted with ID: ", result.lastID);
     return result.lastID;
 }
 
@@ -30,6 +30,6 @@ export async function deleteOAuthUser(db, id) {
         [id]
     );
 
-    console.log("User deleted with ID: ", id);
+    console.log("OAuth user deleted with ID: ", id);
     return result.changes;
 }

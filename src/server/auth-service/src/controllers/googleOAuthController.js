@@ -1,3 +1,4 @@
+import { addOAuthUser, findOAuthUser } from "../models/OAuthUserDAO.js";
 import { findUserByName } from "../models/userDAO.js";
 import { createResponse } from "../utils/utils.js";
 
@@ -31,16 +32,16 @@ export async function googleLoginHandler(request, reply) {
             return reply.code(500, 'INTERNAL_SERVER_ERROR');
         }
 
-        const { access_token, id_token } = await tokens.json();
+        const { access_token, refresh_token } = await tokens.json();
         const userinfo  = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
             method: 'GET',
             headers: { Authorization: `Bearer ${access_token}` }
-          });
+        });
 
         const userInfo = await userinfo.json();
         console.log('User info: ', userInfo);
 
-        const user = await findUserByName(this.db, null, userInfo.email);
+        const user = await findOAuthUser(this.db, userInfo.email);
         if (user)
         {
             const accessToken = this.jwt.signAT({ id: user.id });
@@ -49,6 +50,14 @@ export async function googleLoginHandler(request, reply) {
             await addToken(this.db, refreshToken, user.id);
             return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
         }
+
+        const newUser = await addOAuthUser(this.db, {
+            provider: 'google',
+            sub: userInfo.sub,
+            email: userInfo.email,
+            accessToken: access_token,
+            refreshToken: refresh_token
+        })
         const accessToken = this.jwt.signAT({ id: userId });
         const refreshToken = this.jwt.signRT({ id: userId });
         
