@@ -10,6 +10,7 @@ import { Chat } from "@/views/Chat";
 import { Profile } from "@/views/Profile";
 import { Settings } from "@/views/Settings";
 import { Logout } from "@/views/Logout";
+import { getUserProfile } from "@/services/handle-user-auth";
 
 // Define the routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
@@ -26,6 +27,9 @@ const routes: Record<string, () => HTMLElement> = {
   exit: Logout,
 };
 
+// Store the user globally
+let currentUser: any = null;
+
 // Define public routes that do not require authentication
 const publicRoutes = ["signin", "signup", "welcome"];
 
@@ -35,7 +39,7 @@ function isAuthenticated(): boolean {
 }
 
 // Main router function to handle navigation and rendering
-export function router(): void {
+export async function router(): Promise<void> {
   const app = document.getElementById("app");
   if (!app) return;
 
@@ -51,14 +55,24 @@ export function router(): void {
     return;
   }
 
-  if (isAuthenticated() && publicRoutes.includes(path)) {
+  if (isAuthenticated() && isPublic) {
     history.replaceState(null, "", "/salon");
     router();
     return;
   }
 
-  while (app.firstChild) app.removeChild(app.firstChild);
+  if (!isPublic && isAuthenticated()) {
+    currentUser = await getUserProfile();
+    if (!currentUser) {
+      localStorage.removeItem("accessToken");
+      history.replaceState(null, "", "/signin");
+      await router();
+      return;
+    }
+  }
 
+  // Clear existing DOM and render the component
+  while (app.firstChild) app.removeChild(app.firstChild);
   app.appendChild(render());
 
   const allLinks = document.querySelectorAll(".nav-item");
@@ -70,8 +84,8 @@ export function router(): void {
   }
 }
 
-export function setupSPA(callback: () => void): void {
-  document.addEventListener("click", (e) => {
+export function setupSPA(): void {
+  document.addEventListener("click", async (e) => {
     const target = e.target as HTMLElement;
     const link = target.closest("[data-link]") as HTMLAnchorElement | null;
 
@@ -80,7 +94,7 @@ export function setupSPA(callback: () => void): void {
       const href = link.getAttribute("href");
       if (href) {
         history.pushState(null, "", href);
-        callback();
+        await router();
       }
     }
   });

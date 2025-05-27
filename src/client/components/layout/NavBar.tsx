@@ -54,7 +54,7 @@ export function NavBar() {
     text-pong-dark-primary z-50 transform -translate-x-full transition-transform duration-300 ease-in-out
     flex flex-col gap-10 px-6 py-10
     md:translate-x-0 md:flex md:w-[110px] md:min-h-screen 
-    md:items-center md:py-10 md:px-0 md:mt-4 md:rounded-tr-3xl md:rounded-br-3xl md:shadow-2xl 
+    md:items-center md:py-10 md:px-0 md:rounded-tr-3xl md:rounded-br-3xl md:shadow-2xl 
     md:border-r-2 md:border-pong-dark-accent/40
   `;
 
