@@ -60,7 +60,7 @@ export function NavBar() {
 
   // === UL NAV ITEMS ===
   const ul = document.createElement("ul");
-  ul.className = `flex flex-col gap-6 md:gap-8 md:items-center w-full`;
+  ul.className = `flex flex-col gap-6 md:gap-8 md:items-center w-full mt-12 md:mt-0`;
 
   navItems.forEach(({ path, icon, label }) => {
     const isActive = currentPath === path;

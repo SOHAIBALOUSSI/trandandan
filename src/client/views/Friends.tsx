@@ -1,12 +1,18 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
+import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
 
 export function Friends() {
   const friendsSection = (
-    <section className={`${styles.pageLayoutDark} dark-page-layout`}>
+    <section className={styles.pageLayoutDark}>
       <NavBar />
-      {/* <TopBar /> */}
+      <div className="md:ml-[110px] md:w-[calc(100vw-110px)] relative">
+        <TopBar />
+        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto">
+          <MainHeader isDark={false} title="social" titleSpan="circle" />
+        </main>
+      </div>
     </section>
   );
   return friendsSection;

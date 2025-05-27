@@ -2,7 +2,7 @@ import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
 import { handleSignIN } from "@/services/handle-signin";
 import { InputField } from "@/components/common/InputField";
-import { MainHeader } from "@/components/common/Header";
+import { MainHeader } from "@/components/common/MainHeader";
 import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
 
 function Form() {

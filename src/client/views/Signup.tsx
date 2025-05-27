@@ -1,7 +1,7 @@
 import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
 import { handleSignUp } from "@/services/handle-signup";
-import { MainHeader } from "@/components/common/Header";
+import { MainHeader } from "@/components/common/MainHeader";
 import { InputField } from "@/components/common/InputField";
 import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
 
