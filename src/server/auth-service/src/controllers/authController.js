@@ -30,12 +30,13 @@ export async function loginHandler(request, reply) {
         if (!matched)
             return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
         
-        if (user.twofa_enabled)
+        const twoFa = await findTwoFaByUID(this.db, user.id);
+        if (twoFa && twoFa.enabled)
         {
             const tempToken = this.jwt.signTT({ id: user.id });
             const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
             await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
-            if (user.twofa_type === 'email')
+            if (twoFa.type === 'email')
             {
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,

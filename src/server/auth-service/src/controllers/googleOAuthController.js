@@ -1,4 +1,4 @@
-import { addOAuthUser, deleteOAuthUser, findOAuthUser } from "../models/OAuthUserDAO.js";
+import { addOAuthUser, deleteUser, findOAuthUser } from "../models/userDAO.js";
 import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse } from "../utils/utils.js";
 
@@ -29,7 +29,7 @@ export async function googleLoginHandler(request, reply) {
         {
             const errorText = await tokens.text();
             console.log('Google tokens error: ', errorText);
-            return reply.code(500, 'INTERNAL_SERVER_ERROR');
+            return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
         }
 
         const { access_token, refresh_token } = await tokens.json();
@@ -42,7 +42,7 @@ export async function googleLoginHandler(request, reply) {
         console.log('User info: ', userInfo);
 
         const user = await findOAuthUser(this.db, userInfo.email);
-        if (user)
+        if (user !== undefined)
         {
             const accessToken = this.jwt.signAT({ id: user.id });
             const refreshToken = this.jwt.signRT({ id: user.id });
@@ -53,15 +53,15 @@ export async function googleLoginHandler(request, reply) {
 
         const newUser = await addOAuthUser(this.db, {
             provider: 'google',
-            sub: userInfo.sub,
             email: userInfo.email,
             accessToken: access_token,
             refreshToken: refresh_token
         })
-        const accessToken = this.jwt.signAT({ id: newUser.id });
-        const refreshToken = this.jwt.signRT({ id: newUser.id });
+        console.log("newUser: ", newUser);
+        const accessToken = this.jwt.signAT({ id: newUser });
+        const refreshToken = this.jwt.signRT({ id: newUser });
         
-        await addToken(this.db, refreshToken, newUser.id);
+        await addToken(this.db, refreshToken, newUser);
         const response = await fetch('http://profile-service:3001/profile/register', {
             method: 'POST',
             headers: {
@@ -76,13 +76,13 @@ export async function googleLoginHandler(request, reply) {
         });
         
         if (!response.ok) {
-            await deleteOAuthUser(this.db, newUser.id);
+            await deleteUser(this.db, newUser);
             await revokeToken(this.db, refreshToken);
             return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
         }
 
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
-        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }

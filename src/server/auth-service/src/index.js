@@ -8,7 +8,6 @@ import { createTokenTable } from './database/createTokenTable.js';
 import { createTwoFaTable } from './database/createTwoFaTable.js';
 import authRoutes from './routes/authRoutes.js';
 import twoFARoutes from './routes/2FARoutes.js';
-import { createOAuthUserTable } from './database/createOAuthUser.js';
 
 const server = fastify({logger: true});
 
@@ -25,7 +24,6 @@ await server.register(nodemailerPlugin);
 await createUserTable(server.db);
 await createTokenTable(server.db);
 await createTwoFaTable(server.db);
-await createOAuthUserTable(server.db);
 
 await server.register(authRoutes, { prefix: '/auth' });
 await server.register(twoFARoutes, { prefix: '/2fa' });

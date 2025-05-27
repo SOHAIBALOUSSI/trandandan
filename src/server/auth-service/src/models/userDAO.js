@@ -11,6 +11,7 @@ export async function findUserById(db, id) {
     );
 }
 
+
 export async function findUser(db, username, email) {
     return await db.get('SELECT * FROM user WHERE username = ? OR email = ?', 
         [username, email]
@@ -32,4 +33,26 @@ export async function deleteUser(db, id) {
 
     console.log("User deleted with ID: ", id);
     return result.changes;
+}
+
+export async function findOAuthUser(db, email) {
+    const result = await db.get('SELECT * FROM user WHERE email = ?',
+        [email]
+    );
+
+    console.log('OAuthUser fetched: ', result);
+    return result;
+}
+
+export async function addOAuthUser(db, userInfo) {
+    const result = await db.run('INSERT INTO user (provider, email, access_token, refresh_token) VALUES (?, ?, ?, ?)',
+        [
+            userInfo.provider,
+            userInfo.email,
+            userInfo.accessToken,
+            userInfo.refreshToken
+        ]
+    );
+    console.log("OAuth user inserted with ID: ", result.lastID);
+    return result.lastID;
 }
