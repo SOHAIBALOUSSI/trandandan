@@ -13,6 +13,7 @@ export function handleSignUp() {
   const signupErrorMessages: Record<string, string> = {
     UNMATCHED_PASSWORDS: "Passwords don’t match. Recheck your grip.",
 	PASSWORD_POLICY: "Password must be at least 8 characters, with uppercase, lowercase, number, and special char.",
+	FST_ERR_VALIDATION: "Username/Password must not have more than 15 characters.",
     USER_EXISTS: "This racket is already in the club. Try signing in.",
     PROFILE_CREATION_FAILED: "We couldn’t build your profile. Try again.",
     INTERNAL_SERVER_ERROR: "Club doors are jammed! Try again in a moment.",
