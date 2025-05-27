@@ -12,7 +12,6 @@ export const styles = {
   	w-full min-h-screen
   	text-pong-dark-primary
   	bg-gradient-to-b from-[#1b1b1b] via-[#141414] to-[#0a0a0a]
-  	flex
   	relative
   `,
   //   End Page Layout styles  //

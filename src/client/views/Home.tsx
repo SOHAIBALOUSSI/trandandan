@@ -4,7 +4,7 @@ import { styles } from "@/styles/styles";
 
 export function Home() {
   const homeSection = (
-    <section className="w-full min-h-screen text-pong-dark-primary bg-gradient-to-b from-[#1b1b1b] via-[#141414] to-[#0a0a0a] relative">
+    <section className={styles.pageLayoutDark}>
       <NavBar />
       {/* <div className="md:ml-[110px] md:w-[calc(100vw-110px)] relative">
         <TopBar />
