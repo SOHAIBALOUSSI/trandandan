@@ -1,5 +1,5 @@
-import { addOAuthUser, findOAuthUser } from "../models/OAuthUserDAO.js";
-import { findUserByName } from "../models/userDAO.js";
+import { addOAuthUser, deleteOAuthUser, findOAuthUser } from "../models/OAuthUserDAO.js";
+import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse } from "../utils/utils.js";
 
 export async function   googleSetupHandler(request, reply) {
@@ -58,10 +58,10 @@ export async function googleLoginHandler(request, reply) {
             accessToken: access_token,
             refreshToken: refresh_token
         })
-        const accessToken = this.jwt.signAT({ id: userId });
-        const refreshToken = this.jwt.signRT({ id: userId });
+        const accessToken = this.jwt.signAT({ id: newUser.id });
+        const refreshToken = this.jwt.signRT({ id: newUser.id });
         
-        await addToken(this.db, refreshToken, userId);
+        await addToken(this.db, refreshToken, newUser.id);
         const response = await fetch('http://profile-service:3001/profile/register', {
             method: 'POST',
             headers: {
@@ -69,19 +69,19 @@ export async function googleLoginHandler(request, reply) {
                 'Authorization': `Bearer ${accessToken}`
             },
             body: JSON.stringify({
-                username: username,
-                email: email
+                username: userInfo.name,  
+                email: newUser.email,
+                avatar_url: userInfo.picture
             })
         });
         
         if (!response.ok) {
-            await deleteUser(this.db, userId);
+            await deleteOAuthUser(this.db, newUser.id);
             await revokeToken(this.db, refreshToken);
             return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
         }
+
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
-            
-        //check if user exists (match by email) ? assign jwt : register new user + send data & picture to profile
     } catch (error) {
         console.log(error);
     }

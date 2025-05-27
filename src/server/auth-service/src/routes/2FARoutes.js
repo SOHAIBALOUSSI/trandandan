@@ -38,19 +38,6 @@ async function twoFARoutes(fastify) {
         handler: verify2FAEmailSetup
     });
     
-    // fastify.post('/sms/setup', {
-    //     preHandler: fastify.authenticate,
-    //     handler: setup2FASms
-    // });
-    
-    // fastify.post('/sms/verify-setup', {
-    //     schema: {
-    //         body: totpCodeSchema
-    //     },
-    //     preHandler: fastify.authenticate,
-    //     handler: verify2FASmsSetup
-    // });
-    
     fastify.post('/verify-login', {
         schema: {
             body: totpCodeSchema

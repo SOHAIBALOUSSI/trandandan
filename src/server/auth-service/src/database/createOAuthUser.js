@@ -12,7 +12,7 @@ export async function createOAuthUserTable(db){
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`
         );
-        console.log("Tokens table created.");
+        console.log("OAuthUser table created.");
     } catch (err) {
         console.error("Error creating table:", err.message);
     }
