@@ -11,37 +11,36 @@ export function NavBar() {
 
   const currentPath = window.location.pathname;
 
-  const nav = document.createElement("nav");
-  nav.className = `
-    w-full px-3 py-4 flex flex-col items-stretch gap-4 md:gap-10
-    md:w-[110px] md:min-h-screen md:fixed md:top-0 md:left-0
-    md:items-center md:py-10 md:px-0
-    mt-16 md:mt-4
-    bg-gradient-to-b from-pong-dark-secondary via-pong-dark-primary to-black/95
-    shadow-2xl border-r-2 border-pong-dark-accent/40
-    text-pong-dark-primary z-50
-    transition-all duration-300
-    md:rounded-tr-3xl md:rounded-br-3xl
+  // === BACKDROP ===
+  const backdrop = document.createElement("div");
+  backdrop.className = `
+    fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 opacity-0 pointer-events-none md:hidden
   `;
 
+  // === NAV CONTAINER ===
+  const nav = document.createElement("nav");
+  nav.className = `
+    fixed top-0 right-0 h-full w-64 bg-gradient-to-b from-pong-dark-secondary via-pong-dark-primary to-black/95 
+    text-pong-dark-primary z-50 transform translate-x-full transition-transform duration-300 ease-in-out
+    flex flex-col gap-10 px-6 py-10 md:relative md:translate-x-0 md:flex md:w-[110px] md:min-h-screen 
+    md:items-center md:py-10 md:px-0 md:mt-4 md:rounded-tr-3xl md:rounded-br-3xl md:shadow-2xl 
+    md:border-r-2 md:border-pong-dark-accent/40
+  `;
+
+  // === TOGGLE BUTTON ===
   const toggleBtn = document.createElement("button");
   toggleBtn.className = `
-    text-3xl self-end text-pong-dark-accent bg-transparent rounded-lg p-2
+    fixed top-4 right-4 z-50 text-3xl text-pong-dark-accent bg-transparent rounded-lg p-2 
     hover:bg-pong-dark-accent/20 transition duration-300 md:hidden
     focus:outline-none focus:ring-2 focus:ring-pong-dark-accent
-    mb-2
   `;
   toggleBtn.setAttribute("aria-label", "Toggle navigation");
   toggleBtn.innerHTML = `<i class="fa-solid fa-bars"></i>`;
 
+  // === UL NAV ITEMS ===
   const ul = document.createElement("ul");
   ul.className = `
-    flex-col gap-4 mt-2 md:flex md:mt-0 md:gap-8 md:items-center w-full
-    bg-black/90 md:bg-transparent rounded-2xl shadow-lg md:shadow-none
-    p-4 md:p-0
-    hidden
-    transition-all duration-300
-    nav-menu
+    flex flex-col gap-6 md:gap-8 md:items-center w-full
   `;
 
   navItems.forEach(({ path, icon, label }) => {
@@ -77,40 +76,49 @@ export function NavBar() {
 
     li.appendChild(a);
     ul.appendChild(li);
+
+    a.addEventListener("click", () => {
+      if (window.innerWidth < 768) closeMenu();
+    });
   });
 
-  nav.appendChild(toggleBtn);
   nav.appendChild(ul);
 
   let menuOpen = false;
+
+  const openMenu = () => {
+    nav.classList.remove("translate-x-full");
+    backdrop.classList.add("opacity-100", "pointer-events-auto");
+    menuOpen = true;
+    toggleBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+  };
+
+  const closeMenu = () => {
+    nav.classList.add("translate-x-full");
+    backdrop.classList.remove("opacity-100", "pointer-events-auto");
+    menuOpen = false;
+    toggleBtn.innerHTML = `<i class="fa-solid fa-bars"></i>`;
+  };
+
   toggleBtn.addEventListener("click", () => {
-    menuOpen = !menuOpen;
-    if (menuOpen) {
-      ul.classList.remove("hidden");
-      ul.classList.add("flex");
-      nav.classList.add("bg-black/95");
-      toggleBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
-    } else {
-      ul.classList.add("hidden");
-      ul.classList.remove("flex");
-      nav.classList.remove("bg-black/95");
-      toggleBtn.innerHTML = `<i class="fa-solid fa-bars"></i>`;
-    }
+    menuOpen ? closeMenu() : openMenu();
   });
+
+  backdrop.addEventListener("click", closeMenu);
 
   const handleResize = () => {
     if (window.innerWidth >= 768) {
-      ul.classList.remove("hidden");
-      ul.classList.add("flex");
-      toggleBtn.innerHTML = `<i class="fa-solid fa-bars"></i>`;
-      menuOpen = false;
+      nav.classList.remove("translate-x-full");
+      backdrop.classList.remove("opacity-100", "pointer-events-auto");
     } else if (!menuOpen) {
-      ul.classList.add("hidden");
-      ul.classList.remove("flex");
+      nav.classList.add("translate-x-full");
     }
   };
   window.addEventListener("resize", handleResize);
   handleResize();
+
+  document.body.appendChild(toggleBtn);
+  document.body.appendChild(backdrop);
 
   return nav;
 }

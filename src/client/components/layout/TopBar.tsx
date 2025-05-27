@@ -1,6 +1,6 @@
 export function TopBar() {
   return (
-    <header className="fixed top-0 left-0 md:pl-[142px] right-0 z-40 h-16 md:h-20 bg-black/80 backdrop-blur-md border-b border-pong-dark-accent/30 px-4 md:pr-8 flex items-center justify-between shadow-md">
+    <header className="fixed top-0 left-0 md:pl-[142px] right-0 z-40 h-16 md:h-20 bg-black/50 backdrop-blur-md border-b border-pong-dark-accent/30 px-4 md:pr-8 flex items-center justify-between shadow-md">
       <input
         type="search"
         id="search-bar"

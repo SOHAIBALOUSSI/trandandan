@@ -56,10 +56,10 @@ export function handleSignIN() {
           feedback.className = `${styles.formMessage} text-pong-success block`;
 
           localStorage.setItem("auth", "true");
-          result.accessToken &&
-            localStorage.setItem("accessToken", result.accessToken);
-          result.refreshToken &&
-            localStorage.setItem("refreshToken", result.refreshToken);
+          result.data.accessToken &&
+            localStorage.setItem("accessToken", result.data.accessToken);
+          result.data.refreshToken &&
+            localStorage.setItem("refreshToken", result.data.refreshToken);
 
           setTimeout(() => {
             history.pushState(null, "", "/salon");

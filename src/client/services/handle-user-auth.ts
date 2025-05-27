@@ -1,5 +1,5 @@
 export async function fetchUser() {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("accessToken");
   if (!token) return null;
 
   try {
