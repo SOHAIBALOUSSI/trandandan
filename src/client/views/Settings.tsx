@@ -3,12 +3,11 @@ import { TopBar } from "@/components/layout/TopBar";
 import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
 
-function SettingMode(props: { title: string; text: string }) {
+function TwofaMode(props: { title: string }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full bg-gray-900 my-8 cursor-pointer">
-      <h2 className="text-2xl font-bold text-white mb-4">{props.title}</h2>
-	  <p className="text-lg text-gray-300">{props.text}</p>
-	</div>
+    <div className="flex flex-col items-center justify-center bg-gray-900 text-white text-lg m-8 p-12 cursor-pointer">
+      <button className="">{props.title}</button>
+    </div>
   );
 }
 
@@ -20,7 +19,10 @@ export function Settings() {
         <TopBar />
         <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto">
           <MainHeader isDark={false} title="system" titleSpan="settings" />
-		  Setting
+          <div className="flex flex-col items-center justify-center h-full">
+            <TwofaMode title="Enable 2FA" />
+            <TwofaMode title="Disable 2FA" />
+          </div>
         </main>
       </div>
     </section>

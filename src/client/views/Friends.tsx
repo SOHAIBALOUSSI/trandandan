@@ -15,5 +15,6 @@ export function Friends() {
       </div>
     </section>
   );
+
   return friendsSection;
 }

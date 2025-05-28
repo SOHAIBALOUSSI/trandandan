@@ -10,10 +10,11 @@ export function Chat() {
       <div className="md:ml-[110px] md:w-[calc(100vw-110px)] relative">
         <TopBar />
         <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto">
-			<MainHeader isDark={false} title="message" titleSpan="center" />
-		</main>
+          <MainHeader isDark={false} title="message" titleSpan="center" />
+        </main>
       </div>
     </section>
   );
+
   return chatSection;
 }

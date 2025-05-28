@@ -27,5 +27,6 @@ export function Game() {
       </div>
     </section>
   );
+
   return gameSection;
 }
