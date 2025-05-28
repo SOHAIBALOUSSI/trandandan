@@ -27,6 +27,9 @@ export const theme = {
       "pong-success": "#38b000",
       "pong-warning": "#ffb703",
       "pong-info": "#2196F3",
+      "game-bg": "#1B1B1B",
+      "ping-yellow": "#E0A458",
+      "game-border": "#AEBABF"
     },
     keyframes: {
       fadeInUp: {
