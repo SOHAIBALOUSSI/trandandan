@@ -85,7 +85,7 @@ export async function router(): Promise<void> {
       return;
     }
 
-	console.log("Current User:", currentUser);
+    console.log("Current User:", currentUser);
   }
 
   // Clear the existing app content
