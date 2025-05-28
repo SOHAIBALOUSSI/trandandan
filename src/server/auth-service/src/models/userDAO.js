@@ -1,21 +1,36 @@
 
 export async function findUserByName(db, username) {
+    console.log('fetching user by name...')
     return await db.get('SELECT * FROM user WHERE username = ?',
         [username]
     );
 }
 
+export async function findUserByEmail(db, email) {
+    console.log('fetching user by email...')
+    return await db.get('SELECT * FROM user WHERE email = ?',
+        [email]
+    );
+}
+
 export async function findUserById(db, id) {
+    console.log('fetching user by id...')
     return await db.get('SELECT * FROM user WHERE id = ?',
         [id]
     );
 }
 
-
 export async function findUser(db, username, email) {
+    console.log('fetching user...')
     return await db.get('SELECT * FROM user WHERE username = ? OR email = ?', 
         [username, email]
     );
+}
+
+export async function findOauthIdentity(db, provider, sub) {
+    console.log(`fetching OAuth identity...(provider :${provider}, sub: ${sub})`)
+    return await db.get('SELECT * FROM oauth_identity WHERE provider = ? AND provider_sub = ?',
+        [provider, sub]);
 }
 
 export async function addUser(db, username, email, password) {
@@ -35,24 +50,40 @@ export async function deleteUser(db, id) {
     return result.changes;
 }
 
-export async function findOAuthUser(db, email) {
-    const result = await db.get('SELECT * FROM user WHERE email = ?',
-        [email]
-    );
-
-    console.log('OAuthUser fetched: ', result);
-    return result;
-}
-
-export async function addOAuthUser(db, userInfo) {
-    const result = await db.run('INSERT INTO user (provider, email, access_token, refresh_token) VALUES (?, ?, ?, ?)',
+export async function addUserAndOAuthIdentity(db, userInfo) {
+    const userResult = await db.run('INSERT INTO user (username, email) VALUES (?, ?)',
         [
+            userInfo.username,
+            userInfo.email
+        ]
+    );
+    console.log('Added user with ID: ', userResult.lastID);
+
+    await db.run('INSERT INTO oauth_identity (user_id, provider, provider_sub, email, access_token, refresh_token) VALUES (?, ?, ?, ?, ?, ?)',
+        [
+            userResult.lastID,
             userInfo.provider,
+            userInfo.sub,
             userInfo.email,
             userInfo.accessToken,
             userInfo.refreshToken
         ]
     );
-    console.log("OAuth user inserted with ID: ", result.lastID);
-    return result.lastID;
+    console.log("OAuth identity linked with ID: ", userResult.lastID);
+    return userResult.lastID;
+}
+
+export async function linkOAuthIdentityToUser(db, id, userInfo) {
+    await db.run('INSERT INTO oauth_identity (user_id, provider, provider_sub, email, access_token, refresh_token) VALUES (?, ?, ?, ?, ?, ?)',
+        [
+            id,
+            userInfo.provider,
+            userInfo.sub,
+            userInfo.email,
+            userInfo.accessToken,
+            userInfo.refreshToken
+        ]
+    );
+    console.log("OAuth identity linked with ID: ", id);
+    return id;
 }
