@@ -12,11 +12,15 @@ export function handleSignUp() {
   //  Error messages for the signup process
   const signupErrorMessages: Record<string, string> = {
     UNMATCHED_PASSWORDS: "Passwords don’t match. Recheck your grip.",
-	PASSWORD_POLICY: "Password must be at least 8 characters, with uppercase, lowercase, number, and special char.",
-	FST_ERR_VALIDATION: "Username/Password must not have more than 15 characters.",
+    PASSWORD_POLICY:
+      "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
+    FST_ERR_VALIDATION:
+      "Your form is over the line — keep username and password under 15 characters.",
     USER_EXISTS: "This racket is already in the club. Try signing in.",
-    PROFILE_CREATION_FAILED: "We couldn’t build your profile. Try again.",
-    INTERNAL_SERVER_ERROR: "Club doors are jammed! Try again in a moment.",
+    PROFILE_CREATION_FAILED:
+      "We couldn’t get your locker set up. Give it another swing.",
+    INTERNAL_SERVER_ERROR:
+      "The club’s having a power outage. Try again shortly.",
   };
 
   signupForm.addEventListener("submit", async (e: Event) => {
@@ -33,6 +37,11 @@ export function handleSignUp() {
     const confirmPassword = (
       signupForm.querySelector("#confirm-password") as HTMLInputElement
     ).value;
+
+    console.log("Username:", username);
+    console.log("Email:", email);
+    console.log("Password:", password);
+    console.log("Confirm Password:", confirmPassword);
 
     feedback.textContent = "";
     feedback.className = styles.formMessage;

@@ -27,37 +27,52 @@ const routes: Record<string, () => HTMLElement> = {
   exit: Logout,
 };
 
-// Store the user globally
-let currentUser: any = null;
-
-// Define public routes that do not require authentication
+// Public pages that don't require authentication
 const publicRoutes = ["signin", "signup", "welcome"];
 
-// Function to check if the user is authenticated
+// Global user object
+let currentUser: Promise<any> | null = null;
+
+// Check if a user is authenticated
 function isAuthenticated(): boolean {
-  return !!localStorage.getItem("auth");
+  return !!localStorage.getItem("accessToken");
 }
 
-// Main router function to handle navigation and rendering
+// Setup Single Page Application link interception
+export function setupSPA(): void {
+  document.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
+    const link = target.closest("[data-link]") as HTMLAnchorElement | null;
+
+    if (link) {
+      e.preventDefault();
+      const href = link.getAttribute("href");
+      if (href && href !== window.location.pathname) {
+        history.pushState(null, "", href);
+        await router();
+      }
+    }
+  });
+}
+
+// Main SPA router logic
 export async function router(): Promise<void> {
   const app = document.getElementById("app");
   if (!app) return;
 
   const path = location.pathname.slice(1) || "welcome";
-
   const isPublic = publicRoutes.includes(path);
-
   const render = routes[path] || routes["welcome"];
 
   if (!isPublic && !isAuthenticated()) {
     history.replaceState(null, "", "/signin");
-    router();
+    await router();
     return;
   }
 
   if (isAuthenticated() && isPublic) {
     history.replaceState(null, "", "/salon");
-    router();
+    await router();
     return;
   }
 
@@ -69,33 +84,26 @@ export async function router(): Promise<void> {
       await router();
       return;
     }
+
+	console.log("Current User:", currentUser);
   }
 
-  // Clear existing DOM and render the component
-  while (app.firstChild) app.removeChild(app.firstChild);
+  // Clear the existing app content
+  while (app.firstChild) {
+    app.removeChild(app.firstChild);
+  }
+
+  // Render the current route's component
   app.appendChild(render());
 
-  const allLinks = document.querySelectorAll(".nav-item");
-  allLinks.forEach((li) => li.classList.remove("active"));
+  // Activate nav link
+  document
+    .querySelectorAll(".nav-item")
+    .forEach((li) => li.classList.remove("active"));
 
   const activeLink = document.querySelector(`.nav-item-link[href="/${path}"]`);
+
   if (activeLink?.parentElement) {
     activeLink.parentElement.classList.add("active");
   }
-}
-
-export function setupSPA(): void {
-  document.addEventListener("click", async (e) => {
-    const target = e.target as HTMLElement;
-    const link = target.closest("[data-link]") as HTMLAnchorElement | null;
-
-    if (link) {
-      e.preventDefault();
-      const href = link.getAttribute("href");
-      if (href) {
-        history.pushState(null, "", href);
-        await router();
-      }
-    }
-  });
 }

@@ -8,15 +8,17 @@ export async function getUserProfile() {
     });
 
     if (!res.ok) throw new Error("Failed to fetch user");
-    const data = await res.json();
+    const json = await res.json();
 
-    console.log(data.id);
-    console.log(data.username);
-    console.log(data.email);
+    const id = json.data?.id;
+    if (!id) throw new Error("User ID not found");
 
-    const profileRes = await fetch(`/profile/${data.id}`, {
+    console.log("id: " + id);
+
+    const profileRes = await fetch(`/profile/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+
     if (!profileRes.ok) throw new Error("Failed to fetch profile");
 
     return await profileRes.json();

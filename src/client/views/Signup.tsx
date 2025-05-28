@@ -61,11 +61,11 @@ function Form() {
         ></i>
         <span id="btn-label">register your racket</span>
       </button>
-      <p className="text-xs text-pong-primary/70 mt-2">
+      <p className="text-xs text-pong-primary/70 -mt-2">
         by joining, you swear on honor to compete fairly and uphold the spirit
         of ping pong.
       </p>
-      <div className="mt-6">
+      <div>
         <p className="text-sm md:text-base font-bold">
           Already hold a racket?{" "}
           <a

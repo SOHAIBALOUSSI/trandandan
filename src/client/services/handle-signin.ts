@@ -11,10 +11,12 @@ export function handleSignIN() {
 
   // Error messages for the signin process
   const signinErrorMessages: Record<string, string> = {
-    INVALID_CREDENTIALS: "No racket found. Check your details and swing again.",
+    INVALID_CREDENTIALS:
+      "No matching racket in the locker room. Double-check your grip and try again.",
     INVALID_PASSWORD:
-      "Invalid paddle pass. Check your details and swing again.",
-    INTERNAL_SERVER_ERROR: "Club doors are jammed! Try again in a moment.",
+      "Wrong paddle pass — take another shot after checking your swing.",
+    INTERNAL_SERVER_ERROR:
+      "The court lights are out. Give it a moment and rally back.",
   };
 
   signInForm.addEventListener("submit", async (e) => {
@@ -28,6 +30,9 @@ export function handleSignIN() {
     const payload = isEmail
       ? { email: loginValue, password }
       : { username: loginValue, password };
+
+    console.log("Login:", loginValue);
+    console.log("Password:", password);
 
     feedback.textContent = "";
     feedback.className = styles.formMessage;

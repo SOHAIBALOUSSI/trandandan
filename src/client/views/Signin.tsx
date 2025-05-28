@@ -50,12 +50,12 @@ function Form() {
       </button>
       <a
         href="#"
-        className="-mt-2 text-pong-accent text-xs lg:text-base font-bold underline hover:text-pong-secondary transition-all duration-300"
+        className="-mt-2 text-pong-accent text-xs font-bold underline hover:text-pong-secondary transition-all duration-300"
         data-link
       >
         lost your paddle?
       </a>
-      <div className="mt-2">
+      <div>
         <p className="text-sm lg:text-base font-bold">
           new here?{" "}
           <a
