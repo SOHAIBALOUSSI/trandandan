@@ -9,7 +9,7 @@ services:
     networks:
       - transcendence
     ports:
-      - "3000:3000"
+      - "3005:3000"
 
   profile:
     container_name: profile-service
@@ -55,6 +55,18 @@ services:
       - transcendence
     restart: always
     command: npm run dev
+
+  game:
+    container_name: game-service
+    build: src/server/game-service
+    image: game-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    ports:
+      - "5000:5000"
 
 networks:
   transcendence:

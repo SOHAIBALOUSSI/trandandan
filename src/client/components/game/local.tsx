@@ -1,3 +1,5 @@
+import './src/client/styles/game.css';
+
 export function LocalGame() {
   const rightPlayerScoreLocal = document.getElementById(
     "rightPlayerScoreLocal"
