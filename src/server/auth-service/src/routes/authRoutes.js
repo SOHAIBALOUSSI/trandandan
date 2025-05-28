@@ -38,7 +38,7 @@ async function authRoutes(fastify) {
         handler: refreshHandler
     } );
 
-    fastify.get('/google/setup',{
+    fastify.get('/google',{
         handler: googleSetupHandler
     } );
 

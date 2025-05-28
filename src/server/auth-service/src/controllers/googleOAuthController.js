@@ -1,6 +1,7 @@
 import { addUserAndOAuthIdentity, deleteUser, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
 import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
+import { findTwoFaByUid, storeTotpCode } from "../models/twoFaDAO.js";
 
 export async function   googleSetupHandler(request, reply) {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.CLIENT_ID}&redirect_uri=${process.env.REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
@@ -72,7 +73,24 @@ export async function googleLoginHandler(request, reply) {
                 user = await findUserById(this.db, newUserId);
             }
         }
-
+        
+        const twoFa = await findTwoFaByUid(this.db, user.id);
+        if (twoFa && twoFa.enabled) {
+            const tempToken = this.jwt.signTT({ id: user.id });
+            if (twoFa.type === 'email')
+            {
+                const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+                await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
+                const mailOptions = {
+                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
+                    to: `${user.email}`,
+                    subject: "Hello from M3ayz00",
+                    text: `OTP CODE : <${totpCode}>`,
+                }
+                await this.sendMail(mailOptions);
+            }
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken, twoFaType: twoFa.type  }));
+        }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         await addToken(this.db, refreshToken, user.id);
@@ -86,14 +104,14 @@ export async function googleLoginHandler(request, reply) {
                 },
                 body: JSON.stringify({
                     user_id: user.id,
-                    username: user.username,  
+                    username: user.username,
                     email: user.email,
                     avatar_url: userInfo.picture
                 })
             });
 
             if (!response.ok) {
-                await deleteUser(this.db, newUser);
+                await deleteUser(this.db, user.id);
                 await revokeToken(this.db, refreshToken);
                 return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
             }
@@ -102,6 +120,7 @@ export async function googleLoginHandler(request, reply) {
         else
             return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
+        console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }

@@ -14,7 +14,7 @@ export async function createOAuthIdentityTable(db){
             FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
             )`
         );
-        console.log("Users table created.");
+        console.log("OAuth identity table created.");
     } catch (err) {
         console.error("Error creating table:", err.message);
     }

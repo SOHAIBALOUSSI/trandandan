@@ -9,13 +9,14 @@ The `auth-service` is responsible for handling user authentication, registration
 **Prefix: /auth**
 
 
-| Method | Path          | Description                                                           | Authentication Required | Body Required                                  |
-| :----: | ------------- | --------------------------------------------------------------------- | :----------------------: | :-------------------------------------------: |
-| POST   | `/login`      | Log in a user                                                         | No                       | { username/email, password }                  |
-| POST   | `/register`   | Register a new user                                                   | No                       | { username, email, password, confirmPassword }|
-| POST   | `/logout`     | Log out a logged-in user                                               | Yes                      | { refreshToken }                             |
-| GET    | `/me`         | Get current user profile                                               | Yes                      | (none)                                       |
-| GET    | `/refresh`    | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes | { refreshToken }                               |
+| Method | Path        | Description                                                            | Authentication Required | Body Required                                  |
+| :----: | ----------- | ---------------------------------------------------------------------- | :----------------------: | :-------------------------------------------: |
+| POST   | `/login`    | Log in a user                                                          | No                       | { username/email, password }                  |
+| POST   | `/register` | Register a new user                                                    | No                       | { username, email, password, confirmPassword }|
+| GET    | `/google`   | Log in a user using Google sign in                                     | No                       | (none)                                        |
+| POST   | `/logout`   | Log out a logged-in user                                               | Yes                      | { refreshToken }                              |
+| GET    | `/me`       | Get current user profile                                               | Yes                      | (none)                                        |
+| GET    | `/refresh`  | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes | { refreshToken }                                |
 
 **Prefix: /2fa**
 
@@ -90,6 +91,20 @@ The `auth-service` is responsible for handling user authentication, registration
     USER_EXISTS
     PROFILE_CREATION_FAILED
   }
+  201: USER_REGISTERED
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/google`
+
+```yaml
+
+  400: {
+    AUTH_CODE_REQUIRED
+    PROFILE_CREATION_FAILED
+  }
+  200: USER_LOGGED_IN
   201: USER_REGISTERED
   500: INTERNAL_SERVER_ERROR
 

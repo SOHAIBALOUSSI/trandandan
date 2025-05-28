@@ -26,6 +26,8 @@ export async function loginHandler(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(400, 'INVALID_CREDENTIALS'));
 
+        if (!user.password)
+            return reply.code(400).send(createResponse(400, 'USER_ALREADY_LINKED'));
         const matched = await compare(password, user.password);
         if (!matched)
             return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
@@ -34,10 +36,10 @@ export async function loginHandler(request, reply) {
         if (twoFa && twoFa.enabled)
         {
             const tempToken = this.jwt.signTT({ id: user.id });
-            const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-            await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
             if (twoFa.type === 'email')
             {
+                const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+                await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -46,7 +48,7 @@ export async function loginHandler(request, reply) {
                 }
                 await this.sendMail(mailOptions);
             }
-            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken }));
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken, twoFaType: twoFa.type  }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
@@ -63,10 +65,10 @@ export async function loginHandler(request, reply) {
 export async function registerHandler(request, reply) {
     try {
         const { email, username, password, confirmPassword} = request.body;
-        if (password !== confirmPassword)
-            return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
         if (!validatePassword(password))
             return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
+        if (password !== confirmPassword)
+            return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
         const userExist = await findUser(this.db, username, email);
         if (userExist)
             return reply.code(400).send(createResponse(400, 'USER_EXISTS'));

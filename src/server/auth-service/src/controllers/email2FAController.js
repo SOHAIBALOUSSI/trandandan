@@ -1,5 +1,5 @@
 import { addToken } from '../models/tokenDAO.js';
-import { findTwoFaByUID, storeTotpCode, updateTotpCode, updateUser2FA } from '../models/twoFaDAO.js';
+import { findTwoFaByUidAndType, storeTotpCode, updateTotpCode, updateUser2FA } from '../models/twoFaDAO.js';
 import { findUserById } from '../models/userDAO.js';
 import { createResponse } from '../utils/utils.js';
 
@@ -11,12 +11,12 @@ export async function setup2FAEmail(request, reply) {
             return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
         const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-        const twoFa = await findTwoFaByUID(this.db, user.id);
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'email');
         if (!twoFa)
             await storeTotpCode(this.db, totpCode, userId);
         else
         {
-            if (twoFa.enabled)
+            if (twoFa.enabled && twoFa.type === 'email')
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
             await updateTotpCode(this.db, totpCode, userId);
         }
@@ -44,7 +44,7 @@ export async function verify2FAEmailSetup(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const twoFa = await findTwoFaByUID(this.db, user.id);
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'email');
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
         else if (twoFa.enabled)
@@ -75,7 +75,7 @@ export async function verify2FALogin(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const twoFa = await findTwoFaByUID(this.db, user.id);
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'email');
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
         else if (!twoFa.enabled)

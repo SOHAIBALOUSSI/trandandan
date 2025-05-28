@@ -4,7 +4,7 @@ import { findUserById } from '../models/userDAO.js';
 import { addToken } from '../models/tokenDAO.js';
 import { createResponse } from '../utils/utils.js';
 import {
-    findTwoFaByUID,
+    findTwoFaByUidAndType,
     storeTempSecret,
     updateTempSecret,
     updateUserSecret
@@ -21,12 +21,12 @@ export async function setup2FAApp(request, reply) {
             name: `trandenden (${user.username})`,
             length: 32
         });
-        const twoFa = await findTwoFaByUID(this.db, user.id);
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'app');
         if (!twoFa)
             await storeTempSecret(this.db, secret.base32, userId);
         else
         {
-            if (twoFa.enabled)
+            if (twoFa.enabled && twoFa.type === 'app')
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
             await updateTempSecret(this.db, secret.base32, userId);
         }
@@ -50,7 +50,7 @@ export async function verify2FAAppSetup(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const twoFa = await findTwoFaByUID(this.db, user.id);
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'app');
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
         else if (twoFa.enabled)
@@ -86,7 +86,7 @@ export async function verify2FAAppLogin(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const twoFa = await findTwoFaByUID(this.db, user.id);
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'app');
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
         else if (!twoFa.enabled)
