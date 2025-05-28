@@ -30,7 +30,7 @@ export function LocalGame() {
   `;
 
   // Initialize game elements
-  const canvas = container.querySelector('canvas') as HTMLCanvasElement;
+  const canvas = container.querySelector('#canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
   const rightPlayerScoreLocal = container.querySelector('#rightPlayerScoreLocal') as HTMLElement;
   const leftPlayerScoreLocal = container.querySelector('#leftPlayerScoreLocal') as HTMLElement;
@@ -79,7 +79,7 @@ export function LocalGame() {
   }
 
   // Start the game when the container is added to DOM
-  setTimeout(init, 0);
+  init();
 
   return container;
 }

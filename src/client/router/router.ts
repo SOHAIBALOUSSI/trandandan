@@ -12,6 +12,9 @@ import { Settings } from "@/views/Settings";
 import { Logout } from "@/views/Logout";
 import { getUserProfile } from "@/services/handle-user-auth";
 import { LocalGame } from "@/components/game/local";
+import { RemoteGame } from "@/components/game/remote";
+import { Tournaments } from "@/components/game/tournaments";
+
 
 // Define the routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
@@ -26,7 +29,9 @@ const routes: Record<string, () => HTMLElement> = {
   profile: Profile,
   mechanics: Settings,
   exit: Logout,
-  local: LocalGame
+  local: LocalGame,
+  remote: RemoteGame,
+  tournaments: Tournaments
 };
 
 // Public pages that don't require authentication

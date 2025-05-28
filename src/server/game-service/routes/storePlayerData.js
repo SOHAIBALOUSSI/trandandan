@@ -28,7 +28,7 @@ export function savePlayerData(req, reply) {
         left_player_ball_hit INTEGER NOT NULL,
         right_player_ball_hit INTEGER NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(match_id, player_id)
+        UNIQUE(created_at, player_id)
       )
     `;
     db.run(createTableQuery, (err) => {
@@ -66,12 +66,6 @@ export function savePlayerData(req, reply) {
           data.rightPlayerBallHit,
         ],
         function (err) {
-          if (err) {
-            console.error("Error inserting data:", err.message);
-            return reply.status(500).send({ error: "Database error" });
-          }
-
-          console.log("Data inserted successfully with ID:", this.lastID);
           return reply
             .status(200)
             .send({ message: "Player data saved successfully" });
