@@ -1,6 +1,5 @@
 /* Start Font Import */
-@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
-/* End Font Import */
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Orbitron:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"); /* End Font Import */
 
 /* Start Tailwind Import */
 @tailwind base;
@@ -13,6 +12,7 @@
   /* === Fonts === */
   --font-heading: "Playfair Display", serif;
   --font-body: "Lora", serif;
+  --font-game: "Orbitron", sans-serif;
 
   /* === Light Theme Colors === */
   --color-bg: #f3f0e8;
@@ -63,7 +63,6 @@
   margin: 0;
   padding: 0;
   text-transform: capitalize;
-  font-family: var(--font-body);
   scroll-behavior: smooth;
   text-transform: capitalize;
   box-sizing: border-box;
@@ -76,7 +75,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-heading) !important;
+  /* font-family: var(--font-heading) !important; */
   font-weight: bold;
 }
 ul {
@@ -449,15 +448,17 @@ a {
 @media (min-width: 1200px) {
   /* Extra large screens */
 }
-keyframes glowPulse {
-    0%, 100% {
-      box-shadow: 0 0 0px #E0A458;
-      background-color: #E0A458;
-    }
-    50% {
-      box-shadow: 0 0 20px 5px #E0A458;
-      background-color: #f5c472;
-    }
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0px #e0a458;
+    background-color: #e0a458;
+  }
+  50% {
+    box-shadow: 0 0 20px 5px #e0a458;
+    background-color: #f5c472;
+  }
 }
 
 .glow-animation {
@@ -483,85 +484,85 @@ keyframes glowPulse {
   animation: float 6s infinite ease-in-out;
 }
 .animate-square:nth-child(1) {
-    animation-delay: 0s;
+  animation-delay: 0s;
 }
 
 .animate-square:nth-child(2) {
-    animation-delay: 0.5s;
+  animation-delay: 0.5s;
 }
 
 .animate-square:nth-child(3) {
-    animation-delay: 1s;
+  animation-delay: 1s;
 }
 
 .animate-square:nth-child(4) {
-    animation-delay: 1.5s;
+  animation-delay: 1.5s;
 }
 
 .animate-square:nth-child(5) {
-    animation-delay: 2s;
+  animation-delay: 2s;
 }
 
 .animate-square:nth-child(6) {
-    animation-delay: 2.5s;
+  animation-delay: 2.5s;
 }
 
 .animate-square:nth-child(7) {
-    animation-delay: 3s;
+  animation-delay: 3s;
 }
 
 .animate-square:nth-child(8) {
-    animation-delay: 3.5s;
+  animation-delay: 3.5s;
 }
 
 .animate-square:nth-child(9) {
-    animation-delay: 4s;
+  animation-delay: 4s;
 }
 
 .animate-square:nth-child(10) {
-    animation-delay: 4.5s;
+  animation-delay: 4.5s;
 }
 
 .animate-square:nth-child(11) {
-    animation-delay: 5s;
+  animation-delay: 5s;
 }
 
 .animate-square:nth-child(12) {
-    animation-delay: 5.5s;
+  animation-delay: 5.5s;
 }
 
 .animate-square:nth-child(13) {
-    animation-delay: 6s;
+  animation-delay: 6s;
 }
 
 .animate-square:nth-child(14) {
-    animation-delay: 6.5s;
+  animation-delay: 6.5s;
 }
 
 .animate-square:nth-child(15) {
-    animation-delay: 7s;
+  animation-delay: 7s;
 }
 
 .animate-square:nth-child(16) {
-    animation-delay: 7.5s;
+  animation-delay: 7.5s;
 }
 
 .animate-square:nth-child(17) {
-    animation-delay: 8s;
+  animation-delay: 8s;
 }
 
 .animate-square:nth-child(18) {
-    animation-delay: 8.5s;
+  animation-delay: 8.5s;
 }
 
 .animate-square:nth-child(19) {
-    animation-delay: 9s;
+  animation-delay: 9s;
 }
 
 .animate-square:nth-child(20) {
-    animation-delay: 9.5s;
+  animation-delay: 9.5s;
 }
 
 .animate-square:nth-child(21) {
-    animation-delay: 10s;
+  animation-delay: 10s;
 }

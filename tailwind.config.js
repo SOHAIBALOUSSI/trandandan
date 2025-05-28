@@ -4,6 +4,7 @@ export const theme = {
     fontFamily: {
       playfair: ["'Playfair Display'", "serif"],
       lora: ["Lora", "serif"],
+      orbitron: ["Orbitron", "sans-serif"],
     },
     colors: {
       "pong-bg": "#F3F0E8",
@@ -29,7 +30,7 @@ export const theme = {
       "pong-info": "#2196F3",
       "game-bg": "#1B1B1B",
       "ping-yellow": "#E0A458",
-      "game-border": "#AEBABF"
+      "game-border": "#AEBABF",
     },
     keyframes: {
       fadeInUp: {
