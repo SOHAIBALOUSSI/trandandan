@@ -1,3 +1,4 @@
+import { fortyTwoLoginHandler, fortyTwoSetupHandler } from '../controllers/42OAuthController.js';
 import { 
     loginHandler, 
     registerHandler, 
@@ -63,6 +64,14 @@ async function authRoutes(fastify) {
 
     fastify.get('/google/callback',{
         handler: googleLoginHandler
+    } );
+
+    fastify.get('/42',{
+        handler: fortyTwoSetupHandler
+    } );
+
+    fastify.get('/42/callback',{
+        handler: fortyTwoLoginHandler
     } );
 
     fastify.post('/lost-password', {

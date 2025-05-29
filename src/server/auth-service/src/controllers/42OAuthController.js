@@ -1,7 +1,7 @@
 import { addUserAndOAuthIdentity, deleteUser, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
 import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
-import { findTwoFaByUid, storeTotpCode } from "../models/twoFaDAO.js";
+import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
 
 export async function   fortyTwoSetupHandler(request, reply) {
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code`;
@@ -34,13 +34,14 @@ export async function fortyTwoLoginHandler(request, reply) {
         }
 
         const { access_token } = await tokens.json();
-        const userinfo  = await fetch('https://api.intra.42.fr/oauth/v2/me', {
+        const userinfo  = await fetch('https://api.intra.42.fr/v2/me', {
             method: 'GET',
             headers: { Authorization: `Bearer ${access_token}` }
         });
 
+        console.log('User info: ', userinfo);
         const userInfo = await userinfo.json();
-        console.log('User info: ', userInfo);
+        console.log('User Info: ', userInfo);
         const actualInfo = {
             provider: '42',
             sub: userInfo.id,
@@ -80,7 +81,7 @@ export async function fortyTwoLoginHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
+                await storeOtpCode(this.db, user.id);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -106,7 +107,7 @@ export async function fortyTwoLoginHandler(request, reply) {
                     user_id: user.id,
                     username: user.username,
                     email: user.email,
-                    avatar_url: userInfo.picture
+                    avatar_url: userInfo.image.link
                 })
             });
 

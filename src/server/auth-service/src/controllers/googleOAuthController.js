@@ -80,7 +80,7 @@ export async function googleLoginHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeOtpCode(this.db, otpCode, Date.now() + 60 * 60 * 1000, user.id);
+                await storeOtpCode(this.db, otpCode, user.id);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
