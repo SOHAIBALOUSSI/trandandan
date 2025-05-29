@@ -4,7 +4,7 @@ import { createResponse, generateUsername } from "../utils/utils.js";
 import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
 
 export async function   fortyTwoSetupHandler(request, reply) {
-    const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code`;
+    const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code&prompt=consent`;
     reply.redirect(url);
 }
 
@@ -52,7 +52,7 @@ export async function fortyTwoLoginHandler(request, reply) {
 
         let isNewUser = false;
         let user;
-        const oauthId = await findOauthIdentity(this.db, '42', userInfo.sub);
+        const oauthId = await findOauthIdentity(this.db, '42', userInfo.id);
         if (oauthId) {
             user = await findUserById(this.db, oauthId.user_id);
             if (user)
