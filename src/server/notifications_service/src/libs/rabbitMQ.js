@@ -34,7 +34,7 @@ class RabbitMQManager {
         await this.connect();
       }
 
-      const queueName = `${process.env.RABBITMQ_QUEUE_PREFIX || 'notifications'}_${queue}`;
+      const queueName = `${process.env.RABBITMQ_QUEUE_PREFIX || 'notifications'}.${queue}`;
       await this.channel.assertQueue(queueName, { durable: true });
       
       return this.channel.sendToQueue(
@@ -54,7 +54,7 @@ class RabbitMQManager {
         await this.connect();
       }
 
-      const queueName = `${process.env.RABBITMQ_QUEUE_PREFIX || 'notifications'}_${queue}`;z
+      const queueName = `${process.env.RABBITMQ_QUEUE_PREFIX || 'notifications'}_${queue}`;
       await this.channel.assertQueue(queueName, { durable: true });
 
       this.channel.consume(queueName, (msg) => {
