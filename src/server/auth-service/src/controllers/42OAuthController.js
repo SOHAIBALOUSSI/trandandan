@@ -3,38 +3,38 @@ import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
 import { findTwoFaByUid, storeTotpCode } from "../models/twoFaDAO.js";
 
-export async function   googleSetupHandler(request, reply) {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
+export async function   fortyTwoSetupHandler(request, reply) {
+    const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code`;
     reply.redirect(url);
 }
 
-export async function googleLoginHandler(request, reply) {
+export async function fortyTwoLoginHandler(request, reply) {
     const { code } = request.query;
     if (!code)
         return reply.code(400).send(createResponse(400, 'AUTH_CODE_REQUIRED'));
     try {
-        const tokens = await fetch('https://oauth2.googleapis.com/token', {
+        const tokens = await fetch('https://api.intra.42.fr/oauth/token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
                 code,
-                client_id: process.env.GOOGLE_ID,
-                client_secret: process.env.GOOGLE_SECRET,
-                redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+                client_id: process.env.FORTY_TWO_ID,
+                client_secret: process.env.FORTY_TWO_SECRET,
+                redirect_uri: process.env.FORTY_TWO_REDIRECT_URI,
                 grant_type: 'authorization_code'
             }).toString()
         });
 
-        console.log('Google tokens: ', tokens);
+        console.log('42 tokens: ', tokens);
         if (!tokens.ok)
         {
             const errorText = await tokens.text();
-            console.log('Google tokens error: ', errorText);
+            console.log('42 tokens error: ', errorText);
             return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
         }
 
-        const { access_token, refresh_token } = await tokens.json();
-        const userinfo  = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        const { access_token } = await tokens.json();
+        const userinfo  = await fetch('https://api.intra.42.fr/oauth/v2/me', {
             method: 'GET',
             headers: { Authorization: `Bearer ${access_token}` }
         });
@@ -42,16 +42,16 @@ export async function googleLoginHandler(request, reply) {
         const userInfo = await userinfo.json();
         console.log('User info: ', userInfo);
         const actualInfo = {
-        provider: 'google',
-            sub: userInfo.sub,
+            provider: '42',
+            sub: userInfo.id,
             email: userInfo.email,
             accessToken: access_token,
-            refreshToken: refresh_token
+            refreshToken: null
         }
 
         let isNewUser = false;
         let user;
-        const oauthId = await findOauthIdentity(this.db, 'google', userInfo.sub);
+        const oauthId = await findOauthIdentity(this.db, '42', userInfo.sub);
         if (oauthId) {
             user = await findUserById(this.db, oauthId.user_id);
             if (user)
@@ -59,13 +59,13 @@ export async function googleLoginHandler(request, reply) {
         } else {
             user = await findUserByEmail(this.db, userInfo.email);
             if (user) {
-                console.log(`Existing user with ID : ${user.id} but not linked to google`);
+                console.log(`Existing user with ID : ${user.id} but not linked to 42`);
                 await linkOAuthIdentityToUser(this.db, user.id, actualInfo);
             }
             else {
                 console.log('New User');
                 isNewUser = true;
-                const uniqueUserName = await generateUsername(this.db, userInfo.given_name || userInfo.email.split('@')[0]);
+                const uniqueUserName = await generateUsername(this.db, userInfo.login || userInfo.email.split('@')[0]);
                 const newUserId = await addUserAndOAuthIdentity(this.db, {
                     username: uniqueUserName,
                     ...actualInfo
@@ -124,3 +124,26 @@ export async function googleLoginHandler(request, reply) {
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
+
+/*
+AJWT_SECRET_KEY=RDxk3ltH61GrgwskNBAzBExGPqAkzXpaIwGxpae5ErHet72P2l43y07u8fuR76WJw3jL
+RJWT_SECRET_KEY=6IG3rkzXjft6ER5gtqfjN5sQx6rHet72P2lQDx1PgtBAzBExGPqk8lOdNgKrXdVc40Bm
+TJWT_SECRET_KEY=OTM0NXd1aTg5MDU5NG9saiEjJCVUI1NFRzM0dHJzZmdkcTQ1MjNGIyR1ZWRqdHlyNjg5
+
+APP_NAME=trandenden
+APP_EMAIL=trandenden@gmail.com
+
+
+GMAIL_USER=trandenden2025@gmail.com
+GMAIL_APP_PASS=nmiz ndgl qocj thlv
+
+NODE_ENV=production
+
+GOOGLE_ID=584502676657-d07f7aj9r6r5p8i8nueunue0cq87m7sf.apps.googleusercontent.com
+GOOGLE_SECRET=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
+GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
+
+FORTY_TWO_ID=u-s4t2ud-ef3ebb549d1c2b0e5714a910236bbfea8c6fc947269a1db5b2bcadfa6f62a61a
+FORTY_TWO_SECRET=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
+FORTY_TWO_REDIRECT_URI=http://localhost:3000/auth/42/callback
+ */
