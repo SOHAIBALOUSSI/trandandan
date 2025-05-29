@@ -31,7 +31,7 @@ The `auth-service` is responsible for handling user authentication, registration
 | POST   | `/app/verify-login`   | Verify TOPT code for login with 2fa using app  | Yes                      | { otpCode }   |
 | POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      | (none)        |
 | POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      | { otpCode }   |
-| POST   | `/verify-login`       | Verify OPT code for login with 2fa using email | Yes                      | { otpCode }   |
+| POST   | `/email/verify-login` | Verify OPT code for login with 2fa using email | Yes                      | { otpCode }   |
 
 ---
 
@@ -240,7 +240,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-- `/verify-login`
+- `/email/verify-login`
 ```yaml
 
   400: {
@@ -304,5 +304,4 @@ The `auth-service` is responsible for handling user authentication, registration
 - Logout clears the session or token.
 - `/me` returns the current user info based on session/token.
 - Setting up 2FA for email and app are basically the same, they only differ in how OTP codes are generated.
-- `/verify-login` is a special route dedicated for validating sms/email OTP codes (sms not implemented yet).
 

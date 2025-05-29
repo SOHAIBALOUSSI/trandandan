@@ -38,7 +38,7 @@ async function twoFARoutes(fastify) {
         handler: verify2FAEmailSetup
     });
     
-    fastify.post('/verify-login', {
+    fastify.post('/email/verify-login', {
         schema: {
             body: otpCodeSchema
         },
