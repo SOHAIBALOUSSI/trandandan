@@ -12,7 +12,7 @@ async function jwtPlugin(fastify, options) {
             try {
                 return jwt.sign(payload, tempTokenKey, { expiresIn });
             } catch (error) {
-                console.log("Error in signing access token: ", error);
+                console.log("Error in signing temp token: ", error);
                 throw error;
             }
         },
@@ -52,6 +52,15 @@ async function jwtPlugin(fastify, options) {
                 console.log("Error in verifying refresh token: ", error);
                 throw error;
             }
+        },
+
+        verifyTT(token) {
+            try {
+                return jwt.verify(token, tempTokenKey);
+            } catch (error) {
+                console.log("Error in verifying temp token: ", error);
+                throw error;
+            }
         }
     })
 
@@ -63,7 +72,12 @@ async function jwtPlugin(fastify, options) {
             const decoded = await fastify.jwt.verifyAT(token);
             request.user = decoded;
         } catch (error) {
-            return reply.code(401).send(createResponse(401, 'TOKEN_INVALID'));
+            try {
+                const decoded = await fastify.jwt.verifyTT(token);
+                request.user = decoded;
+            } catch (error) {
+                return reply.code(401).send(createResponse(401, 'TOKEN_INVALID'));
+            }
         }
     })
 };

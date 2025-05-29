@@ -1,7 +1,7 @@
 import { addUserAndOAuthIdentity, deleteUser, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
 import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
-import { findTwoFaByUid, storeTotpCode } from "../models/twoFaDAO.js";
+import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
 
 export async function   googleSetupHandler(request, reply) {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
@@ -79,13 +79,13 @@ export async function googleLoginHandler(request, reply) {
             const tempToken = this.jwt.signTT({ id: user.id });
             if (twoFa.type === 'email')
             {
-                const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
+                const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+                await storeOtpCode(this.db, otpCode, Date.now() + 60 * 60 * 1000, user.id);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
                     subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${totpCode}>`,
+                    text: `OTP CODE : <${otpCode}>`,
                 }
                 await this.sendMail(mailOptions);
             }

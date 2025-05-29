@@ -47,14 +47,33 @@ export const tokenSchema = {
     additionalProperties: false
 }
 
-export const totpCodeSchema = {
+export const otpCodeSchema = {
     type: 'object',
-    required: ['totpCode'],
+    required: ['otpCode'],
     properties: {
-        totpCode: {
+        otpCode: {
             type: 'string',
             minLength: 6,
             maxLength: 6
         }
     }
+}
+
+export const emailSchema = {
+    type: 'object',
+    required: ['email'],
+    properties: {
+        email: emailValidation
+    },
+    additionalProperties: false
+}
+
+export const passwordSchema = {
+    type: 'object',
+    required: ['password', 'confirmPassword'],
+    properties: {
+        password: passwordValidation,
+        confirmPassword: passwordValidation
+    },
+    additionalProperties: false
 }

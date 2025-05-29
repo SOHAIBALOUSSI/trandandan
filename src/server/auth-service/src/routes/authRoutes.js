@@ -1,6 +1,25 @@
-import { loginHandler, registerHandler, logoutHandler, meHandler, refreshHandler } from '../controllers/authController.js';
-import { googleLoginHandler, googleSetupHandler } from '../controllers/googleOAuthController.js';
-import { registerSchema, loginSchema, tokenSchema } from '../schemas/authSchema.js';
+import { 
+    loginHandler, 
+    registerHandler, 
+    logoutHandler, 
+    meHandler, 
+    refreshHandler, 
+    verifyCodeHandler, 
+    lostPasswordHandler, 
+    updatePasswordHandler 
+} from '../controllers/authController.js';
+import { 
+    googleLoginHandler, 
+    googleSetupHandler 
+} from '../controllers/googleOAuthController.js';
+import { 
+    registerSchema, 
+    loginSchema,
+    tokenSchema, 
+    otpCodeSchema, 
+    emailSchema,
+    passwordSchema 
+} from '../schemas/authSchema.js';
 
 
 async function authRoutes(fastify) {
@@ -45,6 +64,29 @@ async function authRoutes(fastify) {
     fastify.get('/google/callback',{
         handler: googleLoginHandler
     } );
+
+    fastify.post('/lost-password', {
+        schema: {
+            body: emailSchema
+        }, 
+        handler: lostPasswordHandler
+    });
+
+    fastify.post('/verify-code', {
+        schema: {
+            body: otpCodeSchema
+        }, 
+        preHandler: fastify.authenticate,
+        handler: verifyCodeHandler
+    });
+
+    fastify.post('/update-password', {
+        schema: {
+            body: passwordSchema
+        }, 
+        preHandler: fastify.authenticate,
+        handler: updatePasswordHandler
+    });
 }
 
 export default authRoutes;

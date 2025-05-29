@@ -1,7 +1,7 @@
 import { setup2FAApp, verify2FAAppLogin, verify2FAAppSetup } from "../controllers/app2FAController.js";
 import { setup2FAEmail, verify2FAEmailSetup, verify2FALogin } from "../controllers/email2FAController.js";
 // import { setup2FASms, verify2FASmsSetup } from "../controllers/sms2FAController.js";
-import { totpCodeSchema } from "../schemas/authSchema.js";
+import { otpCodeSchema } from "../schemas/authSchema.js";
 
 async function twoFARoutes(fastify) {
     fastify.post('/app/setup', {
@@ -11,7 +11,7 @@ async function twoFARoutes(fastify) {
 
     fastify.post('/app/verify-setup', {
         schema: {
-            body: totpCodeSchema
+            body: otpCodeSchema
         },
         preHandler: fastify.authenticate,
         handler: verify2FAAppSetup
@@ -19,7 +19,7 @@ async function twoFARoutes(fastify) {
 
     fastify.post('/app/verify-login', {
         schema: {
-            body: totpCodeSchema
+            body: otpCodeSchema
         },
         preHandler: fastify.authenticate,
         handler: verify2FAAppLogin
@@ -32,7 +32,7 @@ async function twoFARoutes(fastify) {
     
     fastify.post('/email/verify-setup', {
         schema: {
-            body: totpCodeSchema
+            body: otpCodeSchema
         },
         preHandler: fastify.authenticate,
         handler: verify2FAEmailSetup
@@ -40,7 +40,7 @@ async function twoFARoutes(fastify) {
     
     fastify.post('/verify-login', {
         schema: {
-            body: totpCodeSchema
+            body: otpCodeSchema
         },
         preHandler: fastify.authenticate,
         handler: verify2FALogin

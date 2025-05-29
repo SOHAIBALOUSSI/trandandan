@@ -3,7 +3,9 @@ import {
     findUser, 
     addUser, 
     findUserById, 
-    deleteUser
+    deleteUser,
+    findUserByEmail,
+    updateUser
 } from '../models/userDAO.js';
 import { 
     findToken,
@@ -14,10 +16,119 @@ import {
     createResponse, 
     validatePassword 
 } from '../utils/utils.js'
-import { storeTotpCode } from '../models/twoFaDAO.js';
+import { findTwoFaByUid, storeOtpCode, updateOtpCode } from '../models/twoFaDAO.js';
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
+
+export async function lostPasswordHandler(request, reply) {
+    try {
+        
+        const { email } = request.body;
+        
+        const user = await findUserByEmail(this.db, email);
+        if (!user)
+            return reply.code(400).send(createResponse(400, 'INVALID_EMAIL'));
+        if (!user.password)
+            return reply.code(400).send(createResponse(400, 'USER_LINKED'));
+
+        const tempToken = this.jwt.signTT({ id: user.id });
+        const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+        
+        const twoFa = await findTwoFaByUid(this.db, user.id);
+        if (twoFa)
+            await updateOtpCode(this.db, otpCode, user.id);
+        else    
+            await storeOtpCode(this.db, otpCode, user.id);
+        const mailOptions = {
+            from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
+            to: `${user.email}`,
+            subject: "Hello from M3ayz00",
+            text: `OTP CODE : <${otpCode}>`,
+        }
+        await this.sendMail(mailOptions);
+        return reply.code(200).send(createResponse(200, 'CODE_SENT', { tempToken }));
+    } catch (error) {
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+    }
+}
+
+export async function verifyCodeHandler(request, reply) {
+    try {
+        const userId = request.user?.id;
+        const user = await findUserById(this.db, userId);
+        if (!user)
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+        
+        const twoFa = await findTwoFaByUid(this.db, user.id);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'CODE_NOT_SET'));
+
+        const { otpCode } = request.body;
+        if (!otpCode)
+            return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
+
+        if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
+            return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
+
+        return reply.code(200).send(createResponse(200, 'CODE_VERIFIED'));
+    } catch (error) {
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+    }
+}
+
+export async function updatePasswordHandler(request, reply) {
+    try {
+        
+        const userId = request.user?.id;
+        const user = await findUserById(this.db, userId);
+        if (!user)
+            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+
+        if (!user.password)
+            return reply.code(400).send(createResponse(400, 'USER_LINKED'));
+
+        const { password, confirmPassword } = request.body;
+
+        if (password !== confirmPassword)
+            return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
+        if (!validatePassword(password))
+            return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
+
+        const hashedPassword = await hash(password, 10);
+        await updateUser(this.db, user.id, hashedPassword);
+
+        const twoFa = await findTwoFaByUid(this.db, user.id);
+        if (twoFa && twoFa.enabled)
+        {
+            const tempToken = this.jwt.signTT({ id: user.id });
+            if (twoFa.type === 'email')
+            {
+                const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+                await storeOtpCode(this.db, otpCode, user.id);
+                const mailOptions = {
+                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
+                    to: `${user.email}`,
+                    subject: "Hello from M3ayz00",
+                    text: `OTP CODE : <${otpCode}>`,
+                }
+                await this.sendMail(mailOptions);
+            }
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken, twoFaType: twoFa.type  }));
+        }
+        const accessToken = this.jwt.signAT({ id: user.id });
+        const refreshToken = this.jwt.signRT({ id: user.id });
+        
+        await addToken(this.db, refreshToken, user.id);
+
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+    } catch (error) {
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+    }
+}
 
 export async function loginHandler(request, reply) {
     try {
@@ -32,19 +143,19 @@ export async function loginHandler(request, reply) {
         if (!matched)
             return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
         
-        const twoFa = await findTwoFaByUID(this.db, user.id);
+        const twoFa = await findTwoFaByUid(this.db, user.id);
         if (twoFa && twoFa.enabled)
         {
             const tempToken = this.jwt.signTT({ id: user.id });
             if (twoFa.type === 'email')
             {
-                const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeTotpCode(this.db, totpCode, Date.now() + 60 * 60 * 1000, user.id);
+                const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+                await storeOtpCode(this.db, otpCode, user.id);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
                     subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${totpCode}>`,
+                    text: `OTP CODE : <${otpCode}>`,
                 }
                 await this.sendMail(mailOptions);
             }
@@ -65,10 +176,10 @@ export async function loginHandler(request, reply) {
 export async function registerHandler(request, reply) {
     try {
         const { email, username, password, confirmPassword} = request.body;
-        if (!validatePassword(password))
-            return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
         if (password !== confirmPassword)
             return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
+        if (!validatePassword(password))
+            return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
         const userExist = await findUser(this.db, username, email);
         if (userExist)
             return reply.code(400).send(createResponse(400, 'USER_EXISTS'));

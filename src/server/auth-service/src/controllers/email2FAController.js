@@ -1,5 +1,5 @@
 import { addToken } from '../models/tokenDAO.js';
-import { findTwoFaByUidAndType, storeTotpCode, updateTotpCode, updateUser2FA } from '../models/twoFaDAO.js';
+import { findTwoFaByUidAndType, storeOtpCode, updateOtpCode, updateUser2FA } from '../models/twoFaDAO.js';
 import { findUserById } from '../models/userDAO.js';
 import { createResponse } from '../utils/utils.js';
 
@@ -10,22 +10,22 @@ export async function setup2FAEmail(request, reply) {
         if (!user)
             return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+        const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'email');
         if (!twoFa)
-            await storeTotpCode(this.db, totpCode, userId);
+            await storeOtpCode(this.db, otpCode, userId);
         else
         {
             if (twoFa.enabled && twoFa.type === 'email')
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
-            await updateTotpCode(this.db, totpCode, userId);
+            await updateOtpCode(this.db, otpCode, userId);
         }
 
         const mailOptions = {
             from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
             to: `${user.email}`,
             subject: "Hello from M3ayz00",
-            text: `OTP CODE : <${totpCode}>`,
+            text: `OTP CODE : <${otpCode}>`,
         }
         await this.sendMail(mailOptions);
 
@@ -50,12 +50,12 @@ export async function verify2FAEmailSetup(request, reply) {
         else if (twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
 
-        const { totpCode } = request.body;
-        if (!totpCode)
+        const { otpCode } = request.body;
+        if (!otpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
 
-        console.log(`totpCode : ${twoFa.totp} | totp_exp : ${twoFa.totp_exp}`);
-        if (twoFa.totp !== totpCode || twoFa.totp_exp < Date.now())
+        console.log(`otpCode : ${twoFa.otp} | otp_exp : ${twoFa.otp_exp}`);
+        if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
 
         await updateUser2FA(this.db, userId);
@@ -81,11 +81,11 @@ export async function verify2FALogin(request, reply) {
         else if (!twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'TWOFA_NOT_ENABLED'));
         
-        const { totpCode } = request.body;
-        if (!totpCode)
+        const { otpCode } = request.body;
+        if (!otpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
-        if (twoFa.totp !== totpCode || twoFa.totp_exp < Date.now())
+        if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
         const accessToken = this.jwt.signAT({ id: userId });

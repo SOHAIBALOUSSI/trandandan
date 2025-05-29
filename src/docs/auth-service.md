@@ -23,11 +23,11 @@ The `auth-service` is responsible for handling user authentication, registration
 | Method | Path                  | Description                                    | Authentication Required  | Body Required  |
 | :----: | --------------------- | ---------------------------------------------- | :----------------------: | :--------------: 
 | POST   | `/app/setup`          | Set up new 2FA for authenticator app           | Yes                      | (none)         |
-| POST   | `/app/verify-setup`   | Verify 2FA TOPT code for app setup             | Yes                      | { totpCode }   |
-| POST   | `/app/verify-login`   | Verify TOPT code for login with 2fa using app  | Yes                      | { totpCode }   |
+| POST   | `/app/verify-setup`   | Verify 2FA TOPT code for app setup             | Yes                      | { otpCode }   |
+| POST   | `/app/verify-login`   | Verify TOPT code for login with 2fa using app  | Yes                      | { otpCode }   |
 | POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      | (none)         |
-| POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      | { totpCode }   |
-| POST   | `/verify-login`       | Verify OPT code for login with 2fa using email | Yes                      | { totpCode }   |
+| POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      | { otpCode }   |
+| POST   | `/verify-login`       | Verify OPT code for login with 2fa using email | Yes                      | { otpCode }   |
 
 ---
 
@@ -45,8 +45,8 @@ The `auth-service` is responsible for handling user authentication, registration
 - **Token Schema**:
   - `token`: string, required
 
-- **totpCode Schema**:
-  - `totpCode`: string, required
+- **otpCode Schema**:
+  - `otpCode`: string, required
 
 ---
 
