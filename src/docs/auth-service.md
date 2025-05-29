@@ -10,26 +10,26 @@ The `auth-service` is responsible for handling user authentication, registration
 
 
 | Method | Path               | Description                                                            | Authentication Required | Body Required                                  |
-| :----: | -----------        | ---------------------------------------------------------------------- | :----------------------: | :-------------------------------------------: |
+| :----: | ------------------ | ---------------------------------------------------------------------- | :----------------------: | :-------------------------------------------: |
 | POST   | `/login`           | Log in a user                                                          | No                       | { username/email, password }                  |
 | POST   | `/register`        | Register a new user                                                    | No                       | { username, email, password, confirmPassword }|
 | GET    | `/google`          | Log in a user using Google sign in                                     | No                       | (none)                                        |
 | GET    | `/42`              | Log in a user using 42 sign in                                         | No                       | (none)                                        |
-| POST   | `/logout`          | Log out a logged-in user                                               | Yes                      | { refreshToken }                              |
+| POST   | `/logout`          | Log out a logged-in user                                               | Yes                      | { token }                              |
 | GET    | `/me`              | Get current user profile                                               | Yes                      | (none)                                        |
-| GET    | `/refresh`         | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes | { refreshToken }                                |
-| GET    | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |
-| GET    | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                |
-| GET    | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                                |
+| POST   | `/refresh`         | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes | { token }                                |
+| POST   | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |
+| POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                |
+| POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                                |
 
 **Prefix: /2fa**
 
-| Method | Path                  | Description                                    | Authentication Required  | Body Required  |
-| :----: | --------------------- | ---------------------------------------------- | :----------------------: | :--------------: 
-| POST   | `/app/setup`          | Set up new 2FA for authenticator app           | Yes                      | (none)         |
+| Method | Path                  | Description                                    | Authentication Required  | Body Required |
+| :----: | --------------------- | ---------------------------------------------- | :----------------------: | :------------:| 
+| POST   | `/app/setup`          | Set up new 2FA for authenticator app           | Yes                      | (none)        |
 | POST   | `/app/verify-setup`   | Verify 2FA TOPT code for app setup             | Yes                      | { otpCode }   |
 | POST   | `/app/verify-login`   | Verify TOPT code for login with 2fa using app  | Yes                      | { otpCode }   |
-| POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      | (none)         |
+| POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      | (none)        |
 | POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      | { otpCode }   |
 | POST   | `/verify-login`       | Verify OPT code for login with 2fa using email | Yes                      | { otpCode }   |
 
