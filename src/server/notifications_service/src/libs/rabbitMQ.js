@@ -1,4 +1,4 @@
-const amqp = require('amqplib');
+import  amqp from 'amqplib';
 
 class RabbitMQManager {
   constructor() {
