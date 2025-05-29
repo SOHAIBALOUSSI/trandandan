@@ -30,7 +30,6 @@ export async function setup2FAApp(request, reply) {
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
             await updateTempSecret(this.db, secret.base32, userId);
         }
-        await storeTempSecret(this.db, secret.base32, userId);  
         
         const otpauthUrl = secret.otpauth_url;
         const qrCodeUrl = await QRCode.toDataURL(otpauthUrl);
@@ -60,7 +59,7 @@ export async function verify2FAAppSetup(request, reply) {
         if (!otpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
-        const isValid = speakeasy.otp.verify({
+        const isValid = speakeasy.totp.verify({
             secret: twoFa.temp_secret,
             encoding: 'base32',
             token: otpCode,
@@ -96,7 +95,7 @@ export async function verify2FAAppLogin(request, reply) {
         if (!otpCode)
             return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
         
-        const isValid = speakeasy.otp.verify({
+        const isValid = speakeasy.totp.verify({
             secret: twoFa.secret,
             encoding: 'base32',
             token: otpCode,
