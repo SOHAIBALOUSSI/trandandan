@@ -2,7 +2,7 @@
 export function Tournaments() {
   // Create container element
   const container = document.createElement('div');
-  container.className = 'w-full h-full overflow-hidden bg-game-bg';
+  container.className = 'w-full h-[100vh] overflow-hidden bg-game-bg font-orbitron relative';
 
   // Add HTML structure
   container.innerHTML = `
@@ -18,10 +18,28 @@ export function Tournaments() {
     </div>
     <!-- Decorative elements -->
     <div class="absolute w-10 h-10 bg-red-500 opacity-10 animate-square top-0 left-0"></div>
-    <!-- Add all other decorative divs -->
-    <!-- Game tab -->
+    <div class="absolute w-10 h-10 bg-blue-500 opacity-10 animate-square top-[45px] left-[500px]"></div>
+    <div class="absolute w-10 h-10 bg-green-500 opacity-10 animate-square top-[800px] left-[322px]"></div>
+    <div class="absolute w-10 h-10 bg-yellow-500 opacity-10 animate-square top-[550px] left-[800px]"></div>
+    <div class="absolute w-10 h-10 bg-purple-500 opacity-10 animate-square top-[90px] left-[1800px]"></div>
+    <div class="absolute w-10 h-10 bg-pink-500 opacity-10 animate-square top-[250px] left-[1656px]"></div>
+    <div class="absolute w-10 h-10 bg-teal-500 opacity-10 animate-square top-[750px] left-[1100px]"></div>
+    <div class="absolute w-10 h-10 bg-orange-500 opacity-10 animate-square top-[580px] left-[100px]"></div>
+    <div class="absolute w-10 h-10 bg-indigo-500 opacity-10 animate-square top-[475px] left-[1580px]"></div>
+    <div class="absolute w-10 h-10 bg-lime-500 opacity-10 animate-square top-[250px] left-[40px]"></div>
+    <div class="absolute w-10 h-10 bg-cyan-500 opacity-10 animate-square top-[390px] left-[1800px]"></div>
+    <div class="absolute w-10 h-10 bg-amber-500 opacity-10 animate-square top-[760px] left-[770px]"></div>
+    <div class="absolute w-10 h-10 bg-rose-500 opacity-10 animate-square top-[200px] left-[250px]"></div>
+    <div class="absolute w-10 h-10 bg-fuchsia-500 opacity-10 animate-square top-[890px] left-[1450px]"></div>
+    <div class="absolute w-10 h-10 bg-emerald-500 opacity-10 animate-square top-[250px] left-[500px]"></div>
+    <div class="absolute w-10 h-10 bg-violet-500 opacity-10 animate-square top-[15px] left-[1400px]"></div>
+    <div class="absolute w-10 h-10 bg-sky-500 opacity-10 animate-square top-[240px] left-[1500px]"></div>
+    <div class="absolute w-10 h-10 bg-amber-600 opacity-10 animate-square top-[100px] left-[320px]"></div>
+    <div class="absolute w-10 h-10 bg-pink-600 opacity-10 animate-square top-[750px] left-[1700px]"></div>
+    <div class="absolute w-10 h-10 bg-teal-600 opacity-10 animate-square top-[50px] left-[500px]"></div>
+    <div class="absolute w-10 h-10 bg-indigo-600 opacity-10 animate-square top-[190px] left-[450px]"></div>
     <div id="gameTab" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
-      <div class="flex flex-col items-center justify-center h-full">
+      <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 id="result" class="text-2xl mt-2 text-amber-50"></h1>
         <h1 id="currentMatch" class="text-2xl mt-2 text-amber-50"></h1>
         <h1 id="prevMatch" class="text-ping-yellow"></h1>
@@ -32,14 +50,14 @@ export function Tournaments() {
     </div>
     <!-- Result tab -->
     <div id="resultTab" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
-      <div class="flex flex-col items-center justify-center h-full">
+      <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 id="resultStat" class="text-2xl mt-2 text-amber-50"></h1>
         <button id="restartTournoi" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
       </div>
     </div>
     <!-- Tournament tab -->
     <div id="tourTab" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] z-20">
-      <div id="selectTab" class="flex flex-col items-center justify-center h-full">
+      <div id="selectTab" class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 class="text-2xl text-ping-yellow">SELECT THE NUMBER OF PLAYERS</h1>
         <div id="tournPlayerNumber" class="flex items-center justify-center gap-20">
           <button id="eight_players" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">8</button>
@@ -47,7 +65,7 @@ export function Tournaments() {
         </div>
       </div>
       <div id="inputPlayers" class="h-full hidden">
-        <div class="flex flex-col items-center justify-center mt-20">
+        <div class="flex flex-col items-center justify-center mt-20 px-20 py-4">
           <h1 class="text-2xl text-ping-yellow">ENTER THE PLAYER'S USERNAME</h1>
           <div class="flex items-center justify-center gap-20">
             <div>
