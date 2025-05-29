@@ -125,25 +125,3 @@ export async function fortyTwoLoginHandler(request, reply) {
     }
 }
 
-/*
-AJWT_SECRET_KEY=RDxk3ltH61GrgwskNBAzBExGPqAkzXpaIwGxpae5ErHet72P2l43y07u8fuR76WJw3jL
-RJWT_SECRET_KEY=6IG3rkzXjft6ER5gtqfjN5sQx6rHet72P2lQDx1PgtBAzBExGPqk8lOdNgKrXdVc40Bm
-TJWT_SECRET_KEY=OTM0NXd1aTg5MDU5NG9saiEjJCVUI1NFRzM0dHJzZmdkcTQ1MjNGIyR1ZWRqdHlyNjg5
-
-APP_NAME=trandenden
-APP_EMAIL=trandenden@gmail.com
-
-
-GMAIL_USER=trandenden2025@gmail.com
-GMAIL_APP_PASS=nmiz ndgl qocj thlv
-
-NODE_ENV=production
-
-GOOGLE_ID=584502676657-d07f7aj9r6r5p8i8nueunue0cq87m7sf.apps.googleusercontent.com
-GOOGLE_SECRET=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
-GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
-
-FORTY_TWO_ID=u-s4t2ud-ef3ebb549d1c2b0e5714a910236bbfea8c6fc947269a1db5b2bcadfa6f62a61a
-FORTY_TWO_SECRET=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
-FORTY_TWO_REDIRECT_URI=http://localhost:3000/auth/42/callback
- */
