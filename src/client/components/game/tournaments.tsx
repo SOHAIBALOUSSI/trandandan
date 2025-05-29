@@ -197,9 +197,8 @@ export function Tournaments() {
     };
   }
   // Start initialization
-  setTimeout(init, 0);
+  init();
 
-  console.log("[client] Tournaments component initialized");
   return container;
 }
 
