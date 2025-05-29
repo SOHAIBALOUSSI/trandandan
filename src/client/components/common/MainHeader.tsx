@@ -7,17 +7,17 @@ export function MainHeader(props: {
   subtitle?: string;
   subtitleParagraph?: string;
 }) {
-  const { title, titleSpan, subtitle, subtitleParagraph } = props;
-  const titleStyles = props.isDark ? styles.titleDark : styles.titleLight;
-  const subtitleStyles = props.isDark ? styles.subtitleDark : "hidden";
+  const { isDark, title, titleSpan, subtitle, subtitleParagraph } = props;
+  const titleStyles = isDark ? styles.titleDark : styles.titleLight;
+  const subtitleStyles = isDark ? styles.subtitleDark : "hidden";
 
   const header = (
-    <div className="flex flex-col text-center">
+    <div className="flex flex-col text-center pt-2 md:pt-0">
       <h1 className={titleStyles}>
         {title}{" "}
         <span
           className={
-            props.isDark ? styles.titleSpanDark : styles.titleSpanLight
+            isDark ? styles.titleSpanDark : styles.titleSpanLight
           }
         >
           {titleSpan}

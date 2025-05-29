@@ -1,11 +1,9 @@
-export async function getUserProfile() {
-  const token = localStorage.getItem("accessToken");
-  if (!token) return null;
+import { authFetch } from "@/utils/auth-fetch";
 
+// Function to get user profile from the server
+export async function getUserProfile() {
   try {
-    const res = await fetch("/auth/me", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await authFetch("/auth/me");
 
     if (!res.ok) throw new Error("Failed to fetch user");
     const json = await res.json();
@@ -13,12 +11,7 @@ export async function getUserProfile() {
     const id = json.data?.id;
     if (!id) throw new Error("User ID not found");
 
-    console.log("id: " + id);
-
-    const profileRes = await fetch(`/profile/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
+    const profileRes = await authFetch(`/profile/${id}`);
     if (!profileRes.ok) throw new Error("Failed to fetch profile");
 
     return await profileRes.json();

@@ -4,6 +4,7 @@ export const theme = {
     fontFamily: {
       playfair: ["'Playfair Display'", "serif"],
       lora: ["Lora", "serif"],
+	  
     },
     colors: {
       "pong-bg": "#F3F0E8",

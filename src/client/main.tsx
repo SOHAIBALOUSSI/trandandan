@@ -4,10 +4,26 @@
 import "./styles/all.min.css";
 import "./styles/normalize.css";
 import "./styles/main.css";
-import { setupSPA } from "./router/router";
 import { router } from "./router/router";
 
-// Initialize the SPA and set up event listeners for routing
+// Setup Single Page Application link interception
+export function setupSPA(): void {
+  document.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
+    const link = target.closest("[data-link]") as HTMLAnchorElement | null;
+
+    if (link) {
+      e.preventDefault();
+      const href = link.getAttribute("href");
+      if (href && href !== window.location.pathname) {
+        history.pushState(null, "", href);
+        await router(); // Re-render the application with the new route
+      }
+    }
+  });
+}
+
+// Main SPA router logic
 setupSPA();
 window.addEventListener("load", router);
 window.addEventListener("popstate", router);

@@ -28,12 +28,12 @@ export function handleSignIN() {
 
     const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginValue);
     const payload = isEmail
-      ? { email: loginValue, password }
-      : { username: loginValue, password };
+      ? { email: loginValue.trim(), password }
+      : { username: loginValue.trim(), password };
 
-    console.log("Login:", loginValue);
-    console.log("Password:", password);
+    console.log(payload);
 
+    // Reset feedback and button state
     feedback.textContent = "";
     feedback.className = styles.formMessage;
     submitBtn.disabled = true;
@@ -41,9 +41,11 @@ export function handleSignIN() {
     spinner.classList.remove("hidden");
     btnLabel.textContent = "Entering...";
 
+    // Start the timer for spinner delay
     const startTime = Date.now();
 
     try {
+      // Send the login request
       const response = await fetch("/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,9 +60,9 @@ export function handleSignIN() {
       if (response.ok) {
         setTimeout(() => {
           feedback.textContent = "Welcome back, champ! Entering the lounge...";
-          feedback.className = `${styles.formMessage} text-pong-success block`;
+          feedback.className = `${styles.formMessage} text-pong-success`;
 
-          localStorage.setItem("auth", "true");
+          // Store tokens in localStorage
           result.data.accessToken &&
             localStorage.setItem("accessToken", result.data.accessToken);
           result.data.refreshToken &&
@@ -72,31 +74,26 @@ export function handleSignIN() {
           }, 1500);
         }, waitTime);
       } else if (response.status === 206) {
-        /*
-			still some work to do here 
+        /* 
+			Handle partial success (2FA required)
+		 	/app/verify-login
 		*/
-        setTimeout(() => {
-          result.tempToken &&
-            localStorage.setItem("tempToken", result.tempToken);
-          feedback.textContent =
-            "Security check! Time to prove it’s really you.";
-          feedback.className = `${styles.formMessage} text-pong-warning block`;
-          history.pushState(null, "", "/2fa/verify-login");
-          window.dispatchEvent(new PopStateEvent("popstate"));
-        }, waitTime);
       } else {
+        // Handle error responses
         setTimeout(() => {
           const msg =
             signinErrorMessages[result?.code] ||
             "Invalid paddle pass. Check your details and swing again.";
           feedback.textContent = msg;
-          feedback.className = `${styles.formMessage} text-pong-error block`;
+          feedback.className = `${styles.formMessage} text-pong-error`;
         }, waitTime);
       }
     } catch (err) {
+      // Handle unexpected errors
       feedback.textContent = signinErrorMessages.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error block`;
     } finally {
+      // Reset button state after processing
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");

@@ -38,31 +38,14 @@ function isAuthenticated(): boolean {
   return !!localStorage.getItem("accessToken");
 }
 
-// Setup Single Page Application link interception
-export function setupSPA(): void {
-  document.addEventListener("click", async (e) => {
-    const target = e.target as HTMLElement;
-    const link = target.closest("[data-link]") as HTMLAnchorElement | null;
-
-    if (link) {
-      e.preventDefault();
-      const href = link.getAttribute("href");
-      if (href && href !== window.location.pathname) {
-        history.pushState(null, "", href);
-        await router();
-      }
-    }
-  });
-}
-
-// Main SPA router logic
+// Router function to handle navigation and rendering
 export async function router(): Promise<void> {
   const app = document.getElementById("app");
   if (!app) return;
 
   const path = location.pathname.slice(1) || "welcome";
   const isPublic = publicRoutes.includes(path);
-  const render = routes[path] || routes["welcome"];
+  const render = routes[path];
 
   if (!isPublic && !isAuthenticated()) {
     history.replaceState(null, "", "/signin");
@@ -100,9 +83,7 @@ export async function router(): Promise<void> {
   document
     .querySelectorAll(".nav-item")
     .forEach((li) => li.classList.remove("active"));
-
   const activeLink = document.querySelector(`.nav-item-link[href="/${path}"]`);
-
   if (activeLink?.parentElement) {
     activeLink.parentElement.classList.add("active");
   }

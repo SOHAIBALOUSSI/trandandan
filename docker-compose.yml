@@ -23,17 +23,17 @@ services:
     ports:
       - "3001:3001"
 
-  friends:
-    container_name: friends-service
-    build: src/server/friends-service
-    image: friends-service
-    restart: always
-    env_file:
-      - .env
-    networks:
-      - transcendence
-    ports:
-      - "3002:3002"
+  # friends:
+  #   container_name: friends-service
+  #   build: src/server/friends-service
+  #   image: friends-service
+  #   restart: always
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - transcendence
+  #   ports:
+  #     - "3002:3002"
 
   frontend:
     container_name: frontend
@@ -50,7 +50,7 @@ services:
     depends_on:
       - auth
       - profile
-      - friends
+      # - friends
     networks:
       - transcendence
     restart: always

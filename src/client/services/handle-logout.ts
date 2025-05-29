@@ -1,14 +1,13 @@
+function finishLogout() {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  history.replaceState(null, "", "/welcome");
+  window.dispatchEvent(new PopStateEvent("popstate"));
+}
+
 export function handleLogout(): void {
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
-
-  function finishLogout() {
-    localStorage.removeItem("auth");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    history.replaceState(null, "", "/welcome");
-    window.dispatchEvent(new PopStateEvent("popstate"));
-  }
 
   if (accessToken && refreshToken) {
     fetch("/auth/logout", {

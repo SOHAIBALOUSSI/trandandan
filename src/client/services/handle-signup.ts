@@ -26,6 +26,7 @@ export function handleSignUp() {
   signupForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
+    // Extract form values
     const username = (
       signupForm.querySelector("#username") as HTMLInputElement
     ).value.trim();
@@ -38,11 +39,14 @@ export function handleSignUp() {
       signupForm.querySelector("#confirm-password") as HTMLInputElement
     ).value;
 
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Confirm Password:", confirmPassword);
+    console.log(`
+	Username: ${username}
+	Email: ${email} 
+	Password: ${password}
+	Confirm: ${confirmPassword}
+	`);
 
+    // Reset feedback and button state
     feedback.textContent = "";
     feedback.className = styles.formMessage;
     submitBtn.disabled = true;
@@ -50,6 +54,7 @@ export function handleSignUp() {
     spinner.classList.remove("hidden");
     btnLabel.textContent = "Registering...";
 
+    // Start the timer for spinner delay
     const startTime = Date.now();
 
     try {
@@ -68,7 +73,7 @@ export function handleSignUp() {
         setTimeout(() => {
           feedback.textContent =
             "Welcome, champion! Your racket has been registered.";
-          feedback.className = `${styles.formMessage} text-pong-success block`;
+          feedback.className = `${styles.formMessage} text-pong-success`;
 
           setTimeout(() => {
             history.pushState(null, "", "/signin");
@@ -76,18 +81,21 @@ export function handleSignUp() {
           }, 1500);
         }, waitTime);
       } else {
+        // Handle specific error codes
         setTimeout(() => {
           const msg =
             signupErrorMessages[result?.code] ||
             "Couldn’t register your racket. Try again, champ.";
           feedback.textContent = msg;
-          feedback.className = `${styles.formMessage} text-pong-error block`;
+          feedback.className = `${styles.formMessage} text-pong-error`;
         }, waitTime);
       }
     } catch (err) {
+      // Handle unexpected errors
       feedback.textContent = signupErrorMessages.INTERNAL_SERVER_ERROR;
-      feedback.className = `${styles.formMessage} text-pong-error block`;
+      feedback.className = `${styles.formMessage} text-pong-error`;
     } finally {
+      // Reset button state after processing
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");

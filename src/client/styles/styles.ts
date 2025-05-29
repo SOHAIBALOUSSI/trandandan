@@ -67,6 +67,8 @@ export const styles = {
 
   //  Start Input Field styles  //
   inputField: `
+  	capitalize
+  	input-field
 	normal-case
 	w-full px-4 py-3
 	text-sm lg:text-base font-semibold
@@ -96,11 +98,13 @@ export const styles = {
 
   //  Start Main Header styles  //
   titleDark: `
+  	capitalize
     mb-8
 	text-pong-primary 
 	text-2xl md:text-3xl lg:text-4xl xl:text-5xl
   `,
   titleLight: `
+  	capitalize
   	mb-8 
 	text-pong-dark-primary
 	text-2xl md:text-3xl lg:text-4xl xl:text-5xl
@@ -152,16 +156,18 @@ export const styles = {
     fixed top-0 left-0 right-0 z-40 
 	h-20 bg-black/50 backdrop-blur-md border-b border-pong-dark-accent/30 
 	px-4 md:pr-8 md:pl-[140px] 
-	flex items-center justify-between 
+	flex items-center justify-between gap-6 
 	shadow-md
   `,
   searchBarStyle: `
 	bg-pong-dark-primary/40 text-white 
-	px-4 py-2 rounded-lg outline-none 
+	px-4 py-2 rounded-lg outline-none  
 	focus:ring-2 focus:ring-pong-dark-accent 
-	w-1/2 max-w-md 
+	w-full max-w-md
+	placeholder:text-xs placeholder:lg:text-base
+	text-sm lg:text-base
 	normal-case 
-	ml-16 md:ml-0
+	ml-14 md:ml-0
   `,
   //   End Top Bar styles  //
 };
