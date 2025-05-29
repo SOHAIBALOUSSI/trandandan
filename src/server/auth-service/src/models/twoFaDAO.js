@@ -28,20 +28,20 @@ export async function updateUserSecret(db, id) {
     return result.changes;
 }
 
-export async function storeTotpCode(db, totpCode, id) {
-    const result = await db.run(`INSERT into twofa (type, totp, totp_exp, user_id) VALUES (?, ?, ?, ?)`,
-        ['email', totpCode, Date.now() + 60 * 60 * 1000, id]
+export async function storeOtpCode(db, otpCode, id) {
+    const result = await db.run(`INSERT into twofa (type, otp, otp_exp, user_id) VALUES (?, ?, ?, ?)`,
+        ['email', otpCode, Date.now() + 60 * 60 * 1000, id]
     );
     console.log("TwoFa: inserted TOTP code in row: ", result.lastID);
     return result.lastID;
 }
 
-export async function updateTotpCode(db, totpCode, id) {
+export async function updateOtpCode(db, otpCode, id) {
     const result = await db.run(`UPDATE twofa SET 
-        totp = ?, 
-        totp_exp = ? 
+        otp = ?, 
+        otp_exp = ? 
         WHERE user_id = ?`,
-        [totpCode, Date.now() + 60 * 60 * 1000, id]
+        [otpCode, Date.now() + 60 * 60 * 1000, id]
     );
     console.log("TwoFa: updated TOTP code in row: ", result.changes);
     return result.changes;

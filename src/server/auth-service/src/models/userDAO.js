@@ -41,6 +41,12 @@ export async function addUser(db, username, email, password) {
     return result.lastID;
 }
 
+export async function updateUser(db, id, password) {
+    const result = await db.run('UPDATE user SET password = ? WHERE id = ?', [password, id]);
+    console.log("User updated with ID: ", result.changes);
+    return result.changes;
+}
+
 export async function deleteUser(db, id) {
     const result = await db.run('DELETE FROM user WHERE id = ?',
         [id]
