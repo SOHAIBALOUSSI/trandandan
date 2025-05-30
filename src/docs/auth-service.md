@@ -19,8 +19,8 @@ The `auth-service` is responsible for handling user authentication, registration
 | GET    | `/me`              | Get current user profile                                               | Yes                      | (none)                                        |
 | POST   | `/refresh`         | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes | { token }                                |
 | POST   | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |
-| POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                |
-| POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                                |
+| POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                   |
+| POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                 |
 
 **Prefix: /2fa**
 
