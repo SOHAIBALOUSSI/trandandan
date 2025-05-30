@@ -5,6 +5,7 @@ import "./styles/all.min.css";
 import "./styles/normalize.css";
 import "./styles/main.css";
 import { router } from "./router/router";
+import { Settings } from "./views/Settings";
 
 // Setup Single Page Application link interception
 export function setupSPA(): void {
@@ -23,7 +24,9 @@ export function setupSPA(): void {
   });
 }
 
-// Main SPA router logic
+// // Main SPA router logic
 setupSPA();
 window.addEventListener("load", router);
 window.addEventListener("popstate", router);
+
+// document.getElementById("app")?.appendChild(<Settings />);

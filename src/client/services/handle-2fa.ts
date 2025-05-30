@@ -1,9 +1,12 @@
 export async function setupApp2FA() {
+  const accessToken = localStorage.getItem("accessToken");
+
   try {
     const response = await fetch("/2fa/app/setup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -38,4 +41,24 @@ export async function setupEmail2FA() {
     console.error("Error enabling email 2FA:", error);
     throw error;
   }
+}
+
+export async function disableApp2FA() {
+  try {
+  } catch (error) {}
+}
+
+export async function disableEmail2FA() {
+  try {
+  } catch (error) {}
+}
+
+export async function setPrimaryApp2FA() {
+  try {
+  } catch (error) {}
+}
+
+export async function setPrimaryEmail2FA() {
+  try {
+  } catch (error) {}
 }
