@@ -19,7 +19,7 @@ const routes: Record<string, () => HTMLElement> = {
   signup: Signup,
   salon: Home,
   arena: Game,
-  honor: Dashboard,
+  chamber: Dashboard,
   lounge: Chat,
   members: Friends,
   profile: Profile,

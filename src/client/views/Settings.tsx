@@ -48,21 +48,21 @@ function UpdateInfoSection() {
           name="username"
           id="update-username"
           placeholder="new username"
-          className="text-white placeholder:text-gray-400"
+          className="text-white placeholder:text-gray-300"
         />
         <InputField
           type="email"
           name="email"
           id="update-email"
           placeholder="new email"
-          className="text-white placeholder:text-gray-400"
+          className="text-white placeholder:text-gray-300"
         />
         <InputField
           type="password"
           name="password"
           id="update-password"
           placeholder="new password"
-          className="text-white placeholder:text-gray-400"
+          className="text-white placeholder:text-gray-300"
         />
         <MyBtn label="update" className={`${styles.buttonPrimary} w-full`} />
       </form>

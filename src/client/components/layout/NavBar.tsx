@@ -3,7 +3,7 @@ export function NavBar() {
   const navItems = [
     { path: "/salon", icon: "fa-house", label: "salon" },
     { path: "/arena", icon: "fa-table-tennis-paddle-ball", label: "arena" },
-    { path: "/honor", icon: "fa-ranking-star", label: "honor" },
+    { path: "/chamber", icon: "fa-ranking-star", label: "chamber" },
     { path: "/lounge", icon: "fa-message", label: "lounge" },
     { path: "/members", icon: "fa-user-group", label: "members" },
     { path: "/mechanics", icon: "fa-gear", label: "mechanics" },
