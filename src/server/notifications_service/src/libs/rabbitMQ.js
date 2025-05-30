@@ -1,88 +1,131 @@
-import  amqp from 'amqplib';
+import amqp from 'amqplib'
+import { randomUUID } from 'crypto'
 
-class RabbitMQManager {
-  constructor() {
-    this.connection = null;
-    this.channel = null;
+class RabbitMQClient {
+  constructor(queue) {
+      this.queueName = queue;
+      this.channel = null;
+      this.connection = null;
   }
 
   async connect() {
     try {
-      this.connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
-      this.channel = await this.connection.createChannel();
-      
-      this.connection.on('error', (err) => {
-        console.error('RabbitMQ connection error:', err);
-      });
-
-      this.connection.on('close', () => {
-        console.error('RabbitMQ connection closed');
-        setTimeout(() => this.connect(), 5000);
-      });
-
-      console.log('Connected to RabbitMQ');
-      return this.channel;
+        this.connection = await amqp.connect('amqp://localhost');
+        this.channel = await this.connection.createChannel();
     } catch (error) {
-      console.error('Failed to connect to RabbitMQ:', error);
-      throw error;
+        console.log('Failed to connect to RabbitMQ: ', error);
     }
   }
 
-  async publishMessage(queue, message) {
+  async produceMessage(queue, message, correlationId = null) {
     try {
-      if (!this.channel) {
+
+      if (!this.channel)
         await this.connect();
+
+      await this.channel.assertQueue(queue, { durable: true });
+
+      const options = {
+        persistent: true
       }
 
-      const queueName = `${process.env.RABBITMQ_QUEUE_PREFIX || 'notifications'}.${queue}`;
-      await this.channel.assertQueue(queueName, { durable: true });
-      
-      return this.channel.sendToQueue(
-        queueName,
+      if (correlationId)
+        options.correlationId = correlationId;
+
+      this.channel.sendToQueue(queue,
         Buffer.from(JSON.stringify(message)),
-        { persistent: true }
+        options
       );
     } catch (error) {
-      console.error('Error publishing message:', error);
-      throw error;
+        console.log('Error producing messages.', error);
+        throw error;
     }
   }
-  
-  async consumeMessages(queue, callback) {
-    try {
-      if (!this.channel) {
-        await this.connect();
-      }
 
-      const queueName = `${process.env.RABBITMQ_QUEUE_PREFIX || 'notifications'}_${queue}`;
-      await this.channel.assertQueue(queueName, { durable: true });
+  async rpcMessage(queue, message, timeout = 5000) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (!this.channel)
+          await this.connect();
+        const tempQueue = await this.channel.assertQueue('', { exclusive: true });
+        
+        const correlationId = randomUUID();
+        
+        const timer = setTimeout(() => {
+          reject(new Error('RPC request timed out'));
+        }, timeout);
 
-      this.channel.consume(queueName, (msg) => {
-        if (msg !== null) {
-          const content = JSON.parse(msg.content.toString());
-          callback(content);
-          this.channel.ack(msg);
+        this.channel.consume(tempQueue.queue, (msg) => {
+          if (msg.properties.correlationId == correlationId) {
+            clearTimeout(timer);
+            const content = JSON.parse(msg.content.toString());
+            resolve(content);
+          }
+        }, { noAck: true })
+        
+        this.channel.sendToQueue(queue,
+          Buffer.from(JSON.stringify(message)),
+          {
+            correlationId,
+            replyTo: tempQueue.queue,
+            persistent: true
+          }
+        );
+        } catch (error) {
+          reject(error)
         }
       });
+  }
+
+  async consumeMessage(handleMessage) {
+    try {
+      if (!this.channel)
+        await this.connect();
+
+      await this.channel.assertQueue(this.queueName, { durable: true });
+      this.channel.prefetch(1);
+      this.channel.consume(this.queueName, async (msg) => {
+        if (msg !== null)
+        {
+          const payload = JSON.parse(msg.content.toString())
+          const replyTo = msg.properties.replyTo
+          const correlationId = msg.properties.correlationId
+
+          try {
+            const result = await handleMessage(payload)
+            if (replyTo)
+            {
+              this.channel.sendToQueue(replyTo,
+                Buffer.from(JSON.stringify(result)),
+                { correlationId: correlationId }
+              );
+              this.channel.ack(msg);
+            }
+          } catch (error) {
+            if (replyTo)
+            {
+              this.channel.sendToQueue(replyTo,
+                Buffer.from(JSON.stringify({ error: error.message })),
+                { correlationId: correlationId }
+              );
+              this.channel.ack(msg);
+            }
+          }
+        }
+      })
+
     } catch (error) {
-      console.error('Error consuming messages:', error);
-      throw error;
+        console.log('Error consuming messages.');
+        throw error;
     }
   }
 
   async close() {
-    try {
-      if (this.channel) {
-        await this.channel.close();
-      }
-      if (this.connection) {
-        await this.connection.close();
-      }
-    } catch (error) {
-      console.error('Error closing RabbitMQ connection:', error);
-      throw error;
-    }
+    if (this.channel)
+      await this.channel.close();
+    if (this.connection)
+      await this.connection.close();
   }
 }
 
-module.exports = new RabbitMQManager(); 
+export default RabbitMQClient;
