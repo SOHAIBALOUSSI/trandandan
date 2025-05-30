@@ -170,4 +170,23 @@ export const styles = {
 	ml-14 md:ml-0
   `,
   //   End Top Bar styles  //
+
+  //   Start Button Primary styles  //
+  buttonPrimary: `
+	flex items-center justify-center 
+	px-6 py-4 
+	text-sm lg:text-base 
+	font-semibold text-white 
+	bg-pong-dark-accent hover:bg-pong-dark-secondary 
+	rounded-md capitalize 
+	cursor-pointer 
+	transform active:scale-[0.97] 
+	transition-all duration-300 hover:shadow-lg 
+	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2 
+  `,
+
+  //   End Button Primary styles  //
+
+  //   Start Button Secondary styles  //
+  //   End Button Secondary styles  //
 };
