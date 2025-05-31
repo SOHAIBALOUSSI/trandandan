@@ -17,6 +17,7 @@ import {
     validatePassword 
 } from '../utils/utils.js'
 import { findTwoFaByUid, storeOtpCode, updateOtpCode } from '../models/twoFaDAO.js';
+import RabbitMQClient from '../libs/RabbitMQClient.js';
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -208,6 +209,9 @@ export async function registerHandler(request, reply) {
             await revokeToken(this.db, refreshToken);
             return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
         }
+        
+        const rabbit = new RabbitMQClient('notifications');
+        rabbit.produceMessage("HELLOO FROM AUTH");
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
         console.log(error);

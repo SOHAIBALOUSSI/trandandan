@@ -35,6 +35,31 @@ services:
     ports:
       - "3002:3002"
 
+  notifications:
+    container_name: notifications-service
+    build: ./notifications-service
+    image: notifications-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - back-end
+    ports:
+      - "3003:3003"
+    depends_on: 
+      - rabbitmq
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - back-end
+    ports:
+      - "15672:15672"
+      - "5672:5672"
       
 networks:
   back-end:
