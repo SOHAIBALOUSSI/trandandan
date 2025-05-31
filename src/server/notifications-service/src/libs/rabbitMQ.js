@@ -89,7 +89,7 @@ class RabbitMQClient {
         {
           const payload = JSON.parse(msg.content.toString())
           try {
-            handleMessage(payload)
+            await handleMessage(payload)
             this.channel.ack(msg);
           } catch (error) {
             console.log('Error handling message: ', error);

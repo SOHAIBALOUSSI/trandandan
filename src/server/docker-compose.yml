@@ -10,7 +10,10 @@ services:
       - back-end
     ports:
       - "3000:3000"
-  
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
   profile:
     container_name: profile-service
     build: ./profile-service
@@ -22,6 +25,9 @@ services:
       - back-end
     ports:
       - "3001:3001"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   friends:
     container_name: friends-service
@@ -34,6 +40,9 @@ services:
       - back-end
     ports:
       - "3002:3002"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   notifications:
     container_name: notifications-service
@@ -46,8 +55,9 @@ services:
       - back-end
     ports:
       - "3003:3003"
-    depends_on: 
-      - rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   rabbitmq:
     container_name: rabbitmq
@@ -60,7 +70,12 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
-      
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 networks:
   back-end:
     name: backend

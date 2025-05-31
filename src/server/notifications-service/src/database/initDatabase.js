@@ -1,12 +1,4 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-
-export const db = await open({
-    filename: './notifications.db.sqlite',
-    driver: sqlite3.Database
-});
-
-export async function createNotificationsTable(){
+export async function createNotificationsTable(db){
     try {
         await db.exec(
             `CREATE TABLE IF NOT EXISTS notifications (
@@ -16,7 +8,7 @@ export async function createNotificationsTable(){
             message TEXT NOT NULL,
             read INTEGER DEFAULT FALSE,
             delivered INTEGER DEFAULT FALSE,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`
         );
         console.log("Notifications table created.");

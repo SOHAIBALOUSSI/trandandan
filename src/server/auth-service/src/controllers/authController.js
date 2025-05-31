@@ -210,7 +210,7 @@ export async function registerHandler(request, reply) {
             return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
         }
         
-        const rabbit = new RabbitMQClient('notifications');
+        const rabbit = new RabbitMQClient(process.env.RABBITMQ_QUEUE_NAME);
         rabbit.produceMessage("HELLOO FROM AUTH");
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
