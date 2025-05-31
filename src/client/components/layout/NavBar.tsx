@@ -10,6 +10,20 @@ export function NavBar() {
     { path: "/exit", icon: "fa-arrow-right-from-bracket", label: "exit" },
   ];
 
+  // === HOVER ZONE ===
+  let hoverZone = document.getElementById(
+    "pong-hover-zone"
+  ) as HTMLDivElement | null;
+  if (!hoverZone) {
+    hoverZone = document.createElement("div");
+    hoverZone.id = "pong-hover-zone";
+    hoverZone.className = `
+	  hidden md:block fixed top-0 left-0 h-full w-4 z-40
+	`;
+    document.body.appendChild(hoverZone);
+  }
+
+  // === CURRENT PATH ===
   const currentPath = window.location.pathname;
 
   // === TOGGLE BUTTON ===
@@ -20,7 +34,7 @@ export function NavBar() {
     toggleBtn = document.createElement("button");
     toggleBtn.id = "pong-toggle-btn";
     toggleBtn.className = `
-      fixed top-4 left-4 z-50 text-3xl text-pong-dark-accent bg-transparent rounded-lg p-2 
+      fixed top-4 left-4 z-50 text-xl text-pong-dark-accent bg-transparent rounded-lg p-2 
       hover:bg-pong-dark-accent/20 transition duration-300 md:hidden
       focus:outline-none focus:ring-2 focus:ring-pong-dark-accent
     `;
@@ -43,19 +57,19 @@ export function NavBar() {
   }
 
   // === NAV CONTAINER ===
-  // Remove previous nav if present
   const oldNav = document.getElementById("pong-navbar");
   if (oldNav) oldNav.remove();
 
   const nav = document.createElement("nav");
   nav.id = "pong-navbar";
   nav.className = `
-    fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-pong-dark-secondary via-pong-dark-primary to-black/95 
-    text-pong-dark-primary z-50 transform -translate-x-full transition-transform duration-300 ease-in-out
-    flex flex-col gap-10 px-6 py-10
-    md:translate-x-0 md:flex md:w-[110px] md:min-h-screen 
-    md:items-center md:py-10 md:px-0 md:rounded-tr-3xl md:rounded-br-3xl md:shadow-2xl 
-    md:border-r-2 md:border-pong-dark-accent/40
+	fixed top-0 left-0 h-full w-64 bg-black/90 z-50 
+	transform transition-transform duration-300 ease-in-out -translate-x-full
+	flex flex-col gap-10 px-6 py-10
+	md:w-48 md:rounded-tr-3xl md:rounded-br-3xl md:shadow-2xl 
+	md:border-r-2 md:border-pong-dark-accent/40 md:-translate-x-[90%] 
+	md:hover:translate-x-0 md:transition-all md:duration-300 md:ease-in-out
+	md:flex md:items-center
   `;
 
   // === UL NAV ITEMS ===
@@ -71,27 +85,31 @@ export function NavBar() {
     a.href = path;
     a.setAttribute("data-link", "true");
     a.className = `
-      flex items-center gap-3 font-semibold px-3 py-2 rounded-xl
-      transition duration-300
-      ${isActive ? "bg-pong-dark-accent/30 shadow-lg" : ""}
-      hover:bg-pong-dark-accent/20
-      md:flex-col md:gap-2 md:text-sm md:px-0 md:py-0 md:w-full md:bg-transparent
-      group
-    `;
+	  relative flex items-center gap-3 font-semibold px-3 py-2 rounded-xl transition duration-300
+	  ${isActive ? "bg-pong-dark-accent/30 text-white" : "text-pong-dark-primary"}
+	  hover:bg-pong-dark-accent/20 hover:text-white
+	  md:flex-col md:gap-2 md:text-sm md:px-0 md:py-0 md:w-full md:bg-transparent
+	  md:hover:bg-transparent md:hover:text-pong-dark-accent
+	  group
+	`;
 
     a.innerHTML = `
-      <i class="fa-solid ${icon} text-xl md:text-2xl transition-transform group-hover:scale-110
-        ${
+  	  <i class="fa-solid ${icon} text-xl md:text-2xl transition-transform duration-300 group-hover:scale-110
+  	    ${
           isActive
-            ? "text-pong-dark-accent group-hover:text-pong-dark-accent"
-            : "text-white group-hover:text-pong-dark-accent"
-        }"></i>
-      <span class="${
-        isActive
-          ? "text-white group-hover:text-pong-dark-accent"
-          : "text-pong-dark-accent group-hover:text-pong-dark-accent"
-      }">${label}</span>
-    `;
+            ? "text-pong-dark-accent"
+            : "text-pong-dark-primary group-hover:text-white md:group-hover:text-pong-dark-accent"
+        }
+  	  "></i>
+  	  <span class="
+  	    ${
+          isActive
+            ? "text-white"
+            : "text-pong-dark-primary group-hover:text-white md:group-hover:text-pong-dark-accent"
+        }
+  	    transition-colors duration-300
+  	  ">${label}</span>
+	`;
 
     li.appendChild(a);
     ul.appendChild(li);

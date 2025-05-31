@@ -154,13 +154,14 @@ export const styles = {
   //   Start Top Bar styles  //
   navBarStyle: `
     fixed top-0 left-0 right-0 z-40 
-	h-20 bg-black/50 backdrop-blur-md border-b border-pong-dark-accent/30 
+	h-16 bg-transparent backdrop-blur-md border-b border-pong-dark-accent/30 
 	px-4 md:pr-8 md:pl-[140px] 
-	flex items-center justify-between gap-6 
+	flex items-center justify-center gap-8 
 	shadow-md
   `,
   searchBarStyle: `
-	bg-pong-dark-primary/40 text-white 
+  	input-field-dark
+	bg-pong-dark-primary/10 text-white placeholder:text-pong-dark-primary/70
 	px-4 py-2 rounded-lg outline-none  
 	focus:ring-2 focus:ring-pong-dark-accent 
 	w-full max-w-md

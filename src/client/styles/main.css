@@ -93,6 +93,11 @@ a {
     -webkit-text-fill-color: var(--color-primary) !important;
     transition: background-color 9999s ease-out, color 9999s ease-out;
   }
+  .input-field-dark:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+    -webkit-text-fill-color: var(--color-dark-primary) !important;
+    transition: background-color 9999s ease-out, color 9999s ease-out;
+  }
 }
 /* === Custom Line Divider Design with "Before" and "After" ==== */
 .line-divider::before,
