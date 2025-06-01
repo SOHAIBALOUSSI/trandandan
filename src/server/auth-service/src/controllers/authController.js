@@ -17,7 +17,6 @@ import {
     validatePassword 
 } from '../utils/utils.js'
 import { findTwoFaByUid, storeOtpCode, updateOtpCode } from '../models/twoFaDAO.js';
-import RabbitMQClient from '../libs/RabbitMQClient.js';
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -176,7 +175,7 @@ export async function loginHandler(request, reply) {
 
 export async function registerHandler(request, reply) {
     try {
-        const { email, username, password, confirmPassword} = request.body;
+        const { email, username, password, confirmPassword, gender} = request.body;
         if (password !== confirmPassword)
             return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
         if (!validatePassword(password))
@@ -200,7 +199,8 @@ export async function registerHandler(request, reply) {
             },
             body: JSON.stringify({
                 username: username,
-                email: email
+                email: email,
+                gender: gender
             })
         });
       
@@ -210,8 +210,6 @@ export async function registerHandler(request, reply) {
             return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
         }
         
-        const rabbit = new RabbitMQClient(process.env.RABBITMQ_QUEUE_NAME);
-        rabbit.produceMessage("HELLOO FROM AUTH");
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
         console.log(error);

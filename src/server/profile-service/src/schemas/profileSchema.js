@@ -2,10 +2,11 @@ import { avatarUrlValidation, emailValidation, soldeValidation, usernameValidati
 
 export const createProfileSchema = {
     type: 'object',
-    required: ['username', 'email'],
+    required: ['username', 'email', 'gender'],
     properties: {
         username: usernameValidation,
         email: emailValidation,
+        gender: { enum: ['F', 'M'] },
         avatar_url: avatarUrlValidation
     },
     additionalProperties: false

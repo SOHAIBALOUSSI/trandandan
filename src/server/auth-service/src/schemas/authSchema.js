@@ -2,12 +2,13 @@ import { emailValidation, passwordValidation, usernameValidation } from "./valid
 
 export const registerSchema = {
     type: 'object',
-    required: ['username', 'email', 'password', 'confirmPassword'],
+    required: ['username', 'email', 'password', 'confirmPassword', 'gender'],
     properties: {
         username:usernameValidation,
         email: emailValidation,
         password: passwordValidation,
         confirmPassword: passwordValidation,
+        gender: { enum: ['F', 'M'] }
     },
     additionalProperties: false
 }

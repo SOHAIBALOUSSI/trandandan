@@ -4,7 +4,7 @@ import { createResponse } from "../utils/utils.js";
 export async function createProfile(request, reply) {
     try {
         const id = request.user?.id;
-        const { username, email, avatar_url } = request.body;
+        const { username, email, avatar_url, gender } = request.body;
         console.log("Body received from profile:", request.body);
         console.log(`username: ${username}, email: ${email}`);
         if (!username || !email)
@@ -14,7 +14,7 @@ export async function createProfile(request, reply) {
         if (profileExists)
             return reply.code(400).send(createResponse(400, 'PROFILE_EXISTS'));
         
-        await addProfile(this.db, id, username, email, avatar_url);
+        await addProfile(this.db, id, username, email, avatar_url, gender);
 
         return reply.code(201).send(createResponse(201, 'PROFILE_CREATED'));
     } catch (error) {

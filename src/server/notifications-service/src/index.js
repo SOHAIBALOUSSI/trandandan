@@ -3,6 +3,8 @@ import RabbitMQClient from "./libs/rabbitMQ.js";
 import { WebSocketServer, WebSocket } from 'ws';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import { addNotification, getAllNotifications, markAsDelivered } from "./database/notificationsDAO.js";
+import { verifyToken } from "./middleware/authMiddleware.js";
 
 
 let db;
@@ -30,14 +32,29 @@ const rabbit = new RabbitMQClient(process.env.RABBITMQ_QUEUE_NAME);
 
 await rabbit.connect();
 
-wss.on('connection', (ws, req) => {
+wss.on('connection', (ws) => {
   console.log('WebSocket: Client connected.');
-  //JWT authentication
-  if (!users.has(message.userId))
-    users.set(message.userId, new Set());
-  users.get(message.userId).add(ws);
-  ws.userId = message.userId;
-  //fetch unread + undelivered notifications and send them
+
+  ws.on('message', async (message) => {
+    const payload = JSON.parse(message);
+    if (payload.type === 'AUTHENTICATION') {
+      console.log(`WebSocker: Received this message:`, payload);
+      verifyToken(ws, payload.token);
+      if (ws.userId) {
+
+        if (!users.has(ws.userId))
+          users.set(ws.userId, new Set());
+        users.get(ws.userId).add(ws);
+        const notifications = await getAllNotifications(db, ws.userId);
+        if (notifications) {
+          for (const notification of notifications)
+            ws.send(JSON.stringify(notification));  
+        }
+      }
+      else 
+        ws.close(1008, 'Unauthorized');
+    }
+  })
 
   ws.on('error', (error) => {
     console.error('WebSocket: Client error:', error);
@@ -54,21 +71,21 @@ wss.on('connection', (ws, req) => {
 
 });
 
-rabbit.consumeMessages(async (payload) =>{
-  console.log('RabbitMQ: payload received: ', payload);
-  const userId = payload.userId;
-  if (userId) {
-    const connections = users.get(userId);
+rabbit.consumeMessages(async (notification) =>{
+  console.log('RabbitMQ: notification received: ', notification);
+  const recipient = notification.to;
+  console.log('RabbitMQ: recipient: ', recipient);
+  if (recipient) {
+    const notificationId = await addNotification(db, notification);
+    const connections = users.get(recipient);
     if (connections) {
-      const message = JSON.stringify(payload);
+      const message = JSON.stringify(notification);
       for (const conn of connections) {
-        if (conn.readyState === WebSocket.OPEN)
+        if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
           conn.send(message);
       }
-      //store messafe in database as in delivered but not read
+      await markAsDelivered(db, notificationId);
     }
-    //else
-    //store message in database as in not read and not delivered
   }
 })
 

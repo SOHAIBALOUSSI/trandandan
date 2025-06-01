@@ -3,9 +3,9 @@ export async function createNotificationsTable(db){
         await db.exec(
             `CREATE TABLE IF NOT EXISTS notifications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
+            recipient_id INTEGER,
+            sender_id INTEGER,
             type TEXT NOT NULL,
-            message TEXT NOT NULL,
             read INTEGER DEFAULT FALSE,
             delivered INTEGER DEFAULT FALSE,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP

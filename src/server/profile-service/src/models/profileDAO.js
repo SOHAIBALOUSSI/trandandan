@@ -12,16 +12,16 @@ export async function searchProfile(db, id, username, email) {
     );
 }
 
-export async function addProfile(db, id, username, email, avatar_url) {
+export async function addProfile(db, id, username, email, avatar_url, gender) {
     let result;
     if (avatar_url) {
-        result = await db.run('INSERT INTO profile (userId, username, email, avatar_url) VALUES (?, ?, ?, ?)',
-            [id, username, email, avatar_url]
+        result = await db.run('INSERT INTO profile (userId, username, email, gender, avatar_url) VALUES (?, ?, ?, ?, ?)',
+            [id, username, email, gender, avatar_url]
         );
     }
     else {
-        result = await db.run('INSERT INTO profile (userId, username, email) VALUES (?, ?, ?)',
-            [id, username, email]
+        result = await db.run('INSERT INTO profile (userId, username, email, gender) VALUES (?, ?, ?, ?)',
+            [id, username, email, gender]
         );
     }
 

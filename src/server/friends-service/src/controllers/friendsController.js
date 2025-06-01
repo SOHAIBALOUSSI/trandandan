@@ -19,6 +19,8 @@ import { createResponse } from '../utils/utils.js';
             return reply.code(400).send(createResponse(400, 'ADDRESSEE_INVALID'));
     
           await addFriendRequest(this.db, requesterId, addresseeId);
+
+          this.rabbit.produceMessage({ type: 'FRIEND_REQUEST_SENT', from: requesterId, to: addresseeId });
   
           return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_SENT'));
       } catch (error) {
@@ -29,13 +31,15 @@ import { createResponse } from '../utils/utils.js';
   
   export async function acceptRequest(request, reply) {
       try {
-          const userId = request.user.id;
+          const addresseeId = request.user.id;
           const { requesterId } = request.body;
   
           if (!requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
   
-          await updateFriendRequestStatus(this.db, requesterId, userId, 'accepted');
+          await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'accepted');
+
+          this.rabbit.produceMessage({ type: 'FRIEND_REQUEST_ACCEPTED', from: addresseeId, to: requesterId });
   
           return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_ACCEPTED'));
       } catch (error) {
@@ -46,14 +50,16 @@ import { createResponse } from '../utils/utils.js';
   
   export async function rejectRequest(request, reply) {
       try {
-          const userId = request.user.id;
+          const addresseeId = request.user.id;
           const { requesterId } = request.body;
   
           if (!requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
   
-          await updateFriendRequestStatus(this.db, requesterId, userId, 'rejected');
+          await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'rejected');
   
+          this.rabbit.produceMessage({ type: 'FRIEND_REQUEST_REJECTED', from: addresseeId, to: requesterId });
+
           return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_REJECTED'));
       } catch (error) {
         console.log(error);
@@ -71,6 +77,8 @@ import { createResponse } from '../utils/utils.js';
   
           await deleteFriend(this.db, userId, friendId);
   
+          this.rabbit.produceMessage({ type: 'FRIEND_REMOVED', to: userId, data: { exFriendId: friendId } });
+
           return reply.code(200).send(createResponse(200, 'FRIEND_REMOVED'));
       } catch (error) {
         console.log(error);
