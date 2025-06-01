@@ -76,19 +76,27 @@ export function RemoteGame() {
     return roomId;
   }
 
-  // Game state variables
-  let token = generateToken();
-  console.log(token);
 
+  // Get connection ID
   let connectionId = localStorage.getItem("player");
-  if (connectionId === null) {
-    localStorage.setItem("player", token);
-    connectionId = token;
+  if (!connectionId) {
+    connectionId = generateToken();
+    localStorage.setItem("player", connectionId);
+    console.log("Generated new connection ID:", connectionId);
+  } else {
+    console.log("Existing connection ID:", connectionId);
   }
 
-  let userName = localStorage.getItem("userName") || generateToken();
-  if (!localStorage.getItem("userName")) {
+  // Get username - don't automatically generate a token if missing
+  let userName = localStorage.getItem("userName");
+  if (!userName) {
+    console.error("User name is not set in localStorage");
+    // Here you might want to prompt the user for a username instead of generating a token
+    // userName = prompt("Please enter your username");
+    userName = generateToken(); // Generate a new token if userName is not set
     localStorage.setItem("userName", userName);
+  } else {
+    console.log("Existing user name:", userName);
   }
 
   let roomdIdentif = "123";
@@ -99,7 +107,6 @@ export function RemoteGame() {
     socket = new WebSocket(
       `ws://0.0.0.0:5000/remoteGame?token=${connectionId}&roomId=${roomdIdentif}`
     );
-    console.log("reconnected");
 
     let keys: Record<string, boolean> = {};
 

@@ -1,9 +1,4 @@
 
-const PADDLE_INITIAL_Y = 240;
-const PADDLE_HEIGHT = 100;
-const RIGHT_PADDLE_X = 975;
-const LEFT_PADDLE_X = 20;
-
 function gameLogic(gameState) {
   let step = 8;
   if (
@@ -89,16 +84,6 @@ function gameLogic(gameState) {
 
 const rooms = {};
 
-function generateNewRoomId(params) {
-  let roomId = "";
-
-  const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
-
-  for (let index = 0; index < 12; index++) {
-    roomId += stringOfChar[Math.floor(Math.random() * stringOfChar.length)];
-  }
-  return roomId;
-}
 export function remoteGame(connection, req) {
   let roomId;
   const token = req.query.token;
@@ -107,16 +92,21 @@ export function remoteGame(connection, req) {
   let joined = false;
 
   for (const [id] of Object.entries(rooms)) {
-    rooms[id].players.forEach((player) => {
-      if (player.token == token) {
-        rooms[id].gameState.alive = true;
-        rooms[id].gameState.disconnected = true; // reconnnected
-        player.connection = connection;
-        joined = true;
-        roomId = id;
-        return true;
-      }
-    });
+
+    if (id === playerRoomdId) {
+      rooms[id].players.forEach((player) => {
+        if (player.token === token) {
+          if (rooms[id].player1Timeout) clearTimeout(rooms[id].player1Timeout);
+          if (rooms[id].player2Timeout) clearTimeout(rooms[id].player2Timeout);
+          rooms[id].gameState.alive = true;
+          rooms[id].gameState.disconnected = true; // reconnnected
+          player.connection = connection;
+          joined = true;
+          roomId = id;
+          return true;
+        }
+      });
+    }
 
     if (rooms[id].players.length < 2 && !joined) {
       if (playerRoomdId === id)
@@ -232,7 +222,9 @@ export function remoteGame(connection, req) {
       if (!rooms[roomId]) return;
 
       rooms[roomId].gameState.alive = false;
-      setTimeout(() => {
+
+      // Store the timeout id on the room object so it can be cleared later
+      rooms[roomId].player1Timeout = setTimeout(() => {
         if (rooms[roomId] && !rooms[roomId].gameState.alive) {
           player2.send("player 1 disconnected");
           delete rooms[roomId];
@@ -248,8 +240,9 @@ export function remoteGame(connection, req) {
       if (!rooms[roomId]) return;
 
       rooms[roomId].gameState.alive = false;
+      // Store the timeout id on the room object so it can be cleared later
 
-      setTimeout(() => {
+      rooms[roomId].player2Timeout = setTimeout(() => {
         if (rooms[roomId] && !rooms[roomId].gameState.alive) {
           player1.send("player 2 disconnected");
           delete rooms[roomId];
