@@ -31,6 +31,7 @@ The `notifications-service` is responsible for sending notifications to authenti
 ```
 
 - After authentication a user is mapped to all his current connections `Map(id, Set())`.
+- If there are some stored unread/undelivered notifications for the current connect user, they're all sent right after authentication.
 - Whenever a message(notification) is consumed by my rabbitMQClient these steps follow:
     - Extract recipient ID from message.
     - Insert notification in database.
