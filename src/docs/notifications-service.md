@@ -52,7 +52,7 @@ except for `FRIEND_REMOVED` :
     type: FRIEND_REMOVED,
     to: recipientId,
     data: {
-        exFriendId: friendId
+        exFriendId: exfriendId
     }
 }
 ```
