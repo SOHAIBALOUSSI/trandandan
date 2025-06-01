@@ -45,11 +45,11 @@ There are 4 types of friends notifications, 3 of them have the same message sche
 - `FRIEND_REQUEST_ACCEPTED`
 - `FRIEND_REQUEST_REJECTED` 
 
-except for `FRIEND_REQUIRED` :
+except for `FRIEND_REMOVED` :
 
 ```yaml
 {
-    type: FRIEND_REQUIRED,
+    type: FRIEND_REMOVED,
     to: recipientId,
     data: {
         exFriendId: friendId
