@@ -3,8 +3,16 @@ import { TopBar } from "@/components/layout/TopBar";
 import { MainHeader } from "@/components/common/MainHeader";
 import { MemberCard } from "@/components/layout/MemberCard";
 import { styles } from "@/styles/styles";
+import { getCurrentUser } from "@/utils/user-store";
+import male from "@/assets/male.png";
+import female from "@/assets/female.png";
 
 export function Profile() {
+  const user = getCurrentUser();
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   const profileSection = (
     <section className={styles.pageLayoutDark}>
       <NavBar />
@@ -13,10 +21,10 @@ export function Profile() {
         <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto">
           <MainHeader isDark={false} title="user" titleSpan="profile" />
           <MemberCard
-            name="Adil Belmqadem"
-            sold="5"
+            name={user?.username}
+            sold={user?.solde.toString()}
             grade="1.6"
-            avatar="/assets/abel-mqa.jpeg"
+            avatar={user?.gender === "M" ? male : female}
             rank="4"
           />
         </main>

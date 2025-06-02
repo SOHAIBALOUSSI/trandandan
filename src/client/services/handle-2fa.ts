@@ -1,6 +1,6 @@
 export function setupApp2FA() {
   const enableBtn = document.querySelector("#enable-app") as HTMLButtonElement;
-  console.log("Enable App 2FA button:", enableBtn);
+  console.log(enableBtn);
   if (!enableBtn) return;
 
   const accessToken = localStorage.getItem("accessToken");

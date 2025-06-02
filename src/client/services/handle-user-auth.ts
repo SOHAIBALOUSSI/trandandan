@@ -1,4 +1,5 @@
 import { authFetch } from "@/utils/auth-fetch";
+import { setCurrentUser } from "@/utils/user-store";
 
 // Function to get user profile from the server
 export async function getUserProfile() {
@@ -14,7 +15,10 @@ export async function getUserProfile() {
     const profileRes = await authFetch(`/profile/${id}`);
     if (!profileRes.ok) throw new Error("Failed to fetch profile");
 
-    return await profileRes.json();
+    const profile = await profileRes.json();
+    setCurrentUser(profile); // Save profile globally
+
+    return profile;
   } catch (err) {
     console.error(err);
     return null;

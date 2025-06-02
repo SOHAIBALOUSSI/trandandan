@@ -10,7 +10,7 @@ export function MemberCard(props: {
       <div className="flex items-center gap-4 p-4 bg-gray-800 rounded-lg shadow-md w-auto">
         <img
           src={props.avatar}
-          alt={`${props.name}'s avatar`}
+          alt={`Profile avatar`}
           className="w-16 h-16 rounded-full"
         />
         <div className="flex flex-col">
