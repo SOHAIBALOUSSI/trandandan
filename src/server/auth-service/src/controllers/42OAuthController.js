@@ -3,55 +3,56 @@ import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
 import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
 
-export async function   googleSetupHandler(request, reply) {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
+export async function   fortyTwoSetupHandler(request, reply) {
+    const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code&prompt=consent`;
     reply.redirect(url);
 }
 
-export async function googleLoginHandler(request, reply) {
+export async function fortyTwoLoginHandler(request, reply) {
     const { code } = request.query;
     if (!code)
         return reply.code(400).send(createResponse(400, 'AUTH_CODE_REQUIRED'));
     try {
-        const tokens = await fetch('https://oauth2.googleapis.com/token', {
+        const tokens = await fetch('https://api.intra.42.fr/oauth/token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
                 code,
-                client_id: process.env.GOOGLE_ID,
-                client_secret: process.env.GOOGLE_SECRET,
-                redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+                client_id: process.env.FORTY_TWO_ID,
+                client_secret: process.env.FORTY_TWO_SECRET,
+                redirect_uri: process.env.FORTY_TWO_REDIRECT_URI,
                 grant_type: 'authorization_code'
             }).toString()
         });
 
-        console.log('Google tokens: ', tokens);
+        console.log('42 tokens: ', tokens);
         if (!tokens.ok)
         {
             const errorText = await tokens.text();
-            console.log('Google tokens error: ', errorText);
+            console.log('42 tokens error: ', errorText);
             return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
         }
 
-        const { access_token, refresh_token } = await tokens.json();
-        const userinfo  = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        const { access_token } = await tokens.json();
+        const userinfo  = await fetch('https://api.intra.42.fr/v2/me', {
             method: 'GET',
             headers: { Authorization: `Bearer ${access_token}` }
         });
 
+        console.log('User info: ', userinfo);
         const userInfo = await userinfo.json();
-        console.log('User info: ', userInfo);
+        console.log('User Info: ', userInfo);
         const actualInfo = {
-        provider: 'google',
-            sub: userInfo.sub,
+            provider: '42',
+            sub: userInfo.id,
             email: userInfo.email,
             accessToken: access_token,
-            refreshToken: refresh_token
+            refreshToken: null
         }
 
         let isNewUser = false;
         let user;
-        const oauthId = await findOauthIdentity(this.db, 'google', userInfo.sub);
+        const oauthId = await findOauthIdentity(this.db, '42', userInfo.id);
         if (oauthId) {
             user = await findUserById(this.db, oauthId.user_id);
             if (user)
@@ -59,13 +60,13 @@ export async function googleLoginHandler(request, reply) {
         } else {
             user = await findUserByEmail(this.db, userInfo.email);
             if (user) {
-                console.log(`Existing user with ID : ${user.id} but not linked to google`);
+                console.log(`Existing user with ID : ${user.id} but not linked to 42`);
                 await linkOAuthIdentityToUser(this.db, user.id, actualInfo);
             }
             else {
                 console.log('New User');
                 isNewUser = true;
-                const uniqueUserName = await generateUsername(this.db, userInfo.given_name || userInfo.email.split('@')[0]);
+                const uniqueUserName = await generateUsername(this.db, userInfo.login || userInfo.email.split('@')[0]);
                 const newUserId = await addUserAndOAuthIdentity(this.db, {
                     username: uniqueUserName,
                     ...actualInfo
@@ -79,13 +80,13 @@ export async function googleLoginHandler(request, reply) {
             const tempToken = this.jwt.signTT({ id: user.id });
             if (twoFa.type === 'email')
             {
-                const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeOtpCode(this.db, otpCode, user.id);
+                const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+                await storeOtpCode(this.db, user.id);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
                     subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${otpCode}>`,
+                    text: `OTP CODE : <${totpCode}>`,
                 }
                 await this.sendMail(mailOptions);
             }
@@ -106,7 +107,7 @@ export async function googleLoginHandler(request, reply) {
                     user_id: user.id,
                     username: user.username,
                     email: user.email,
-                    avatar_url: userInfo.picture
+                    avatar_url: userInfo.image.link
                 })
             });
 
@@ -124,3 +125,4 @@ export async function googleLoginHandler(request, reply) {
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
+

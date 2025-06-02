@@ -30,7 +30,7 @@ export function handleSignUp() {
     interface User {
       username: string;
       email: string;
-    //   gender: string;
+      gender: string;
       password: string;
       confirmPassword: string;
     }
@@ -43,12 +43,14 @@ export function handleSignUp() {
       email: (
         signupForm.querySelector("#email") as HTMLInputElement
       ).value.trim(),
-    //   gender:
-    //     (
-    //       signupForm.querySelector(
-    //         'input[name="gender"]:checked'
-    //       ) as HTMLInputElement
-    //     )?.value ?? "",
+      gender:
+        (
+          signupForm.querySelector(
+            'input[name="gender"]:checked'
+          ) as HTMLInputElement
+        ).value === "male"
+          ? "M"
+          : "F",
       password: (
         signupForm.querySelector("#password") as HTMLInputElement
       ).value.trim(),
@@ -60,6 +62,7 @@ export function handleSignUp() {
     console.log(`
 	Username: ${userInfos.username}
 	Email: ${userInfos.email} 
+	Gender: ${userInfos.gender}
 	Password: ${userInfos.password}
 	Confirm: ${userInfos.confirmPassword}
 	`);
