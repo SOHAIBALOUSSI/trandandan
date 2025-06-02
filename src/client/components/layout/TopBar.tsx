@@ -14,7 +14,7 @@ export function TopBar() {
           <i className="fa-regular fa-bell"></i>
         </button>
         <button className="text-xl text-pong-dark-primary hover:text-pong-dark-accent">
-          <a href="/profile" data-link>
+          <a href="profile" data-link>
             <i className="fa-regular fa-user"></i>
           </a>
         </button>

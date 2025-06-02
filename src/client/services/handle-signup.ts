@@ -26,24 +26,42 @@ export function handleSignUp() {
   signupForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    // Extract form values
-    const username = (
-      signupForm.querySelector("#username") as HTMLInputElement
-    ).value.trim();
-    const email = (
-      signupForm.querySelector("#email") as HTMLInputElement
-    ).value.trim();
-    const password = (signupForm.querySelector("#password") as HTMLInputElement)
-      .value;
-    const confirmPassword = (
-      signupForm.querySelector("#confirm-password") as HTMLInputElement
-    ).value;
+    // User Interface
+    interface User {
+      username: string;
+      email: string;
+    //   gender: string;
+      password: string;
+      confirmPassword: string;
+    }
+
+    // Extract User Infos from the singup Form
+    const userInfos: User = {
+      username: (
+        signupForm.querySelector("#username") as HTMLInputElement
+      ).value.trim(),
+      email: (
+        signupForm.querySelector("#email") as HTMLInputElement
+      ).value.trim(),
+    //   gender:
+    //     (
+    //       signupForm.querySelector(
+    //         'input[name="gender"]:checked'
+    //       ) as HTMLInputElement
+    //     )?.value ?? "",
+      password: (
+        signupForm.querySelector("#password") as HTMLInputElement
+      ).value.trim(),
+      confirmPassword: (
+        signupForm.querySelector("#confirm-password") as HTMLInputElement
+      ).value.trim(),
+    };
 
     console.log(`
-	Username: ${username}
-	Email: ${email} 
-	Password: ${password}
-	Confirm: ${confirmPassword}
+	Username: ${userInfos.username}
+	Email: ${userInfos.email} 
+	Password: ${userInfos.password}
+	Confirm: ${userInfos.confirmPassword}
 	`);
 
     // Reset feedback and button state
@@ -61,7 +79,7 @@ export function handleSignUp() {
       const response = await fetch("/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password, confirmPassword }),
+        body: JSON.stringify(userInfos),
       });
 
       const result = await response.json();

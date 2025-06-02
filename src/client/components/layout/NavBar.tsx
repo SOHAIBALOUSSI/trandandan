@@ -34,7 +34,7 @@ export function NavBar() {
     toggleBtn = document.createElement("button");
     toggleBtn.id = "pong-toggle-btn";
     toggleBtn.className = `
-      fixed top-4 left-4 z-50 text-xl text-pong-dark-accent bg-transparent rounded-lg p-2 
+      fixed top-2 left-4 z-50 text-2xl text-pong-dark-accent bg-transparent rounded-lg p-2 
       hover:bg-pong-dark-accent/20 transition duration-300 md:hidden
       focus:outline-none focus:ring-2 focus:ring-pong-dark-accent
     `;

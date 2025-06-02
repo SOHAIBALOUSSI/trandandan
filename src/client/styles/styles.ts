@@ -155,7 +155,7 @@ export const styles = {
   navBarStyle: `
     fixed top-0 left-0 right-0 z-40 
 	h-16 bg-transparent backdrop-blur-md border-b border-pong-dark-accent/30 
-	px-4 md:pr-8 md:pl-[140px] 
+	px-4
 	flex items-center justify-center gap-8 
 	shadow-md
   `,

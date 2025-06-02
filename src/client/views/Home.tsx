@@ -8,32 +8,32 @@ function HeroSection() {
     <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:justify-between md:items-start text-center w-[90%] max-w-5xl mx-auto mt-6 md:mt-12">
       <div
         id="player-level"
-        className="bg-pong-dark-highlight text-black px-8 py-4 rounded-xl shadow-lg w-full md:w-auto transition-transform duration-300 hover:scale-105"
+        className="bg-pong-dark-highlight/30 text-white px-8 py-4 rounded-xl shadow-lg w-full md:w-auto transition-transform duration-300 hover:scale-105"
       >
-        <p className="text-sm font-medium uppercase tracking-widest">Grade</p>
-        <span className="text-xl font-bold">1.8</span>
+        <p className="text-sm font-medium uppercase tracking-widest text-pong-dark-secondary">Grade</p>
+        <span className="text-lg md:text-xl font-bold">1.8</span>
       </div>
 
       <div
         id="player-sold"
-        className="md:order-2 bg-pong-dark-highlight text-black px-8 py-4 rounded-xl shadow-lg w-full md:w-auto transition-transform duration-300 hover:scale-105"
+        className="md:order-2 bg-pong-dark-highlight/30 text-white px-8 py-4 rounded-xl shadow-lg w-full md:w-auto transition-transform duration-300 hover:scale-105"
       >
-        <p className="text-sm font-medium uppercase tracking-widest">Sold</p>
-        <span className="text-xl font-bold">5 F</span>
+        <p className="text-sm font-medium uppercase tracking-widest text-pong-dark-secondary">Sold</p>
+        <span className="text-lg md:text-xl font-bold">5 F</span>
       </div>
 
       <div
         id="hero-welcome"
         className="flex flex-col items-center md:order-1 justify-center gap-3"
       >
-        <p className="text-sm text-gray-400 italic">Ranked #4 in BHV Club</p>
+        <p className="text-sm text-pong-secondary italic">Ranked #4 in BHV Club</p>
         <img
           src="/assets/abel-mqa.jpeg"
           alt="profile image"
           className="w-[110px] h-[110px] rounded-full shadow-md mb-2 hover:shadow-xl transition-shadow duration-300"
         />
         <p className="text-base font-medium leading-snug">
-          Welcome back, <span className="font-semibold">Adil</span>!<br />
+          Welcome back, <span className="font-semibold text-pong-secondary">Adil</span>!<br />
           Your paddle is polished. Let’s play.
         </p>
       </div>
@@ -98,7 +98,7 @@ export function Home() {
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto">
+        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-2rem)] overflow-y-auto">
           <MainHeader isDark={false} title="the club" titleSpan="hall" />
           <HeroSection />
           <QuickLinks />

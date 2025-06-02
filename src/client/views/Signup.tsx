@@ -26,6 +26,38 @@ function Form() {
         id={"email"}
         placeholder={"enter your email"}
       />
+      <div className="flex flex-col gap-2 w-full">
+        <div
+          className="capitalize w-full px-4 py-3      
+		  text-sm lg:text-base font-semibold
+   		 bg-pong-secondary/10
+   		   rounded-md
+   		   transition-all duration-300
+   		   flex gap-8 md:gap-12 items-center
+    	"
+        >
+          <label className="flex items-center gap-3 text-pong-primary cursor-pointer">
+            <input
+              type="radio"
+              name="gender"
+              value="male"
+              className="accent-pong-accent w-4 h-4"
+              required
+            />
+            <span>Male</span>
+          </label>
+          <label className="flex items-center gap-3 text-pong-primary cursor-pointer">
+            <input
+              type="radio"
+              name="gender"
+              value="female"
+              className="accent-pong-accent w-4 h-4"
+            />
+            <span>Female</span>
+          </label>
+        </div>
+      </div>
+
       <InputField
         type={"password"}
         name={"password"}
