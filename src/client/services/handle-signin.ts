@@ -8,113 +8,95 @@ export function handleSignIN() {
   const spinner = document.querySelector<HTMLSpanElement>("#spinner-in");
   const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label-in");
 
+  // 2FA modal elements
+  const twofaSection = document.getElementById("signin-2fa-section");
+  const twofaInput = document.getElementById("2fa-otp") as HTMLInputElement;
+  const twofaBtn = document.getElementById(
+    "signin-2fa-btn"
+  ) as HTMLButtonElement;
+  const twofaFeedback = document.getElementById("signin-2fa-feedback");
+
   if (!signInForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
 
-  function show2FAInput(tempToken: string) {
-    let twofaSection = document.getElementById("signin-2fa-section");
-    if (!twofaSection) {
-      twofaSection = document.createElement("div");
-      twofaSection.id = "signin-2fa-section";
-      twofaSection.className = "flex flex-col items-center gap-2 mt-4 w-full";
-
-      twofaSection.innerHTML = `
-        <input
-          id="signin-2fa-code"
-          type="text"
-          maxlength="6"
-          pattern="[0-9]{6}"
-          placeholder="Enter 2FA code"
-          class="input input-bordered w-32 text-center text-lg rounded-md border border-gray-400 focus:outline-none focus:ring-2 focus:ring-pong-secondary"
-          autocomplete="one-time-code"
-        />
-        <button
-          id="signin-2fa-btn"
-          class="bg-pong-secondary hover:bg-pong-secondary/90 text-white px-4 py-2 rounded transition-all w-32"
-        >
-          Verify 2FA
-        </button>
-        <div id="signin-2fa-feedback" class="text-pong-error text-sm mt-2"></div>
-      `;
-
-      // Append below feedback inside the form
-      const targetForm = document.querySelector("#signin-form");
-      if (targetForm) {
-        targetForm.appendChild(twofaSection);
+  // show/hide 2FA modal
+  function show2FAModal(show: boolean) {
+    if (twofaSection) {
+      if (show) {
+        twofaSection.classList.remove("hidden");
+        twofaSection.classList.add("flex");
+        twofaInput && (twofaInput.value = "");
+        twofaFeedback && (twofaFeedback.textContent = "");
+        setTimeout(() => twofaInput?.focus(), 100);
+      } else {
+        twofaSection.classList.add("hidden");
       }
-    } else {
-      twofaSection.classList.remove("hidden");
     }
+  }
 
-    // Clear input and feedback
-    const codeInput = document.getElementById(
-      "signin-2fa-code"
-    ) as HTMLInputElement;
-    const feedback = document.getElementById("signin-2fa-feedback");
-    if (codeInput) codeInput.value = "";
-    if (feedback) feedback.textContent = "";
+  // Attach 2FA verify handler (only once)
+  if (twofaBtn && !twofaBtn.dataset.listener) {
+    twofaBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      const tempToken = twofaBtn.dataset.tempToken;
+      if (!tempToken) return;
 
-    codeInput?.focus();
+      const code = twofaInput?.value.trim();
+      if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
+        if (twofaFeedback)
+          twofaFeedback.textContent = "Please enter a valid 6-digit code.";
+        return;
+      }
 
-    const verifyBtn = document.getElementById("signin-2fa-btn");
-    if (verifyBtn && !verifyBtn.dataset.listener) {
-      verifyBtn.addEventListener("click", function (e) {
-        e.preventDefault();
+      spinner?.classList.remove("hidden");
+      twofaBtn.setAttribute("disabled", "true");
 
-        const code = codeInput?.value.trim();
-        if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
-          if (feedback)
-            feedback.textContent = "Please enter a valid 6-digit code.";
-          return;
-        }
+      fetch("/2fa/app/verify-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tempToken}`,
+        },
+        body: JSON.stringify({ otpCode: code }),
+      })
+        .then((res) =>
+          res.json().then((data) => ({ status: res.status, data }))
+        )
+        .then(({ status, data }) => {
+          if (
+            status === 200 &&
+            data.data?.accessToken &&
+            data.data?.refreshToken
+          ) {
+            localStorage.setItem("accessToken", data.data.accessToken);
+            localStorage.setItem("refreshToken", data.data.refreshToken);
 
-        spinner?.classList.remove("hidden");
-        verifyBtn.setAttribute("disabled", "true");
-
-        fetch("/2fa/app/verify-login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tempToken}`,
-          },
-          body: JSON.stringify({ otpCode: code }),
-        })
-          .then((res) =>
-            res.json().then((data) => ({ status: res.status, data }))
-          )
-          .then(({ status, data }) => {
-            if (
-              status === 200 &&
-              data.data?.accessToken &&
-              data.data?.refreshToken
-            ) {
-              localStorage.setItem("accessToken", data.data.accessToken);
-              localStorage.setItem("refreshToken", data.data.refreshToken);
-
-              if (feedback) {
-                feedback.textContent = "2FA verified! Entering the lounge...";
-                feedback.className = `${styles.formMessage} text-pong-success`;
-              }
-
-              setTimeout(() => {
-                history.pushState(null, "", "/salon");
-                window.dispatchEvent(new PopStateEvent("popstate"));
-              }, 1200);
-            } else {
-              if (feedback)
-                feedback.textContent =
-                  data.message || "Invalid 2FA code. Try again.";
+            if (twofaFeedback) {
+              twofaFeedback.textContent =
+                "2FA verified! Entering the lounge...";
+              twofaFeedback.className = `${styles.formMessage} text-pong-success`;
             }
-          })
-          .catch(() => {
-            if (feedback) feedback.textContent = "Server error. Try again.";
-          })
-          .finally(() => {
-            spinner?.classList.add("hidden");
-            verifyBtn.removeAttribute("disabled");
-          });
-      });
-      verifyBtn.dataset.listener = "true";
-    }
+
+            setTimeout(() => {
+              show2FAModal(false);
+              history.pushState(null, "", "/salon");
+              window.dispatchEvent(new PopStateEvent("popstate"));
+            }, 1200);
+          } else {
+            if (twofaFeedback)
+              twofaFeedback.textContent =
+                Errors[data?.code] || "Invalid 2FA code. Try again.";
+          }
+        })
+        .catch(() => {
+          if (twofaFeedback)
+            twofaFeedback.textContent = Errors.INTERNAL_SERVER_ERROR;
+        })
+        .finally(() => {
+          spinner?.classList.add("hidden");
+          twofaBtn.removeAttribute("disabled");
+        });
+    });
+    twofaBtn.dataset.listener = "true";
   }
 
   signInForm.addEventListener("submit", async (e) => {
@@ -131,6 +113,7 @@ export function handleSignIN() {
 
     feedback.textContent = "";
     feedback.className = styles.formMessage;
+    feedback.classList.remove("hidden");
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
@@ -147,6 +130,8 @@ export function handleSignIN() {
 
       const result = await response.json();
 
+      console.log(result);
+
       const elapsed = Date.now() - startTime;
       const waitTime = Math.max(0, 1200 - elapsed);
 
@@ -154,6 +139,7 @@ export function handleSignIN() {
         setTimeout(() => {
           feedback.textContent = "Welcome back, champ! Entering the lounge...";
           feedback.className = `${styles.formMessage} text-pong-success`;
+          feedback.classList.remove("hidden");
 
           result.data.accessToken &&
             localStorage.setItem("accessToken", result.data.accessToken);
@@ -165,15 +151,18 @@ export function handleSignIN() {
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, 1500);
         }, waitTime);
-      } else if (response.status === 206) {
+      } else if (result.statusCode === 206) {
         // 2FA Required
+        localStorage.setItem("tempToken", result.data?.tempToken || "");
         setTimeout(() => {
           feedback.textContent =
             "Two-factor authentication required. Please complete the verification.";
           feedback.className = `${styles.formMessage} text-pong-warning`;
-          /*
-				logic to handle 2fa
-		  */
+          feedback.classList.remove("hidden");
+          show2FAModal(true);
+          if (twofaBtn && result.data?.tempToken) {
+            twofaBtn.dataset.tempToken = result.data.tempToken;
+          }
         }, 0);
       } else {
         setTimeout(() => {
@@ -182,11 +171,13 @@ export function handleSignIN() {
             "Invalid paddle pass. Check your details and swing again.";
           feedback.textContent = errorMsg;
           feedback.className = `${styles.formMessage} text-pong-error`;
+          feedback.classList.remove("hidden");
         }, waitTime);
       }
     } catch (err) {
       feedback.textContent = Errors.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error`;
+      feedback.classList.remove("hidden");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

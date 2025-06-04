@@ -12,4 +12,9 @@ export const Errors: Record<string, string> = {
   PROFILE_CREATION_FAILED:
     "We couldn’t get your locker set up. Give it another swing.",
   INTERNAL_SERVER_ERROR: "The club’s having a power outage. Try again shortly.",
+  TWOFA_NOT_SET: "Two-factor authentication isn’t set up yet. Please configure it first.",
+  TWOFA_NOT_ENABLED: "Two-factor authentication is not enabled. Please enable it first.",
+  UNAUTHORIZED: "You need to log in first. Grab your racket and try again.",
+  OTP_REQUIRED: "OTP is required. Please enter the code.",
+  OTP_INVALID: "Invalid OTP. Please check your code and try again.",
 };

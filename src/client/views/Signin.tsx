@@ -5,10 +5,36 @@ import { InputField } from "@/components/common/InputField";
 import { MainHeader } from "@/components/common/MainHeader";
 import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
 
+function TwoFAVerification() {
+  return (
+    <div
+      id="signin-2fa-section"
+      className="fixed top-[50%] left-[50%] z-40 transform -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 p-6 bg-gray-200 rounded-md text-pong-primary text-center border border-pong-secondary shadow-lg hidden"
+    >
+      <p className="text-pong-primary text-lg font-bold">
+        Please verify your two-factor authentication.
+      </p>
+      <InputField
+        type="text"
+        name="2fa-otp"
+        id="2fa-otp"
+        placeholder="Enter your OTP"
+      />
+      <button
+        type="button"
+        id="signin-2fa-btn"
+        className={`${styles.buttonPrimary} w-24`}
+      >
+        Verify
+      </button>
+      <p id="signin-2fa-feedback" className="text-pong-error text-sm"></p>
+    </div>
+  );
+}
+
 function Form() {
   const form = (
     <form
-      action=""
       method="post"
       id="signin-form"
       className={`${styles.form} ${styles.fadeInSection}`}
@@ -80,7 +106,8 @@ export function Signin() {
   }, 0);
 
   const signinSection = (
-    <section className={styles.pageLayoutLight}>
+    <section className={`${styles.pageLayoutLight} relative`}>
+      <TwoFAVerification />
       <MainHeader
         isDark={true}
         title={"welcome back,"}
