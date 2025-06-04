@@ -2,7 +2,7 @@
 export async function createFriendshipTable(db){
     try {
         await db.exec(
-            `CREATE TABLE friendships (
+            `CREATE TABLE IF NOT EXISTS friendships (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             requester_id INTEGER NOT NULL,
             addressee_id INTEGER NOT NULL,
