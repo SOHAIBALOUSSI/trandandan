@@ -191,7 +191,7 @@ export async function registerHandler(request, reply) {
         const refreshToken = this.jwt.signRT({ id: userId });
         
         await addToken(this.db, refreshToken, userId);
-        const response = await fetch('http://profile-service:3001/profile/register', {
+        fetch('http://profile-service:3001/profile/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

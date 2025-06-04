@@ -32,7 +32,7 @@ await server.register(twoFARoutes, { prefix: '/2fa' });
 console.log("auth service initialization is done...");
 
 const start = async () => {
-    try {
+    try {        
         await server.listen({ host: '0.0.0.0', port: 3000 });
         server.log.info("Server is listening on port 3000");
     }

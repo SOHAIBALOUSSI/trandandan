@@ -1,0 +1,33 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm-up 10 users/sec for 1 min"
+  payload:
+    path: "./users.csv"
+    fields:
+      - username
+      - email
+      - password
+      - confirmPassword
+      - gender
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "User Registration"
+    flow:
+      - think: 1
+      - post:
+          url: "/auth/register"
+          json:
+            username: "{{ username }}"
+            email: "{{ email }}"
+            password: "{{ password }}"
+            confirmPassword: "{{ confirmPassword }}"
+            gender: "{{ gender }}"
+          capture:
+            - json: "code"
+              as: "registerStatus"
