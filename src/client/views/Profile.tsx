@@ -4,8 +4,8 @@ import { MainHeader } from "@/components/common/MainHeader";
 import { MemberCard } from "@/components/layout/MemberCard";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
-import male from "@/assets/male.png";
-import female from "@/assets/female.png";
+import MaleAvatar from "@/assets/male.png";
+import FemaleAvatar from "@/assets/female.png";
 
 export function Profile() {
   const user = getCurrentUser();
@@ -24,7 +24,7 @@ export function Profile() {
             name={user?.username}
             sold={user?.solde.toString()}
             grade="1.6"
-            avatar={user?.gender === "M" ? male : female}
+            avatar={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
             rank="4"
           />
         </main>

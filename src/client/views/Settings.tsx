@@ -4,143 +4,106 @@ import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
 import { MyBtn } from "@/components/common/MyBtn";
 import { InputField } from "@/components/common/InputField";
-import { setupApp2FA } from "@/services/handle-2fa";
-import { setupEmail2FA } from "@/services/handle-2fa";
-import { disableApp2FA } from "@/services/handle-2fa";
-import { disableEmail2FA } from "@/services/handle-2fa";
-import { setPrimaryApp2FA } from "@/services/handle-2fa";
-import { setPrimaryEmail2FA } from "@/services/handle-2fa";
+import { setup2FA } from "@/services/setup-2fa";
+// import { setupEmail2FA } from "@/services/handle-2fa";
+// import { disableApp2FA } from "@/services/handle-2fa";
+// import { disableEmail2FA } from "@/services/handle-2fa";
+// import { setPrimaryApp2FA } from "@/services/handle-2fa";
+// import { setPrimaryEmail2FA } from "@/services/handle-2fa";
 
-function TwofaMode(props: { title: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 bg-gray-900 text-white text-lg m-8 p-6 rounded-sm">
-      <span className="text-pong-secondary">{props.title}</span>
-      <div className="flex items-center gap-4">
-        <MyBtn
-          label="Enable"
-          className={`${styles.buttonPrimary} w-24`}
-          id={`${props.title === "App" ? "enable-app" : "enable-email"}`}
+function TwofaMode(mode: "app" | "email") {
+  const isApp: boolean = mode === "app";
+  const enableId: string = isApp ? "enable-app" : "enable-email";
+  const primaryId: string = isApp ? "primary-app" : "primary-email";
+  const verifySectionId: string = isApp
+    ? "2fa-app-verify-section"
+    : "2fa-email-verify-section";
+  const feedbackId: string = isApp ? "2fa-app-feedback" : "2fa-email-feedback";
+  const otpInputId: string = isApp ? "2fa-app-otp" : "2fa-email-otp";
+  const verifyBtnId: string = isApp
+    ? "2fa-app-verify-btn"
+    : "2fa-email-verify-btn";
+  const verifyFeedbackId: string = isApp
+    ? "2fa-app-verify-feedback"
+    : "2fa-email-verify-feedback";
+
+  // Set up event listeners after rendering
+  setTimeout(() => {
+    const enableBtn = document.getElementById(enableId);
+    if (enableBtn && !enableBtn.dataset.listener) {
+      enableBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        setup2FA(isApp ? "app" : "email");
+      });
+      enableBtn.dataset.listener = "true";
+    }
+  }, 0);
+
+  const modes = (
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex flex-col items-center justify-center md:flex-row md:justify-between gap-4 bg-gray-900 text-lg m-8 p-6 rounded-sm">
+        <span className="text-pong-secondary">{mode}</span>
+        <div className="flex items-center gap-4">
+          <button className={`${styles.buttonPrimary} w-24`} id={enableId}>
+            Enable
+          </button>
+          <button className={`${styles.buttonPrimary} w-24`} id={primaryId}>
+            Primary
+          </button>
+        </div>
+      </div>
+      <div id={verifySectionId} className="hidden">
+        <p
+          id={feedbackId}
+          className="text-pong-dark-primary text-sm my-2 text-center"
+        ></p>
+        <div id="2fa-app-qr" className="text-center"></div>
+        <input
+          id={otpInputId}
+          type="text"
+          maxlength="6"
+          pattern="[0-9]{6}"
+          placeholder="Enter 6-digit code"
+          className="py-2 px-8 text-center text-gray-800"
+          autocomplete="one-time-code"
         />
-        <MyBtn
-          label="Disable"
-          className={`${styles.buttonPrimary} w-24`}
-          id={`${props.title === "App" ? "disable-app" : "disable-email"}`}
-        />
-        <MyBtn
-          label="Primary"
-          className={`${styles.buttonPrimary} w-24`}
-          id={`${props.title === "App" ? "primary-app" : "primary-email"}`}
-        />
+        <button
+          id={verifyBtnId}
+          className="p-2 bg-red-600 ml-2 rounded-sm hover:bg-red-700 transition-all duration-300 w-32"
+        >
+          Verify
+        </button>
+        <p id={verifyFeedbackId} className="text-pong-error text-sm mt-2"></p>
       </div>
     </div>
   );
-}
 
-function UpdateInfoSection() {
-  const section = (
-    <div className="bg-gray-800 rounded shadow p-6 m-4 w-full max-w-2xl">
-      <h2 className="text-xl font-bold mb-4 text-pong-dark-primary">
-        Update Info
-      </h2>
-      <form className="flex flex-col gap-4">
-        <InputField
-          type="text"
-          name="username"
-          id="update-username"
-          placeholder="new username"
-          className="text-white placeholder:text-gray-300"
-        />
-        <InputField
-          type="email"
-          name="email"
-          id="update-email"
-          placeholder="new email"
-          className="text-white placeholder:text-gray-300"
-        />
-        <InputField
-          type="password"
-          name="password"
-          id="update-password"
-          placeholder="new password"
-          className="text-white placeholder:text-gray-300"
-        />
-        <MyBtn label="update" className={`${styles.buttonPrimary} w-full`} />
-      </form>
-    </div>
-  );
-  return section;
+  return modes;
 }
 
 function TwofaSection() {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded shadow p-6 m-4 w-full max-w-2xl">
-      <h2 className="text-xl font-bold mb-4 text-pong-dark-primary">
+    <div className="bg-gray-800 rounded shadow p-6 m-4 w-full max-w-2xl text-center">
+      <h2 className="text-xl font-bold mb-2 text-pong-dark-primary">
         Two-Factor Authentication
       </h2>
-      <p className="mb-4 text-gray-600 dark:text-gray-300">
+      <p className="mb-2 text-gray-400">
         Enhance your account security with two-factor authentication.
       </p>
-      <TwofaMode title="App" />
-      <TwofaMode title="Email" />
+      {TwofaMode("app")}
+      {TwofaMode("email")}
     </div>
   );
-}
-
-function BlockedAccountsSection() {
-  const section = (
-    <div className="bg-white dark:bg-gray-800 rounded shadow p-6 m-4 w-full max-w-2xl">
-      <h2 className="text-xl font-bold mb-4 text-pong-dark-primary">
-        Blocked Accounts
-      </h2>
-      <ul className="list-disc pl-6">
-        {/* later with dynamic blocked users from friend service */}
-        <li className="mb-2 flex justify-between items-center">
-          <span>l3arbi</span>
-          <MyBtn label="Unblock" className={`${styles.buttonPrimary} w-24`} />
-        </li>
-        <li className="mb-2 flex justify-between items-center">
-          <span>sopu</span>
-          <MyBtn label="Unblock" className={`${styles.buttonPrimary} w-24`} />
-        </li>
-      </ul>
-    </div>
-  );
-  return section;
-}
-
-function DeleteAccountSection() {
-  const section = (
-    <div className="bg-white dark:bg-gray-800 rounded shadow p-6 m-4 w-full max-w-2xl">
-      <h2 className="text-xl font-bold mb-4 text-pong-error">Delete Account</h2>
-      <p className="mb-4 text-pong-error">
-        This action is irreversible. All your data will be permanently deleted.
-      </p>
-
-      <MyBtn
-        label="Delete Account"
-        className={`${styles.buttonPrimary} w-full bg-pong-error hover:bg-red-700 mt-4`}
-      />
-    </div>
-  );
-  return section;
 }
 
 export function Settings() {
-  setTimeout(() => {
-    setupApp2FA();
-  }, 0);
-
   const settingsSection = (
     <section className={styles.pageLayoutDark} id="settings-section">
       <NavBar />
       <div className="w-full relative">
         <TopBar />
         <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto flex flex-col items-center gap-8">
-          <MainHeader isDark={false} title="system" titleSpan="settings" />
-          <UpdateInfoSection />
           <TwofaSection />
-          <BlockedAccountsSection />
-          <DeleteAccountSection />
         </main>
       </div>
     </section>

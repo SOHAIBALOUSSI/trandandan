@@ -3,8 +3,8 @@ import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
-import male from "@/assets/male.png";
-import female from "@/assets/female.png";
+import MaleAvatar from "@/assets/male.png";
+import FemaleAvatar from "@/assets/female.png";
 
 function HeroSection() {
   const user = getCurrentUser();
@@ -44,7 +44,7 @@ function HeroSection() {
           Ranked #4 in BHV Club
         </p>
         <img
-          src={user?.gender === "M" ? male : female}
+          src={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
           alt="profile image"
           className="w-[110px] h-[110px] rounded-full shadow-md mb-2 hover:shadow-xl transition-shadow duration-300"
         />
