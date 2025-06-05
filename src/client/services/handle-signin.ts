@@ -135,7 +135,7 @@ export function handleSignIN() {
       const elapsed = Date.now() - startTime;
       const waitTime = Math.max(0, 1200 - elapsed);
 
-      if (response.ok) {
+      if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
           feedback.textContent = "Welcome back, champ! Entering the lounge...";
           feedback.className = `${styles.formMessage} text-pong-success`;
@@ -153,7 +153,7 @@ export function handleSignIN() {
         }, waitTime);
       } else if (result.statusCode === 206) {
         // 2FA Required
-        localStorage.setItem("tempToken", result.data?.tempToken || "");
+        console.log("2FA required for login");
         setTimeout(() => {
           feedback.textContent =
             "Two-factor authentication required. Please complete the verification.";
