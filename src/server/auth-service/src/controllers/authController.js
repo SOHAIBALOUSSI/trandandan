@@ -150,7 +150,7 @@ export async function loginHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeOtpCode(this.db, otpCode, user.id);
+                await updateOtpCode(this.db, otpCode, user.id);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -191,7 +191,7 @@ export async function registerHandler(request, reply) {
         const refreshToken = this.jwt.signRT({ id: userId });
         
         await addToken(this.db, refreshToken, userId);
-        fetch('http://profile-service:3001/profile/register', {
+        const response = await fetch('http://profile-service:3001/profile/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
