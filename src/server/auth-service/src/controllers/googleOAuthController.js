@@ -96,24 +96,12 @@ export async function googleLoginHandler(request, reply) {
         await addToken(this.db, refreshToken, user.id);
         
         if (isNewUser) {
-            const response = await fetch('http://profile-service:3001/profile/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-                body: JSON.stringify({
-                    username: user.username,
-                    email: user.email,
-                    avatar_url: userInfo.picture
-                })
-            });
-
-            if (!response.ok) {
-                await deleteUser(this.db, user.id);
-                await revokeToken(this.db, refreshToken);
-                return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
-            }
+           this.rabbit.produceMessage({
+                userId: user.id,
+                username: user.username,
+                email: user.email,
+                avatar_url: userInfo.picture
+            })
             return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
         }
         else

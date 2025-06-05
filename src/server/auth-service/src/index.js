@@ -9,6 +9,7 @@ import { createTwoFaTable } from './database/createTwoFaTable.js';
 import authRoutes from './routes/authRoutes.js';
 import twoFARoutes from './routes/2FARoutes.js';
 import { createOAuthIdentityTable } from './database/createOAuthIdentityTable.js';
+import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
 
 const server = fastify({logger: true});
 
@@ -21,6 +22,7 @@ await server.register(jwtPlugin, {
     tempTokenKey: process.env.TJWT_SECRET_KEY
 });
 await server.register(nodemailerPlugin);
+await server.register(rabbitmqPlugin);
 
 await createUserTable(server.db);
 await createTokenTable(server.db);

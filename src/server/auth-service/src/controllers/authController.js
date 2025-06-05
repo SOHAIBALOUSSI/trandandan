@@ -191,24 +191,30 @@ export async function registerHandler(request, reply) {
         const refreshToken = this.jwt.signRT({ id: userId });
         
         await addToken(this.db, refreshToken, userId);
-        const response = await fetch('http://profile-service:3001/profile/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify({
-                username: username,
-                email: email,
-                gender: gender
-            })
+        this.rabbit.produceMessage({
+            userId: userId,
+            username: username,
+            email: email,
+            gender: gender
         });
+        // const response = await fetch('http://profile-service:3001/profile/register', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${accessToken}`
+        //     },
+        //     body: JSON.stringify({
+        //         username: username,
+        //         email: email,
+        //         gender: gender
+        //     })
+        // });
       
-        if (!response.ok) {
-            await deleteUser(this.db, userId);
-            await revokeToken(this.db, refreshToken);
-            return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
-        }
+        // if (!response.ok) {
+        //     await deleteUser(this.db, userId);
+        //     await revokeToken(this.db, refreshToken);
+        //     return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
+        // }
         
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
     } catch (error) {
