@@ -103,7 +103,6 @@ export async function googleLoginHandler(request, reply) {
                     'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
-                    user_id: user.id,
                     username: user.username,
                     email: user.email,
                     avatar_url: userInfo.picture

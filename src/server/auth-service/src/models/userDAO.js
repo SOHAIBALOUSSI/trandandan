@@ -56,7 +56,7 @@ export async function deleteUser(db, id) {
     return result.changes;
 }
 
-export async function addUserAndOAuthIdentity(db, userInfo) {
+export async function   addUserAndOAuthIdentity(db, userInfo) {
     const userResult = await db.run('INSERT INTO user (username, email) VALUES (?, ?)',
         [
             userInfo.username,

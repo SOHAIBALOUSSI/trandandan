@@ -104,7 +104,6 @@ export async function fortyTwoLoginHandler(request, reply) {
                     'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
-                    user_id: user.id,
                     username: user.username,
                     email: user.email,
                     avatar_url: userInfo.image.link
@@ -126,3 +125,6 @@ export async function fortyTwoLoginHandler(request, reply) {
     }
 }
 
+export async function makePrimaryHandler(request, reply) {
+    
+}
