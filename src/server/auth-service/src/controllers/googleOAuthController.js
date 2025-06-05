@@ -42,7 +42,7 @@ export async function googleLoginHandler(request, reply) {
         const userInfo = await userinfo.json();
         console.log('User info: ', userInfo);
         const actualInfo = {
-        provider: 'google',
+            provider: 'google',
             sub: userInfo.sub,
             email: userInfo.email,
             accessToken: access_token,
@@ -103,7 +103,6 @@ export async function googleLoginHandler(request, reply) {
                     'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
-                    user_id: user.id,
                     username: user.username,
                     email: user.email,
                     avatar_url: userInfo.picture
