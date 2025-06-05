@@ -130,8 +130,6 @@ export function handleSignIN() {
 
       const result = await response.json();
 
-      console.log(result);
-
       const elapsed = Date.now() - startTime;
       const waitTime = Math.max(0, 1200 - elapsed);
 
@@ -153,7 +151,6 @@ export function handleSignIN() {
         }, waitTime);
       } else if (result.statusCode === 206) {
         // 2FA Required
-        console.log("2FA required for login");
         setTimeout(() => {
           feedback.textContent =
             "Two-factor authentication required. Please complete the verification.";

@@ -4,6 +4,8 @@ import { handleSignUp } from "@/services/handle-signup";
 import { MainHeader } from "@/components/common/MainHeader";
 import { InputField } from "@/components/common/InputField";
 import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
+import { handle42Signin } from "@/services/handle-42-signin";
+import { handleGoogleSignin } from "@/services/handle-google-signin";
 
 function Form() {
   return (
@@ -117,6 +119,8 @@ function Form() {
 export function Signup() {
   setTimeout(() => {
     handleSignUp();
+    handleGoogleSignin();
+    handle42Signin();
   }, 0);
 
   return (

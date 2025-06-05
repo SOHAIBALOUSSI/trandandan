@@ -39,13 +39,13 @@ export function handleSignUp() {
     };
 
     // -----------------------------------------------------------
-    console.log(`
-		Username: ${userInfos.username}
-		Email: ${userInfos.email} 
-		Gender: ${userInfos.gender}
-		Password: ${userInfos.password}
-		Confirm: ${userInfos.confirmPassword}
-	`);
+    // console.log(`
+	// 	Username: ${userInfos.username}
+	// 	Email: ${userInfos.email} 
+	// 	Gender: ${userInfos.gender}
+	// 	Password: ${userInfos.password}
+	// 	Confirm: ${userInfos.confirmPassword}
+	// `);
     // -----------------------------------------------------------
 
     // Reset feedback and button state

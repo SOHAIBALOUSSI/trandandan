@@ -10,6 +10,9 @@ services:
       - transcendence
     ports:
       - "3000:3000"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   profile:
     container_name: profile-service
@@ -22,18 +25,71 @@ services:
       - transcendence
     ports:
       - "3001:3001"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
-  # friends:
-  #   container_name: friends-service
-  #   build: src/server/friends-service
-  #   image: friends-service
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - transcendence
-  #   ports:
-  #     - "3002:3002"
+  friends:
+    container_name: friends-service
+    build: src/server/friends-service
+    image: friends-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    ports:
+      - "3002:3002"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  notifications:
+    container_name: notifications-service
+    build: src/server/notifications-service
+    image: notifications-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    ports:
+      - "3003:3003"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  chat:
+    container_name: chat-service
+    build: src/server/chat-service
+    image: chat-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    ports:
+      - "3004:3004"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - transcendence
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     container_name: frontend
@@ -50,7 +106,9 @@ services:
     depends_on:
       - auth
       - profile
-      # - friends
+      - friends
+      - notifications
+      - chat
     networks:
       - transcendence
     restart: always

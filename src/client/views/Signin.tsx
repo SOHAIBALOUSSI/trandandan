@@ -4,6 +4,8 @@ import { handleSignIN } from "@/services/handle-signin";
 import { InputField } from "@/components/common/InputField";
 import { MainHeader } from "@/components/common/MainHeader";
 import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
+import { handle42Signin } from "@/services/handle-42-signin";
+import { handleGoogleSignin } from "@/services/handle-google-signin";
 
 function TwoFAVerification() {
   return (
@@ -103,6 +105,8 @@ function Form() {
 export function Signin() {
   setTimeout(() => {
     handleSignIN();
+	handleGoogleSignin();
+	handle42Signin();
   }, 0);
 
   const signinSection = (
