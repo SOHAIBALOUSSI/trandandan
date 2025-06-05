@@ -7,11 +7,12 @@ export async function createProfileTable(db){
             userId INTEGER NOT NULL UNIQUE,
             username TEXT NOT NULL UNIQUE,
             email TEXT NOT NULL UNIQUE,
-            gender TEXT NOT NULL CHECK(gender IN ('F', 'M')),
+            gender TEXT CHECK(gender IN ('F', 'M')),
             avatar_url TEXT DEFAULT '',
             status TEXT DEFAULT 'offline',
             solde INTEGER DEFAULT 5,
-            level 
+            level INTEGER DEFAULT 0,
+            rank INTEGER,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`
