@@ -7,7 +7,7 @@ import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
 import { handle42Signin } from "@/services/handle-42-signin";
 import { handleGoogleSignin } from "@/services/handle-google-signin";
 
-function TwoFAVerification() {
+function TwoFAVerification() {	
   return (
     <div
       id="signin-2fa-section"
@@ -77,7 +77,7 @@ function Form() {
         <span id="btn-label-in">enter the lounge</span>
       </button>
       <a
-        href="#"
+        href="password_reset"
         className="-mt-2 text-pong-accent text-xs font-bold underline hover:text-pong-secondary transition-all duration-300"
         data-link
       >
@@ -104,9 +104,9 @@ function Form() {
 
 export function Signin() {
   setTimeout(() => {
+    handleGoogleSignin();
+    handle42Signin();
     handleSignIN();
-	handleGoogleSignin();
-	handle42Signin();
   }, 0);
 
   const signinSection = (

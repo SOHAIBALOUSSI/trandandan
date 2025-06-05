@@ -15,11 +15,7 @@ export function MainHeader(props: {
     <div className="flex flex-col text-center pt-2 md:pt-0">
       <h1 className={titleStyles}>
         {title}{" "}
-        <span
-          className={
-            isDark ? styles.titleSpanDark : styles.titleSpanLight
-          }
-        >
+        <span className={isDark ? styles.titleSpanDark : styles.titleSpanLight}>
           {titleSpan}
         </span>
       </h1>
