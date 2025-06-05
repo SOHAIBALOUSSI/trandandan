@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# -ne 2 ]; then
-    echo Usage: $0 "[service_name]_service" 
+if [ $# -ne 1 ]; then
+    echo Usage: $0 "[service_name]-service" 
     exit 1
 fi
 

@@ -2,10 +2,13 @@ import { createNotificationsTable } from "./database/initDatabase.js";
 import RabbitMQClient from "./libs/rabbitMQ.js";
 import { WebSocketServer, WebSocket } from 'ws';
 import sqlite3 from 'sqlite3';
+import dotenv from 'dotenv';
 import { open } from 'sqlite';
 import { addNotification, getAllNotifications, markAsDelivered } from "./database/notificationsDAO.js";
 import { verifyToken } from "./middleware/authMiddleware.js";
 
+
+dotenv.config();
 
 let db;
 

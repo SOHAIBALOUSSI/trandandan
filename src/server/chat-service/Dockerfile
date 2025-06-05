@@ -1,6 +1,4 @@
-FROM node:20-slim
-
-RUN apt update && apt upgrade -y && apt install -y sqlite3
+FROM node:slim
 
 WORKDIR /usr/src/app
 

@@ -11,6 +11,7 @@ export async function createProfileTable(db){
             avatar_url TEXT DEFAULT '',
             status TEXT DEFAULT 'offline',
             solde INTEGER DEFAULT 5,
+            level 
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`
