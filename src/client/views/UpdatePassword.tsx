@@ -25,6 +25,7 @@ export function UpdatePassword() {
             type="password"
             name="newPassword"
             placeholder="New Password"
+            id="new-password"
             required
             className="w-full p-3 border-2 border-pong-accent/30 focus:border-pong-accent rounded-lg outline-none transition-all duration-200 bg-pong-secondary/10"
             autoComplete="new-password"
@@ -33,6 +34,7 @@ export function UpdatePassword() {
             type="password"
             name="newPasswordConfirm"
             placeholder="Confirm New Password"
+            id="confirm-password"
             required
             className="w-full p-3 border-2 border-pong-accent/30 focus:border-pong-accent rounded-lg outline-none transition-all duration-200 bg-pong-secondary/10"
             autoComplete="confirm-new-password"
@@ -49,6 +51,11 @@ export function UpdatePassword() {
             className={`group ${styles.primaryButton} shadow-lg hover:animate-none relative flex items-center justify-center`}
             aria-busy="false"
           >
+            <span
+              id="spinner-update"
+              className="hidden absolute left-4 w-4 h-4 border-2 border-white border-t-pong-accent rounded-full animate-spin"
+              aria-hidden="true"
+            ></span>
             <i
               aria-hidden="true"
               className={`fa-solid fa-lock ${styles.primaryButtonIcon}`}

@@ -1,11 +1,15 @@
-import { handleResetPassword } from "../services/handle-reset-password";
-import { Footer } from "../components/layout/Footer";
-import { InputField } from "../components/common/InputField";
-import { styles } from "../styles/styles";
+import {
+  handleResetPassword,
+  verifyOtpCode,
+} from "@/services/handle-reset-password";
+import { Footer } from "@/components/layout/Footer";
+import { InputField } from "@/components/common/InputField";
+import { styles } from "@/styles/styles";
 
 export function ResetPassword() {
   setTimeout(() => {
     handleResetPassword();
+    verifyOtpCode();
   }, 0);
 
   const resetPassword = (
@@ -93,14 +97,24 @@ export function ResetPassword() {
             placeholder="6-digit code"
             autoComplete="one-time-code"
           />
+          <div
+            id="otp-feedback"
+            className={`${styles.formMessage} hidden`}
+            role="alert"
+            aria-live="polite"
+          ></div>
           <button
             type="submit"
-            className={`
-              ${styles.buttonPrimary} w-40
-              transition-all duration-200
-            `}
+            id="otp-btn"
+            aria-busy="false"
+            className={`${styles.buttonPrimary} w-40 transition-200`}
           >
-            Verify Code
+            <span
+              id="spinner-otp"
+              className="hidden absolute left-4 w-4 h-4 border-2 border-white border-t-pong-accent rounded-full animate-spin"
+              aria-hidden="true"
+            ></span>
+            <span id="btn-label-otp">verify code</span>
           </button>
         </form>
         <div
