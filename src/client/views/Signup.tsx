@@ -10,8 +10,7 @@ import { handleGoogleSignin } from "@/services/handle-google-signin";
 function Form() {
   return (
     <form
-      action=""
-      method="post"
+      method="POST"
       id="signup-form"
       className={`${styles.form} ${styles.fadeInSection}`}
     >

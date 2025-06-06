@@ -1,9 +1,15 @@
 export function handleResetPassword() {
-  const form = document.getElementById(
-    "reset-password-form"
-  ) as HTMLFormElement;
-  const otpForm = document.getElementById("otp-form") as HTMLFormElement;
-  if (!form) return;
+  const form = document.querySelector<HTMLFormElement>("#reset-password-form");
+  const otpForm = document.querySelector<HTMLFormElement>("#otp-form");
+  const feedback = document.querySelector<HTMLDivElement>("#reset-feedback");
+  const submitBtn = document.querySelector<HTMLButtonElement>(
+    "#reset-password-btn"
+  );
+  const spinner = document.querySelector<HTMLSpanElement>("#spinner-reset");
+  const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label-reset");
+
+  if (!form || !otpForm || !feedback || !submitBtn || !spinner || !btnLabel)
+    return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -19,14 +25,15 @@ export function handleResetPassword() {
         body: JSON.stringify({ email }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to send reset link. Please try again.");
+      if (response.ok) {
+        alert("Reset link sent to your email address.");
+        emailInput.value = "";
+        otpForm.classList.remove("hidden");
+        otpForm.classList.add("flex");
+      } else {
+        console.error("Failed to send reset link. Please try again.");
+        return;
       }
-
-      alert("Reset link sent to your email address.");
-      emailInput.value = "";
-      otpForm.classList.remove("hidden");
-      otpForm.classList.add("flex");
     } catch (error) {
       console.error(error);
     }

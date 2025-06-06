@@ -7,7 +7,7 @@ import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
 import { handle42Signin } from "@/services/handle-42-signin";
 import { handleGoogleSignin } from "@/services/handle-google-signin";
 
-function TwoFAVerification() {	
+function TwoFAVerification() {
   return (
     <div
       id="signin-2fa-section"
@@ -37,7 +37,7 @@ function TwoFAVerification() {
 function Form() {
   const form = (
     <form
-      method="post"
+      method="POST"
       id="signin-form"
       className={`${styles.form} ${styles.fadeInSection}`}
     >
