@@ -2,6 +2,7 @@ import { addUserAndOAuthIdentity, deleteUser, findOauthIdentity, findUserByEmail
 import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
 import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
+import { clearAuthCookies, setAuthCookies, setTempAuthToken } from "../utils/authCookies.js";
 
 export async function   fortyTwoSetupHandler(request, reply) {
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code&prompt=consent`;
@@ -90,12 +91,15 @@ export async function fortyTwoLoginHandler(request, reply) {
                 }
                 await this.sendMail(mailOptions);
             }
-            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken, twoFaType: twoFa.type  }));
+            clearAuthCookies(reply);
+            setTempAuthToken(reply, tempToken);
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         await addToken(this.db, refreshToken, user.id);
         
+        setAuthCookies(reply, accessToken, refreshToken);
         if (isNewUser) {
             this.rabbit.produceMessage({
                 userId: user.id,
@@ -103,10 +107,10 @@ export async function fortyTwoLoginHandler(request, reply) {
                 email: user.email,
                 avatar_url: userInfo.image.link
             });;
-            return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
+            return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
         }
         else
-            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

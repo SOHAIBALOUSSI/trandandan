@@ -9,6 +9,7 @@ import {
     updateTempSecret,
     updateUserSecret
 } from '../models/twoFaDAO.js';
+import { setAuthCookies } from '../utils/authCookies.js';
 
 export async function setup2FAApp(request, reply) {
     try {
@@ -109,7 +110,8 @@ export async function verify2FAAppLogin(request, reply) {
         
         await addToken(this.db, refreshToken, userId);
         
-        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+        setAuthCookies(reply, accessToken, refreshToken);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
