@@ -75,25 +75,25 @@ export async function googleLoginHandler(request, reply) {
             }
         }
         
-        const twoFa = await findTwoFaByUid(this.db, user.id);
-        if (twoFa && twoFa.enabled) {
-            const tempToken = this.jwt.signTT({ id: user.id });
-            if (twoFa.type === 'email')
-            {
-                const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeOtpCode(this.db, otpCode, user.id);
-                const mailOptions = {
-                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-                    to: `${user.email}`,
-                    subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${otpCode}>`,
-                }
-                await this.sendMail(mailOptions);
-            }
-            clearAuthCookies(reply);
-            setTempAuthToken(reply, tempToken);
-            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type }));
-        }
+        // const twoFa = await findTwoFaByUid(this.db, user.id);
+        // if (twoFa && twoFa.enabled) {
+        //     const tempToken = this.jwt.signTT({ id: user.id });
+        //     if (twoFa.type === 'email')
+        //     {
+        //         const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+        //         await storeOtpCode(this.db, otpCode, user.id);
+        //         const mailOptions = {
+        //             from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
+        //             to: `${user.email}`,
+        //             subject: "Hello from M3ayz00",
+        //             text: `OTP CODE : <${otpCode}>`,
+        //         }
+        //         await this.sendMail(mailOptions);
+        //     }
+        //     clearAuthCookies(reply);
+        //     setTempAuthToken(reply, tempToken);
+        //     return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type }));
+        // }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         await addToken(this.db, refreshToken, user.id);

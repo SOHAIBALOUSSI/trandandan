@@ -247,7 +247,7 @@ export async function meHandler(request, reply) {
 
 export async function refreshHandler(request, reply) {
     try {
-        const tokens = getAuthCookies(request);        
+        const tokens = getAuthCookies(request);
         if (!tokens.refreshToken)
             return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_REQUIRED'));
         
