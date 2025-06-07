@@ -1,7 +1,8 @@
+import { makePrimaryHandler } from "../controllers/42OAuthController.js";
 import { setup2FAApp, verify2FAAppLogin, verify2FAAppSetup } from "../controllers/app2FAController.js";
 import { setup2FAEmail, verify2FAEmailSetup, verify2FALogin } from "../controllers/email2FAController.js";
-// import { setup2FASms, verify2FASmsSetup } from "../controllers/sms2FAController.js";
-import { otpCodeSchema } from "../schemas/authSchema.js";
+import { disableTwoFa, enableTwoFa, getTwoFaHandler } from "../controllers/twoFaController.js";
+import { methodTypeSchema, otpCodeSchema } from "../schemas/authSchema.js";
 
 async function twoFARoutes(fastify) {
     fastify.post('/app/setup', {
@@ -46,6 +47,34 @@ async function twoFARoutes(fastify) {
         handler: verify2FALogin
     });
 
+    fastify.get('/', {
+        preHandler: fastify.authenticate,
+        handler: getTwoFaHandler
+    })
+
+    fastify.post('/disable', {
+        schema: {
+            body: methodTypeSchema
+        },
+        preHandler: fastify.authenticate,
+        handler: disableTwoFa
+    })
+
+    fastify.post('/enable', {
+        schema: {
+            body: methodTypeSchema
+        },
+        preHandler: fastify.authenticate,
+        handler: enableTwoFa
+    })
+
+    fastify.post('/primary', {
+        schema: {
+            body: methodTypeSchema
+        },
+        preHandler: fastify.authenticate,
+        handler: makePrimaryHandler
+    })
 }
 
 export default twoFARoutes;

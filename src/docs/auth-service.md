@@ -32,6 +32,10 @@ The `auth-service` is responsible for handling user authentication, registration
 | POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      | (none)        |
 | POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      | { otpCode }   |
 | POST   | `/email/verify-login` | Verify OPT code for login with 2fa using email | Yes                      | { otpCode }   |
+| GET    | `/`                   | Get informations about the user's twoFa methods| Yes                      | (none)        |
+| POST   | `/enable`             | Enables the 2FA method received in body        | Yes                      | { method }    |
+| POST   | `/disable`            | Disables the 2FA method received in body       | Yes                      | { method }    |
+| POST   | `/primary`            | Makes the 2FA method received in body primary  | Yes                      | { method }    |
 
 ---
 
@@ -52,6 +56,8 @@ The `auth-service` is responsible for handling user authentication, registration
 - **otpCode Schema**:
   - `otpCode`: string, required
 
+- **methodType Schema**
+  - `method`: string, required
 ---
 
 ## Response Schema
@@ -69,6 +75,18 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ## Response Codes
 
+**Token Error Codes**
+```yaml
+  401: {
+    TOKEN_REQUIRED
+    TEMP_TOKEN_EXPIRED
+    TEMP_TOKEN_INVALID
+    ACCESS_TOKEN_EXPIRED
+    ACCESS_TOKEN_INVALID
+  }
+  500: INTERNAL_SERVER_ERROR
+```
+
 **Prefix: /auth**
 
 - `/login`
@@ -77,6 +95,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
   400: {
     INVALID_CREDENTIALS
+    USER_ALREADY_LINKED
     INVALID_PASSWORD
   }
   200: USER_LOGGED_IN
@@ -93,7 +112,6 @@ The `auth-service` is responsible for handling user authentication, registration
     UNMATCHED_PASSWORDS
     PASSWORD_POLICY
     USER_EXISTS
-    PROFILE_CREATION_FAILED
   }
   201: USER_REGISTERED
   500: INTERNAL_SERVER_ERROR
@@ -104,11 +122,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```yaml
 
-  400: {
-    AUTH_CODE_REQUIRED
-    PROFILE_CREATION_FAILED
-  }
-  206: TWOFA_REQUIRED
+  400: AUTH_CODE_REQUIRED
   200: USER_LOGGED_IN
   201: USER_REGISTERED
   500: INTERNAL_SERVER_ERROR
@@ -119,11 +133,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```yaml
 
-  400: {
-    AUTH_CODE_REQUIRED
-    PROFILE_CREATION_FAILED
-  }
-  206: TWOFA_REQUIRED
+  400: AUTH_CODE_REQUIRED
   200: USER_LOGGED_IN
   201: USER_REGISTERED
   500: INTERNAL_SERVER_ERROR
@@ -161,8 +171,37 @@ The `auth-service` is responsible for handling user authentication, registration
   401: {
     REFRESH_TOKEN_REQUIRED
     REFRESH_TOKEN_INVALID
+    REFRESH_TOKEN_EXPIRED
   }
   200: TOKEN_REFRESHED
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/verify-code`
+```yaml
+
+  400: CODE_NOT_SET
+  401: {
+    UNAUTHORIZED
+    OTP_REQUIRED
+    OTP_INVALID
+  }
+  200: CODE_VERIFIED
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/update-password`
+```yaml
+
+  400: {
+    USER_LINKED
+    UNMATCHED_PASSWORDS
+  } 
+  401: UNAUTHORIZED
+  200: USER_LOGGED_IN
+  206: TWOFA_REQUIRED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -269,30 +308,42 @@ The `auth-service` is responsible for handling user authentication, registration
 
 ```
 
-- `/verify-code`
+- `/`
 ```yaml
 
-  400: CODE_NOT_SET
-  401: {
-    UNAUTHORIZED
-    OTP_REQUIRED
-    OTP_INVALID
-  }
-  200: CODE_VERIFIED
+  401: UNAUTHORIZED
+  404: NO_METHODS_FOUND
+  200: METHODS_FETCHED
   500: INTERNAL_SERVER_ERROR
 
 ```
 
-- `/update-password`
+- `/disable`
 ```yaml
 
-  400: {
-    USER_LINKED
-    UNMATCHED_PASSWORDS
-  } 
   401: UNAUTHORIZED
-  200: USER_LOGGED_IN
-  206: TWOFA_REQUIRED
+  400: METHODS_NOT_ENABLED
+  200: METHOD_DISABLED
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/enable`
+```yaml
+
+  401: UNAUTHORIZED
+  400: METHODS_NOT_ENABLED
+  200: METHOD_DISABLED
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/primary`
+```yaml
+
+  401: UNAUTHORIZED
+  400: METHODS_NOT_ENABLED
+  200: PRIMARY_METHOD_UPDATED
   500: INTERNAL_SERVER_ERROR
 
 ```

@@ -39,9 +39,6 @@ async function authRoutes(fastify) {
     });
 
     fastify.post('/logout', {
-        schema: {
-            body: tokenSchema
-        }, 
         preHandler: fastify.authenticate,
         handler: logoutHandler
     });
@@ -52,9 +49,6 @@ async function authRoutes(fastify) {
     } );
 
     fastify.post('/refresh',{
-        schema: {
-            body: tokenSchema
-        },
         handler: refreshHandler
     } );
 

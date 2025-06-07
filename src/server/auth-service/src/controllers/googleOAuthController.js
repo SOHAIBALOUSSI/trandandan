@@ -1,8 +1,7 @@
-import { addUserAndOAuthIdentity, deleteUser, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
-import { addToken, revokeToken } from "../models/tokenDAO.js";
+import { addUserAndOAuthIdentity, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
+import { addToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
-import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
-import { clearAuthCookies, setAuthCookies, setTempAuthToken } from "../utils/authCookies.js";
+import { setAuthCookies } from "../utils/authCookies.js";
 
 export async function   googleSetupHandler(request, reply) {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
@@ -74,26 +73,7 @@ export async function googleLoginHandler(request, reply) {
                 user = await findUserById(this.db, newUserId);
             }
         }
-        
-        // const twoFa = await findTwoFaByUid(this.db, user.id);
-        // if (twoFa && twoFa.enabled) {
-        //     const tempToken = this.jwt.signTT({ id: user.id });
-        //     if (twoFa.type === 'email')
-        //     {
-        //         const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-        //         await storeOtpCode(this.db, otpCode, user.id);
-        //         const mailOptions = {
-        //             from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-        //             to: `${user.email}`,
-        //             subject: "Hello from M3ayz00",
-        //             text: `OTP CODE : <${otpCode}>`,
-        //         }
-        //         await this.sendMail(mailOptions);
-        //     }
-        //     clearAuthCookies(reply);
-        //     setTempAuthToken(reply, tempToken);
-        //     return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type }));
-        // }
+
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         await addToken(this.db, refreshToken, user.id);

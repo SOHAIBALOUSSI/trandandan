@@ -73,15 +73,28 @@ async function jwtPlugin(fastify, options) {
                 cookie = getTempAuthToken(request);
                 if (!cookie)
                     return reply.code(401).send(createResponse(401, 'TOKEN_REQUIRED'));
-                decodedUser = await fastify.jwt.verifyTT(cookie);
-                request.user = decodedUser;
-                return ;
+                try {
+                    decodedUser = await fastify.jwt.verifyTT(cookie);
+                    request.user = decodedUser;
+                    return ;
+                } catch (error) {
+                    if (error.name === 'TokenExpiredError')
+                        return reply.code(401).send(createResponse(401, 'TEMP_TOKEN_EXPIRED'))
+                    return reply.code(401).send(createResponse(401, 'TEMP_TOKEN_INVALID'))
+                }
             }
-            decodedUser = await fastify.jwt.verifyAT(cookie.accessToken);
-            request.user = decodedUser;
+            try {
+                decodedUser = await fastify.jwt.verifyAT(cookie.accessToken);
+                request.user = decodedUser;
+                return;
+            } catch (error) {
+                if (error.name === 'TokenExpiredError')
+                    return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_EXPIRED'))
+                return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_INVALID'))
+            }
         } catch (error) {
             console.log("Error while authenticating: ", error);
-            return reply.code(401).send(createResponse(401, 'TOKEN_INVALID'));
+            return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
         }
     })
 };

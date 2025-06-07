@@ -5,6 +5,7 @@ export async function createTwoFaTable(db){
             `CREATE TABLE IF NOT EXISTS twofa (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             enabled INTEGER DEFAULT FALSE,
+            is_primary INTEGER DEFAULT FALSE,
             type TEXT CHECK (type IN ('app', 'email')) DEFAULT NULL,
             otp TEXT DEFAULT NULL,
             otp_exp INTEGER NULL,

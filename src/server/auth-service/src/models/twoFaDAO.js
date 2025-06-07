@@ -8,8 +8,8 @@ export async function storeTempSecret(db, secret, id) {
 }
 
 export async function updateTempSecret(db, secret, id) {
-    const result = await db.run('UPDATE twofa SET temp_secret = ? WHERE user_id = ?)',
-        [secret, id]
+    const result = await db.run('UPDATE twofa SET temp_secret = ? WHERE user_id = ? AND type = ?)',
+        [secret, id, 'app']
     );
 
     console.log("TwoFa: updated tempSecret in row: ", result.changes);
@@ -21,8 +21,8 @@ export async function updateUserSecret(db, id) {
         secret = temp_secret,
         temp_secret = NULL,
         enabled = TRUE
-        WHERE user_id = ?`,
-        [id]
+        WHERE user_id = ? AND type = ?`,
+        [id, 'app']
     );   
     console.log("TwoFa(app) updated with ID: ", result.changes);
     return result.changes;
@@ -36,35 +36,76 @@ export async function storeOtpCode(db, otpCode, id) {
     return result.lastID;
 }
 
-export async function updateOtpCode(db, otpCode, id) {
+export async function updateOtpCode(db, otpCode, id, type) {
     const result = await db.run(`UPDATE twofa SET 
         otp = ?, 
         otp_exp = ? 
-        WHERE user_id = ?`,
-        [otpCode, Date.now() + 60 * 60 * 1000, id]
+        WHERE user_id = ? AND type = ?`,
+        [otpCode, Date.now() + 60 * 60 * 1000, id, type]
     );
     console.log("TwoFa: updated TOTP code in row: ", result.changes);
     return result.changes;
 }
 
-export async function updateUser2FA(db, id) {
+export async function updateUser2FA(db, id, type) {
     const result = await db.run(`UPDATE twofa SET
         enabled = TRUE
-        WHERE user_id = ?`,
-        [id]
+        WHERE user_id = ? AND type = ?`,
+        [id, type]
     );
     console.log("TwoFa(email) updated with ID: ", result.changes);
     return result.changes;
 }
 
 export async function findTwoFaByUidAndType(db, id, type) {
+    console.log('Fetching twoFa by UID and type...');
     return await db.get('SELECT * FROM twofa WHERE user_id = ? AND type = ?',
         [id, type]
     );
 }
 
 export async function findTwoFaByUid(db, id) {
+    console.log('Fetching twoFa by UID');
     return await db.get('SELECT * FROM twofa WHERE user_id = ?',
         [id]
+    );
+}
+
+export async function findPrimaryTwoFaByUid(db, id) {
+    console.log('Fetching primary TwoFa by UID');
+    return await db.get('SELECT * FROM twofa WHERE user_id = ? AND is_primary = 1',
+        [id]
+    );
+}
+
+export async function getAllTwoFaMethodsByUid(db, id) {
+    console.log('Fetching all twoFa methods by UID');
+    return await db.all('SELECT enabled, is_primary, type FROM twofa WHERE user_id = ?',
+        [id]
+    );
+}
+
+export async function disableTwoFaByUidAndType(db, id, type) {
+    console.log('Disabling twoFa by UID and type');
+    return await db.run('UPDATE twofa SET enabled = 0 WHERE id = ? AND type = ?',
+        [id, type]
+    );
+}
+
+export async function enableTwoFaByUidAndType(db, id, type) {
+    console.log('Enabling twoFa by UID and type');
+    return await db.run('UPDATE twofa SET enabled = 1 WHERE id = ? AND type = ?',
+        [id, type]
+    );
+}
+
+export async function makeTwoFaPrimaryByUidAndType(db, id, type) {
+    console.log('Making twoFa method primary by UID and type');
+    await db.run('UPDATE twofa SET is_primary = 0 WHERE id = ?',
+        [id]
+    );
+
+    return await db.run('UPDATE twofa SET is_primary = 1 WHERE id = ? AND type = ?',
+        [id, type]
     );
 }
