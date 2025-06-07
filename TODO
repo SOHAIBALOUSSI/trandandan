@@ -4,3 +4,5 @@
 Subtle background pattern/image for depth (/assets/pingpong-bg.svg)
 
 change 2FA_REQUIRED to TWOFA_REQUIRED
+
+validate email in server side

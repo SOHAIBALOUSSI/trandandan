@@ -78,3 +78,12 @@ export const passwordSchema = {
     },
     additionalProperties: false
 }
+
+export const methodTypeSchema = {
+    type: 'object',
+    required: ['method'],
+    properties: {
+        method: { enum: ['app', 'email'] }
+    },
+    additionalProperties: false
+}

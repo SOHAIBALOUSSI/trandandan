@@ -1,13 +1,9 @@
-// Main entry point for the client-side application
-
-// Import necessary styles and router setup
 import "./styles/all.min.css";
 import "./styles/normalize.css";
 import "./styles/main.css";
 import { router } from "./router/router";
-import { Settings } from "./views/Settings";
 
-// Setup Single Page Application link interception
+// Setup SPA link interception
 export function setupSPA(): void {
   document.addEventListener("click", async (e) => {
     const target = e.target as HTMLElement;
@@ -18,13 +14,13 @@ export function setupSPA(): void {
       const href = link.getAttribute("href");
       if (href && href !== window.location.pathname) {
         history.pushState(null, "", href);
-        await router(); // Re-render the application with the new route
+        await router(); // Re-render the app with the new route
       }
     }
   });
 }
 
-// // Main SPA router logic
+// Main SPA router logic
 setupSPA();
 window.addEventListener("load", router);
 window.addEventListener("popstate", router);

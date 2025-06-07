@@ -9,13 +9,14 @@ import {
     updateTempSecret,
     updateUserSecret
 } from '../models/twoFaDAO.js';
+import { setAuthCookies } from '../utils/authCookies.js';
 
 export async function setup2FAApp(request, reply) {
     try {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         const secret = speakeasy.generateSecret({
             name: `trandenden (${user.username})`,
@@ -47,7 +48,7 @@ export async function verify2FAAppSetup(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'app');
         if (!twoFa)
@@ -68,6 +69,7 @@ export async function verify2FAAppSetup(request, reply) {
         if (!isValid)
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
+        await updateUser2FA(this.db, userId, 'app');
         await updateUserSecret(this.db, userId);
         
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
@@ -83,7 +85,7 @@ export async function verify2FAAppLogin(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'app');
         if (!twoFa)
@@ -109,7 +111,8 @@ export async function verify2FAAppLogin(request, reply) {
         
         await addToken(this.db, refreshToken, userId);
         
-        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+        setAuthCookies(reply, accessToken, refreshToken);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

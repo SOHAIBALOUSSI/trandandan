@@ -1,5 +1,5 @@
 import { styles } from "@/styles/styles";
-import { Errors } from "@/utils/error-messages";
+import { LostPasswordRes } from "@/utils/response-messages";
 
 export function handleResetPassword() {
   const form = document.querySelector<HTMLFormElement>("#reset-password-form");
@@ -60,7 +60,7 @@ export function handleResetPassword() {
       } else {
         setTimeout(() => {
           const errorMsg =
-            Errors[result?.code] ||
+            LostPasswordRes[result?.code] ||
             "Invalid email. Check your details and swing again.";
           feedback.textContent = errorMsg;
           feedback.className = `${styles.formMessage} text-pong-error`;
@@ -68,7 +68,7 @@ export function handleResetPassword() {
         }, waitTime);
       }
     } catch (error) {
-      feedback.textContent = Errors.INTERNAL_SERVER_ERROR;
+      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error`;
       feedback.classList.remove("hidden");
     } finally {
@@ -138,14 +138,14 @@ export function verifyOtpCode() {
       } else {
         setTimeout(() => {
           const errorMsg =
-            Errors[result?.code] || "Invalid OTP. Please try again.";
+            LostPasswordRes[result?.code] || "Invalid OTP. Please try again.";
           feedback.textContent = errorMsg;
           feedback.className = `${styles.formMessage} text-pong-error`;
           feedback.classList.remove("hidden");
         }, waitTime);
       }
     } catch (error) {
-      feedback.textContent = Errors.INTERNAL_SERVER_ERROR;
+      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error`;
       feedback.classList.remove("hidden");
     } finally {

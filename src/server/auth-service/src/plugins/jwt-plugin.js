@@ -1,6 +1,7 @@
 import fp from 'fastify-plugin';
 import jwt from 'jsonwebtoken';
 import { createResponse } from '../utils/utils.js';
+import { getAuthCookies, getTempAuthToken } from '../utils/authCookies.js';
 
 
 async function jwtPlugin(fastify, options) {
@@ -65,19 +66,35 @@ async function jwtPlugin(fastify, options) {
     })
 
     fastify.decorate('authenticate', async (request, reply) => {
-        const token = request.headers['authorization']?.split(' ')[1];
-        if (!token)
-            return reply.code(401).send(createResponse(401, 'TOKEN_REQUIRED'));
         try {
-            const decoded = await fastify.jwt.verifyAT(token);
-            request.user = decoded;
-        } catch (error) {
-            try {
-                const decoded = await fastify.jwt.verifyTT(token);
-                request.user = decoded;
-            } catch (error) {
-                return reply.code(401).send(createResponse(401, 'TOKEN_INVALID'));
+            let cookie = getAuthCookies(request);
+            let decodedUser
+            if (!cookie.accessToken) {
+                cookie = getTempAuthToken(request);
+                if (!cookie)
+                    return reply.code(401).send(createResponse(401, 'TOKEN_REQUIRED'));
+                try {
+                    decodedUser = await fastify.jwt.verifyTT(cookie);
+                    request.user = decodedUser;
+                    return ;
+                } catch (error) {
+                    if (error.name === 'TokenExpiredError')
+                        return reply.code(401).send(createResponse(401, 'TEMP_TOKEN_EXPIRED'))
+                    return reply.code(401).send(createResponse(401, 'TEMP_TOKEN_INVALID'))
+                }
             }
+            try {
+                decodedUser = await fastify.jwt.verifyAT(cookie.accessToken);
+                request.user = decodedUser;
+                return;
+            } catch (error) {
+                if (error.name === 'TokenExpiredError')
+                    return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_EXPIRED'))
+                return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_INVALID'))
+            }
+        } catch (error) {
+            console.log("Error while authenticating: ", error);
+            return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
         }
     })
 };

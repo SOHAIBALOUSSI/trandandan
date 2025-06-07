@@ -17,7 +17,7 @@ export async function addProfile(db, id, username, email, avatar_url, gender) {
     if (avatar_url) {
         result = await db.run('INSERT INTO profile (userId, username, email, avatar_url) VALUES (?, ?, ?, ?)',
             [id, username, email, avatar_url]
-        );
+        );  
     }
     else {
         result = await db.run('INSERT INTO profile (userId, username, email, gender) VALUES (?, ?, ?, ?)',

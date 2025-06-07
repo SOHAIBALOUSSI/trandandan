@@ -1,18 +1,21 @@
 import { styles } from "@/styles/styles";
-import { Errors } from "@/utils/error-messages";
+import { RegisterRes } from "@/utils/response-messages";
 import { UserRegister } from "types/UserRegister";
 
 export function handleSignUp() {
   const signupForm = document.querySelector<HTMLFormElement>("#signup-form");
-  const feedback = document.querySelector<HTMLDivElement>("#signup-feedback");
-  const submitBtn = document.querySelector<HTMLButtonElement>("#signup-btn");
-  const spinner = document.querySelector<HTMLSpanElement>("#spinner");
-  const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label");
 
-  if (!signupForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
-
-  signupForm.addEventListener("submit", async (e: Event) => {
+  signupForm?.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
+
+    const feedback =
+      signupForm.querySelector<HTMLDivElement>("#signup-feedback");
+    const submitBtn =
+      signupForm.querySelector<HTMLButtonElement>("#signup-btn");
+    const spinner = signupForm.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = signupForm.querySelector<HTMLSpanElement>("#btn-label");
+
+    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
     // Extract User Infos from the singup Form
     const userInfos: UserRegister = {
@@ -40,12 +43,12 @@ export function handleSignUp() {
 
     // -----------------------------------------------------------
     // console.log(`
-	// 	Username: ${userInfos.username}
-	// 	Email: ${userInfos.email} 
-	// 	Gender: ${userInfos.gender}
-	// 	Password: ${userInfos.password}
-	// 	Confirm: ${userInfos.confirmPassword}
-	// `);
+    // 	Username: ${userInfos.username}
+    // 	Email: ${userInfos.email}
+    // 	Gender: ${userInfos.gender}
+    // 	Password: ${userInfos.password}
+    // 	Confirm: ${userInfos.confirmPassword}
+    // `);
     // -----------------------------------------------------------
 
     // Reset feedback and button state
@@ -56,6 +59,7 @@ export function handleSignUp() {
     spinner.classList.remove("hidden");
     btnLabel.textContent = "Registering...";
 
+    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
@@ -72,27 +76,26 @@ export function handleSignUp() {
 
       if (response.ok) {
         setTimeout(() => {
-          feedback.textContent =
-            "Welcome, champion! Your racket has been registered.";
           feedback.className = `${styles.formMessage} text-pong-success`;
+          feedback.textContent = RegisterRes.USER_REGISTERED;
 
           setTimeout(() => {
-            history.pushState(null, "", "/signin");
+            history.pushState(null, "", "/salon");
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, 1500);
         }, waitTime);
       } else {
         setTimeout(() => {
           const errorMsg =
-            Errors[result?.code] ||
-            "Couldn’t register your racket. Try again, champ.";
-          feedback.textContent = errorMsg;
+            RegisterRes[result?.code] ||
+            "Error during registration. Please try again.";
           feedback.className = `${styles.formMessage} text-pong-error`;
+          feedback.textContent = errorMsg;
         }, waitTime);
       }
     } catch (err) {
-      feedback.textContent = Errors.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error`;
+      feedback.textContent = RegisterRes.INTERNAL_SERVER_ERROR;
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

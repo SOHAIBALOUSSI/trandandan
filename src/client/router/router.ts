@@ -11,8 +11,10 @@ import { Profile } from "@/views/Profile";
 import { Settings } from "@/views/Settings";
 import { Logout } from "@/views/Logout";
 import { ResetPassword } from "@/views/ResetPassword";
-import { getUserProfile } from "@/services/handle-user-auth";
 import { UpdatePassword } from "@/views/UpdatePassword";
+import { VerifyLogin } from "@/views/VerifyLogin";
+// Import necessary services
+import { getUserProfile } from "@/services/handle-user-auth";
 
 // Define the routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
@@ -29,10 +31,18 @@ const routes: Record<string, () => HTMLElement> = {
   exit: Logout,
   password_reset: ResetPassword,
   password_update: UpdatePassword,
+  verify_login: VerifyLogin,
 };
 
 // Public pages that don't require authentication
-const publicRoutes = ["signin", "signup", "welcome", "password_reset", "password_update"];
+const publicRoutes = [
+  "signin",
+  "signup",
+  "welcome",
+  "password_reset",
+  "password_update",
+  "verify_login",
+];
 
 // Global user object
 let currentUser: Promise<any> | null = null;

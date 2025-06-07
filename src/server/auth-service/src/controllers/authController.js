@@ -3,7 +3,6 @@ import {
     findUser, 
     addUser, 
     findUserById, 
-    deleteUser,
     findUserByEmail,
     updateUser
 } from '../models/userDAO.js';
@@ -16,7 +15,17 @@ import {
     createResponse, 
     validatePassword 
 } from '../utils/utils.js'
-import { findTwoFaByUid, storeOtpCode, updateOtpCode } from '../models/twoFaDAO.js';
+import { 
+    findPrimaryTwoFaByUid, 
+    storeOtpCode, 
+    updateOtpCode 
+} from '../models/twoFaDAO.js';
+import { 
+    clearAuthCookies, 
+    getAuthCookies, 
+    setAuthCookies, 
+    setTempAuthToken 
+} from '../utils/authCookies.js';
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -35,9 +44,9 @@ export async function lostPasswordHandler(request, reply) {
         const tempToken = this.jwt.signTT({ id: user.id });
         const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
         
-        const twoFa = await findTwoFaByUid(this.db, user.id);
+        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
         if (twoFa)
-            await updateOtpCode(this.db, otpCode, user.id);
+            await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
         else    
             await storeOtpCode(this.db, otpCode, user.id);
         const mailOptions = {
@@ -59,9 +68,9 @@ export async function verifyCodeHandler(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const twoFa = await findTwoFaByUid(this.db, user.id);
+        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'CODE_NOT_SET'));
 
@@ -85,7 +94,7 @@ export async function updatePasswordHandler(request, reply) {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
 
         if (!user.password)
             return reply.code(400).send(createResponse(400, 'USER_LINKED'));
@@ -100,14 +109,14 @@ export async function updatePasswordHandler(request, reply) {
         const hashedPassword = await hash(password, 10);
         await updateUser(this.db, user.id, hashedPassword);
 
-        const twoFa = await findTwoFaByUid(this.db, user.id);
+        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
         if (twoFa && twoFa.enabled)
         {
             const tempToken = this.jwt.signTT({ id: user.id });
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeOtpCode(this.db, otpCode, user.id);
+                await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -116,14 +125,16 @@ export async function updatePasswordHandler(request, reply) {
                 }
                 await this.sendMail(mailOptions);
             }
-            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken, twoFaType: twoFa.type  }));
+            clearAuthCookies(reply);
+            setTempAuthToken(reply, tempToken);
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type  }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         
         await addToken(this.db, refreshToken, user.id);
-
-        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+        setAuthCookies(reply, accessToken, refreshToken);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -143,14 +154,14 @@ export async function loginHandler(request, reply) {
         if (!matched)
             return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
         
-        const twoFa = await findTwoFaByUid(this.db, user.id);
+        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
         if (twoFa && twoFa.enabled)
         {
             const tempToken = this.jwt.signTT({ id: user.id });
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await updateOtpCode(this.db, otpCode, user.id);
+                await updateOtpCode(this.db, otpCode, user.id, 'email');
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -159,14 +170,17 @@ export async function loginHandler(request, reply) {
                 }
                 await this.sendMail(mailOptions);
             }
-            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken, twoFaType: twoFa.type  }));
+            clearAuthCookies(reply);
+            setTempAuthToken(reply, tempToken);
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type  }));
         }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         
         await addToken(this.db, refreshToken, user.id);
 
-        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+        setAuthCookies(reply, accessToken, refreshToken);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -186,31 +200,15 @@ export async function registerHandler(request, reply) {
         
         const hashedPassword = await hash(password, 10);
         const userId = await addUser(this.db, username, email, hashedPassword);
-        
-        const accessToken = this.jwt.signAT({ id: userId });
-        const refreshToken = this.jwt.signRT({ id: userId });
-        
-        await addToken(this.db, refreshToken, userId);
-        const response = await fetch('http://profile-service:3001/profile/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify({
-                username: username,
-                email: email,
-                gender: gender
-            })
+                
+        this.rabbit.produceMessage({
+            userId: userId,
+            username: username,
+            email: email,
+            gender: gender
         });
-      
-        if (!response.ok) {
-            await deleteUser(this.db, userId);
-            await revokeToken(this.db, refreshToken);
-            return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
-        }
         
-        return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
+        return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -223,18 +221,18 @@ export async function logoutHandler(request, reply) {
         
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const { token } = request.body;
-        if (!token)
+        const tokens = getAuthCookies(request);        
+        if (!tokens.refreshToken)
             return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_REQUIRED'));
         
-        const tokenExist = await findToken(this.db, token);
+        const tokenExist = await findToken(this.db, tokens.refreshToken);
         if (!tokenExist || tokenExist.revoked)
             return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_INVALID'));
         
-        await revokeToken(this.db, token);
-        
+        await revokeToken(this.db, tokens.refreshToken);
+        clearAuthCookies(reply);
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_OUT'));
     } catch (error) {
         console.log(error);
@@ -248,7 +246,7 @@ export async function meHandler(request, reply) {
         
         const user = await findUserById(this.db, userId);
         if (!user)
-            return reply.code(400).send(createResponse(401, 'UNAUTHORIZED'));
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         return reply.code(200).send(createResponse(200, 'USER_FETCHED', { id: user.id, username: user.username, email: user.email }));
     } catch (error) {
@@ -259,25 +257,28 @@ export async function meHandler(request, reply) {
 
 export async function refreshHandler(request, reply) {
     try {
-        const { token } = request.body;
-        if (!token)
+        const tokens = getAuthCookies(request);
+        if (!tokens.refreshToken)
             return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_REQUIRED'));
         
-        const tokenExist = await findToken(this.db, token);
+        const tokenExist = await findToken(this.db, tokens.refreshToken);
         if (!tokenExist || tokenExist.revoked)
             return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_INVALID'));
 
         const payload = await this.jwt.verifyRT(tokenExist.token);
 
-        await revokeToken(this.db, token);
+        await revokeToken(this.db, tokenExist.token);
 
         const accessToken = this.jwt.signAT({ id: payload.id });
         const newRefreshToken = this.jwt.signRT({ id: payload.id });
 
         await addToken(this.db, newRefreshToken, payload.id);
-
-        return reply.code(200).send(createResponse(200, 'TOKEN_REFRESHED', { accessToken: accessToken, refreshToken: newRefreshToken }));
+        setAuthCookies(reply, accessToken, newRefreshToken);
+        return reply.code(200).send(createResponse(200, 'TOKEN_REFRESHED'));
     } catch (error) {
+        if (error.name === 'TokenExpiredError')
+            return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_EXPIRED'));
+
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }

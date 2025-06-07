@@ -1,6 +1,7 @@
 import { addToken } from '../models/tokenDAO.js';
-import { findTwoFaByUidAndType, storeOtpCode, updateOtpCode, updateUser2FA } from '../models/twoFaDAO.js';
+import { findTwoFaByUidAndType, makeTwoFaPrimaryByUidAndType, storeOtpCode, updateOtpCode, updateUser2FA } from '../models/twoFaDAO.js';
 import { findUserById } from '../models/userDAO.js';
+import { setAuthCookies } from '../utils/authCookies.js';
 import { createResponse } from '../utils/utils.js';
 
 export async function setup2FAEmail(request, reply) {
@@ -16,9 +17,9 @@ export async function setup2FAEmail(request, reply) {
             await storeOtpCode(this.db, otpCode, userId);
         else
         {
-            if (twoFa.enabled && twoFa.type === 'email')
+            if (twoFa.enabled)
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
-            await updateOtpCode(this.db, otpCode, userId);
+            await updateOtpCode(this.db, otpCode, userId, twoFa.type);
         }
 
         const mailOptions = {
@@ -58,8 +59,8 @@ export async function verify2FAEmailSetup(request, reply) {
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
 
-        await updateUser2FA(this.db, userId);
-
+        await updateUser2FA(this.db, userId, 'email');
+        await makeTwoFaPrimaryByUidAndType(this.db, userId, 'email');
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {
         console.log(error);
@@ -93,7 +94,8 @@ export async function verify2FALogin(request, reply) {
         
         await addToken(this.db, refreshToken, userId);
         
-        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+        setAuthCookies(reply, accessToken, refreshToken);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

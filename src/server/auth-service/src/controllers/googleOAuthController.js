@@ -1,7 +1,7 @@
-import { addUserAndOAuthIdentity, deleteUser, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
-import { addToken, revokeToken } from "../models/tokenDAO.js";
+import { addUserAndOAuthIdentity, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
+import { addToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
-import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
+import { setAuthCookies } from "../utils/authCookies.js";
 
 export async function   googleSetupHandler(request, reply) {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
@@ -73,51 +73,23 @@ export async function googleLoginHandler(request, reply) {
                 user = await findUserById(this.db, newUserId);
             }
         }
-        
-        const twoFa = await findTwoFaByUid(this.db, user.id);
-        if (twoFa && twoFa.enabled) {
-            const tempToken = this.jwt.signTT({ id: user.id });
-            if (twoFa.type === 'email')
-            {
-                const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeOtpCode(this.db, otpCode, user.id);
-                const mailOptions = {
-                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-                    to: `${user.email}`,
-                    subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${otpCode}>`,
-                }
-                await this.sendMail(mailOptions);
-            }
-            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken, twoFaType: twoFa.type  }));
-        }
+
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         await addToken(this.db, refreshToken, user.id);
         
+        setAuthCookies(reply, accessToken, refreshToken);
         if (isNewUser) {
-            const response = await fetch('http://profile-service:3001/profile/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-                body: JSON.stringify({
-                    username: user.username,
-                    email: user.email,
-                    avatar_url: userInfo.picture
-                })
-            });
-
-            if (!response.ok) {
-                await deleteUser(this.db, user.id);
-                await revokeToken(this.db, refreshToken);
-                return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
-            }
-            return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
+            this.rabbit.produceMessage({
+                userId: user.id,
+                username: user.username,
+                email: user.email,
+                avatar_url: userInfo.picture
+            })
+            return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
         }
         else
-            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

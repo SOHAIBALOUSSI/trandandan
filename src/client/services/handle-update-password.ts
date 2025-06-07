@@ -1,5 +1,5 @@
 import { styles } from "@/styles/styles";
-import { Errors } from "@/utils/error-messages";
+import { LostPasswordRes } from "@/utils/response-messages";
 
 export function handleUpdatePassword() {
   const form = document.getElementById(
@@ -74,14 +74,15 @@ export function handleUpdatePassword() {
       } else {
         setTimeout(() => {
           const errorMsg =
-            Errors[result?.code] || "Invalid password. Please try again.";
+            LostPasswordRes[result?.code] ||
+            "Invalid password. Please try again.";
           feedback.textContent = errorMsg;
           feedback.className = `${styles.formMessage} text-pong-error`;
           feedback.classList.remove("hidden");
         }, waitTime);
       }
     } catch (error) {
-      feedback.textContent = Errors.INTERNAL_SERVER_ERROR;
+      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error`;
       feedback.classList.remove("hidden");
     } finally {

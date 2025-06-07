@@ -2,6 +2,7 @@ import { addUserAndOAuthIdentity, deleteUser, findOauthIdentity, findUserByEmail
 import { addToken, revokeToken } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
 import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
+import { clearAuthCookies, setAuthCookies, setTempAuthToken } from "../utils/authCookies.js";
 
 export async function   fortyTwoSetupHandler(request, reply) {
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code&prompt=consent`;
@@ -75,53 +76,28 @@ export async function fortyTwoLoginHandler(request, reply) {
             }
         }
         
-        const twoFa = await findTwoFaByUid(this.db, user.id);
-        if (twoFa && twoFa.enabled) {
-            const tempToken = this.jwt.signTT({ id: user.id });
-            if (twoFa.type === 'email')
-            {
-                const totpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await storeOtpCode(this.db, user.id);
-                const mailOptions = {
-                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-                    to: `${user.email}`,
-                    subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${totpCode}>`,
-                }
-                await this.sendMail(mailOptions);
-            }
-            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { tempToken: tempToken, twoFaType: twoFa.type  }));
-        }
         const accessToken = this.jwt.signAT({ id: user.id });
         const refreshToken = this.jwt.signRT({ id: user.id });
         await addToken(this.db, refreshToken, user.id);
         
+        setAuthCookies(reply, accessToken, refreshToken);
         if (isNewUser) {
-            const response = await fetch('http://profile-service:3001/profile/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-                body: JSON.stringify({
-                    username: user.username,
-                    email: user.email,
-                    avatar_url: userInfo.image.link
-                })
-            });
-
-            if (!response.ok) {
-                await deleteUser(this.db, user.id);
-                await revokeToken(this.db, refreshToken);
-                return reply.code(400).send(createResponse(400, 'PROFILE_CREATION_FAILED'));
-            }
-            return reply.code(201).send(createResponse(201, 'USER_REGISTERED', { accessToken: accessToken, refreshToken: refreshToken }));
+            this.rabbit.produceMessage({
+                userId: user.id,
+                username: user.username,
+                email: user.email,
+                avatar_url: userInfo.image.link
+            });;
+            return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
         }
         else
-            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN', { accessToken: accessToken, refreshToken: refreshToken }));
+            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
+export async function makePrimaryHandler(request, reply) {
+    
+}

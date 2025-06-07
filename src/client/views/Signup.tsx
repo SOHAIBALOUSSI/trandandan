@@ -1,5 +1,6 @@
 import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
+import { CTA } from "@/components/layout/Cta";
 import { handleSignUp } from "@/services/handle-signup";
 import { MainHeader } from "@/components/common/MainHeader";
 import { InputField } from "@/components/common/InputField";
@@ -58,7 +59,6 @@ function Form() {
           </label>
         </div>
       </div>
-
       <InputField
         type={"password"}
         name={"password"}
@@ -71,29 +71,12 @@ function Form() {
         id={"confirm-password"}
         placeholder={"confirm your password"}
       />
-      <div
-        id="signup-feedback"
-        className={`${styles.formMessage} hidden`}
-        role="alert"
-        aria-live="polite"
-      ></div>
-      <button
-        type="submit"
-        id="signup-btn"
-        className={`group ${styles.primaryButton} shadow-lg hover:animate-none relative flex items-center justify-center`}
-        aria-busy="false"
-      >
-        <span
-          id="spinner"
-          className="hidden absolute left-4 w-4 h-4 border-2 border-white border-t-pong-accent rounded-full animate-spin"
-          aria-hidden="true"
-        ></span>
-        <i
-          className={`fa-solid fa-table-tennis-paddle-ball ${styles.primaryButtonIcon}`}
-          aria-hidden="true"
-        ></i>
-        <span id="btn-label">register your racket</span>
-      </button>
+      <CTA
+        feedbackId="signup-feedback"
+        btnId="signup-btn"
+        btnIcon="fa-table-tennis-paddle-ball"
+        btnLabel="register your racket"
+      />
       <p className="text-xs text-pong-primary/70 -mt-2">
         by joining, you swear on honor to compete fairly and uphold the spirit
         of ping pong.
