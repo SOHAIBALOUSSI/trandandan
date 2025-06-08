@@ -27,8 +27,8 @@ export async function revokeToken(db, token) {
     return result.lastID;
 }
 
-export async function findTokenByUid(db, uid) {
-    return await db.get('SELECT * FROM token WHERE user_id = ? AND revoked = 0',
+export async function findValidTokenByUid(db, uid) {
+    return await db.get('SELECT * FROM token WHERE user_id = ? AND revoked = 0 AND expires_at > DATETIME(\'now\')',
         [uid]
     );
 }
