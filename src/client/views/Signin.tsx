@@ -38,7 +38,7 @@ import {
 // }
 
 function Form() {
-  const form = (
+  return (
     <form
       method="POST"
       id="signin-form"
@@ -84,8 +84,6 @@ function Form() {
       <RemoteSigninLink />
     </form>
   );
-
-  return form;
 }
 
 export function Signin() {
@@ -95,7 +93,7 @@ export function Signin() {
     handleSignIn();
   }, 0);
 
-  const signinSection = (
+  return (
     <section className={styles.pageLayoutLight}>
       <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
       <MainHeader
@@ -109,6 +107,4 @@ export function Signin() {
       <Footer />
     </section>
   );
-
-  return signinSection;
 }

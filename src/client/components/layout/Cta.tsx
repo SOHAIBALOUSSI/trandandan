@@ -2,10 +2,10 @@ import { styles } from "@/styles/styles";
 import { BtnPrimary } from "../common/BtnPrimary";
 
 export function CTA(props: {
-  feedbackId?: string;
-  btnId?: string;
-  btnIcon?: string;
-  btnLabel?: string;
+  feedbackId: string;
+  btnId: string;
+  btnIcon: string;
+  btnLabel: string;
 }) {
   return (
     <div>

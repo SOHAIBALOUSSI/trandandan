@@ -45,12 +45,10 @@ const publicRoutes = [
 
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
-  if (localStorage.getItem("auth")) {
-    const profile = await getUserProfile();
-    if (profile) {
-      setCurrentUser(profile);
-      return true;
-    }
+  const profile = await getUserProfile();
+  if (profile) {
+    setCurrentUser(profile);
+    return true;
   }
   return false;
 }
@@ -64,19 +62,21 @@ export async function router(): Promise<void> {
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
 
+  console.log(render);
+
   const authed = await isAuthenticated();
 
-  if (!isPublic && !authed) {
-    history.replaceState(null, "", "/signin");
-    await router();
-    return;
-  }
+  //   if (!isPublic && !authed) {
+  //     history.replaceState(null, "", "/signin");
+  //     await router();
+  //     return;
+  //   }
 
-  if (isPublic && authed) {
-    history.replaceState(null, "", "/salon");
-    await router();
-    return;
-  }
+  //   if (isPublic && authed) {
+  //     history.replaceState(null, "", "/salon");
+  //     await router();
+  //     return;
+  //   }
 
   // Clear the existing app content
   while (app.firstChild) {

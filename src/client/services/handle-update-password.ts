@@ -1,58 +1,55 @@
 import { styles } from "@/styles/styles";
 import { LostPasswordRes } from "@/utils/response-messages";
+import { UpdatePasswordRes } from "@/utils/response-messages";
 
 export function handleUpdatePassword() {
   const form = document.getElementById(
     "update-password-form"
   ) as HTMLFormElement;
-  if (!form) return;
 
-  form.addEventListener("submit", async (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const feedback = document.querySelector<HTMLDivElement>(
+    const feedback = form.querySelector<HTMLDivElement>(
       "#update-password-feedback"
     );
-    const submitBtn = document.querySelector<HTMLButtonElement>(
+    const submitBtn = form.querySelector<HTMLButtonElement>(
       "#update-password-btn"
     );
-    const spinner = document.querySelector<HTMLSpanElement>("#spinner-update");
-    const btnLabel =
-      document.querySelector<HTMLSpanElement>("#btn-label-update");
+    const spinner = form.querySelector<HTMLSpanElement>("#spinner-update");
+    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label-update");
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
-    const newPasswordInput = document.getElementById(
-      "new-password"
-    ) as HTMLInputElement;
-    const confirmPasswordInput = document.getElementById(
-      "confirm-password"
-    ) as HTMLInputElement;
-    const password = newPasswordInput.value.trim();
-    const confirmPassword = confirmPasswordInput.value.trim();
-    const params = { password, confirmPassword };
+    const password = (
+      form.querySelector("#new-password") as HTMLInputElement
+    ).value.trim();
+    const confirmPassword = (
+      form.querySelector("#confirm-password") as HTMLInputElement
+    ).value.trim();
 
+    const payload = {
+      password: password,
+      confirmPassword: confirmPassword,
+    };
+
+    // Reset feedback and button state
     feedback.textContent = "";
     feedback.className = styles.formMessage;
-    feedback.classList.remove("hidden");
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
     btnLabel.textContent = "Updating...";
 
+    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
       const response = await fetch("/auth/update-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("tempTokenPassword")}`,
-        },
-        body: JSON.stringify({
-          password: params.password,
-          confirmPassword: params.confirmPassword,
-        }),
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
@@ -62,9 +59,8 @@ export function handleUpdatePassword() {
 
       if (response.ok) {
         setTimeout(() => {
-          feedback.textContent = "Password updated successfully!";
           feedback.className = `${styles.formMessage} text-pong-success`;
-          feedback.classList.remove("hidden");
+          feedback.textContent = UpdatePasswordRes.USER_LOGGED_IN;
 
           setTimeout(() => {
             history.pushState(null, "", "/signin");
@@ -73,18 +69,16 @@ export function handleUpdatePassword() {
         }, waitTime);
       } else {
         setTimeout(() => {
+          feedback.className = `${styles.formMessage} text-pong-error`;
           const errorMsg =
             LostPasswordRes[result?.code] ||
-            "Invalid password. Please try again.";
+            "Error in update password. Please try again.";
           feedback.textContent = errorMsg;
-          feedback.className = `${styles.formMessage} text-pong-error`;
-          feedback.classList.remove("hidden");
         }, waitTime);
       }
     } catch (error) {
-      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.classList.remove("hidden");
+      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

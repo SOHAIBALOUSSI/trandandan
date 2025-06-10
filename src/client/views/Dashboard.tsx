@@ -4,7 +4,7 @@ import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
 
 export function Dashboard() {
-  const dashboardSection = (
+  return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
@@ -15,6 +15,4 @@ export function Dashboard() {
       </div>
     </section>
   );
-
-  return dashboardSection;
 }

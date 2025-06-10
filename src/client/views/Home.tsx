@@ -8,9 +8,6 @@ import FemaleAvatar from "@/assets/female.png";
 
 function HeroSection() {
   const user = getCurrentUser();
-  if (!user) {
-    throw new Error("User not found");
-  }
 
   const heroContainer = (
     <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:justify-between md:items-start text-center w-[90%] max-w-5xl mx-auto mt-6 md:mt-12">
@@ -66,7 +63,7 @@ function HeroSection() {
 function QuickLink(props: { href: string; title: string; text: string }) {
   const { href, title, text } = props;
 
-  const quickLink = (
+  return (
     <div className="py-4 px-6 border border-pong-dark-highlight rounded-xl shadow-sm transition-all duration-300 hover:shadow-md hover:bg-pong-dark-highlight/10 group">
       <h3 className="text-lg font-semibold text-white">{title}</h3>
       <p className="text-sm text-gray-400 mt-2">{text}</p>
@@ -79,12 +76,10 @@ function QuickLink(props: { href: string; title: string; text: string }) {
       </a>
     </div>
   );
-
-  return quickLink;
 }
 
 function QuickLinks() {
-  const linksContainer = (
+  return (
     <div className="flex flex-col gap-6 mt-10 md:mt-16 w-full max-w-3xl mx-auto px-4">
       <QuickLink
         title="Commence a Duel"
@@ -108,12 +103,10 @@ function QuickLinks() {
       />
     </div>
   );
-
-  return linksContainer;
 }
 
 export function Home() {
-  const homeSection = (
+  return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
@@ -126,6 +119,4 @@ export function Home() {
       </div>
     </section>
   );
-
-  return homeSection;
 }

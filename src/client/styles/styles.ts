@@ -176,6 +176,13 @@ export const styles = {
   `,
   // === End Top Bar styles ===
 
+  // === Start Reset password section styles ===
+  resetSectionStyles: `
+    bg-white/95 shadow-2xl rounded-2xl border border-pong-accent/20
+    max-w-lg w-full mx-auto p-8 flex flex-col items-center
+  `,
+  // === End Reset password section styles ===
+
   // === Start Button Primary styles ===
   buttonPrimary: `
 	flex items-center justify-center 

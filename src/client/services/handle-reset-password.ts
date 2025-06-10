@@ -3,38 +3,39 @@ import { LostPasswordRes } from "@/utils/response-messages";
 
 export function handleResetPassword() {
   const form = document.querySelector<HTMLFormElement>("#reset-password-form");
-  const otpForm = document.querySelector<HTMLFormElement>("#otp-form");
-  const feedback = document.querySelector<HTMLDivElement>("#reset-feedback");
-  const submitBtn = document.querySelector<HTMLButtonElement>(
-    "#reset-password-btn"
-  );
-  const spinner = document.querySelector<HTMLSpanElement>("#spinner-reset");
-  const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label-reset");
 
-  if (!form || !otpForm || !feedback || !submitBtn || !spinner || !btnLabel)
-    return;
-
-  form.addEventListener("submit", async (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const emailInput = document.getElementById("email") as HTMLInputElement;
+
+    const otpForm = form.querySelector<HTMLFormElement>("#otp-form");
+    const feedback = form.querySelector<HTMLDivElement>("#reset-feedback");
+    const submitBtn = form.querySelector<HTMLButtonElement>(
+      "#reset-password-btn"
+    );
+    const spinner = form.querySelector<HTMLSpanElement>("#spinner-reset");
+    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label-reset");
+
+    if (!otpForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
+
+    // Get email value from input
+    const emailInput = form.querySelector("#email") as HTMLInputElement;
     const email = emailInput.value.trim();
 
+    // Reset feedback and button state
     feedback.textContent = "";
     feedback.className = styles.formMessage;
-    feedback.classList.remove("hidden");
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
     btnLabel.textContent = "Sending Email...";
 
+    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
       const response = await fetch("/auth/lost-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email }),
       });
 
@@ -44,33 +45,24 @@ export function handleResetPassword() {
       const waitTime = Math.max(0, 1200 - elapsed);
 
       if (response.ok) {
-        // alert("Reset link sent to your email address.");
         setTimeout(() => {
-          feedback.textContent =
-            "Email was sent. check your mail box for the otp code";
           feedback.className = `${styles.formMessage} text-pong-success`;
-          feedback.classList.remove("hidden");
+          feedback.textContent = LostPasswordRes.CODE_SENT;
           emailInput.value = "";
           otpForm.classList.remove("hidden");
           otpForm.classList.add("flex");
-
-          result.data.tempToken &&
-            localStorage.setItem("tempTokenPassword", result.data.tempToken);
         }, waitTime);
       } else {
         setTimeout(() => {
           const errorMsg =
-            LostPasswordRes[result?.code] ||
-            "Invalid email. Check your details and swing again.";
-          feedback.textContent = errorMsg;
+            LostPasswordRes[result?.code] || "Error in handle reset password";
           feedback.className = `${styles.formMessage} text-pong-error`;
-          feedback.classList.remove("hidden");
+          feedback.textContent = errorMsg;
         }, waitTime);
       }
     } catch (error) {
-      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.classList.remove("hidden");
+      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
@@ -84,36 +76,37 @@ export function handleResetPassword() {
 
 export function verifyOtpCode() {
   const otpForm = document.querySelector<HTMLFormElement>("#otp-form");
-  if (!otpForm) return;
 
-  otpForm.addEventListener("submit", async (e) => {
+  otpForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const otpInput = document.getElementById("otp") as HTMLInputElement;
-    const otp = otpInput.value.trim();
 
-    const feedback = document.querySelector<HTMLDivElement>("#otp-feedback");
-    const submitBtn = document.querySelector<HTMLButtonElement>("#otp-btn");
-    const spinner = document.querySelector<HTMLSpanElement>("#spinner-otp");
-    const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label-otp");
+    const feedback = otpForm.querySelector<HTMLDivElement>("#otp-feedback");
+    const submitBtn = otpForm.querySelector<HTMLButtonElement>("#otp-btn");
+    const spinner = otpForm.querySelector<HTMLSpanElement>("#spinner-otp");
+    const btnLabel = otpForm.querySelector<HTMLSpanElement>("#btn-label-otp");
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
+    const otpInput = otpForm.getElementById("otp") as HTMLInputElement;
+    const otp = otpInput.value.trim();
+
+    // Reset feedback and button state
     feedback.textContent = "";
     feedback.className = styles.formMessage;
-    feedback.classList.remove("hidden");
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
     btnLabel.textContent = "Verifying...";
 
+    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
       const response = await fetch("/auth/verify-code", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          authorization: `Bearer ${localStorage.getItem("tempTokenPassword")}`,
         },
         body: JSON.stringify({ otpCode: otp }),
       });
@@ -125,9 +118,9 @@ export function verifyOtpCode() {
 
       if (response.ok) {
         setTimeout(() => {
+          feedback.className = `${styles.formMessage} text-pong-success`;
           feedback.textContent =
             "OTP verified successfully. You can now reset your password.";
-          feedback.className = `${styles.formMessage} text-pong-success`;
           feedback.classList.remove("hidden");
 
           setTimeout(() => {
@@ -139,14 +132,14 @@ export function verifyOtpCode() {
         setTimeout(() => {
           const errorMsg =
             LostPasswordRes[result?.code] || "Invalid OTP. Please try again.";
-          feedback.textContent = errorMsg;
           feedback.className = `${styles.formMessage} text-pong-error`;
+          feedback.textContent = errorMsg;
           feedback.classList.remove("hidden");
         }, waitTime);
       }
     } catch (error) {
-      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
       feedback.className = `${styles.formMessage} text-pong-error`;
+      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
       feedback.classList.remove("hidden");
     } finally {
       setTimeout(() => {

@@ -96,7 +96,7 @@ function TwofaSection() {
 }
 
 export function Settings() {
-  const settingsSection = (
+  return (
     <section className={styles.pageLayoutDark} id="settings-section">
       <NavBar />
       <div className="w-full relative">
@@ -107,5 +107,4 @@ export function Settings() {
       </div>
     </section>
   );
-  return settingsSection;
 }

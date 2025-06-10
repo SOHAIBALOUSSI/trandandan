@@ -13,7 +13,7 @@ export function Profile() {
     throw new Error("User not found");
   }
 
-  const profileSection = (
+  return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
@@ -31,5 +31,4 @@ export function Profile() {
       </div>
     </section>
   );
-  return profileSection;
 }

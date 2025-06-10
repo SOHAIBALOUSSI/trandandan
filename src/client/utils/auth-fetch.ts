@@ -26,8 +26,6 @@ export async function authFetch(
     credentials: "include",
   });
 
-  console.log(res.statusText);
-
   if (res.status === 401 && retry) {
     const refreshSuccess = await refreshToken();
 

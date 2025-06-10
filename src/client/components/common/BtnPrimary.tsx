@@ -1,9 +1,9 @@
 import { styles } from "@/styles/styles";
 
 export function BtnPrimary(props: {
-  btnId?: string;
-  btnIcon?: string;
-  btnLabel?: string;
+  btnId: string;
+  btnIcon: string;
+  btnLabel: string;
 }) {
   return (
     <button

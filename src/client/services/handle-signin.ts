@@ -53,8 +53,6 @@ export function handleSignIn() {
           feedback.className = `${styles.formMessage} text-pong-success`;
           feedback.textContent = LoginRes.USER_LOGGED_IN;
 
-          localStorage.setItem("auth", "ok");
-
           setTimeout(() => {
             history.pushState(null, "", "/salon");
             window.dispatchEvent(new PopStateEvent("popstate"));

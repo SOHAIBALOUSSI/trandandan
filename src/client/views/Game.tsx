@@ -13,14 +13,14 @@ function GameMode(props: { title: string; text: string }) {
 }
 
 export function Game() {
-  const gameSection = (
+  return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
         <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-2rem)] overflow-y-auto">
           <MainHeader isDark={false} title="arena" titleSpan="zone" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-[90%] max-w-5xl m-auto" >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-[90%] max-w-5xl m-auto">
             <GameMode title="1 vs 1 local" text="text here" />
             <GameMode title="tournament local" text="text here" />
             <GameMode title="1 vs 1 remote" text="text here" />
@@ -29,6 +29,4 @@ export function Game() {
       </div>
     </section>
   );
-
-  return gameSection;
 }
