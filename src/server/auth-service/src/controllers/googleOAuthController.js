@@ -91,7 +91,9 @@ export async function googleLoginHandler(request, reply) {
                 username: user.username,
                 email: user.email,
                 avatar_url: userInfo.picture
-            })
+            },
+            'profile.user.created'
+        );
             return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
         }
         else

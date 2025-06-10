@@ -35,11 +35,8 @@ export async function updateProfileById(db, id, updatedFields) {
 
     for (const field in updatedFields)
     {
-        if (updatedFields.hasOwnProperty(field))
-        {
-            setStatments.push(`${field} = ?`);
-            values.push(updatedFields[field]);
-        }
+        setStatments.push(`${field} = ?`);
+        values.push(updatedFields[field]);
     }
 
     const sql = `UPDATE profile SET ${setStatments.join(', ')}, updated_at = DATETIME('now') WHERE userId = ?`;

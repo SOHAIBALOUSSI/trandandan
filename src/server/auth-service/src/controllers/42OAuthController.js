@@ -93,7 +93,9 @@ export async function fortyTwoLoginHandler(request, reply) {
                 username: user.username,
                 email: user.email,
                 avatar_url: userInfo.image.link
-            });;
+            }, 
+            'profile.user.created'
+        );
             return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
         }
         else

@@ -21,13 +21,15 @@ await server.register(jwtPlugin, {
     refreshTokenKey: process.env.RJWT_SECRET_KEY,
     tempTokenKey: process.env.TJWT_SECRET_KEY
 });
-await server.register(nodemailerPlugin);
-await server.register(rabbitmqPlugin);
 
 await createUserTable(server.db);
 await createTokenTable(server.db);
 await createTwoFaTable(server.db);
 await createOAuthIdentityTable(server.db);
+
+await server.register(nodemailerPlugin);
+await server.register(rabbitmqPlugin);
+// server.rabbit.consumeMessages();
 
 await server.register(authRoutes, { prefix: '/auth' });
 await server.register(twoFARoutes, { prefix: '/2fa' });

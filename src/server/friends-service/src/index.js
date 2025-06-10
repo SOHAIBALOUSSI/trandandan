@@ -13,6 +13,8 @@ await server.register(sqlitePlugin);
 await createFriendshipTable(server.db);
 await server.register(rabbitmqPlugin);
 
+// server.rabbit.consumeMessages();
+
 await server.register(friendsRoutes, { prefix: '/friends' });
 
 console.log("friends service initialization is done...");

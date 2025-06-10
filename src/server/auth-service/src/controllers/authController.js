@@ -217,7 +217,9 @@ export async function registerHandler(request, reply) {
             username: username,
             email: email,
             gender: gender
-        });
+        },
+        'profile.user.created'
+    );
         
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
     } catch (error) {
