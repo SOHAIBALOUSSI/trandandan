@@ -80,7 +80,7 @@ export function handleSignUp() {
           feedback.textContent = RegisterRes.USER_REGISTERED;
 
           setTimeout(() => {
-            history.pushState(null, "", "/salon");
+            history.pushState(null, "", "/signin");
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, 1500);
         }, waitTime);
