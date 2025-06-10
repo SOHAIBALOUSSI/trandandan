@@ -1,19 +1,26 @@
 import jwt from 'jsonwebtoken';
 import { createResponse } from '../utils/utils.js';
+import { parse } from 'cookie'
+
+export function getAuthCookies(request) {
+    const authCookies = request.headers.cookie || '';
+    const cookies = parse(authCookies);
+    return {
+        accessToken: cookies.accessToken,
+        refreshToken: cookies.refreshToken
+    };
+}
+
 
 export async function verifyToken(request, reply) {
-    const authHeader = request.headers["authorization"];
-    if (!authHeader || !authHeader.startsWith('Bearer '))
-        return reply.code(401).send(createResponse(401, 'TOKEN_INVALID'));
-
-    const token = authHeader.split(' ')[1];
-    if (!token)
-        return reply.code(401).send(createResponse(401, 'TOKEN_REQUIRED'));
-
     try {
-        const payload = jwt.verify(token, process.env.AJWT_SECRET_KEY);
+        let cookie = getAuthCookies(request);
+        
+        const payload = jwt.verify(cookie.accessToken, process.env.AJWT_SECRET_KEY);
         request.user = payload;
     } catch (error) {
-        return reply.code(401).send(createResponse(401, 'TOKEN_INVALID'));
+        if (error.name === 'TokenExpiredError')
+            return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_EXPIRED'))    
+        return reply.code(401).send(createResponse(401, 'ACCESS_TOKEN_INVALID'));
     }
 }

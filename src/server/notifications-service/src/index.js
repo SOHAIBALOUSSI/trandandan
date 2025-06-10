@@ -44,7 +44,6 @@ wss.on('connection', (ws) => {
       console.log(`WebSocker: Received this message:`, payload);
       verifyToken(ws, payload.token);
       if (ws.userId) {
-
         if (!users.has(ws.userId))
           users.set(ws.userId, new Set());
         users.get(ws.userId).add(ws);
