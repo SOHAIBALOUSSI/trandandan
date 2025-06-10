@@ -90,12 +90,17 @@ export async function verify2FALogin(request, reply) {
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
         const accessToken = this.jwt.signAT({ id: userId });
-        const refreshToken = this.jwt.signRT({ id: userId });
-        
-        await addToken(this.db, refreshToken, userId);
+        const tokenExist = await findValidTokenByUid(this.db, user.id);
+        let refreshToken;
+        if (tokenExist) {
+            refreshToken = tokenExist.token;
+        } else {
+            refreshToken = this.jwt.signRT({ id: user.id });
+            await addToken(this.db, refreshToken, user.id);
+        }
         
         setAuthCookies(reply, accessToken, refreshToken);
-        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
+        return reply.redirect(process.env.FRONT_END_URL);
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
