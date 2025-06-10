@@ -1,7 +1,9 @@
-// Import necessary Views for the SPA
 import { Welcome } from "@/views/Welcome";
 import { Signin } from "@/views/Signin";
 import { Signup } from "@/views/Signup";
+import { ResetPassword } from "@/views/ResetPassword";
+import { UpdatePassword } from "@/views/UpdatePassword";
+import { VerifyLogin } from "@/views/VerifyLogin";
 import { Home } from "@/views/Home";
 import { Game } from "@/views/Game";
 import { Dashboard } from "@/views/Dashboard";
@@ -10,17 +12,17 @@ import { Chat } from "@/views/Chat";
 import { Profile } from "@/views/Profile";
 import { Settings } from "@/views/Settings";
 import { Logout } from "@/views/Logout";
-import { ResetPassword } from "@/views/ResetPassword";
-import { UpdatePassword } from "@/views/UpdatePassword";
-import { VerifyLogin } from "@/views/VerifyLogin";
-// Import necessary services
-import { getUserProfile } from "@/services/handle-user-auth";
+import { getUserProfile } from "@/services/get-user-profile";
+import { setCurrentUser } from "@/utils/user-store";
 
 // Define the routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
   welcome: Welcome,
   signin: Signin,
   signup: Signup,
+  password_reset: ResetPassword,
+  password_update: UpdatePassword,
+  verify_login: VerifyLogin,
   salon: Home,
   arena: Game,
   chamber: Dashboard,
@@ -29,32 +31,28 @@ const routes: Record<string, () => HTMLElement> = {
   profile: Profile,
   mechanics: Settings,
   exit: Logout,
-  password_reset: ResetPassword,
-  password_update: UpdatePassword,
-  verify_login: VerifyLogin,
 };
 
 // Public pages that don't require authentication
 const publicRoutes = [
+  "welcome",
   "signin",
   "signup",
-  "welcome",
   "password_reset",
   "password_update",
   "verify_login",
 ];
 
-// Global user object
-let currentUser: Promise<any> | null = null;
-
 // Check if a user is authenticated
-function isAuthenticated(): boolean {
-  return !!localStorage.getItem("accessToken");
-}
-
-// Check if the user is in the process of resetting their password
-function isUserForgotPassword(): boolean {
-  return !!localStorage.getItem("tempTokenPassword");
+async function isAuthenticated(): Promise<boolean> {
+  if (localStorage.getItem("auth")) {
+    const profile = await getUserProfile();
+    if (profile) {
+      setCurrentUser(profile);
+      return true;
+    }
+  }
+  return false;
 }
 
 // Router function to handle navigation and rendering
@@ -66,35 +64,18 @@ export async function router(): Promise<void> {
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
 
-  // Restrict access to password_update unless tempTokenPassword is set
-  if (path === "password_update" && !isUserForgotPassword()) {
+  const authed = await isAuthenticated();
+
+  if (!isPublic && !authed) {
     history.replaceState(null, "", "/signin");
     await router();
     return;
   }
 
-  if (!isPublic && !isAuthenticated()) {
-    history.replaceState(null, "", "/signin");
-    await router();
-    return;
-  }
-
-  if (isAuthenticated() && isPublic) {
+  if (isPublic && authed) {
     history.replaceState(null, "", "/salon");
     await router();
     return;
-  }
-
-  if (!isPublic && isAuthenticated()) {
-    currentUser = await getUserProfile();
-    if (!currentUser) {
-      localStorage.removeItem("accessToken");
-      history.replaceState(null, "", "/signin");
-      await router();
-      return;
-    }
-
-    console.log("Current User:", currentUser);
   }
 
   // Clear the existing app content

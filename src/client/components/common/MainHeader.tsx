@@ -11,7 +11,7 @@ export function MainHeader(props: {
   const titleStyles = isDark ? styles.titleDark : styles.titleLight;
   const subtitleStyles = isDark ? styles.subtitleDark : "hidden";
 
-  const header = (
+  return (
     <div className="flex flex-col text-center pt-2 md:pt-0">
       <h1 className={titleStyles}>
         {title}{" "}
@@ -27,5 +27,4 @@ export function MainHeader(props: {
       </h2>
     </div>
   );
-  return header;
 }

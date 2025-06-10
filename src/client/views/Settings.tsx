@@ -2,7 +2,6 @@ import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
-import { MyBtn } from "@/components/common/MyBtn";
 import { InputField } from "@/components/common/InputField";
 import { setup2FA } from "@/services/setup-2fa";
 // import { setupEmail2FA } from "@/services/handle-2fa";

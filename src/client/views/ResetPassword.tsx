@@ -13,12 +13,8 @@ export function ResetPassword() {
   }, 0);
 
   const resetPassword = (
-    <section
-      className={`
-        ${styles.pageLayoutLight}
-        relative
-      `}
-    >
+    <section className={styles.pageLayoutLight}>
+      <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
       <div
         className={`
           bg-white/95 shadow-2xl rounded-2xl border border-pong-accent/20

@@ -1,61 +1,26 @@
-/* Start Font Import */
+/* === Font Import === */
 @import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Orbitron:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"); /* End Font Import */
 
-/* Start Tailwind Import */
+/* === Tailwind Import === */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* End Tailwind Import */
 
-/* Start Root Variables */
+/* === Root Variables === */
 :root {
-  /* === Fonts === */
   --font-heading: "Playfair Display", serif;
   --font-body: "Lora", serif;
-
-  /* === Light Theme Colors === */
   --color-bg: #f3f0e8;
   --color-primary: #2f3e46;
   --color-accent: #c44536;
   --color-secondary: #e0a458;
   --color-highlight: #aab7b8;
-
-  /* === Dark Theme Colors === */
   --color-dark-bg: #1b1b1b;
   --color-dark-primary: #aebabf;
   --color-dark-accent: #e05e4b;
   --color-dark-secondary: #d1a25f;
   --color-dark-highlight: #838e91;
-
-  /* === Heading Sizes === */
-  --heading-xl: 48px;
-  --heading-lg: 40px;
-  --heading-md: 32px;
-  --heading-sm: 24px;
-  --heading-xs: 20px;
-
-  /* === Subheading Sizes === */
-  --subheading-xl: 28px;
-  --subheading-lg: 24px;
-  --subheading-md: 20px;
-  --subheading-sm: 18px;
-  --subheading-xs: 16px;
-
-  /* === Paragraph Sizes === */
-  --paragraph-xl: 20px;
-  --paragraph-lg: 18px;
-  --paragraph-md: 16px;
-  --paragraph-sm: 14px;
-  --paragraph-xs: 12px;
-
-  /* === Subparagraph Sizes === */
-  --subparagraph-xl: 16px;
-  --subparagraph-lg: 14px;
-  --subparagraph-md: 12px;
-  --subparagraph-sm: 10px;
-  --subparagraph-xs: 8px;
 }
-/* * End Root Variables */
 
 /* Start Global Rules */
 * {
@@ -158,150 +123,6 @@ a {
   }
 }
 /* End Custom Designs */
-
-/* Start Home Section */
-/* .home-page .home-welcome {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-.home-page .home-welcome .level-info {
-  background-color: #000;
-  border-radius: 8px;
-  color: #fff;
-  padding: 0.5rem 3rem;
-}
-.home-page .home-welcome .welcome-section {
-  margin-top: 1rem;
-  order: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.home-page .home-welcome .sold-info {
-  background-color: #000;
-  border-radius: 8px;
-  color: #fff;
-  padding: 0.5rem 3rem;
-}
-.home-page .home-welcome .welcome-section .rank-p {
-  color: var(--color-dark-secondary);
-}
-.home-page .home-welcome .welcome-section .profile-picture {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  border: 0.5px solid var(--color-dark-secondary);
-  margin: 1rem 0;
-}
-@media (min-width: 768px) {
-  .home-page .home-welcome {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 15px;
-    width: 100%;
-  }
-  .home-page .home-welcome .welcome-section {
-    order: 0;
-  }
-  .home-page .home-welcome .level-info,
-  .home-page .home-welcome .sold-info {
-    height: fit-content;
-  }
-}
-@media (min-width: 992px) {
-  .home-page .home-welcome {
-    width: 80%;
-  }
-}
-.quick-links {
-  margin-top: 2rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-@media (min-width: 992px) {
-  .quick-links {
-    width: 80%;
-  }
-}
-.quick-links .quick-link {
-  padding: 2rem 2.5rem;
-  border: 0.8px solid var(--color-dark-highlight);
-  border-radius: 8px;
-  animation-duration: var(--transition-duration);
-  position: relative;
-}
-.quick-links .quick-link:hover {
-  background-color: var(--color-dark-bg);
-}
-.quick-links .quick-link .quick-link-h {
-  margin-bottom: 0.5rem;
-  font-size: var(--subheading-xs);
-}
-.quick-links .quick-link .quick-link-p {
-  color: var(--color-dark-secondary);
-  font-size: var(--paragraph-xs);
-  font-weight: normal;
-}
-@media (min-width: 576px) {
-  .quick-links .quick-link .quick-link-h {
-    font-size: var(--subheading-sm);
-  }
-  .quick-links .quick-link .quick-link-p {
-    font-size: var(--paragraph-sm);
-  }
-}
-@media (min-width: 768px) {
-  .quick-links .quick-link .quick-link-h {
-    font-size: var(--subheading-md);
-  }
-  .quick-links .quick-link .quick-link-p {
-    font-size: var(--paragraph-md);
-  }
-}
-@media (min-width: 992px) {
-  .quick-links .quick-link .quick-link-h {
-    font-size: var(--subheading-lg);
-  }
-  .quick-links .quick-link .quick-link-p {
-    font-size: var(--paragraph-lg);
-  }
-}
-@media (min-width: 1200px) {
-  .quick-links .quick-link .quick-link-h {
-    font-size: var(--subheading-xl);
-  }
-  .quick-links .quick-link .quick-link-p {
-    font-size: var(--paragraph-xl);
-  }
-}
-.quick-links .quick-link .quick-link-btn {
-  background-color: var(--color-dark-bg);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  outline: none;
-  color: var(--color-dark-primary);
-  transition-duration: var(--transition-duration);
-  cursor: pointer;
-}
-.quick-links .quick-link:hover .quick-link-btn {
-  background-color: #0a0a0a;
-} */
-/* End Home Section */
 
 /* Mobile First Approach */
 @media (min-width: 576px) {

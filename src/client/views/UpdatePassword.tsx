@@ -9,6 +9,7 @@ export function UpdatePassword() {
 
   const updatePassword = (
     <section className={styles.pageLayoutLight}>
+      <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
       <div className="bg-white/95 shadow-2xl rounded-2xl border border-pong-accent/20 max-w-md w-full mx-auto p-8 flex flex-col items-center transition-all duration-300">
         <h1 className="text-3xl font-bold mb-4 text-pong-primary text-center">
           you're almost there, champion.

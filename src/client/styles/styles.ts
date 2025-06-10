@@ -1,7 +1,9 @@
 export const styles = {
-  //   Start Page Layout styles  //
+  // === Start Page Layout styles ===
   pageLayoutLight: `
+  	relative overflow-hidden
   	w-full min-h-screen 
+	text-center
 	flex flex-col items-center justify-between gap-8
 	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
 	py-8 lg:py-12 xl:py-16 
@@ -14,15 +16,15 @@ export const styles = {
   	bg-gradient-to-b from-[#1b1b1b] via-[#141414] to-[#0a0a0a]
   	relative
   `,
-  //   End Page Layout styles  //
+  // === End Page Layout styles ===
 
-  //  Start Hero styles  //
+  // === Start Hero styles ===
   heroTitleContainer: `
   	w-full max-w-screen-xl 
 	animate-fade-in
   `,
   heroTitle: `
-	uppercase leading-tight
+	leading-tight
 	text-[clamp(2.2rem,6vw,4.5rem)]
 	md:text-[clamp(3rem,8vw,7rem)]
 	xl:text-[clamp(4rem,10vw,9.25rem)]
@@ -44,10 +46,11 @@ export const styles = {
     mt-2 text-pong-secondary
     md:text-[clamp(1rem,2vw,1.375rem)]
   `,
-  //  End Hero styles  //
+  // === End Hero styles ===
 
-  //  Start Primary Button styles  //
+  // === Start Primary Button styles ===
   primaryButton: `
+    group
     flex items-center justify-center gap-2
     w-full md:w-[320px] mx-auto px-6 py-4 md:px-8 md:py-5
     text-sm lg:text-base font-semibold text-white
@@ -57,15 +60,16 @@ export const styles = {
     cursor-pointer transform active:scale-[0.97]
     transition-all duration-300
 	hover:shadow-lg
+	relative
     focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
   `,
   primaryButtonIcon: `
     transition-transform duration-300
     group-hover:-translate-x-1
   `,
-  //  End Primary Button styles  //
+  // === End Primary Button styles ===
 
-  //  Start Input Field styles  //
+  // === Start Input Field styles ===
   inputField: `
   	capitalize
   	input-field
@@ -80,9 +84,9 @@ export const styles = {
 	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
 	focus:bg-pong-secondary/20
   `,
-  //  End Input Field styles  //
+  // === End Input Field styles ===
 
-  //  Start Form styles  //
+  // === Start Form styles ===
   form: `
 	max-w-md w-full mx-auto	
 	bg-white/90 shadow-xl rounded-2xl
@@ -94,9 +98,9 @@ export const styles = {
   	text-center text-sm font-semibold min-h-[1.5rem]
   	transition-opacity duration-300 ease-in-out
   `,
-  //  End Form styles  //
+  // === End Form styles ===
 
-  //  Start Main Header styles  //
+  // === Start Main Header styles ===
   titleDark: `
   	capitalize
     mb-8
@@ -138,9 +142,9 @@ export const styles = {
 	font-normal 
 	text-sm md:text-base lg:text-lg xl:text-xl
   `,
-  //  End Main Header styles  //
+  // === End Main Header styles ===
 
-  //  Start Animation styles  //
+  // === Start Animation styles ===
   fadeInSection: `
   	opacity-0 
 	animate-fade-in
@@ -149,9 +153,9 @@ export const styles = {
   	opacity-0 
 	animate-blur-in
   `,
-  //  End Animation styles  //
+  // === End Animation styles ===
 
-  //   Start Top Bar styles  //
+  // === Start Top Bar styles ===
   navBarStyle: `
     fixed top-0 left-0 right-0 z-40 
 	h-16 bg-transparent backdrop-blur-md border-b border-pong-dark-accent/30 
@@ -170,9 +174,9 @@ export const styles = {
 	normal-case 
 	ml-14 md:ml-0
   `,
-  //   End Top Bar styles  //
+  // === End Top Bar styles ===
 
-  //   Start Button Primary styles  //
+  // === Start Button Primary styles ===
   buttonPrimary: `
 	flex items-center justify-center 
 	px-6 py-4 
@@ -185,8 +189,7 @@ export const styles = {
 	transition-all duration-300 hover:shadow-lg 
 	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2 
   `,
-
-  //   End Button Primary styles  //
+  // === End Button Primary styles ===
 
   //   Start Button Secondary styles  //
   //   End Button Secondary styles  //

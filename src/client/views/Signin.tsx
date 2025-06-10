@@ -4,9 +4,11 @@ import { CTA } from "@/components/layout/Cta";
 import { handleSignIn } from "@/services/handle-signin";
 import { InputField } from "@/components/common/InputField";
 import { MainHeader } from "@/components/common/MainHeader";
-import { RemoteSigninLink } from "@/components/layout/RemoteSigninLink";
-import { handle42Signin } from "@/services/handle-42-signin";
-import { handleGoogleSignin } from "@/services/handle-google-signin";
+import { RemoteSigninLink } from "@/components/layout/RemoteLink";
+import {
+  handleGoogleSignin,
+  handle42Signin,
+} from "@/services/handle-remote-signin";
 
 // function TwoFAVerification() {
 //   return (
@@ -94,7 +96,8 @@ export function Signin() {
   }, 0);
 
   const signinSection = (
-    <section className={`${styles.pageLayoutLight} relative`}>
+    <section className={styles.pageLayoutLight}>
+      <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
       <MainHeader
         isDark={true}
         title={"welcome back,"}

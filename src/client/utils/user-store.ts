@@ -1,4 +1,4 @@
-import type { UserProfile } from "../../../types/UserProfile";
+import type { UserProfile } from "../../../types/types";
 
 let currentUser: UserProfile | null = null;
 

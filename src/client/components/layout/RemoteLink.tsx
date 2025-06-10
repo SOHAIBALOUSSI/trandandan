@@ -10,17 +10,17 @@ export function RemoteSigninLink() {
         <button
           type="button"
           id="google-signin-btn"
-          className={`group ${styles.primaryButton} shadow-lg`}
+          className={styles.primaryButton}
         >
-          <i className="fa-solid fa-couch"></i>
+          <i className={`fa-solid fa-couch ${styles.primaryButtonIcon}`}></i>
           enter with google
         </button>
         <button
           type="button"
           id="ft-signin-btn"
-          className={`group ${styles.primaryButton} shadow-lg`}
+          className={styles.primaryButton}
         >
-          <i className="fa-solid fa-couch"></i>
+          <i className={`fa-solid fa-couch ${styles.primaryButtonIcon}`}></i>
           enter with 42
         </button>
       </div>

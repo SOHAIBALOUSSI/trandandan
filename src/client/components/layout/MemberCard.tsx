@@ -5,7 +5,7 @@ export function MemberCard(props: {
   avatar: string;
   rank: string;
 }) {
-  const memberCard = (
+  return (
     <div className="">
       <div className="flex items-center gap-4 p-4 bg-gray-800 rounded-lg shadow-md w-auto">
         <img
@@ -22,6 +22,4 @@ export function MemberCard(props: {
       </div>
     </div>
   );
-
-  return memberCard;
 }

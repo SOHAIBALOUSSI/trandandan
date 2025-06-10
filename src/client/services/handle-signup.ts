@@ -1,6 +1,6 @@
 import { styles } from "@/styles/styles";
 import { RegisterRes } from "@/utils/response-messages";
-import { UserRegister } from "types/UserRegister";
+import { UserRegister } from "types/types";
 
 export function handleSignUp() {
   const signupForm = document.querySelector<HTMLFormElement>("#signup-form");

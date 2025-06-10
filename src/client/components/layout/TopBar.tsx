@@ -1,7 +1,7 @@
 import { styles } from "@/styles/styles";
 
 export function TopBar() {
-  const topbar = (
+  return (
     <header className={styles.navBarStyle}>
       <input
         type="search"
@@ -21,6 +21,4 @@ export function TopBar() {
       </div>
     </header>
   );
-
-  return topbar;
 }
