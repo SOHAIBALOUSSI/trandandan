@@ -49,6 +49,11 @@ export function clearAuthCookies(reply) {
         ...COOKIES_OPTS,
         maxAge: 0
     });
+    
+    const tempTokenCookie = serialize('tempToken', '', {
+        ...COOKIES_OPTS,
+        maxAge: 0
+    });
 
     const refreshTokenCookie = serialize('refreshToken', '', {
         ...COOKIES_OPTS,

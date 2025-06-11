@@ -23,6 +23,7 @@ import {
 } from '../models/twoFaDAO.js';
 import { 
     clearAuthCookies, 
+    clearTempAuthToken, 
     getAuthCookies, 
     setAuthCookies, 
     setTempAuthToken 
@@ -47,7 +48,7 @@ export async function lostPasswordHandler(request, reply) {
         
         const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
         if (twoFa)
-            await updateOtpCode(this.db, otpCode, twoFa.id, twoFa.type);
+            await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
         else    
             await storeOtpCode(this.db, otpCode, user.id);
         const mailOptions = {
@@ -57,7 +58,9 @@ export async function lostPasswordHandler(request, reply) {
             text: `OTP CODE : <${otpCode}>`,
         }
         await this.sendMail(mailOptions);
-        return reply.code(200).send(createResponse(200, 'CODE_SENT', { tempToken }));
+        clearAuthCookies(reply);
+        setTempAuthToken(reply, tempToken);
+        return reply.code(200).send(createResponse(200, 'CODE_SENT'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -117,7 +120,7 @@ export async function updatePasswordHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await updateOtpCode(this.db, otpCode, twoFa.id, twoFa.type);
+                await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -139,6 +142,7 @@ export async function updatePasswordHandler(request, reply) {
             refreshToken = this.jwt.signRT({ id: user.id });
             await addToken(this.db, refreshToken, user.id);
         }
+        clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
@@ -167,7 +171,7 @@ export async function loginHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await updateOtpCode(this.db, otpCode, twoFa.id, 'email');
+                await updateOtpCode(this.db, otpCode, user.id, 'email');
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -189,7 +193,7 @@ export async function loginHandler(request, reply) {
             refreshToken = this.jwt.signRT({ id: user.id });
             await addToken(this.db, refreshToken, user.id);
         }
-
+        clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {

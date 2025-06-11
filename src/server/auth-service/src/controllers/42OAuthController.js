@@ -1,7 +1,7 @@
 import { addUserAndOAuthIdentity, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
 import { addToken, findValidTokenByUid } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
-import { setAuthCookies } from "../utils/authCookies.js";
+import { clearAuthCookies, setAuthCookies } from "../utils/authCookies.js";
 
 export async function   fortyTwoSetupHandler(request, reply) {
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code&prompt=consent`;
@@ -84,7 +84,7 @@ export async function fortyTwoLoginHandler(request, reply) {
             refreshToken = this.jwt.signRT({ id: user.id });
             await addToken(this.db, refreshToken, user.id);
         }
-        
+        clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
         if (isNewUser) {
             this.rabbit.produceMessage({

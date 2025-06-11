@@ -19,7 +19,7 @@ export async function setup2FAEmail(request, reply) {
         {
             if (twoFa.enabled)
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
-            await updateOtpCode(this.db, otpCode, twoFa.id, twoFa.type);
+            await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
         }
 
         const mailOptions = {
@@ -59,8 +59,8 @@ export async function verify2FAEmailSetup(request, reply) {
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
 
-        await updateUser2FA(this.db, twoFa.id, 'email');
-        await makeTwoFaPrimaryByUidAndType(this.db, twoFa.id, 'email');
+        await updateUser2FA(this.db, user.id, 'email');
+        await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'email');
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {
         console.log(error);
@@ -98,7 +98,7 @@ export async function verify2FALogin(request, reply) {
             refreshToken = this.jwt.signRT({ id: user.id });
             await addToken(this.db, refreshToken, user.id);
         }
-        
+        clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {

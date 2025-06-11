@@ -34,7 +34,7 @@ export async function disableTwoFa(request, reply) {
         console.log('TwoFa: ', twoFa);
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
-        await disableTwoFaByUidAndType(this.db, twoFa.id, method);
+        await disableTwoFaByUidAndType(this.db, user.id, method);
         return reply.code(200).send(createResponse(200, 'METHOD_DISABLED'));
     } catch (error) {
         console.log('Error: ', error);
@@ -57,7 +57,7 @@ export async function enableTwoFa(request, reply) {
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
-        await enableTwoFaByUidAndType(this.db, twoFa.id, method);
+        await enableTwoFaByUidAndType(this.db, user.id, method);
         return reply.code(200).send(createResponse(200, 'METHOD_ENABLED'));
     } catch (error) {
         console.log('Error: ', error);
@@ -80,7 +80,7 @@ export async function makePrimaryHandler(request, reply) {
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
-        await makeTwoFaPrimaryByUidAndType(this.db, twoFa.id, method);
+        await makeTwoFaPrimaryByUidAndType(this.db, user.id, method);
         return reply.code(200).send(createResponse(200, 'PRIMARY_METHOD_UPDATED'));
     } catch (error) {
         console.log('Error: ', error);
