@@ -33,31 +33,28 @@ const rabbit = new RabbitMQClient(process.env.RABBITMQ_CHAT_QUEUE);
 
 await rabbit.connect();
 
-wss.on('connection', (ws) => {
+wss.on('connection', async (ws, request) => {
     console.log('WebSocket: Client connected.');
-
     ws.isAuthenticated = false;
     ws.userId = null;
+    verifyToken(ws, request);
+    if (ws.userId) {
+        if (!users.has(ws.userId))
+            users.set(ws.userId, new Set());
+        users.get(ws.userId).add(ws);
+        const messages = await getAllMessages(db, ws.userId);
+        if (messages) {
+            for (const message of messages)
+                ws.send(JSON.stringify(message));
+        }
+    }
+    else
+        ws.close(3000, 'Unauthorized');
+
 
     ws.on('message', async (message) => {
         const payload = JSON.parse(message);
-        if (payload.type === 'AUTHENTICATION') {
-            console.log(`WebSocker: Received this payload:`, payload);
-            verifyToken(ws, payload.token);
-            if (ws.userId) {
-                if (!users.has(ws.userId))
-                users.set(ws.userId, new Set());
-                users.get(ws.userId).add(ws);
-                const messages = await getAllMessages(db, ws.userId);
-                if (messages) {
-                for (const message of messages)
-                    ws.send(JSON.stringify(message));
-                }
-            }
-            else
-                ws.close(3000, 'Unauthorized');
-        }
-        else if (payload.type === 'MESSAGE_SENT') {
+        if (payload.type === 'MESSAGE_SENT') {
             if (ws.isAuthenticated) {
                 console.log('WebSocket: payload received: ', payload);
                 const recipient = payload.recipient_id;
@@ -108,23 +105,6 @@ wss.on('connection', (ws) => {
 
 });
 
-// rabbit.consumeMessages(async (message) =>{
-//   console.log('RabbitMQ: message received: ', message);
-//   const recipient = message.to;
-//   console.log('RabbitMQ: recipient: ', recipient);
-//   if (recipient) {
-//     const messageId = await addMessage(db, message);
-//     const connections = users.get(recipient);
-//     if (connections) {
-//       const message = JSON.stringify(message);
-//       for (const conn of connections) {
-//         if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
-//           conn.send(message);
-//       }
-//       await markAsDelivered(db, messageId);
-//     }
-//   }
-// })
 
 wss.on('error', (error) => {
     console.error('WebSocket: Server error:', error);

@@ -1,13 +1,20 @@
 import jwt from 'jsonwebtoken';
+import { parse } from 'cookie'
 
-export function verifyToken(ws, token) {
-    if (!token) {
-        console.log('WebSocket: Token required');
-        ws.close(1008, 'Token required');
-    }
+export function getAuthCookies(request) {
+    const authCookies = request.headers.cookie || '';
+    const cookies = parse(authCookies);
+    return {
+        accessToken: cookies.accessToken,
+        refreshToken: cookies.refreshToken
+    };
+}
 
+export function verifyToken(ws, request) {
     try {
-        const payload = jwt.verify(token, process.env.AJWT_SECRET_KEY);
+        let cookie = getAuthCookies(request);
+        
+        const payload = jwt.verify(cookie.accessToken, process.env.AJWT_SECRET_KEY);
         ws.userId = payload.id;
         ws.isAuthenticated = true;
         console.log(`WebSocket: User ${ws.userId} authenticated`);

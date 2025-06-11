@@ -35,28 +35,21 @@ const rabbit = new RabbitMQClient(process.env.RABBITMQ_NOTIFICATION_QUEUE);
 
 await rabbit.connect();
 
-wss.on('connection', (ws) => {
+wss.on('connection', async (ws, request) => {
   console.log('WebSocket: Client connected.');
-
-  ws.on('message', async (message) => {
-    const payload = JSON.parse(message);
-    if (payload.type === 'AUTHENTICATION') {
-      console.log(`WebSocker: Received this message:`, payload);
-      verifyToken(ws, payload.token);
-      if (ws.userId) {
-        if (!users.has(ws.userId))
-          users.set(ws.userId, new Set());
-        users.get(ws.userId).add(ws);
-        const notifications = await getAllNotifications(db, ws.userId);
-        if (notifications) {
-          for (const notification of notifications)
-            ws.send(JSON.stringify(notification));  
-        }
-      }
-      else 
-        ws.close(1008, 'Unauthorized');
+  verifyToken(ws, request);
+  if (ws.userId) {
+    if (!users.has(ws.userId))
+      users.set(ws.userId, new Set());
+    users.get(ws.userId).add(ws);
+    const notifications = await getAllNotifications(db, ws.userId);
+    if (notifications) {
+      for (const notification of notifications)
+        ws.send(JSON.stringify(notification));  
     }
-  })
+  }
+  else 
+    ws.close(1008, 'Unauthorized');
 
   ws.on('error', (error) => {
     console.error('WebSocket: Client error:', error);

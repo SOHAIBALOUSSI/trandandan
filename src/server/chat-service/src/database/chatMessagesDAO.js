@@ -24,7 +24,7 @@ export async function markAsDelivered(db, id) {
 
 export async function getAllMessages(db, id) {
     const result = await db.all('SELECT recipient_id, sender_id, content FROM messages WHERE (recipient_id = ? OR sender_id = ?)  AND (read = 0 OR delivered = 0) ORDER BY created_at',
-        [id]
+        [id, id]
     );
     console.log('Fetching all messages: ', result);
     return (result);

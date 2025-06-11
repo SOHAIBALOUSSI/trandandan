@@ -31,7 +31,7 @@ export async function setup2FAApp(request, reply) {
         {
             if (twoFa.enabled && twoFa.type === 'app')
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
-            await updateTempSecret(this.db, secret.base32, twoFa.id);
+            await updateTempSecret(this.db, secret.base32, user.id);
         }
         
         const otpauthUrl = secret.otpauth_url;
@@ -71,9 +71,9 @@ export async function verify2FAAppSetup(request, reply) {
         if (!isValid)
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
-        await updateUser2FA(this.db, twoFa.id, 'app');
-        await updateUserSecret(this.db, twoFa.id);
-        await makeTwoFaPrimaryByUidAndType(this.db, twoFa.id, 'app');
+        await updateUser2FA(this.db, user.id, 'app');
+        await updateUserSecret(this.db, user.id);
+        await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'app');
 
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {   
@@ -118,7 +118,7 @@ export async function verify2FAAppLogin(request, reply) {
             refreshToken = this.jwt.signRT({ id: user.id });
             await addToken(this.db, refreshToken, user.id);
         }
-        
+        clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
