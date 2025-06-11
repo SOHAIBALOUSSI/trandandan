@@ -47,7 +47,7 @@ export async function lostPasswordHandler(request, reply) {
         
         const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
         if (twoFa)
-            await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
+            await updateOtpCode(this.db, otpCode, twoFa.id, twoFa.type);
         else    
             await storeOtpCode(this.db, otpCode, user.id);
         const mailOptions = {
@@ -117,7 +117,7 @@ export async function updatePasswordHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
+                await updateOtpCode(this.db, otpCode, twoFa.id, twoFa.type);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -140,7 +140,7 @@ export async function updatePasswordHandler(request, reply) {
             await addToken(this.db, refreshToken, user.id);
         }
         setAuthCookies(reply, accessToken, refreshToken);
-        return reply.redirect(process.env.FRONT_END_URL);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -167,7 +167,7 @@ export async function loginHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await updateOtpCode(this.db, otpCode, user.id, 'email');
+                await updateOtpCode(this.db, otpCode, twoFa.id, 'email');
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -191,7 +191,7 @@ export async function loginHandler(request, reply) {
         }
 
         setAuthCookies(reply, accessToken, refreshToken);
-        return reply.redirect(process.env.FRONT_END_URL);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -217,7 +217,9 @@ export async function registerHandler(request, reply) {
             username: username,
             email: email,
             gender: gender
-        });
+        },
+        'profile.user.created'
+    );
         
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
     } catch (error) {

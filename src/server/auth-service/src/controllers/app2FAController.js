@@ -1,12 +1,14 @@
 import QRCode from 'qrcode'
 import speakeasy from 'speakeasy'
 import { findUserById } from '../models/userDAO.js';
-import { addToken } from '../models/tokenDAO.js';
+import { addToken, findValidTokenByUid } from '../models/tokenDAO.js';
 import { createResponse } from '../utils/utils.js';
 import {
     findTwoFaByUidAndType,
+    makeTwoFaPrimaryByUidAndType,
     storeTempSecret,
     updateTempSecret,
+    updateUser2FA,
     updateUserSecret
 } from '../models/twoFaDAO.js';
 import { setAuthCookies } from '../utils/authCookies.js';
@@ -29,7 +31,7 @@ export async function setup2FAApp(request, reply) {
         {
             if (twoFa.enabled && twoFa.type === 'app')
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
-            await updateTempSecret(this.db, secret.base32, userId);
+            await updateTempSecret(this.db, secret.base32, twoFa.id);
         }
         
         const otpauthUrl = secret.otpauth_url;
@@ -69,9 +71,10 @@ export async function verify2FAAppSetup(request, reply) {
         if (!isValid)
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
-        await updateUser2FA(this.db, userId, 'app');
-        await updateUserSecret(this.db, userId);
-        
+        await updateUser2FA(this.db, twoFa.id, 'app');
+        await updateUserSecret(this.db, twoFa.id);
+        await makeTwoFaPrimaryByUidAndType(this.db, twoFa.id, 'app');
+
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {   
         console.log(error);
@@ -117,7 +120,7 @@ export async function verify2FAAppLogin(request, reply) {
         }
         
         setAuthCookies(reply, accessToken, refreshToken);
-        return reply.redirect(process.env.FRONT_END_URL);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

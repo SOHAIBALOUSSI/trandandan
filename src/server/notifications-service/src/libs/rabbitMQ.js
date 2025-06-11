@@ -4,10 +4,12 @@ const MAX_RECONN_ATTEMPTS = 10;
 const RECONN_DELAY = 1000;
 
 class RabbitMQClient {
-  constructor(queue, url = process.env.RABBITMQ_URL) {
+  constructor(queue, url = process.env.RABBITMQ_URL, exchange = 'microservices-exchange', exchangeType = 'topic') {
       this.url = url;
       this.queueName = queue;
       this.channel = null;
+      this.exchange = exchange;
+      this.exchangeType = exchangeType;
       this.connection = null;
       this.reconnectAttempts = 0;
       this.isConnecting = false;
@@ -25,8 +27,9 @@ class RabbitMQClient {
 
         this.channel = await this.connection.createChannel();
         this.channel.on('error', async (error) => { console.log('RabbitMQ channel error: ', error); });
-
+        await this.channel.assertExchange(this.exchange, this.exchangeType, { durable: true });
         await this.channel.assertQueue(this.queueName, { durable: true });
+        await this.channel.bindQueue(this.queueName, this.exchange, 'notifications.#');
 
         this.isConnecting = false;
         this.reconnectAttempts = 0;
@@ -55,22 +58,19 @@ class RabbitMQClient {
     }, delay);
   }
 
-  async produceMessage(message) {
+  async produceMessage(message, routingKey) {
     try {
 
       if (!this.channel)
         await this.connect();
 
-      await this.channel.assertQueue(this.queueName, { durable: true });
-
-      const options = {
-        persistent: true
-      }
-
-      this.channel.sendToQueue(this.queueName,
+      this.channel.publish(
+        this.exchange,
+        routingKey,
         Buffer.from(JSON.stringify(message)),
-        options
+        { persistent: true }
       );
+
     } catch (error) {
         console.log('Error producing messages.', error);
         throw error;
@@ -89,7 +89,7 @@ class RabbitMQClient {
         {
           const payload = JSON.parse(msg.content.toString())
           try {
-            await handleMessage(payload)
+            handleMessage(payload)
             this.channel.ack(msg);
           } catch (error) {
             console.log('Error handling message: ', error);

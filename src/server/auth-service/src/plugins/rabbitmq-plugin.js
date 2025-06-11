@@ -3,7 +3,7 @@ import RabbitMQClient from '../libs/RabbitMQClient.js'
 
 
 async function rabbitMQPlugin(fastify, options) {
-    const rabbit = new RabbitMQClient(process.env.RABBITMQ_PROFILE_QUEUE);
+    const rabbit = new RabbitMQClient(process.env.RABBITMQ_AUTH_QUEUE);
     try {       
         await rabbit.connect();
         console.log("RabbitMQ connected...");

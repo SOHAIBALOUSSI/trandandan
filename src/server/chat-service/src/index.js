@@ -29,7 +29,7 @@ const users = new Map();
 
 const wss = new WebSocketServer({ port: 3004 });
 
-const rabbit = new RabbitMQClient(process.env.RABBITMQ_NOTIFICATION_QUEUE);
+const rabbit = new RabbitMQClient(process.env.RABBITMQ_CHAT_QUEUE);
 
 await rabbit.connect();
 

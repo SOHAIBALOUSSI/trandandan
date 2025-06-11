@@ -1,8 +1,7 @@
-import { addUserAndOAuthIdentity, deleteUser, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
-import { addToken, revokeToken } from "../models/tokenDAO.js";
+import { addUserAndOAuthIdentity, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
+import { addToken, findValidTokenByUid } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
-import { findTwoFaByUid, storeOtpCode } from "../models/twoFaDAO.js";
-import { clearAuthCookies, setAuthCookies, setTempAuthToken } from "../utils/authCookies.js";
+import { setAuthCookies } from "../utils/authCookies.js";
 
 export async function   fortyTwoSetupHandler(request, reply) {
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code&prompt=consent`;
@@ -93,17 +92,16 @@ export async function fortyTwoLoginHandler(request, reply) {
                 username: user.username,
                 email: user.email,
                 avatar_url: userInfo.image.link
-            });;
+            }, 
+            'profile.user.created'
+        );
             return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
         }
         else
-            return reply.redirect(process.env.FRONT_END_URL);
+            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
 
-export async function makePrimaryHandler(request, reply) {
-    
-}
