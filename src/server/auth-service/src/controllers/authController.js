@@ -47,7 +47,7 @@ export async function lostPasswordHandler(request, reply) {
         
         const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
         if (twoFa)
-            await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
+            await updateOtpCode(this.db, otpCode, twoFa.id, twoFa.type);
         else    
             await storeOtpCode(this.db, otpCode, user.id);
         const mailOptions = {
@@ -117,7 +117,7 @@ export async function updatePasswordHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
+                await updateOtpCode(this.db, otpCode, twoFa.id, twoFa.type);
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,
@@ -167,7 +167,7 @@ export async function loginHandler(request, reply) {
             if (twoFa.type === 'email')
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
-                await updateOtpCode(this.db, otpCode, user.id, 'email');
+                await updateOtpCode(this.db, otpCode, twoFa.id, 'email');
                 const mailOptions = {
                     from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
                     to: `${user.email}`,

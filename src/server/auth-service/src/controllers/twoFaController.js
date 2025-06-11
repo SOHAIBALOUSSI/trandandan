@@ -29,11 +29,12 @@ export async function disableTwoFa(request, reply) {
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         const { method } = request.body;
+        console.log('Method to be disabled: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
+        console.log('TwoFa: ', twoFa);
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
-
-        await disableTwoFaByUidAndType(this.db, user.id, method);
+        await disableTwoFaByUidAndType(this.db, twoFa.id, method);
         return reply.code(200).send(createResponse(200, 'METHOD_DISABLED'));
     } catch (error) {
         console.log('Error: ', error);
@@ -50,11 +51,13 @@ export async function enableTwoFa(request, reply) {
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         const { method } = request.body;
+        console.log('Method to be enabled: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
+        console.log('TwoFa: ', twoFa);
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
-        await enableTwoFaByUidAndType(this.db, user.id, method);
+        await enableTwoFaByUidAndType(this.db, twoFa.id, method);
         return reply.code(200).send(createResponse(200, 'METHOD_ENABLED'));
     } catch (error) {
         console.log('Error: ', error);
@@ -71,11 +74,13 @@ export async function makePrimaryHandler(request, reply) {
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         const { method } = request.body;
+        console.log('Method to be primary: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
+        console.log('TwoFa: ', twoFa);
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
-        await makeTwoFaPrimaryByUidAndType(this.db, user.id, method);
+        await makeTwoFaPrimaryByUidAndType(this.db, twoFa.id, method);
         return reply.code(200).send(createResponse(200, 'PRIMARY_METHOD_UPDATED'));
     } catch (error) {
         console.log('Error: ', error);

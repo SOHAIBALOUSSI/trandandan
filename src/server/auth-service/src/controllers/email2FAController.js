@@ -19,7 +19,7 @@ export async function setup2FAEmail(request, reply) {
         {
             if (twoFa.enabled)
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
-            await updateOtpCode(this.db, otpCode, userId, twoFa.type);
+            await updateOtpCode(this.db, otpCode, twoFa.id, twoFa.type);
         }
 
         const mailOptions = {
@@ -59,8 +59,8 @@ export async function verify2FAEmailSetup(request, reply) {
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
 
-        await updateUser2FA(this.db, userId, 'email');
-        await makeTwoFaPrimaryByUidAndType(this.db, userId, 'email');
+        await updateUser2FA(this.db, twoFa.id, 'email');
+        await makeTwoFaPrimaryByUidAndType(this.db, twoFa.id, 'email');
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {
         console.log(error);
