@@ -2,23 +2,27 @@ import { styles } from "@/styles/styles";
 import { LostPasswordRes } from "@/utils/response-messages";
 
 export function handleResetPassword() {
-  const form = document.querySelector<HTMLFormElement>("#reset-password-form");
+  const form = document.getElementById(
+    "reset-password-form"
+  ) as HTMLFormElement;
+  const otpForm = document.getElementById("otp-form") as HTMLFormElement;
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const otpForm = form.querySelector<HTMLFormElement>("#otp-form");
     const feedback = form.querySelector<HTMLDivElement>("#reset-feedback");
     const submitBtn = form.querySelector<HTMLButtonElement>(
       "#reset-password-btn"
     );
-    const spinner = form.querySelector<HTMLSpanElement>("#spinner-reset");
-    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label-reset");
+    const spinner = form.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
 
-    if (!otpForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
+    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
     // Get email value from input
-    const emailInput = form.querySelector("#email") as HTMLInputElement;
+    const emailInput = form.querySelector(
+      "#reset-pass-email"
+    ) as HTMLInputElement;
     const email = emailInput.value.trim();
 
     // Reset feedback and button state
@@ -49,8 +53,8 @@ export function handleResetPassword() {
           feedback.className = `${styles.formMessage} text-pong-success`;
           feedback.textContent = LostPasswordRes.CODE_SENT;
           emailInput.value = "";
-          otpForm.classList.remove("hidden");
-          otpForm.classList.add("flex");
+          otpForm?.classList.remove("hidden");
+          otpForm?.classList.add("flex");
         }, waitTime);
       } else {
         setTimeout(() => {
@@ -75,19 +79,19 @@ export function handleResetPassword() {
 }
 
 export function verifyOtpCode() {
-  const otpForm = document.querySelector<HTMLFormElement>("#otp-form");
+  const otpForm = document.getElementById("otp-form") as HTMLFormElement;
 
   otpForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const feedback = otpForm.querySelector<HTMLDivElement>("#otp-feedback");
     const submitBtn = otpForm.querySelector<HTMLButtonElement>("#otp-btn");
-    const spinner = otpForm.querySelector<HTMLSpanElement>("#spinner-otp");
-    const btnLabel = otpForm.querySelector<HTMLSpanElement>("#btn-label-otp");
+    const spinner = otpForm.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = otpForm.querySelector<HTMLSpanElement>("#btn-label");
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
-    const otpInput = otpForm.getElementById("otp") as HTMLInputElement;
+    const otpInput = otpForm.querySelector("#otp") as HTMLInputElement;
     const otp = otpInput.value.trim();
 
     // Reset feedback and button state

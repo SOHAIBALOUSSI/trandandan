@@ -29,7 +29,7 @@ export function ResetPassword() {
           <InputField
             type={"email"}
             name={"email"}
-            id={"email"}
+            id={"reset-pass-email"}
             placeholder={"enter your email"}
             autofocus={true}
           />
