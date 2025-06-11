@@ -1,5 +1,5 @@
 import { addUserAndOAuthIdentity, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
-import { addToken } from "../models/tokenDAO.js";
+import { addToken, findValidTokenByUid } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
 import { setAuthCookies } from "../utils/authCookies.js";
 
@@ -97,7 +97,7 @@ export async function googleLoginHandler(request, reply) {
             return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
         }
         else
-            return reply.redirect(process.env.FRONT_END_URL);
+            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

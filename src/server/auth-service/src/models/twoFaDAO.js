@@ -8,7 +8,7 @@ export async function storeTempSecret(db, secret, id) {
 }
 
 export async function updateTempSecret(db, secret, id) {
-    const result = await db.run('UPDATE twofa SET temp_secret = ? WHERE user_id = ? AND type = ?)',
+    const result = await db.run('UPDATE twofa SET temp_secret = ? WHERE user_id = ? AND type = ?',
         [secret, id, 'app']
     );
 
@@ -87,25 +87,25 @@ export async function getAllTwoFaMethodsByUid(db, id) {
 
 export async function disableTwoFaByUidAndType(db, id, type) {
     console.log('Disabling twoFa by UID and type');
-    return await db.run('UPDATE twofa SET enabled = 0 WHERE id = ? AND type = ?',
+    return await db.run('UPDATE twofa SET enabled = FALSE WHERE id = ? AND type = ?',
         [id, type]
     );
 }
 
 export async function enableTwoFaByUidAndType(db, id, type) {
     console.log('Enabling twoFa by UID and type');
-    return await db.run('UPDATE twofa SET enabled = 1 WHERE id = ? AND type = ?',
+    return await db.run('UPDATE twofa SET enabled = TRUE WHERE id = ? AND type = ?',
         [id, type]
     );
 }
 
 export async function makeTwoFaPrimaryByUidAndType(db, id, type) {
     console.log('Making twoFa method primary by UID and type');
-    await db.run('UPDATE twofa SET is_primary = 0 WHERE id = ?',
+    await db.run('UPDATE twofa SET is_primary = FALSE WHERE id = ?',
         [id]
     );
 
-    return await db.run('UPDATE twofa SET is_primary = 1 WHERE id = ? AND type = ?',
+    await db.run('UPDATE twofa SET is_primary = TRUE WHERE id = ? AND type = ?',
         [id, type]
     );
 }

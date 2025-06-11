@@ -1,4 +1,4 @@
-import { addToken } from '../models/tokenDAO.js';
+import { addToken, findValidTokenByUid } from '../models/tokenDAO.js';
 import { findTwoFaByUidAndType, makeTwoFaPrimaryByUidAndType, storeOtpCode, updateOtpCode, updateUser2FA } from '../models/twoFaDAO.js';
 import { findUserById } from '../models/userDAO.js';
 import { setAuthCookies } from '../utils/authCookies.js';
@@ -100,7 +100,7 @@ export async function verify2FALogin(request, reply) {
         }
         
         setAuthCookies(reply, accessToken, refreshToken);
-        return reply.redirect(process.env.FRONT_END_URL);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

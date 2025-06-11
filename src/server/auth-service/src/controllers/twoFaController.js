@@ -1,4 +1,5 @@
 import { disableTwoFaByUidAndType, enableTwoFaByUidAndType, findTwoFaByUidAndType, getAllTwoFaMethodsByUid, makeTwoFaPrimaryByUidAndType } from "../models/twoFaDAO.js";
+import { findUserById } from "../models/userDAO.js";
 import { createResponse } from "../utils/utils.js";
 
 export async function getTwoFaHandler(request, reply) {
@@ -14,6 +15,7 @@ export async function getTwoFaHandler(request, reply) {
             return reply.code(404).send(createResponse(404, 'NO_METHODS_FOUND'));
         return reply.code(200).send(createResponse(200, 'METHODS_FETCHED', { methods }));
     } catch (error) {
+        console.log('Error: ', error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -26,14 +28,15 @@ export async function disableTwoFa(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const { type } = request.body;
-        const twoFa = await findTwoFaByUidAndType(this.db, user.id, type);
+        const { method } = request.body;
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
-        await disableTwoFaByUidAndType(this.db, user.id, type);
+        await disableTwoFaByUidAndType(this.db, user.id, method);
         return reply.code(200).send(createResponse(200, 'METHOD_DISABLED'));
     } catch (error) {
+        console.log('Error: ', error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -46,14 +49,15 @@ export async function enableTwoFa(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const { type } = request.body;
-        const twoFa = await findTwoFaByUidAndType(this.db, user.id, type);
+        const { method } = request.body;
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
-        await enableTwoFaByUidAndType(this.db, user.id, type);
+        await enableTwoFaByUidAndType(this.db, user.id, method);
         return reply.code(200).send(createResponse(200, 'METHOD_ENABLED'));
     } catch (error) {
+        console.log('Error: ', error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
@@ -66,14 +70,15 @@ export async function makePrimaryHandler(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const { type } = request.body;
-        const twoFa = await findTwoFaByUidAndType(this.db, user.id, type);
+        const { method } = request.body;
+        const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
         if (!twoFa || !twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
-        await makeTwoFaPrimaryByUidAndType(this.db, user.id, type);
+        await makeTwoFaPrimaryByUidAndType(this.db, user.id, method);
         return reply.code(200).send(createResponse(200, 'PRIMARY_METHOD_UPDATED'));
     } catch (error) {
+        console.log('Error: ', error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }

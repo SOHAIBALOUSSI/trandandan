@@ -1,7 +1,6 @@
-import { makePrimaryHandler } from "../controllers/42OAuthController.js";
 import { setup2FAApp, verify2FAAppLogin, verify2FAAppSetup } from "../controllers/app2FAController.js";
 import { setup2FAEmail, verify2FAEmailSetup, verify2FALogin } from "../controllers/email2FAController.js";
-import { disableTwoFa, enableTwoFa, getTwoFaHandler } from "../controllers/twoFaController.js";
+import { disableTwoFa, enableTwoFa, getTwoFaHandler, makePrimaryHandler } from "../controllers/twoFaController.js";
 import { methodTypeSchema, otpCodeSchema } from "../schemas/authSchema.js";
 
 async function twoFARoutes(fastify) {

@@ -140,7 +140,7 @@ export async function updatePasswordHandler(request, reply) {
             await addToken(this.db, refreshToken, user.id);
         }
         setAuthCookies(reply, accessToken, refreshToken);
-        return reply.redirect(process.env.FRONT_END_URL);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -191,7 +191,7 @@ export async function loginHandler(request, reply) {
         }
 
         setAuthCookies(reply, accessToken, refreshToken);
-        return reply.redirect(process.env.FRONT_END_URL);
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
