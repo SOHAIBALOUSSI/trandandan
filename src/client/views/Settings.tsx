@@ -11,43 +11,67 @@ import { setup2FA } from "@/services/setup-2fa";
 // import { setPrimaryEmail2FA } from "@/services/handle-2fa";
 
 function TwofaMode(mode: "app" | "email") {
-  const isApp: boolean = mode === "app";
-  const enableId: string = isApp ? "enable-app" : "enable-email";
-  const primaryId: string = isApp ? "primary-app" : "primary-email";
-  const verifySectionId: string = isApp
+  const isApp = mode === "app";
+  const setupId = isApp ? "setup-app" : "setup-email";
+  const toggleId = isApp ? "toggle-app" : "toggle-email";
+  const primaryId = isApp ? "primary-app" : "primary-email";
+  const verifySectionId = isApp
     ? "2fa-app-verify-section"
     : "2fa-email-verify-section";
-  const feedbackId: string = isApp ? "2fa-app-feedback" : "2fa-email-feedback";
-  const otpInputId: string = isApp ? "2fa-app-otp" : "2fa-email-otp";
-  const verifyBtnId: string = isApp
-    ? "2fa-app-verify-btn"
-    : "2fa-email-verify-btn";
-  const verifyFeedbackId: string = isApp
+  const feedbackId = isApp ? "2fa-app-feedback" : "2fa-email-feedback";
+  const otpInputId = isApp ? "2fa-app-otp" : "2fa-email-otp";
+  const verifyBtnId = isApp ? "2fa-app-verify-btn" : "2fa-email-verify-btn";
+  const verifyFeedbackId = isApp
     ? "2fa-app-verify-feedback"
     : "2fa-email-verify-feedback";
 
-  // Set up event listeners after rendering
+  let isSetup = false;
+
   setTimeout(() => {
-    const enableBtn = document.getElementById(enableId);
-    if (enableBtn && !enableBtn.dataset.listener) {
-      enableBtn.addEventListener("click", (e) => {
+    const setupBtn = document.getElementById(setupId) as HTMLButtonElement;
+    const verifySection = document.getElementById(
+      verifySectionId
+    ) as HTMLDivElement;
+    const toggleBtn = document.getElementById(toggleId) as HTMLButtonElement;
+
+    if (setupBtn && !setupBtn.dataset.listener) {
+      setupBtn.addEventListener("click", (e) => {
         e.preventDefault();
         setup2FA(isApp ? "app" : "email");
+
+        if (verifySection) verifySection.classList.remove("hidden");
+
+        setupBtn.classList.add("hidden");
+        if (toggleBtn) toggleBtn.classList.remove("hidden");
+
+        const primaryBtn = document.getElementById(
+          primaryId
+        ) as HTMLButtonElement;
+        if (primaryBtn) primaryBtn.classList.remove("hidden");
       });
-      enableBtn.dataset.listener = "true";
+      setupBtn.dataset.listener = "true";
     }
   }, 0);
 
-  const modes = (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="flex flex-col items-center justify-center md:flex-row md:justify-between gap-4 bg-gray-900 text-lg m-8 p-6 rounded-sm">
+  return (
+    <div className="flex flex-col gap-2 w-full bg-white/20">
+      <div className="flex flex-col items-center justify-center md:flex-row md:justify-between gap-4 bg-gray-900 text-lg m-8 p-6 rounded">
         <span className="text-pong-secondary">{mode}</span>
         <div className="flex items-center gap-4">
-          <button className={`${styles.buttonPrimary} w-24`} id={enableId}>
+          <button className={`${styles.buttonPrimary} w-24`} id={setupId}>
+            Setup
+          </button>
+          <button
+            className={`${styles.buttonPrimary} w-24 hidden`}
+            id={toggleId}
+          >
             Enable
           </button>
-          <button className={`${styles.buttonPrimary} w-24`} id={primaryId}>
-            Primary
+          <button
+            className={`${styles.buttonPrimary} w-24 hidden`}
+            id={primaryId}
+          >
+            Set as Primary
           </button>
         </div>
       </div>
@@ -60,11 +84,11 @@ function TwofaMode(mode: "app" | "email") {
         <input
           id={otpInputId}
           type="text"
-          maxlength="6"
+          maxLength={6}
           pattern="[0-9]{6}"
           placeholder="Enter 6-digit code"
           className="py-2 px-8 text-center text-gray-800"
-          autocomplete="one-time-code"
+          autoComplete="one-time-code"
         />
         <button
           id={verifyBtnId}
@@ -76,8 +100,6 @@ function TwofaMode(mode: "app" | "email") {
       </div>
     </div>
   );
-
-  return modes;
 }
 
 function TwofaSection() {

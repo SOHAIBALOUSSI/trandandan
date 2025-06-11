@@ -1,6 +1,5 @@
 function verify2FASetup(otpCode: string, mode: "app" | "email") {
   const isAppMode: boolean = mode === "app";
-  const accessToken = localStorage.getItem("accessToken");
   const feedback = document.getElementById(
     isAppMode ? "2fa-app-verify-feedback" : "2fa-email-verify-feedback"
   );
@@ -9,10 +8,8 @@ function verify2FASetup(otpCode: string, mode: "app" | "email") {
 
   fetch(`/2fa/${mode}/verify-setup`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ otpCode }),
   })
     .then((response) =>
@@ -46,7 +43,6 @@ function verify2FASetup(otpCode: string, mode: "app" | "email") {
 }
 
 export function setup2FA(mode: "app" | "email") {
-  const accessToken = localStorage.getItem("accessToken");
   const isAppMode: boolean = mode === "app";
   const verifySectionId: string = isAppMode
     ? "2fa-app-verify-section"
@@ -71,9 +67,7 @@ export function setup2FA(mode: "app" | "email") {
 
   fetch(`/2fa/${mode}/setup`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    credentials: "include",
   })
     .then((response) =>
       response.json().then((data) => ({ status: response.status, data }))

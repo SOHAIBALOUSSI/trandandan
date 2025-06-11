@@ -34,7 +34,7 @@ const routes: Record<string, () => HTMLElement> = {
 };
 
 // Public pages that don't require authentication
-const publicRoutes = [
+const publicRoutes: string[] = [
   "welcome",
   "signin",
   "signup",
@@ -62,21 +62,19 @@ export async function router(): Promise<void> {
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
 
-  console.log(render);
-
   const authed = await isAuthenticated();
 
-  //   if (!isPublic && !authed) {
-  //     history.replaceState(null, "", "/signin");
-  //     await router();
-  //     return;
-  //   }
+  if (!isPublic && !authed) {
+    history.replaceState(null, "", "/signin");
+    await router();
+    return;
+  }
 
-  //   if (isPublic && authed) {
-  //     history.replaceState(null, "", "/salon");
-  //     await router();
-  //     return;
-  //   }
+  if (isPublic && authed) {
+    history.replaceState(null, "", "/salon");
+    await router();
+    return;
+  }
 
   // Clear the existing app content
   while (app.firstChild) {

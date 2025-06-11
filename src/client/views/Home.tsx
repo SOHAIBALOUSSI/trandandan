@@ -9,7 +9,7 @@ import FemaleAvatar from "@/assets/female.png";
 function HeroSection() {
   const user = getCurrentUser();
 
-  const heroContainer = (
+  return (
     <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:justify-between md:items-start text-center w-[90%] max-w-5xl mx-auto mt-6 md:mt-12">
       <div
         id="player-level"
@@ -18,7 +18,9 @@ function HeroSection() {
         <p className="text-sm font-medium uppercase tracking-widest text-pong-dark-secondary">
           Grade
         </p>
-        <span className="text-lg md:text-xl font-bold">1.8</span>
+        <span className="text-lg md:text-xl font-bold">
+          {user?.level.toString()}
+        </span>
       </div>
 
       <div
@@ -56,8 +58,6 @@ function HeroSection() {
       </div>
     </div>
   );
-
-  return heroContainer;
 }
 
 function QuickLink(props: { href: string; title: string; text: string }) {

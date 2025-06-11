@@ -10,9 +10,10 @@ async function refreshToken() {
     const data = await res.json();
     return data.accessToken;
   } else if (res.status === 401) {
-    throw new Error("Token refresh failed: Unauthorized");
+    return false;
   } else {
-    throw new Error("Token refresh failed");
+    console.error("Token refresh failed with status:", res.status);
+    return false;
   }
 }
 
@@ -32,9 +33,7 @@ export async function authFetch(
     if (refreshSuccess) {
       return authFetch(url, options, false);
     } else {
-      history.replaceState(null, "", "/signin");
-      await router();
-      throw new Error("Session expired. Please log in again.");
+      return res;
     }
   }
 
