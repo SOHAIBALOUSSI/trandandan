@@ -60,6 +60,8 @@ export function handleSignIn() {
         }, waitTime);
       } else if (response.ok && result.statusCode === 206) {
         // 2FA Required
+        // I will store 2fa mode in session storage
+        sessionStorage.setItem("2faMode", result.data?.twoFaType);
         setTimeout(() => {
           feedback.className = `${styles.formMessage} text-pong-warning`;
           feedback.textContent = LoginRes.TWOFA_REQUIRED;

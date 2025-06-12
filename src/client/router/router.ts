@@ -28,7 +28,7 @@ const routes: Record<string, () => HTMLElement> = {
   chamber: Dashboard,
   lounge: Chat,
   members: Friends,
-  profile: Profile,
+  my_profile: Profile,
   mechanics: Settings,
   exit: Logout,
 };
@@ -82,7 +82,6 @@ export async function router(): Promise<void> {
     app.removeChild(app.firstChild);
   }
 
-  console.log(`Navigating to: ${path}`);
   // Render the current route's component
   app.appendChild(render());
 

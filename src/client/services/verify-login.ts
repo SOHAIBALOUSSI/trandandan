@@ -1,3 +1,7 @@
+export function verifyLogin() {
+	
+}
+
 //   // 2FA modal elements
 //   const twofaSection = document.getElementById("signin-2fa-section");
 //   const twofaInput = document.getElementById("2fa-otp") as HTMLInputElement;
