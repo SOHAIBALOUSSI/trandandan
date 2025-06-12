@@ -61,6 +61,7 @@ export async function router(): Promise<void> {
   const path = location.pathname.slice(1) || "welcome";
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
+  console.log(`Current path: ${path}`);
 
   const authed = await isAuthenticated();
 
@@ -81,6 +82,7 @@ export async function router(): Promise<void> {
     app.removeChild(app.firstChild);
   }
 
+  console.log(`Navigating to: ${path}`);
   // Render the current route's component
   app.appendChild(render());
 

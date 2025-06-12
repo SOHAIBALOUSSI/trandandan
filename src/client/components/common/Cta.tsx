@@ -1,5 +1,5 @@
 import { styles } from "@/styles/styles";
-import { BtnPrimary } from "../common/BtnPrimary";
+import { BtnPrimary } from "./BtnPrimary";
 
 export function CTA(props: {
   feedbackId: string;

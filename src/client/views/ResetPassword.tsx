@@ -5,7 +5,7 @@ import {
 import { Footer } from "@/components/layout/Footer";
 import { InputField } from "@/components/common/InputField";
 import { styles } from "@/styles/styles";
-import { CTA } from "@/components/layout/Cta";
+import { CTA } from "@/components/common/Cta";
 
 export function ResetPassword() {
   setTimeout(() => {

@@ -2,7 +2,7 @@ import { handleUpdatePassword } from "@/services/handle-update-password";
 import { Footer } from "@/components/layout/Footer";
 import { styles } from "@/styles/styles";
 import { InputField } from "@/components/common/InputField";
-import { CTA } from "@/components/layout/Cta";
+import { CTA } from "@/components/common/Cta";
 
 export function UpdatePassword() {
   setTimeout(() => {

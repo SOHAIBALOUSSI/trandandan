@@ -8,10 +8,20 @@ import MaleAvatar from "@/assets/male.png";
 import FemaleAvatar from "@/assets/female.png";
 
 export function Profile() {
-  const user = getCurrentUser();
-  if (!user) {
-    throw new Error("User not found");
-  }
+//   const user = getCurrentUser();
+//   if (!user) {
+//     return (
+//       <section className={styles.pageLayoutDark}>
+//         <NavBar />
+//         <div className="w-full relative">
+//           <TopBar />
+//           <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto flex items-center justify-center">
+//             <p className="text-white">Loading...</p>
+//           </main>
+//         </div>
+//       </section>
+//     );
+//   }
 
   return (
     <section className={styles.pageLayoutDark}>
@@ -20,13 +30,13 @@ export function Profile() {
         <TopBar />
         <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto">
           <MainHeader isDark={false} title="user" titleSpan="profile" />
-          <MemberCard
+          {/* <MemberCard
             name={user?.username}
             sold={user?.solde.toString()}
-            grade="1.6"
+            grade={user?.level.toString()}
             avatar={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
             rank="4"
-          />
+          /> */}
         </main>
       </div>
     </section>

@@ -184,7 +184,7 @@ export const styles = {
   // === End Reset password section styles ===
 
   // === Start Button Primary styles ===
-  buttonPrimary: `
+  btnOneStyles: `
 	flex items-center justify-center 
 	px-6 py-4 
 	text-sm lg:text-base 

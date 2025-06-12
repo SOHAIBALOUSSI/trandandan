@@ -1,6 +1,6 @@
 import { styles } from "@/styles/styles";
 
-export function RemoteSigninLink() {
+export function RemoteLink() {
   const remoteSection = (
     <div>
       <div className="line-divider relative w-full flex items-center justify-center mb-6 min-h-[2.5rem]">

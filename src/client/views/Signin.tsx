@@ -1,90 +1,12 @@
 import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
-import { CTA } from "@/components/layout/Cta";
 import { handleSignIn } from "@/services/handle-signin";
-import { InputField } from "@/components/common/InputField";
 import { MainHeader } from "@/components/common/MainHeader";
-import { RemoteSigninLink } from "@/components/layout/RemoteLink";
+import { SignInForm } from "@/components/auth/SignInForm";
 import {
   handleGoogleSignin,
   handle42Signin,
 } from "@/services/handle-remote-signin";
-
-// function TwoFAVerification() {
-//   return (
-//     <div
-//       id="signin-2fa-section"
-//       className="fixed top-[50%] left-[50%] z-40 transform -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-4 p-6 bg-gray-200 rounded-md text-pong-primary text-center border border-pong-secondary shadow-lg hidden"
-//     >
-//       <p className="text-pong-primary text-lg font-bold">
-//         Please verify your two-factor authentication.
-//       </p>
-//       <InputField
-//         type="text"
-//         name="2fa-otp"
-//         id="2fa-otp"
-//         placeholder="Enter your OTP"
-//       />
-//       <button
-//         type="button"
-//         id="signin-2fa-btn"
-//         className={`${styles.buttonPrimary} w-24`}
-//       >
-//         Verify
-//       </button>
-//       <p id="signin-2fa-feedback" className="text-pong-error text-sm"></p>
-//     </div>
-//   );
-// }
-
-function Form() {
-  return (
-    <form
-      method="POST"
-      id="signin-form"
-      className={`${styles.form} ${styles.fadeInSection}`}
-    >
-      <InputField
-        type={"text"}
-        name={"login"}
-        id={"login"}
-        placeholder={"username or email"}
-      />
-      <InputField
-        type={"password"}
-        name={"password"}
-        id={"password"}
-        placeholder={"password"}
-      />
-      <CTA
-        feedbackId="signin-feedback"
-        btnId="signin-btn"
-        btnIcon="fa-couch"
-        btnLabel="enter the lounge"
-      />
-      <a
-        href="password_reset"
-        className="-mt-2 text-pong-accent text-xs font-bold underline hover:text-pong-secondary transition-all duration-300"
-        data-link
-      >
-        lost your paddle?
-      </a>
-      <div>
-        <p className="text-sm lg:text-base font-bold">
-          new here?{" "}
-          <a
-            href="signup"
-            className="text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
-            data-link
-          >
-            join the club and make history.
-          </a>
-        </p>
-      </div>
-      <RemoteSigninLink />
-    </form>
-  );
-}
 
 export function Signin() {
   setTimeout(() => {
@@ -103,7 +25,7 @@ export function Signin() {
         subtitle={"step into the club"}
         subtitleParagraph={"enter your credentials to continue your legacy."}
       />
-      <Form />
+      <SignInForm />
       <Footer />
     </section>
   );
