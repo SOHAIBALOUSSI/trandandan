@@ -32,8 +32,8 @@ export async function disableTwoFa(request, reply) {
         console.log('Method to be disabled: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
         console.log('TwoFa: ', twoFa);
-        if (!twoFa || !twoFa.enabled)
-            return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
+        if (!twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'METHOD_ALREADY_DISABLED'));
         await disableTwoFaByUidAndType(this.db, user.id, method);
         return reply.code(200).send(createResponse(200, 'METHOD_DISABLED'));
     } catch (error) {
@@ -54,8 +54,8 @@ export async function enableTwoFa(request, reply) {
         console.log('Method to be enabled: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
         console.log('TwoFa: ', twoFa);
-        if (!twoFa || !twoFa.enabled)
-            return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
+        if (twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'METHOD_ALREADY_ENABLED'));
 
         await enableTwoFaByUidAndType(this.db, user.id, method);
         return reply.code(200).send(createResponse(200, 'METHOD_ENABLED'));
@@ -77,7 +77,7 @@ export async function makePrimaryHandler(request, reply) {
         console.log('Method to be primary: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
         console.log('TwoFa: ', twoFa);
-        if (!twoFa || !twoFa.enabled)
+        if (!twoFa || !twoFa.enabled)   
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
         await makeTwoFaPrimaryByUidAndType(this.db, user.id, method);
