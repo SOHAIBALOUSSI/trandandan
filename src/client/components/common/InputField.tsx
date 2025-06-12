@@ -9,15 +9,17 @@ export function InputField(props: {
   className?: string;
 }) {
   return (
-    <input
-      type={props.type}
-      name={props.name}
-      id={props.id}
-      placeholder={props.placeholder}
-      required
-      className={`${styles.inputField} ${props.className}`}
-      autofocus={props.autofocus || false}
-      autoComplete="off"
-    />
+    <div className="text-left">
+      <input
+        type={props.type}
+        name={props.name}
+        id={props.id}
+        placeholder={props.placeholder}
+        required
+        className={`${styles.inputField} ${props.className}`}
+        autofocus={props.autofocus || false}
+        autoComplete="off"
+      />
+    </div>
   );
 }

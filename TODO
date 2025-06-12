@@ -1,8 +1,2 @@
-2. Consider using more secure token storage (httpOnly cookies) if possible.
-4. Add client-side validation for form fields.
+- Subtle background pattern/image for depth (/assets/pingpong-bg.svg)
 
-Subtle background pattern/image for depth (/assets/pingpong-bg.svg)
-
-change 2FA_REQUIRED to TWOFA_REQUIRED
-
-validate email in server side

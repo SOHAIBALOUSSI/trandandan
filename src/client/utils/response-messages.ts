@@ -5,6 +5,8 @@ export const LoginRes: Record<string, string> = {
     "This racket is already linked to a 42 or Google account. Try signing in with that one.",
   INVALID_PASSWORD:
     "Wrong swing on the paddle pass. Adjust your grip and give it another go.",
+  FST_ERR_VALIDATION:
+    "Your credentials need a bit more polish. Check your input and try again.",
   USER_LOGGED_IN: "Welcome back, champ! You’re cleared for the court.",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish your warm-up with verification.",
@@ -18,6 +20,8 @@ export const RegisterRes: Record<string, string> = {
   PASSWORD_POLICY:
     "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
   USER_EXISTS: "This racket is already in the club. Try signing in instead.",
+  FST_ERR_VALIDATION:
+    "Your credentials need a bit more polish. Check your input and try again.",
   USER_REGISTERED:
     "Welcome to the club, champion! Your racket is ready for the game.",
   INTERNAL_SERVER_ERROR:

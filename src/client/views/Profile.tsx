@@ -35,7 +35,7 @@ export function Profile() {
             sold={user?.solde.toString()}
             grade={user?.level.toString()}
             avatar={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
-            rank="4"
+            rank={user?.rank.toString()}
           />
         </main>
       </div>

@@ -10,9 +10,9 @@ import {
 
 export function Signin() {
   setTimeout(() => {
+    handleSignIn();
     handleGoogleSignin();
     handle42Signin();
-    handleSignIn();
   }, 0);
 
   return (

@@ -11,6 +11,8 @@ import { Friends } from "@/views/Friends";
 import { Chat } from "@/views/Chat";
 import { Profile } from "@/views/Profile";
 import { Settings } from "@/views/Settings";
+import { Blocked } from "@/views/Blocked";
+import { DeleteAccount } from "@/views/DeleteAccount";
 import { Logout } from "@/views/Logout";
 import { getUserProfile } from "@/services/get-user-profile";
 import { setCurrentUser } from "@/utils/user-store";
@@ -30,6 +32,8 @@ const routes: Record<string, () => HTMLElement> = {
   members: Friends,
   my_profile: Profile,
   mechanics: Settings,
+  blocked: Blocked,
+  delete_account: DeleteAccount,
   exit: Logout,
 };
 
@@ -61,7 +65,6 @@ export async function router(): Promise<void> {
   const path = location.pathname.slice(1) || "welcome";
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
-  console.log(`Current path: ${path}`);
 
   const authed = await isAuthenticated();
 

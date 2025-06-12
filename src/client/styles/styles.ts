@@ -176,6 +176,46 @@ export const styles = {
   `,
   // === End Top Bar styles ===
 
+  // === Start Nav Bar styles ===
+  navToggleBtn: `
+  	fixed top-2 left-4 z-50 text-2xl text-pong-dark-accent bg-transparent rounded-lg p-2 
+    hover:bg-pong-dark-accent/20 transition duration-300 md:hidden
+    focus:outline-none focus:ring-2 focus:ring-pong-dark-accent
+  `,
+  backdrop: `
+  	fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 opacity-0 pointer-events-none md:hidden
+  `,
+  navBarContainer: `
+    fixed top-0 left-0 h-full w-64 bg-black/90 z-50 
+    transform transition-transform duration-300 ease-in-out -translate-x-full
+    flex flex-col gap-10 px-6 py-10
+    md:w-64 md:rounded-tr-3xl md:rounded-br-3xl md:shadow-2xl 
+    md:border-r-2 md:border-pong-dark-accent/40 md:-translate-x-[90%] 
+    md:items-center
+    md:hover:translate-x-0 md:transition-all md:duration-300 md:ease-in-out
+  `,
+  navSettingsBtn: `
+    relative flex items-center gap-3 font-semibold px-3 py-2 rounded-xl transition duration-300
+    text-pong-dark-primary hover:bg-pong-dark-accent/20 hover:text-white
+    md:flex-col md:gap-2 md:text-sm md:px-0 md:py-0 md:w-full md:bg-transparent
+    md:hover:bg-transparent md:hover:text-pong-dark-accent
+    group w-full
+    focus:outline-none focus:ring-2 focus:ring-pong-dark-accent 
+  `,
+  navSettingsDropdown: `
+    absolute left-0 top-full w-[90vw] max-w-xs md:left-full md:top-0 md:ml-2 md:w-60
+    bg-black rounded-xl shadow-2xl z-50 flex flex-col gap-1
+    p-3 border border-pong-dark-accent/20 hidden
+    transition-all duration-200 
+  `,
+  navLink: `
+	relative flex items-center gap-3 font-semibold px-3 py-2 rounded-xl transition duration-300
+    hover:bg-pong-dark-accent/20 hover:text-white
+    md:flex-col md:gap-2 md:text-sm md:px-0 md:py-0 md:w-full md:bg-transparent
+    md:hover:bg-transparent md:hover:text-pong-dark-accent
+    group
+  `,
+
   // === Start Reset password section styles ===
   resetSectionStyles: `
     bg-white/95 shadow-2xl rounded-2xl border border-pong-accent/20
