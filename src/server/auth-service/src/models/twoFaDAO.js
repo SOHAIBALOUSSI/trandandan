@@ -64,6 +64,13 @@ export async function findTwoFaByUidAndType(db, id, type) {
     );
 }
 
+export async function findTwoFaByUidAndNotType(db, id, type) {
+    console.log('Fetching twoFa by ID and other type...');
+    return await db.get('SELECT * FROM twofa WHERE user_id = ? AND type != ?',
+        [id, type]
+    );
+}
+
 export async function findTwoFaByUid(db, id) {
     console.log('Fetching twoFa by ID');
     return await db.get('SELECT * FROM twofa WHERE id = ?',

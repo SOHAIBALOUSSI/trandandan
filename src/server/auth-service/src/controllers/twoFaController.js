@@ -1,4 +1,11 @@
-import { disableTwoFaByUidAndType, enableTwoFaByUidAndType, findTwoFaByUidAndType, getAllTwoFaMethodsByUid, makeTwoFaPrimaryByUidAndType } from "../models/twoFaDAO.js";
+import { 
+    disableTwoFaByUidAndType, 
+    enableTwoFaByUidAndType, 
+    findTwoFaByUidAndNotType, 
+    findTwoFaByUidAndType, 
+    getAllTwoFaMethodsByUid, 
+    makeTwoFaPrimaryByUidAndType 
+} from "../models/twoFaDAO.js";
 import { findUserById } from "../models/userDAO.js";
 import { createResponse } from "../utils/utils.js";
 
@@ -31,6 +38,13 @@ export async function disableTwoFa(request, reply) {
         const { method } = request.body;
         console.log('Method to be disabled: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'METHOD_NOT_EXIST'));
+        else {
+            const otherTwoFa = await findTwoFaByUidAndNotType(this.db, user.id, method);
+            if (otherTwoFa && otherTwoFa.enabled)
+                await makeTwoFaPrimaryByUidAndType(this.db, user.id, otherTwoFa.type);
+        }
         console.log('TwoFa: ', twoFa);
         if (!twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_ALREADY_DISABLED'));
@@ -53,6 +67,8 @@ export async function enableTwoFa(request, reply) {
         const { method } = request.body;
         console.log('Method to be enabled: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'METHOD_NOT_EXIST'));
         console.log('TwoFa: ', twoFa);
         if (twoFa.enabled)
             return reply.code(400).send(createResponse(400, 'METHOD_ALREADY_ENABLED'));
@@ -76,8 +92,10 @@ export async function makePrimaryHandler(request, reply) {
         const { method } = request.body;
         console.log('Method to be primary: ', method);
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, method);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'METHOD_NOT_EXIST'));
         console.log('TwoFa: ', twoFa);
-        if (!twoFa || !twoFa.enabled)   
+        if (!twoFa.enabled)   
             return reply.code(400).send(createResponse(400, 'METHOD_NOT_ENABLED'));
 
         await makeTwoFaPrimaryByUidAndType(this.db, user.id, method);

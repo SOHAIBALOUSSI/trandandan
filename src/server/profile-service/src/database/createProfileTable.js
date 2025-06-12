@@ -12,7 +12,7 @@ export async function createProfileTable(db){
             status TEXT DEFAULT 'offline',
             solde INTEGER DEFAULT 5,
             level INTEGER DEFAULT 0,
-            rank INTEGER,
+            rank INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`
