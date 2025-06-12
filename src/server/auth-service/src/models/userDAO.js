@@ -93,3 +93,17 @@ export async function linkOAuthIdentityToUser(db, id, userInfo) {
     console.log("OAuth identity linked with ID: ", id);
     return id;
 }
+
+export async function updateEmailById(db, email, id) {
+    const result = await db.run('UPDATE user SET email = ? WHERE id = ?',
+        [email, id]
+    );
+    console.log('Update email for userId: ', id);
+}
+
+export async function updateUsernameById(db, username, id) {
+    const result = await db.run('UPDATE user SET username = ? WHERE id = ?',
+        [username, id]
+    );
+    console.log('Update username for userId: ', id);
+}

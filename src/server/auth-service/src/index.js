@@ -10,6 +10,8 @@ import authRoutes from './routes/authRoutes.js';
 import twoFARoutes from './routes/2FARoutes.js';
 import { createOAuthIdentityTable } from './database/createOAuthIdentityTable.js';
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
+import { updateEmailById, updateUsernameById } from './models/userDAO.js';
+import { findTwoFaByUid } from './models/twoFaDAO.js';
 
 const server = fastify({logger: true});
 
@@ -29,7 +31,19 @@ await createOAuthIdentityTable(server.db);
 
 await server.register(nodemailerPlugin);
 await server.register(rabbitmqPlugin);
-// server.rabbit.consumeMessages();
+
+server.rabbit.consumeMessages(async (message) => {
+    const { id, username, email } = message;
+    if (username)
+        await updateUsernameById(server.db, username, id);
+    if (email) {
+        const twoFa = await findTwoFaByUid(server.db, id);
+        if (twoFa)
+                
+        await updateEmailById(server.db, email, id);
+    }
+    console.log('Auth: user updated.');
+});
 
 await server.register(authRoutes, { prefix: '/auth' });
 await server.register(twoFARoutes, { prefix: '/2fa' });

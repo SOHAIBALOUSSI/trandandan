@@ -29,6 +29,20 @@ export async function addProfile(db, id, username, email, avatar_url, gender) {
     return result.lastID;
 }
 
+export async function findDuplicateUsername(db, username) {
+    console.log('Fetching duplicate username...');
+    return await db.get('SELECT * FROM profile WHERE username = ?',
+        [username]
+    );
+}
+
+export async function findDuplicateEmail(db, email) {
+    console.log('Fetching duplicate email...');
+    return await db.get('SELECT * FROM profile WHERE email = ?',
+        [email]
+    );
+}
+
 export async function updateProfileById(db, id, updatedFields) {
     const setStatments = []
     const values = []

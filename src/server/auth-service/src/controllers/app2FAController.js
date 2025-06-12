@@ -11,7 +11,7 @@ import {
     updateUser2FA,
     updateUserSecret
 } from '../models/twoFaDAO.js';
-import { setAuthCookies } from '../utils/authCookies.js';
+import { clearAuthCookies, setAuthCookies } from '../utils/authCookies.js';
 
 export async function setup2FAApp(request, reply) {
     try {
