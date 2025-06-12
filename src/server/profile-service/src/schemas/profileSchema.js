@@ -1,4 +1,9 @@
-import { avatarUrlValidation, emailValidation, soldeValidation, usernameValidation } from "./validationSchemas.js"
+import { 
+    avatarUrlValidation, 
+    emailValidation, 
+    integerValidation, 
+    usernameValidation 
+} from "./validationSchemas.js"
 
 export const createProfileSchema = {
     oneOf: [
@@ -31,9 +36,11 @@ export const updateProfileSchema = {
         username: usernameValidation,
         email: emailValidation,
         avatar_url :avatarUrlValidation,
-        solde: soldeValidation
+        solde: integerValidation,
+        rank: integerValidation,
+        level: integerValidation
     },
     minProperties: 1,
-    maxProperties: 4,
+    maxProperties: 6,
     additionalProperties: false
 }

@@ -1,7 +1,16 @@
-import { addToken, findValidTokenByUid } from '../models/tokenDAO.js';
-import { findTwoFaByUidAndType, makeTwoFaPrimaryByUidAndType, storeOtpCode, updateOtpCode, updateUser2FA } from '../models/twoFaDAO.js';
+import { 
+    addToken, 
+    findValidTokenByUid 
+} from '../models/tokenDAO.js';
+import { 
+    findTwoFaByUidAndType, 
+    makeTwoFaPrimaryByUidAndType, 
+    storeOtpCode,
+    updateOtpCode, 
+    updateUser2FA 
+} from '../models/twoFaDAO.js';
 import { findUserById } from '../models/userDAO.js';
-import { setAuthCookies } from '../utils/authCookies.js';
+import { clearAuthCookies, setAuthCookies } from '../utils/authCookies.js';
 import { createResponse } from '../utils/utils.js';
 
 export async function setup2FAEmail(request, reply) {

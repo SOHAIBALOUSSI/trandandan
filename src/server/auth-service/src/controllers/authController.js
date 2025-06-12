@@ -23,7 +23,6 @@ import {
 } from '../models/twoFaDAO.js';
 import { 
     clearAuthCookies, 
-    clearTempAuthToken, 
     getAuthCookies, 
     setAuthCookies, 
     setTempAuthToken 

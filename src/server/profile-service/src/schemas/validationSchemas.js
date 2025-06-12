@@ -16,7 +16,7 @@ export const avatarUrlValidation = {
     maxLength: 255
 }
 
-export const soldeValidation = {
+export const integerValidation = {
     type: 'integer',
     minimum: 0,
     maximum: 10000
