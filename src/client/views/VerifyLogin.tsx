@@ -5,11 +5,14 @@ import { CTA } from "@/components/common/Cta";
 import { verifyLogin } from "@/services/verify-login";
 
 export function VerifyLogin() {
-  setTimeout(() => {
-    verifyLogin();
-  }, 0);
-
   const twofaMode = sessionStorage.getItem("2faMode");
+  if (!twofaMode) {
+    console.error("2FA mode not set in session storage.");
+  }
+
+  setTimeout(() => {
+    verifyLogin(twofaMode);
+  }, 0);
 
   return (
     <section className={styles.pageLayoutLight}>
