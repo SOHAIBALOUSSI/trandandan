@@ -37,7 +37,7 @@ export function Hero() {
         className="flex flex-col items-center md:order-1 justify-center gap-3"
       >
         <p className="text-sm text-pong-secondary italic">
-          Ranked #4 in BHV Club
+          Ranked #{user?.rank} in BHV Club
         </p>
         <img
           src={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
@@ -46,7 +46,7 @@ export function Hero() {
         />
         <p className="text-base font-medium leading-snug">
           Welcome back,{" "}
-          <span className="font-semibold text-pong-secondary">
+          <span className="font-semibold text-pong-secondary normal-case">
             {user?.username}
           </span>
           !<br />

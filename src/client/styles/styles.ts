@@ -82,7 +82,6 @@ export const styles = {
 
   // === Start Input Field styles ===
   inputField: `
-  	capitalize
   	input-field
 	normal-case
 	w-full px-4 py-3

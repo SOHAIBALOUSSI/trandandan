@@ -28,10 +28,11 @@ export function Profile() {
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto">
+        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-2rem)] overflow-y-auto">
           <MainHeader isDark={false} title="user" titleSpan="profile" />
           <MemberCard
             name={user?.username}
+            email={user?.email}
             sold={user?.solde.toString()}
             grade={user?.level.toString()}
             avatar={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
