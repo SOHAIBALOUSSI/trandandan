@@ -17,7 +17,9 @@ import {
     validatePassword 
 } from '../utils/utils.js'
 import { 
+    clearOtpCode,
     findPrimaryTwoFaByUid, 
+    findTwoFaByUid, 
     storeOtpCode, 
     updateOtpCode 
 } from '../models/twoFaDAO.js';
@@ -42,21 +44,16 @@ export async function lostPasswordHandler(request, reply) {
         if (!user.password)
             return reply.code(400).send(createResponse(400, 'USER_LINKED'));
 
-        const tempToken = this.jwt.signTT({ id: user.id });
         const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
         
-        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
+        const twoFa = await findTwoFaByUid(this.db, user.id);
         if (twoFa)
             await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
         else    
             await storeOtpCode(this.db, otpCode, user.id);
-        const mailOptions = {
-            from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-            to: `${user.email}`,
-            subject: "Hello from M3ayz00",
-            text: `OTP CODE : <${otpCode}>`,
-        }
-        await this.sendMail(mailOptions);
+        await this.sendMail(otpCode, user.email);
+
+        const tempToken = this.jwt.signTT({ id: user.id });
         clearAuthCookies(reply);
         setTempAuthToken(reply, tempToken);
         return reply.code(200).send(createResponse(200, 'CODE_SENT'));
@@ -73,7 +70,7 @@ export async function verifyCodeHandler(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
+        const twoFa = await findTwoFaByUid(this.db, user.id);
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'CODE_NOT_SET'));
 
@@ -83,7 +80,7 @@ export async function verifyCodeHandler(request, reply) {
 
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
-
+        await clearOtpCode(this.db, user.id, twoFa.type);
         return reply.code(200).send(createResponse(200, 'CODE_VERIFIED'));
     } catch (error) {
         console.log(error);
@@ -120,13 +117,7 @@ export async function updatePasswordHandler(request, reply) {
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
                 await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
-                const mailOptions = {
-                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-                    to: `${user.email}`,
-                    subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${otpCode}>`,
-                }
-                await this.sendMail(mailOptions);
+                await this.sendMail(otpCode, user.email);
             }
             clearAuthCookies(reply);
             setTempAuthToken(reply, tempToken);
@@ -171,13 +162,7 @@ export async function loginHandler(request, reply) {
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
                 await updateOtpCode(this.db, otpCode, user.id, 'email');
-                const mailOptions = {
-                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-                    to: `${user.email}`,
-                    subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${otpCode}>`,
-                }
-                await this.sendMail(mailOptions);
+                await this.sendMail(otpCode, user.email);
             }
             clearAuthCookies(reply);
             setTempAuthToken(reply, tempToken);

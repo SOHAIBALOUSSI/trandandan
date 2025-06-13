@@ -3,6 +3,7 @@ import {
     findValidTokenByUid 
 } from '../models/tokenDAO.js';
 import { 
+    clearOtpCode,
     findTwoFaByUidAndType, 
     makeTwoFaPrimaryByUidAndType, 
     storeOtpCode,
@@ -68,6 +69,7 @@ export async function verify2FAEmailSetup(request, reply) {
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
 
+        await clearOtpCode(this.db, user.id, twoFa.type);
         await updateUser2FA(this.db, user.id, 'email');
         await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'email');
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
@@ -98,6 +100,8 @@ export async function verify2FALogin(request, reply) {
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
+        await clearOtpCode(this.db, user.id, twoFa.type);
+
         const accessToken = this.jwt.signAT({ id: userId });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
