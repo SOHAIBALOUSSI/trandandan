@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { styles } from "@/styles/styles";
 import { InputField } from "@/components/common/InputField";
 import { CTA } from "@/components/common/Cta";
+import { Overlay } from "@/components/layout/Overlay";
 
 export function UpdatePassword() {
   setTimeout(() => {
@@ -11,11 +12,11 @@ export function UpdatePassword() {
 
   return (
     <section className={styles.pageLayoutLight}>
-      <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
-      <div className={styles.resetSectionStyles}>
-        <h1 className={styles.titleDark}>you're almost there, champion.</h1>
+      <Overlay />
+      <div className={styles.customSectionStyles}>
+        <h1 className={styles.titleDark}>one final serve, champion.</h1>
         <p className={`${styles.subtitleParagraphDark} mb-6`}>
-          please set a new password to secure your account.
+          set your new password to secure your spot in the club.
         </p>
         <form
           id="update-password-form"
@@ -43,7 +44,7 @@ export function UpdatePassword() {
           />
         </form>
         <p className="text-sm text-pong-primary/70 text-center mt-8">
-          some text here.
+          this is how champions protect their legacy.{" "}
         </p>
       </div>
       <Footer />

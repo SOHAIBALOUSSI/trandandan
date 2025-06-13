@@ -33,12 +33,7 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1 {
   font-family: var(--font-heading);
   font-weight: bold;
 }
@@ -94,7 +89,7 @@ a {
   font-size: 1.5rem;
   color: var(--color-accent);
   border: 2px solid var(--color-accent);
-  background-color: #fff;
+  background-color: transparent;
   transition: all 0.4s ease-in-out;
   animation: line-icon-bounce 2s infinite;
 }
@@ -122,6 +117,16 @@ a {
     box-shadow: 0 2px 12px rgba(196, 69, 54, 0.12);
   }
 }
+.custom-select option:not(:first-child) {
+  color: var(--color-primary);
+}
+.custom-select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg fill='black' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
 /* End Custom Designs */
 
 /* Mobile First Approach */

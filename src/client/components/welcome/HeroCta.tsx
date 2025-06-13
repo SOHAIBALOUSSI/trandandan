@@ -5,7 +5,7 @@ export function HeroCta() {
     <div className={styles.heroCallToAction}>
       <a
         href="signin"
-        className={`${styles.primaryButton} animate-pulse hover:animate-none`}
+        className={`${styles.primaryButton} animate-myPulse hover:animate-none`}
         data-link
       >
         <i className={`fa-solid fa-ticket ${styles.primaryButtonIcon}`}></i>

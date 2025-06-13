@@ -26,11 +26,8 @@ export function handleSignUp() {
         signupForm.querySelector("#email") as HTMLInputElement
       ).value.trim(),
       gender:
-        (
-          signupForm.querySelector(
-            'input[name="gender"]:checked'
-          ) as HTMLInputElement
-        ).value === "male"
+        (signupForm.querySelector("#gender") as HTMLSelectElement).value ===
+        "male"
           ? "M"
           : "F",
       password: (

@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { InputField } from "@/components/common/InputField";
 import { styles } from "@/styles/styles";
 import { CTA } from "@/components/common/Cta";
+import { Overlay } from "@/components/layout/Overlay";
 
 export function ResetPassword() {
   setTimeout(() => {
@@ -15,10 +16,10 @@ export function ResetPassword() {
 
   return (
     <section className={styles.pageLayoutLight}>
-      <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
-      <div className={styles.resetSectionStyles}>
+      <Overlay />
+      <div className={styles.customSectionStyles}>
         <h1 className={styles.titleDark}>Reset Your Password</h1>
-        <p className={`${styles.subtitleParagraphDark} mb-6`}>
+        <p className={`${styles.subtitleParagraphDark} mb-8`}>
           drop your email — we’ll send you an OTP code to reset your password.
         </p>
         <form

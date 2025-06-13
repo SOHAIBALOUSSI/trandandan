@@ -2,13 +2,12 @@ export const styles = {
   // === Start Page Layout styles ===
   pageLayoutLight: `
   	relative overflow-hidden
-  	w-full min-h-screen 
+  	w-full min-h-screen
 	text-center
 	flex flex-col items-center justify-between gap-8
 	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
-	py-8 lg:py-12 xl:py-16 
+	py-4 md:py-6
 	text-pong-primary
-	bg-gradient-to-b from-[#fdfdfc] via-[#faf8f5] to-[#f8f6f2] 
   `,
   pageLayoutDark: `
   	w-full min-h-screen
@@ -37,6 +36,7 @@ export const styles = {
   	xl:text-[clamp(1.25rem,3vw,2.25rem)]
   	text-pong-primary/80
   	after:content-['...']
+	font-bold
   `,
   heroCallToAction: `
   	flex flex-col items-center gap-2 
@@ -45,6 +45,17 @@ export const styles = {
   heroSubtitle: `
     mt-2 text-pong-secondary
     md:text-[clamp(1rem,2vw,1.375rem)]
+  `,
+  heroOverlay: `
+ 	absolute inset-0 z-[-2] opacity-70 
+	bg-[url('../assets/background.png')] bg-repeat bg-cover 
+	animate-backgroundPan 
+  `,
+  heroMascot: `
+	opacity-90 
+	w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24
+	absolute top-6 right-6 md:top-8 md:right-8 lg:top-10 lg:right-10
+	animate-float
   `,
   // === End Hero styles ===
 
@@ -84,19 +95,30 @@ export const styles = {
 	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
 	focus:bg-pong-secondary/20
   `,
+  customSelect: `
+	w-full px-4 py-3
+    text-sm lg:text-base font-semibold
+    bg-pong-secondary/10
+    capitalize text-pong-primary
+   	rounded-md
+    transition-all duration-300
+    appearance-none
+    focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
+    focus:bg-pong-secondary/20
+    custom-select 
+  `,
   // === End Input Field styles ===
 
   // === Start Form styles ===
   form: `
 	max-w-md w-full mx-auto	
-	bg-white/90 shadow-xl rounded-2xl
+	bg-pong-bg/60 shadow-xl rounded-2xl
 	backdrop-blur
 	flex flex-col text-center align-center justify-center gap-6
 	px-6 py-10
   `,
   formMessage: `
   	text-center text-sm font-semibold min-h-[1.5rem]
-  	transition-opacity duration-300 ease-in-out
   `,
   // === End Form styles ===
 
@@ -217,9 +239,10 @@ export const styles = {
   `,
 
   // === Start Reset password section styles ===
-  resetSectionStyles: `
-    bg-white/95 shadow-2xl rounded-2xl border border-pong-accent/20
-    max-w-lg w-full mx-auto p-8 flex flex-col items-center
+  customSectionStyles: `
+    bg-transparent shadow-2xl rounded-2xl border border-pong-accent/20
+	backdrop-blur-md
+    max-w-lg w-full mx-auto p-8
   `,
   // === End Reset password section styles ===
 

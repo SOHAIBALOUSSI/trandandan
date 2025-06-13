@@ -2,13 +2,11 @@ import { Footer } from "@/components/layout/Footer";
 import { styles } from "@/styles/styles";
 import { InputField } from "@/components/common/InputField";
 import { CTA } from "@/components/common/Cta";
+import { Overlay } from "@/components/layout/Overlay";
 import { verifyLogin } from "@/services/verify-login";
 
 export function VerifyLogin() {
   const twofaMode = sessionStorage.getItem("2faMode");
-  if (!twofaMode) {
-    console.error("2FA mode not set in session storage.");
-  }
 
   setTimeout(() => {
     verifyLogin(twofaMode);
@@ -16,8 +14,8 @@ export function VerifyLogin() {
 
   return (
     <section className={styles.pageLayoutLight}>
-      <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
-      <div className={styles.resetSectionStyles}>
+      <Overlay />
+      <div className={styles.customSectionStyles}>
         <h1 className={styles.titleDark}>verify your identity</h1>
         <p className={`${styles.subtitleParagraphDark} mb-6`}>
           {twofaMode === "email"

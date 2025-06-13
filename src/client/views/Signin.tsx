@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { handleSignIn } from "@/services/handle-signin";
 import { MainHeader } from "@/components/common/MainHeader";
 import { SignInForm } from "@/components/auth/SignInForm";
+import { Overlay } from "@/components/layout/Overlay";
 import {
   handleGoogleSignin,
   handle42Signin,
@@ -17,7 +18,7 @@ export function Signin() {
 
   return (
     <section className={styles.pageLayoutLight}>
-      <div className="absolute inset-0 bg-gradient-to-tr from-pong-secondary/10 to-pong-accent/10 blur-2xl z-[-1]" />
+      <Overlay />
       <MainHeader
         isDark={true}
         title={"welcome back,"}

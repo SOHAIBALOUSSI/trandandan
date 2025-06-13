@@ -30,7 +30,7 @@ export function SignInForm() {
       />
       <a
         href="password_reset"
-        className="-mt-2 text-pong-accent text-xs font-bold underline hover:text-pong-secondary transition-all duration-300"
+        className="text-sm lg:text-base -mt-2 text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
         data-link
       >
         lost your paddle?
