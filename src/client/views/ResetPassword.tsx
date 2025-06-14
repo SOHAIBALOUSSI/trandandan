@@ -1,7 +1,6 @@
-import {
-  handleResetPassword,
-  verifyOtpCode,
-} from "@/services/handle-reset-password";
+import { handleResetPassword } from "@/services/handle-reset-password";
+import { verifyOtpCode } from "@/services/verify-otp-code";
+import { handleOtpInput } from "@/services/verify-otp-code";
 import { Footer } from "@/components/layout/Footer";
 import { InputField } from "@/components/common/InputField";
 import { styles } from "@/styles/styles";
@@ -12,6 +11,7 @@ import { OtpInput } from "@/components/common/OtpInput";
 export function ResetPassword() {
   setTimeout(() => {
     handleResetPassword();
+    handleOtpInput();
     verifyOtpCode();
   }, 0);
 
@@ -47,7 +47,7 @@ export function ResetPassword() {
           <label htmlFor="otp" className="text-pong-primary font-semibold">
             paste the code from your inbox
           </label>
-          <OtpInput />
+          <OtpInput id="reset-pass-otp" />
           <CTA
             feedbackId="otp-feedback"
             btnId="otp-btn"

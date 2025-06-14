@@ -56,7 +56,7 @@ export const VerifyCodeRes: Record<string, string> = {
   OTP_REQUIRED: "OTP required. Enter the code to complete the match.",
   OTP_INVALID:
     "That code doesn’t match our playbook. Double-check and try again.",
-  CODE_VERIFIED: "Code verified. You're all set to join the lounge!",
+  CODE_VERIFIED: "OTP verified successfully. Redirecting you to update your password...",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };

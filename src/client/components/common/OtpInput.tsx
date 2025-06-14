@@ -1,6 +1,6 @@
 import { styles } from "@/styles/styles";
 
-export function OtpInput() {
+export function OtpInput(props: { id: string }) {
   const inputStyles = `
 	  w-8 h-10 md:w-12 md:h-14 
 	  text-sm md:text-xl text-center font-bold
@@ -14,7 +14,7 @@ export function OtpInput() {
 	`;
 
   return (
-    <div id="inputs" className="flex justify-center gap-3 md:gap-4 w-full">
+    <div id={props.id} className="flex justify-center gap-3 md:gap-4 w-full">
       {[...Array(6)].map((i) => (
         <input
           key={i}

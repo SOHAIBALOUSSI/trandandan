@@ -1,0 +1,132 @@
+import { styles } from "@/styles/styles";
+import { VerifyCodeRes } from "@/utils/response-messages";
+
+export function handleOtpInput() {
+  const inputs = document.querySelectorAll<HTMLInputElement>(
+    "#reset-pass-otp input"
+  );
+
+  inputs.forEach((input, index) => {
+    input.addEventListener("input", () => {
+      const value = input.value;
+
+      if (value.length === 1 && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      }
+
+      if (!/^\d$/.test(value)) {
+        input.value = "";
+      }
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !input.value && index > 0) {
+        inputs[index - 1].focus();
+      }
+    });
+
+    input.addEventListener("paste", (e: ClipboardEvent) => {
+      const pasted = e.clipboardData?.getData("text") ?? "";
+      const digits = pasted.replace(/\D/g, "").slice(0, inputs.length);
+
+      digits.split("").forEach((digit, i) => {
+        if (inputs[i]) {
+          inputs[i].value = digit;
+        }
+      });
+
+      if (inputs[digits.length - 1]) {
+        inputs[digits.length - 1].focus();
+      }
+
+      e.preventDefault();
+    });
+  });
+}
+
+export function verifyOtpCode() {
+  const otpForm = document.getElementById("otp-form") as HTMLFormElement;
+
+  otpForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const feedback = otpForm.querySelector<HTMLDivElement>("#otp-feedback");
+    const submitBtn = otpForm.querySelector<HTMLButtonElement>("#otp-btn");
+    const spinner = otpForm.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = otpForm.querySelector<HTMLSpanElement>("#btn-label");
+
+    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
+
+    const otpInputs = otpForm.querySelectorAll<HTMLInputElement>(
+      "#reset-pass-otp input"
+    );
+    const otpCode = Array.from(otpInputs)
+      .map((input) => input.value.trim())
+      .join("");
+
+    console.log(otpCode);
+
+    if (otpCode.length !== otpInputs.length) {
+      feedback.className = `${styles.formMessage} text-pong-error`;
+      feedback.textContent = "Please complete all OTP fields.";
+      return;
+    }
+
+    // Reset feedback and button state
+    feedback.textContent = "";
+    feedback.className = styles.formMessage;
+    submitBtn.disabled = true;
+    submitBtn.setAttribute("aria-busy", "true");
+    spinner.classList.remove("hidden");
+    btnLabel.textContent = "verifying...";
+
+    const startTime = Date.now();
+
+    try {
+      const response = await fetch("/auth/verify-code", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ otpCode: otpCode }),
+      });
+
+      const result = await response.json();
+      const elapsed = Date.now() - startTime;
+      const waitTime = Math.max(0, 1200 - elapsed);
+
+      if (response.ok) {
+        setTimeout(() => {
+          feedback.className = `${styles.formMessage} text-pong-success`;
+          feedback.textContent = VerifyCodeRes.CODE_VERIFIED;
+          feedback.classList.remove("hidden");
+
+          setTimeout(() => {
+            history.pushState(null, "", "/password_update");
+            window.dispatchEvent(new PopStateEvent("popstate"));
+          }, 1500);
+        }, waitTime);
+      } else {
+        setTimeout(() => {
+          const errorMsg =
+            VerifyCodeRes[result?.code] || "Invalid OTP. Please try again.";
+          feedback.className = `${styles.formMessage} text-pong-error`;
+          feedback.textContent = errorMsg;
+          feedback.classList.remove("hidden");
+        }, waitTime);
+      }
+    } catch (error) {
+      feedback.className = `${styles.formMessage} text-pong-error`;
+      feedback.textContent = VerifyCodeRes.INTERNAL_SERVER_ERROR;
+      feedback.classList.remove("hidden");
+    } finally {
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.setAttribute("aria-busy", "false");
+        spinner.classList.add("hidden");
+        btnLabel.textContent = "verify OTP";
+      }, 1300);
+    }
+  });
+}

@@ -16,8 +16,8 @@ export function handleUpdatePassword() {
     const submitBtn = form.querySelector<HTMLButtonElement>(
       "#update-password-btn"
     );
-    const spinner = form.querySelector<HTMLSpanElement>("#spinner-update");
-    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label-update");
+    const spinner = form.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
@@ -33,13 +33,15 @@ export function handleUpdatePassword() {
       confirmPassword: confirmPassword,
     };
 
+    console.log(payload);
+
     // Reset feedback and button state
     feedback.textContent = "";
     feedback.className = styles.formMessage;
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
-    btnLabel.textContent = "Updating...";
+    btnLabel.textContent = "updating...";
 
     // Start the timer to calculate wait time
     const startTime = Date.now();
