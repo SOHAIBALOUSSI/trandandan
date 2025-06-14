@@ -12,6 +12,7 @@ import { createOAuthIdentityTable } from './database/createOAuthIdentityTable.js
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
 import { updateEmailById, updateUsernameById } from './models/userDAO.js';
 import { findTwoFaByUid } from './models/twoFaDAO.js';
+import { createPendingCredentialsTable } from './database/createPendingCredentialsTable.js';
 
 const server = fastify({logger: true});
 
@@ -28,20 +29,15 @@ await createUserTable(server.db);
 await createTokenTable(server.db);
 await createTwoFaTable(server.db);
 await createOAuthIdentityTable(server.db);
+await createPendingCredentialsTable(server.db);
 
 await server.register(nodemailerPlugin);
 await server.register(rabbitmqPlugin);
 
 server.rabbit.consumeMessages(async (message) => {
-    const { id, username, email } = message;
+    const { id, username } = message;
     if (username)
         await updateUsernameById(server.db, username, id);
-    if (email) {
-        const twoFa = await findTwoFaByUid(server.db, id);
-        if (twoFa)
-                
-        await updateEmailById(server.db, email, id);
-    }
     console.log('Auth: user updated.');
 });
 

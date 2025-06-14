@@ -29,6 +29,8 @@ export async function setup2FAApp(request, reply) {
             await storeTempSecret(this.db, secret.base32, userId);
         else
         {
+            if (twoFa.temp_secret)
+                return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_PENDING'));
             if (twoFa.enabled && twoFa.type === 'app')
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
             await updateTempSecret(this.db, secret.base32, user.id);

@@ -30,7 +30,7 @@ export async function updateUserSecret(db, id) {
 
 export async function storeOtpCode(db, otpCode, id) {
     const result = await db.run(`INSERT into twofa (type, otp, otp_exp, user_id) VALUES (?, ?, ?, ?)`,
-        ['email', otpCode, Date.now() + 60 * 60 * 1000, id]
+        ['email', otpCode, Date.now() + 60 * 5 * 1000, id]
     );
     console.log("TwoFa: inserted TOTP code in row: ", result.lastID);
     return result.lastID;
@@ -41,9 +41,20 @@ export async function updateOtpCode(db, otpCode, id, type) {
         otp = ?, 
         otp_exp = ? 
         WHERE user_id = ? AND type = ?`,
-        [otpCode, Date.now() + 60 * 60 * 1000, id, type]
+        [otpCode, Date.now() + 5 * 60 * 1000, id, type]
     );
-    console.log("TwoFa: updated TOTP code in row: ", result.changes);
+    console.log("TwoFa: updated TOTP code");
+    return result.changes;
+}
+
+export async function clearOtpCode(db, id, type) {
+    const result = await db.run(`UPDATE twofa SET 
+        otp = NULL, 
+        otp_exp = ? 
+        WHERE user_id = ? AND type = ?`,
+        [Date.now(), id, type]
+    );
+    console.log("TwoFa: cleared TOTP code");
     return result.changes;
 }
 
@@ -108,11 +119,13 @@ export async function enableTwoFaByUidAndType(db, id, type) {
 
 export async function makeTwoFaPrimaryByUidAndType(db, id, type) {
     console.log('Making twoFa method primary by UID and type');
-    await db.run('UPDATE twofa SET is_primary = FALSE WHERE user_id = ?',
-        [id]
-    );
-
-    await db.run('UPDATE twofa SET is_primary = TRUE WHERE user_id = ? AND type = ?',
-        [id, type]
-    );
+    await db.exec('BEGIN');
+    try {
+        await db.run('UPDATE twofa SET is_primary = FALSE WHERE user_id = ?', [id]);
+        await db.run('UPDATE twofa SET is_primary = TRUE WHERE user_id = ? AND type = ?', [id, type]);
+        await db.exec('COMMIT');
+    } catch (error) {
+        await db.exec('ROLLBACK');
+        throw error;
+    }
 }

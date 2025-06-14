@@ -3,6 +3,7 @@ import {
     findValidTokenByUid 
 } from '../models/tokenDAO.js';
 import { 
+    clearOtpCode,
     findTwoFaByUidAndType, 
     makeTwoFaPrimaryByUidAndType, 
     storeOtpCode,
@@ -31,13 +32,7 @@ export async function setup2FAEmail(request, reply) {
             await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
         }
 
-        const mailOptions = {
-            from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-            to: `${user.email}`,
-            subject: "Hello from M3ayz00",
-            text: `OTP CODE : <${otpCode}>`,
-        }
-        await this.sendMail(mailOptions);
+        await this.sendMail(otpCode, user.email);
 
         return reply.code(200).send(createResponse(200, 'CODE_SENT'));
     } catch (error) {
@@ -68,6 +63,7 @@ export async function verify2FAEmailSetup(request, reply) {
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
 
+        await clearOtpCode(this.db, user.id, twoFa.type);
         await updateUser2FA(this.db, user.id, 'email');
         await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'email');
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
@@ -98,6 +94,8 @@ export async function verify2FALogin(request, reply) {
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
+        await clearOtpCode(this.db, user.id, twoFa.type);
+
         const accessToken = this.jwt.signAT({ id: userId });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;

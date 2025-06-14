@@ -54,10 +54,21 @@ export const otpCodeSchema = {
     properties: {
         otpCode: {
             type: 'string',
+            pattern: '^[0-9]+$',    
             minLength: 6,
             maxLength: 6
-        }
+        },
+        additionalProperties: false
     }
+}
+
+export const methodTypeSchema = {
+    type: 'object',
+    required: ['method'],
+    properties: {
+        method: { enum: ['app', 'email'] }
+    },
+    additionalProperties: false
 }
 
 export const emailSchema = {
@@ -79,11 +90,16 @@ export const passwordSchema = {
     additionalProperties: false
 }
 
-export const methodTypeSchema = {
-    type: 'object',
-    required: ['method'],
-    properties: {
-        method: { enum: ['app', 'email'] }
-    },
-    additionalProperties: false
-}
+export const updateCredentialsSchema = {
+  type: 'object',
+  properties: {
+    email: emailValidation,
+    password: passwordValidation,
+    confirmPassword: passwordValidation
+  },
+  additionalProperties: false,
+  anyOf: [
+    { required: ['email'] },
+    { required: ['password', 'confirmPassword'] }
+  ]
+};

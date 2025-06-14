@@ -12,7 +12,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 | Method | Path          | Description                           | Authentication Required  | Body required                         |
 | :----: | ------------  | ------------------------------------- | :----------------------: | :-----------------------------------: |
 | POST   | `/register`   | Register a new user profile           | Yes                      | { username, email}                    |
-| PATCH  | `/:id`        | Update a user profile                 | Yes                      | { username/email/avatar_url/solde } (one or many)|
+| PATCH  | `/:id`        | Update a user profile                 | Yes                      | { username/avatar_url/solde/level/rank } (one or many)|
 | GET    | `/:id`        | Retrieve a user profile by id         | Yes                      | (none)                                |
 
 ---
@@ -32,19 +32,6 @@ The `profile-service` is responsible for managing user profile data. It handles 
 
 ## Response Codes
 
-- `/register` (called from auth service)
-
-```yaml
-
-  400: {
-    MISSING_FIELDS,
-    PROFILE_EXISTS
-  },
-  201: PROFILE_CREATED
-  500: INTERNAL_SERVER_ERROR
-
-```
-
 - `/:id` (GET)
 ```yaml
 
@@ -61,6 +48,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
   403: UNAUTHORIZED,
   400: {
     PROFILE_NOT_FOUND,
+    USERNAME_EXISTS,
     MISSING_FIELDS,
     ZERO_CHANGES
   },

@@ -4,7 +4,7 @@ import sqlitePlugin from './plugins/sqlite-plugin.js'
 import profileRoutes from './routes/profileRoutes.js';
 import { createProfileTable } from './database/createProfileTable.js';
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
-import { addProfile } from './models/profileDAO.js';
+import { addProfile, updateProfileById, updateProfileEmailById } from './models/profileDAO.js';
 
 const server = fastify({ logger: true });
 
@@ -32,8 +32,13 @@ const start = async () => {
 
 server.rabbit.consumeMessages(async(request) => {
     console.log("Body received from profile:", request);
-    const { userId, username, email, avatar_url, gender } = request;
-    await addProfile(server.db, userId, username, email, avatar_url, gender);
+    if (request.type === 'UPDATE') {
+        const { userId, email } = request;
+        await updateProfileEmailById(server.db, userId, email);
+    } else if (request.type === 'INSERT') {
+        const { userId, username, email, avatar_url, gender } = request;
+        await addProfile(server.db, userId, username, email, avatar_url, gender);
+    }
 })
 
 start();

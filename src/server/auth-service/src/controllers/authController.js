@@ -4,7 +4,8 @@ import {
     addUser, 
     findUserById, 
     findUserByEmail,
-    updateUser
+    updateUser,  
+    updateEmailById
 } from '../models/userDAO.js';
 import { 
     findToken,
@@ -17,16 +18,23 @@ import {
     validatePassword 
 } from '../utils/utils.js'
 import { 
+    clearOtpCode,
     findPrimaryTwoFaByUid, 
+    findTwoFaByUid, 
     storeOtpCode, 
     updateOtpCode 
 } from '../models/twoFaDAO.js';
 import { 
-    clearAuthCookies, 
+    clearAuthCookies,
     getAuthCookies, 
     setAuthCookies, 
     setTempAuthToken 
 } from '../utils/authCookies.js';
+import { 
+    deletePendingCredentials, 
+    getPendingCredentialsByUID, 
+    insertPendingCredentials
+} from '../models/PendingCredentialsDAO.js';
 
 const hash = bcrypt.hash;
 const compare = bcrypt.compare;
@@ -42,21 +50,16 @@ export async function lostPasswordHandler(request, reply) {
         if (!user.password)
             return reply.code(400).send(createResponse(400, 'USER_LINKED'));
 
-        const tempToken = this.jwt.signTT({ id: user.id });
         const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
         
-        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
+        const twoFa = await findTwoFaByUid(this.db, user.id);
         if (twoFa)
             await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
         else    
             await storeOtpCode(this.db, otpCode, user.id);
-        const mailOptions = {
-            from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-            to: `${user.email}`,
-            subject: "Hello from M3ayz00",
-            text: `OTP CODE : <${otpCode}>`,
-        }
-        await this.sendMail(mailOptions);
+        await this.sendMail(otpCode, user.email);
+
+        const tempToken = this.jwt.signTT({ id: user.id });
         clearAuthCookies(reply);
         setTempAuthToken(reply, tempToken);
         return reply.code(200).send(createResponse(200, 'CODE_SENT'));
@@ -73,7 +76,7 @@ export async function verifyCodeHandler(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
+        const twoFa = await findTwoFaByUid(this.db, user.id);
         if (!twoFa)
             return reply.code(400).send(createResponse(400, 'CODE_NOT_SET'));
 
@@ -83,7 +86,7 @@ export async function verifyCodeHandler(request, reply) {
 
         if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
-
+        await clearOtpCode(this.db, user.id, twoFa.type);
         return reply.code(200).send(createResponse(200, 'CODE_VERIFIED'));
     } catch (error) {
         console.log(error);
@@ -120,13 +123,7 @@ export async function updatePasswordHandler(request, reply) {
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
                 await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
-                const mailOptions = {
-                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-                    to: `${user.email}`,
-                    subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${otpCode}>`,
-                }
-                await this.sendMail(mailOptions);
+                await this.sendMail(otpCode, user.email);
             }
             clearAuthCookies(reply);
             setTempAuthToken(reply, tempToken);
@@ -171,13 +168,7 @@ export async function loginHandler(request, reply) {
             {
                 const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
                 await updateOtpCode(this.db, otpCode, user.id, 'email');
-                const mailOptions = {
-                    from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-                    to: `${user.email}`,
-                    subject: "Hello from M3ayz00",
-                    text: `OTP CODE : <${otpCode}>`,
-                }
-                await this.sendMail(mailOptions);
+                await this.sendMail(otpCode, user.email);
             }
             clearAuthCookies(reply);
             setTempAuthToken(reply, tempToken);
@@ -216,6 +207,7 @@ export async function registerHandler(request, reply) {
         const userId = await addUser(this.db, username, email, hashedPassword);
                 
         this.rabbit.produceMessage({
+            type: 'INSERT',
             userId: userId,
             username: username,
             email: email,
@@ -300,3 +292,118 @@ export async function refreshHandler(request, reply) {
     }
 }
 
+
+export async function updateCredentialsHandler(request, reply) {
+    const userId = request.user?.id;
+    const { email, password, confirmPassword } = request.body;
+    try {
+        
+        const user = await findUserById(this.db, userId);
+        if (!user)
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
+
+        let hashedPassword = null;
+        if (password || confirmPassword) {
+            if (!password || !confirmPassword)
+                return reply.code(400).send(createResponse(400, 'BOTH_PASSWORDS_REQUIRED'));
+            if (password !== confirmPassword)
+                return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
+            if (!validatePassword(password))
+                return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
+            hashedPassword = await hash(password, 10);
+        }
+
+
+
+        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
+        if (twoFa && twoFa.enabled)
+        {
+            if (twoFa.type === 'email')
+            {
+                const otpCode = `${Math.floor(100000 + Math.random() * 900000) }`
+                await updateOtpCode(this.db, otpCode, user.id, 'email');
+                await this.sendMail(otpCode, user.email);
+            }
+            await insertPendingCredentials(this.db, user.id, email, hashedPassword);
+            return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type  }));
+        }
+
+        if (email) {
+            const emailExist = await findUserByEmail(this.db, email);
+            if (emailExist)
+                return reply.code(400).send(createResponse(400, 'EMAIL_EXISTS'));
+            this.rabbit.produceMessage({
+                type: 'UPDATE',
+                userId: user.id,
+                email: email
+            }, 'profile.email.updated')
+
+            await updateEmailById(this.db, email, user.id);
+        }
+        if (hashedPassword)
+            await updateUser(this.db, user.id, hashedPassword);
+
+        return reply.code(200).send(createResponse(200, 'CREDENTIALS_UPDATED'));
+    } catch (error) {
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+    }
+}
+
+export async function verifyUpdateCredentialsHandler(request, reply) {
+    const userId = request.user?.id;
+    try {
+        const user = await findUserById(this.db, userId);
+        if (!user)
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
+
+        const pending_credentials = await getPendingCredentialsByUID(this.db, user.id);
+        if (!pending_credentials)
+            return reply.code(400).send(createResponse(400, 'NO PENDING_CREDENTIALS'));
+        
+        const twoFa = await findPrimaryTwoFaByUid(this.db, user.id);
+        if (!twoFa)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_SET'));
+        else if (!twoFa.enabled)
+            return reply.code(400).send(createResponse(400, 'TWOFA_NOT_ENABLED'));
+        
+        const { otpCode } = request.body;
+        if (!otpCode)
+            return reply.code(401).send(createResponse(401, 'OTP_REQUIRED'));
+        
+        if (twoFa.type === 'email') {
+            if (twoFa.otp !== otpCode || twoFa.otp_exp < Date.now())
+                return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
+        } else {
+            const isValid = speakeasy.totp.verify({
+                secret: twoFa.secret,
+                encoding: 'base32',
+                token: otpCode,
+                window: 1
+            })
+            if (!isValid)
+                return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
+        }
+        await clearOtpCode(this.db, user.id, twoFa.type);
+
+        if (pending_credentials.new_email) {
+            const emailExist = await findUserByEmail(this.db, pending_credentials.new_email);
+            if (emailExist)
+                return reply.code(400).send(createResponse(400, 'EMAIL_EXISTS'));
+            this.rabbit.produceMessage({
+                type: 'UPDATE',
+                email: pending_credentials.new_email
+            }, 'profile.email.updated')
+            await updateEmailById(this.db, pending_credentials.new_email, user.id);
+        }
+        if (pending_credentials.new_password)
+            await updateUser(this.db, user.id, pending_credentials.new_password);
+
+        await deletePendingCredentials(this.db, user.id);
+        
+        return reply.code(200).send(createResponse(200, 'CREDENTIALS_UPDATED'));
+    } catch (error) {
+        console.log(error); 
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));        
+    }
+}
