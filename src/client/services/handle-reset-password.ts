@@ -55,6 +55,7 @@ export function handleResetPassword() {
           emailInput.value = "";
           otpForm?.classList.remove("hidden");
           otpForm?.classList.add("flex");
+          form.classList.add("hidden");
         }, waitTime);
       } else {
         setTimeout(() => {

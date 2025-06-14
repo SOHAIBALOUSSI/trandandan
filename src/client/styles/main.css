@@ -117,6 +117,7 @@ a {
     box-shadow: 0 2px 12px rgba(196, 69, 54, 0.12);
   }
 }
+/* === Custom Select design for gender ==== */
 .custom-select option:not(:first-child) {
   color: var(--color-primary);
 }
@@ -126,7 +127,28 @@ a {
   background-position: right 1rem center;
   background-size: 1rem;
 }
-
+.custom-select option:checked {
+  background-color: var(--color-secondary);
+}
+/* === Custom Scroll bar design === */
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-accent);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: all 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary);
+  opacity: 0.8;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
 /* End Custom Designs */
 
 /* Mobile First Approach */

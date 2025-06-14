@@ -7,6 +7,7 @@ import { InputField } from "@/components/common/InputField";
 import { styles } from "@/styles/styles";
 import { CTA } from "@/components/common/Cta";
 import { Overlay } from "@/components/layout/Overlay";
+import { OtpInput } from "@/components/common/OtpInput";
 
 export function ResetPassword() {
   setTimeout(() => {
@@ -42,20 +43,11 @@ export function ResetPassword() {
           />
         </form>
         <p className="w-full border-t border-pong-accent/10 my-8"></p>
-        <form
-          id="otp-form"
-          className="hidden flex-col items-center justify-center gap-6 mt-2 bg-transparent shadow-none px-0 py-0"
-        >
+        <form id="otp-form" className={`${styles.form} hidden`}>
           <label htmlFor="otp" className="text-pong-primary font-semibold">
-            paste the code from your inbox:
+            paste the code from your inbox
           </label>
-          <InputField
-            type="text"
-            name="otp"
-            id="otp"
-            placeholder="6-digit code"
-            autofocus={true}
-          />{" "}
+          <OtpInput />
           <CTA
             feedbackId="otp-feedback"
             btnId="otp-btn"

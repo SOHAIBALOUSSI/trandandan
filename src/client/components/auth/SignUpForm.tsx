@@ -33,11 +33,14 @@ export function SignUpForm() {
           <option value="" disabled selected hidden>
             select your title of elegance
           </option>
-          <option value="male">gentleman</option>
-          <option value="female">lady</option>
+          <option value="male" className="bg-pong-secondary/10">
+            gentleman
+          </option>
+          <option value="female" className="bg-pong-secondary/10">
+            lady
+          </option>
         </select>
       </div>
-
       <InputField
         type="password"
         name="password"
