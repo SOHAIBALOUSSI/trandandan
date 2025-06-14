@@ -32,13 +32,7 @@ export async function setup2FAEmail(request, reply) {
             await updateOtpCode(this.db, otpCode, user.id, twoFa.type);
         }
 
-        const mailOptions = {
-            from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
-            to: `${user.email}`,
-            subject: "Hello from M3ayz00",
-            text: `OTP CODE : <${otpCode}>`,
-        }
-        await this.sendMail(mailOptions);
+        await this.sendMail(otpCode, user.email);
 
         return reply.code(200).send(createResponse(200, 'CODE_SENT'));
     } catch (error) {

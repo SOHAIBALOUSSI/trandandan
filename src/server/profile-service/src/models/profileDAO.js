@@ -60,3 +60,7 @@ export async function updateProfileById(db, id, updatedFields) {
 
     return result.changes;    
 }
+
+export async function updateProfileEmailById(db, id, email) {
+    await db.run(`UPDATE profile SET email = ?, updated_at = DATETIME('now') WHERE userId = ?`, [email, id]);
+}

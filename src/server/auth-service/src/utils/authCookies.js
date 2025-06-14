@@ -60,7 +60,7 @@ export function clearAuthCookies(reply) {
         maxAge: 0
     });
 
-    reply.header('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
+    reply.header('Set-Cookie', [accessTokenCookie, refreshTokenCookie, tempTokenCookie]);
 }
 
 export function getAuthCookies(request) {

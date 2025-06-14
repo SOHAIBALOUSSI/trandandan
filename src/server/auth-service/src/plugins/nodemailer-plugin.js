@@ -35,7 +35,7 @@ async function nodemailerPlugin(fastify) {
             from: `${process.env.APP_NAME} <${process.env.APP_EMAIL}>`,
             to: `${email}`,
             subject: "Your OTP code",
-            text: htmlTemplateWithCode(otpCode),
+            html: htmlTemplateWithCode(otpCode),
         }
         await transporterInstance.sendMail(mailOptions)
         .then((info) => {

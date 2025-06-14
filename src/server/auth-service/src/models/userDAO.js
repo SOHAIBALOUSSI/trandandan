@@ -42,7 +42,7 @@ export async function addUser(db, username, email, password) {
 }
 
 export async function updateUser(db, id, password) {
-    const result = await db.run('UPDATE user SET password = ? WHERE id = ?', [password, id]);
+    const result = await db.run(`UPDATE user SET password = ?, updated_at = DATETIME('now') WHERE id = ?`, [password, id]);
     console.log("User updated with ID: ", result.changes);
     return result.changes;
 }
@@ -95,14 +95,14 @@ export async function linkOAuthIdentityToUser(db, id, userInfo) {
 }
 
 export async function updateEmailById(db, email, id) {
-    const result = await db.run('UPDATE user SET email = ? WHERE id = ?',
+    const result = await db.run(`UPDATE user SET email = ?, updated_at = DATETIME('now') WHERE id = ?`,
         [email, id]
     );
     console.log('Update email for userId: ', id);
 }
 
 export async function updateUsernameById(db, username, id) {
-    const result = await db.run('UPDATE user SET username = ? WHERE id = ?',
+    const result = await db.run(`UPDATE user SET username = ?, updated_at = DATETIME('now') WHERE id = ?`,
         [username, id]
     );
     console.log('Update username for userId: ', id);

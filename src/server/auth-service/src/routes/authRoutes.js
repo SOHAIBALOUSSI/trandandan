@@ -7,7 +7,9 @@ import {
     refreshHandler, 
     verifyCodeHandler, 
     lostPasswordHandler, 
-    updatePasswordHandler 
+    updatePasswordHandler, 
+    updateCredentialsHandler,
+    verifyUpdateCredentialsHandler
 } from '../controllers/authController.js';
 import { 
     googleLoginHandler, 
@@ -19,7 +21,8 @@ import {
     tokenSchema, 
     otpCodeSchema, 
     emailSchema,
-    passwordSchema 
+    passwordSchema, 
+    updateCredentialsSchema
 } from '../schemas/authSchema.js';
 
 
@@ -90,6 +93,23 @@ async function authRoutes(fastify) {
         preHandler: fastify.authenticate,
         handler: updatePasswordHandler
     });
+
+    fastify.post('/update-credentials', {
+        schema: {
+            body: updateCredentialsSchema
+        }, 
+        preHandler: fastify.authenticate,
+        handler: updateCredentialsHandler
+    });
+    
+    fastify.post('/verify-update-credentials', {
+        schema: {
+            body: otpCodeSchema
+        }, 
+        preHandler: fastify.authenticate,
+        handler: verifyUpdateCredentialsHandler
+    });
+
 }
 
 export default authRoutes;
