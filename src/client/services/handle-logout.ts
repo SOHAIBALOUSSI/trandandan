@@ -6,9 +6,6 @@ export async function handleLogout(): Promise<void> {
     await fetch("/auth/logout", {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
   } catch (err) {
     console.error(err);
