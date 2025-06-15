@@ -35,8 +35,6 @@ export function VerifyLogin() {
             autofocus={true}
           />
           <CTA
-            feedbackId="verify-feedback"
-            btnId="verify-btn"
             btnIcon="fa-check-double"
             btnLabel="verify"
           />

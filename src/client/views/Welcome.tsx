@@ -14,7 +14,6 @@ export function Welcome() {
         <HeroTitle />
         <HeroCta />
       </div>
-
       <Footer />
     </section>
   );

@@ -56,7 +56,8 @@ export const VerifyCodeRes: Record<string, string> = {
   OTP_REQUIRED: "OTP required. Enter the code to complete the match.",
   OTP_INVALID:
     "That code doesn’t match our playbook. Double-check and try again.",
-  CODE_VERIFIED: "OTP verified successfully. Redirecting you to update your password...",
+  CODE_VERIFIED:
+    "OTP verified successfully. Redirecting you to update your password...",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
@@ -68,6 +69,8 @@ export const UpdatePasswordRes: Record<string, string> = {
     "Your new passwords don’t match. Adjust your swing and re-enter.",
   UNAUTHORIZED:
     "You need to log in first. The court isn’t open to unregistered rackets.",
+  FST_ERR_VALIDATION:
+    "Your credentials need a bit more polish. Check your input and try again.",
   USER_LOGGED_IN: "Your password is updated successfully!",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish the rally with verification.",

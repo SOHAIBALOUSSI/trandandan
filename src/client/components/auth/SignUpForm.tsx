@@ -54,8 +54,6 @@ export function SignUpForm() {
         placeholder="confirm your password"
       />
       <CTA
-        feedbackId="signup-feedback"
-        btnId="signup-btn"
         btnIcon="fa-table-tennis-paddle-ball"
         btnLabel="register your racket"
       />

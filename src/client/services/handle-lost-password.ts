@@ -1,23 +1,24 @@
 import { styles } from "@/styles/styles";
 import { LostPasswordRes } from "@/utils/response-messages";
 
-export function handleResetPassword() {
-  const form = document.getElementById(
-    "reset-password-form"
-  ) as HTMLFormElement;
-  const otpForm = document.getElementById("otp-form") as HTMLFormElement;
+export function handleLostPassword() {
+  const form = document.getElementById("lost-password-form") as HTMLFormElement;
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const feedback = form.querySelector<HTMLDivElement>("#reset-feedback");
-    const submitBtn = form.querySelector<HTMLButtonElement>(
-      "#reset-password-btn"
-    );
+    const feedback = form.querySelector<HTMLDivElement>("#cta-feedback");
+    const submitBtn = form.querySelector<HTMLButtonElement>("#cta-btn");
     const spinner = form.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
+
+    const btnLabelText = btnLabel.textContent;
+
+    const otpForm = document.getElementById(
+      "lost-pass-otp-form"
+    ) as HTMLFormElement;
 
     // Get email value from input
     const emailInput = form.querySelector(
@@ -31,7 +32,7 @@ export function handleResetPassword() {
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
-    btnLabel.textContent = "Sending Email...";
+    btnLabel.textContent = "sending email...";
 
     // Start the timer to calculate wait time
     const startTime = Date.now();
@@ -56,11 +57,13 @@ export function handleResetPassword() {
           form.classList.add("hidden");
           otpForm?.classList.remove("hidden");
           otpForm?.classList.add("flex");
+          otpForm?.querySelector("input")?.focus();
         }, waitTime);
       } else {
         setTimeout(() => {
           const errorMsg =
-            LostPasswordRes[result?.code] || "Error in handle reset password";
+            LostPasswordRes[result?.code] ||
+            "Error during lost password request. Please try again.";
           feedback.className = `${styles.formMessage} text-pong-error`;
           feedback.textContent = errorMsg;
         }, waitTime);
@@ -73,7 +76,7 @@ export function handleResetPassword() {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
-        btnLabel.textContent = "send me the code";
+        btnLabel.textContent = btnLabelText;
       }, 1300);
     }
   });

@@ -21,10 +21,10 @@ export function Signin() {
       <Overlay />
       <MainHeader
         isDark={true}
-        title={"welcome back,"}
-        titleSpan={"champion"}
-        subtitle={"step into the club"}
-        subtitleParagraph={"enter your credentials to continue your legacy."}
+        title="welcome back,"
+        titleSpan="champion"
+        subtitle="step into the club"
+        subtitleParagraph="enter your credentials to continue your legacy."
       />
       <SignInForm />
       <Footer />

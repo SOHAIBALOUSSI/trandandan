@@ -1,9 +1,9 @@
 import { styles } from "@/styles/styles";
 import { VerifyCodeRes } from "@/utils/response-messages";
 
-export function handleOtpInput() {
+function handleOtpInput() {
   const inputs = document.querySelectorAll<HTMLInputElement>(
-    "#reset-pass-otp input"
+    "#lost-pass-otp input"
   );
 
   inputs.forEach((input, index) => {
@@ -44,31 +44,34 @@ export function handleOtpInput() {
   });
 }
 
-export function verifyOtpCode() {
-  const otpForm = document.getElementById("otp-form") as HTMLFormElement;
+function verifyOtpCode() {
+  const otpForm = document.getElementById(
+    "lost-pass-otp-form"
+  ) as HTMLFormElement;
 
   otpForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const feedback = otpForm.querySelector<HTMLDivElement>("#otp-feedback");
-    const submitBtn = otpForm.querySelector<HTMLButtonElement>("#otp-btn");
+    const feedback = otpForm.querySelector<HTMLDivElement>("#cta-feedback");
+    const submitBtn = otpForm.querySelector<HTMLButtonElement>("#cta-btn");
     const spinner = otpForm.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = otpForm.querySelector<HTMLSpanElement>("#btn-label");
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
+    const btnLabelText = btnLabel.textContent;
+
     const otpInputs = otpForm.querySelectorAll<HTMLInputElement>(
-      "#reset-pass-otp input"
+      "#lost-pass-otp input"
     );
+
     const otpCode = Array.from(otpInputs)
       .map((input) => input.value.trim())
       .join("");
 
-    console.log(otpCode);
-
-    if (otpCode.length !== otpInputs.length) {
+    if (otpCode.length !== 6) {
       feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.textContent = "Please complete all OTP fields.";
+      feedback.textContent = "Please enter a valid 6-digit OTP code.";
       return;
     }
 
@@ -80,6 +83,7 @@ export function verifyOtpCode() {
     spinner.classList.remove("hidden");
     btnLabel.textContent = "verifying...";
 
+    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
@@ -93,6 +97,7 @@ export function verifyOtpCode() {
       });
 
       const result = await response.json();
+
       const elapsed = Date.now() - startTime;
       const waitTime = Math.max(0, 1200 - elapsed);
 
@@ -100,7 +105,6 @@ export function verifyOtpCode() {
         setTimeout(() => {
           feedback.className = `${styles.formMessage} text-pong-success`;
           feedback.textContent = VerifyCodeRes.CODE_VERIFIED;
-          feedback.classList.remove("hidden");
 
           setTimeout(() => {
             history.pushState(null, "", "/password_update");
@@ -110,23 +114,35 @@ export function verifyOtpCode() {
       } else {
         setTimeout(() => {
           const errorMsg =
-            VerifyCodeRes[result?.code] || "Invalid OTP. Please try again.";
+            VerifyCodeRes[result?.code] ||
+            "Error during OTP verification. Please try again.";
           feedback.className = `${styles.formMessage} text-pong-error`;
           feedback.textContent = errorMsg;
-          feedback.classList.remove("hidden");
+          otpInputs.forEach((input) => {
+            input.value = "";
+          });
+          otpInputs[0].focus();
         }, waitTime);
       }
     } catch (error) {
       feedback.className = `${styles.formMessage} text-pong-error`;
       feedback.textContent = VerifyCodeRes.INTERNAL_SERVER_ERROR;
-      feedback.classList.remove("hidden");
+      otpInputs.forEach((input) => {
+        input.value = "";
+      });
+      otpInputs[0].focus();
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
-        btnLabel.textContent = "verify OTP";
+        btnLabel.textContent = btnLabelText;
       }, 1300);
     }
   });
+}
+
+export function initVerifyOtpCode() {
+  handleOtpInput();
+  verifyOtpCode();
 }

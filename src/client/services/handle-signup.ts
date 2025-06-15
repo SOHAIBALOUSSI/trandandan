@@ -3,19 +3,19 @@ import { RegisterRes } from "@/utils/response-messages";
 import { UserRegister } from "types/types";
 
 export function handleSignUp() {
-  const signupForm = document.querySelector<HTMLFormElement>("#signup-form");
+  const signupForm = document.getElementById("signup-form") as HTMLFormElement;
 
   signupForm?.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const feedback =
-      signupForm.querySelector<HTMLDivElement>("#signup-feedback");
-    const submitBtn =
-      signupForm.querySelector<HTMLButtonElement>("#signup-btn");
+    const feedback = signupForm.querySelector<HTMLDivElement>("#cta-feedback");
+    const submitBtn = signupForm.querySelector<HTMLButtonElement>("#cta-btn");
     const spinner = signupForm.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = signupForm.querySelector<HTMLSpanElement>("#btn-label");
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
+
+    const btnLabelText = btnLabel.textContent;
 
     // Extract User Infos from the singup Form
     const userInfos: UserRegister = {
@@ -54,7 +54,7 @@ export function handleSignUp() {
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
-    btnLabel.textContent = "Registering...";
+    btnLabel.textContent = "registering...";
 
     // Start the timer to calculate wait time
     const startTime = Date.now();
@@ -98,7 +98,7 @@ export function handleSignUp() {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
-        btnLabel.textContent = "register your racket";
+        btnLabel.textContent = btnLabelText;
       }, 1300);
     }
   });

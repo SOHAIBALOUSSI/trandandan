@@ -27,18 +27,16 @@ export function UpdatePassword() {
             type="password"
             name="newPassword"
             id="new-password"
-            placeholder="New Password"
+            placeholder="new password"
             autofocus={true}
           />
           <InputField
             type="password"
             name="newPasswordConfirm"
-            id="confirm-password"
-            placeholder="Confirm New Password"
+            id="confirm-new-password"
+            placeholder="confirm new password"
           />
           <CTA
-            feedbackId="update-password-feedback"
-            btnId="update-password-btn"
             btnIcon="fa-lock"
             btnLabel="lock it in"
           />

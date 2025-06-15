@@ -1,22 +1,17 @@
 import { styles } from "@/styles/styles";
 import { BtnPrimary } from "./BtnPrimary";
 
-export function CTA(props: {
-  feedbackId: string;
-  btnId: string;
-  btnIcon: string;
-  btnLabel: string;
-}) {
+export function CTA(props: { btnIcon: string; btnLabel: string }) {
   return (
     <div>
       <div
-        id={props.feedbackId}
+        id="cta-feedback"
         className={`${styles.formMessage} hidden`}
         role="alert"
         aria-live="polite"
       ></div>
       <BtnPrimary
-        btnId={props.btnId}
+        btnId="cta-btn"
         btnIcon={props.btnIcon}
         btnLabel={props.btnLabel}
       />

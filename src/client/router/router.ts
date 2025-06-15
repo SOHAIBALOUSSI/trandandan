@@ -1,7 +1,7 @@
 import { Welcome } from "@/views/Welcome";
 import { Signin } from "@/views/Signin";
 import { Signup } from "@/views/Signup";
-import { ResetPassword } from "@/views/ResetPassword";
+import { ResetPassword } from "@/views/LostPassword";
 import { UpdatePassword } from "@/views/UpdatePassword";
 import { VerifyLogin } from "@/views/VerifyLogin";
 import { Home } from "@/views/Home";

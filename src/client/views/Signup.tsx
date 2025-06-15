@@ -21,10 +21,10 @@ export function Signup() {
       <Overlay />
       <MainHeader
         isDark={true}
-        title={"Join"}
-        titleSpan={"The Club"}
-        subtitle={"become a member"}
-        subtitleParagraph={"sign your name into club history"}
+        title="join"
+        titleSpan="the club"
+        subtitle="become a member"
+        subtitleParagraph="sign your name into club history"
       />
       <SignUpForm />
       <Footer />

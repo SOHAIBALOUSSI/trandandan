@@ -117,7 +117,7 @@ export const styles = {
 	px-6 py-10
   `,
   formMessage: `
-  	text-center text-sm font-semibold min-h-[1.5rem]
+  	text-center text-sm font-semibold min-h-[1.5rem] mb-2
   `,
   // === End Form styles ===
 

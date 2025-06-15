@@ -23,8 +23,6 @@ export function SignInForm() {
         placeholder={"password"}
       />
       <CTA
-        feedbackId="signin-feedback"
-        btnId="signin-btn"
         btnIcon="fa-couch"
         btnLabel="enter the lounge"
       />

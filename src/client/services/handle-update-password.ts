@@ -1,5 +1,4 @@
 import { styles } from "@/styles/styles";
-import { LostPasswordRes } from "@/utils/response-messages";
 import { UpdatePasswordRes } from "@/utils/response-messages";
 
 export function handleUpdatePassword() {
@@ -10,30 +9,26 @@ export function handleUpdatePassword() {
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const feedback = form.querySelector<HTMLDivElement>(
-      "#update-password-feedback"
-    );
-    const submitBtn = form.querySelector<HTMLButtonElement>(
-      "#update-password-btn"
-    );
+    const feedback = form.querySelector<HTMLDivElement>("#cta-feedback");
+    const submitBtn = form.querySelector<HTMLButtonElement>("#cta-btn");
     const spinner = form.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
+    const btnLabelText = btnLabel.textContent;
+
     const password = (
       form.querySelector("#new-password") as HTMLInputElement
     ).value.trim();
     const confirmPassword = (
-      form.querySelector("#confirm-password") as HTMLInputElement
+      form.querySelector("#confirm-new-password") as HTMLInputElement
     ).value.trim();
 
     const payload = {
       password: password,
       confirmPassword: confirmPassword,
     };
-
-    console.log(payload);
 
     // Reset feedback and button state
     feedback.textContent = "";
@@ -65,28 +60,29 @@ export function handleUpdatePassword() {
           feedback.textContent = UpdatePasswordRes.USER_LOGGED_IN;
 
           setTimeout(() => {
-            history.pushState(null, "", "/signin");
+            history.pushState(null, "", "/salon");
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, 1500);
         }, waitTime);
       } else {
         setTimeout(() => {
-          feedback.className = `${styles.formMessage} text-pong-error`;
+          console.log(result.code);
           const errorMsg =
-            LostPasswordRes[result?.code] ||
-            "Error in update password. Please try again.";
+            UpdatePasswordRes[result?.code] ||
+            "Error during password update. Please try again.";
+          feedback.className = `${styles.formMessage} text-pong-error`;
           feedback.textContent = errorMsg;
         }, waitTime);
       }
     } catch (error) {
       feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.textContent = LostPasswordRes.INTERNAL_SERVER_ERROR;
+      feedback.textContent = UpdatePasswordRes.INTERNAL_SERVER_ERROR;
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
-        btnLabel.textContent = "lock it in";
+        btnLabel.textContent = btnLabelText;
       }, 1300);
     }
   });

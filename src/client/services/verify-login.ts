@@ -7,8 +7,8 @@ export function verifyLogin(mode: string | null) {
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const feedback = form.querySelector<HTMLDivElement>("#verify-feedback");
-    const submitBtn = form.querySelector<HTMLButtonElement>("#verify-btn");
+    const feedback = form.querySelector<HTMLDivElement>("#cta-feedback");
+    const submitBtn = form.querySelector<HTMLButtonElement>("#cta-btn");
     const spinner = form.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
 
