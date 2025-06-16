@@ -43,45 +43,50 @@ function TwoFaMode(mode: "app" | "email") {
   }, 0);
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="flex flex-col items-center justify-center md:flex-row md:justify-between gap-4 bg-gray-900 text-lg m-8 p-6 rounded">
-        <span className="text-pong-secondary">{mode}</span>
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-pong-secondary/90 border border-pong-accent/30 shadow-lg rounded-xl px-6 py-5">
+        <span className="text-pong-accent font-semibold capitalize tracking-wide text-lg">
+          {mode === "app" ? "Authenticator App" : "Email OTP"}
+        </span>
         <div className="flex items-center gap-4">
-          <button className={`${styles.btnOneStyles} w-24`} id={setupId}>
+          <button className={`${styles.primaryButton} w-28`} id={setupId}>
             Setup
           </button>
           <button
-            className={`${styles.btnOneStyles} w-24 hidden`}
+            className={`${styles.btnOneStyles} hidden`}
             id={toggleId}
           >
             Enable
           </button>
           <button
-            className={`${styles.btnOneStyles} w-24 hidden`}
+            className={`${styles.btnOneStyles} hidden`}
             id={primaryId}
           >
-            Set as Primary
+            Primary
           </button>
         </div>
       </div>
-      <div id={verifySectionId} className="hidden">
+      <div
+        id={verifySectionId}
+        className="hidden flex-col items-center bg-white/95 border border-pong-accent/20 rounded-xl shadow-md px-6 py-5 mt-2"
+      >
         <p
           id={feedbackId}
           className="text-pong-dark-primary text-sm my-2 text-center"
         ></p>
-        <div id="2fa-app-qr" className="text-center"></div>
+        <div id="2fa-app-qr" className="text-center mb-2"></div>
         <input
           id={otpInputId}
           type="text"
           maxLength={6}
           pattern="[0-9]{6}"
           placeholder="Enter 6-digit code"
-          className="py-2 px-8 text-center text-gray-800"
+          className="py-3 px-8 text-center text-lg border-2 border-pong-accent rounded-lg focus:border-pong-secondary outline-none transition-all duration-200 bg-pong-secondary/10 tracking-widest mb-2"
           autoComplete="one-time-code"
         />
         <button
           id={verifyBtnId}
-          className="p-2 bg-red-600 ml-2 rounded-sm hover:bg-red-700 transition-all duration-300 w-32"
+          className="w-32 py-2 mt-1 bg-pong-accent text-white rounded-lg font-semibold hover:bg-pong-secondary transition-all duration-300 shadow"
         >
           Verify
         </button>
@@ -93,15 +98,17 @@ function TwoFaMode(mode: "app" | "email") {
 
 export function TwoFa() {
   return (
-    <div className="bg-gray-800 rounded shadow p-6 m-4 w-full max-w-2xl text-center">
-      <h2 className="text-xl font-bold mb-2 text-pong-dark-primary">
+    <div className="bg-white/95 border border-pong-accent/20 rounded-2xl shadow-2xl p-8 m-4 w-full max-w-3xl mx-auto text-center animate-fade-in">
+      <h2 className="text-2xl font-bold mb-2 text-pong-dark-primary">
         Two-Factor Authentication
       </h2>
-      <p className="mb-2 text-gray-400">
+      <p className="mb-4 text-pong-primary/80">
         Enhance your account security with two-factor authentication.
       </p>
-      {TwoFaMode("app")}
-      {TwoFaMode("email")}
+      <div className="flex flex-col gap-6">
+        {TwoFaMode("app")}
+        {TwoFaMode("email")}
+      </div>
     </div>
   );
 }

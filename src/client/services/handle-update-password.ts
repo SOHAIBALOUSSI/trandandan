@@ -66,7 +66,6 @@ export function handleUpdatePassword() {
         }, waitTime);
       } else {
         setTimeout(() => {
-          console.log(result.code);
           const errorMsg =
             UpdatePasswordRes[result?.code] ||
             "Error during password update. Please try again.";

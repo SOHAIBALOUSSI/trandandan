@@ -55,15 +55,19 @@ export function setup2FA(mode: "app" | "email") {
     ? "2fa-app-verify-btn"
     : "2fa-email-verify-btn";
 
-  const verifySection = document.getElementById(verifySectionId);
-  const feedback = document.getElementById(feedbackId);
-  const qrDiv = document.getElementById("2fa-app-qr");
+  const verifySection = document.getElementById(
+    verifySectionId
+  ) as HTMLDivElement;
+  const feedback = document.getElementById(feedbackId) as HTMLDivElement;
+  const qrDiv = document.getElementById("2fa-app-qr") as HTMLDivElement;
   const otpInput = document.getElementById(otpInputId) as HTMLInputElement;
   const verifyBtn = document.getElementById(verifyBtnId) as HTMLButtonElement;
 
+  if (!verifySection || !feedback || !otpInput || !verifyBtn) return;
+
   // Reset the feedback and QR code display
-  if (feedback) feedback.textContent = "";
-  if (qrDiv) qrDiv.innerHTML = "";
+  feedback.textContent = "";
+  qrDiv.innerHTML = "";
 
   fetch(`/2fa/${mode}/setup`, {
     method: "POST",
@@ -73,8 +77,8 @@ export function setup2FA(mode: "app" | "email") {
       response.json().then((data) => ({ status: response.status, data }))
     )
     .then(({ status, data }) => {
-      if (status === 200 && data.data?.qrCode) {
-        if (qrDiv) {
+      if (status === 200) {
+        if (data.data?.qrCode) {
           qrDiv.innerHTML = `<img src="${data.data.qrCode}" alt="QR Code" class="mx-auto my-4" />`;
           // Show the verify section
           verifySection?.classList.remove("hidden");
@@ -90,24 +94,23 @@ export function setup2FA(mode: "app" | "email") {
             });
             verifyBtn.dataset.listener = "true";
           }
-        }
-        if (feedback)
           feedback.textContent =
             "Scan the QR code with your authenticator app.";
-      } else if (status === 200 && !data.data?.qrCode) {
-        // verify setup for email mode
-        verifySection?.classList.remove("hidden");
-        if (verifyBtn && !verifyBtn.dataset.listener) {
-          verifyBtn.addEventListener("click", function (e) {
-            e.preventDefault();
-            if (!otpInput || !otpInput.value) {
-              if (feedback)
-                feedback.textContent = "Please enter the 6-digit code.";
-              return;
-            }
-            verify2FASetup(otpInput.value, mode);
-          });
-          verifyBtn.dataset.listener = "true";
+        } else {
+          // verify setup for email mode
+          verifySection?.classList.remove("hidden");
+          if (verifyBtn && !verifyBtn.dataset.listener) {
+            verifyBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              if (!otpInput || !otpInput.value) {
+                if (feedback)
+                  feedback.textContent = "Please enter the 6-digit code.";
+                return;
+              }
+              verify2FASetup(otpInput.value, mode);
+            });
+            verifyBtn.dataset.listener = "true";
+          }
         }
       } else if (status === 400) {
         if (feedback) feedback.textContent = "2FA is already enabled.";

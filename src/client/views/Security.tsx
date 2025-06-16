@@ -3,13 +3,8 @@ import { TopBar } from "@/components/layout/TopBar";
 import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
 import { TwoFa } from "@/components/settings/TwoFa";
-// import { setupEmail2FA } from "@/services/handle-2fa";
-// import { disableApp2FA } from "@/services/handle-2fa";
-// import { disableEmail2FA } from "@/services/handle-2fa";
-// import { setPrimaryApp2FA } from "@/services/handle-2fa";
-// import { setPrimaryEmail2FA } from "@/services/handle-2fa";
 
-export function Settings() {
+export function Security() {
   return (
     <section className={styles.pageLayoutDark} id="settings-section">
       <NavBar />

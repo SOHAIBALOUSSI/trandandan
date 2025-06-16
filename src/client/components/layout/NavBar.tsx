@@ -118,7 +118,7 @@ export function NavBar() {
   // Settings items
   const settingsItems = [
     { label: "Player Card", path: "/my_profile", icon: "fa-user" },
-    { label: "Access Keys", path: "/mechanics", icon: "fa-lock" },
+    { label: "Access Keys", path: "/security", icon: "fa-lock" },
     { label: "Muted Players", path: "/blocked", icon: "fa-user-slash" },
     { label: "Wipe Account", path: "/delete_account", icon: "fa-trash" },
   ];
@@ -199,11 +199,11 @@ export function NavBar() {
   const exitLi = document.createElement("li");
   exitLi.className = "w-full";
   const exitLink = document.createElement("a");
-  exitLink.href = "/exit";
+  exitLink.href = "/checkout";
   exitLink.className = styles.navLink;
   exitLink.innerHTML = `
     <i class="fa-solid fa-arrow-right-from-bracket text-xl md:text-2xl transition-transform duration-300 group-hover:scale-110"></i>
-    <span class="transition-colors duration-300">exit</span>
+    <span class="transition-colors duration-300">checkout</span>
   `;
   exitLi.appendChild(exitLink);
   ul.appendChild(exitLi);

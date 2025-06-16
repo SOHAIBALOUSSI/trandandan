@@ -10,7 +10,7 @@ import { Dashboard } from "@/views/Dashboard";
 import { Friends } from "@/views/Friends";
 import { Chat } from "@/views/Chat";
 import { Profile } from "@/views/Profile";
-import { Settings } from "@/views/Settings";
+import { Security } from "@/views/Security";
 import { Blocked } from "@/views/Blocked";
 import { DeleteAccount } from "@/views/DeleteAccount";
 import { Logout } from "@/views/Logout";
@@ -31,10 +31,10 @@ const routes: Record<string, () => HTMLElement> = {
   lounge: Chat,
   members: Friends,
   my_profile: Profile,
-  mechanics: Settings,
+  security: Security,
   blocked: Blocked,
   delete_account: DeleteAccount,
-  exit: Logout,
+  checkout: Logout,
 };
 
 // Public pages that don't require authentication
@@ -76,6 +76,22 @@ export async function router(): Promise<void> {
 
   if (isPublic && authed) {
     history.replaceState(null, "", "/salon");
+    await router();
+    return;
+  }
+
+  if (path === "password_update") {
+    const token = sessionStorage.getItem("reset_flag");
+    if (!token) {
+      history.replaceState(null, "", "/password_reset");
+      await router();
+      return;
+    }
+  }
+
+  // Handle unknown routes
+  if (!render) {
+    history.replaceState(null, "", "/welcome");
     await router();
     return;
   }

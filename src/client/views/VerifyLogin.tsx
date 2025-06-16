@@ -3,6 +3,7 @@ import { styles } from "@/styles/styles";
 import { InputField } from "@/components/common/InputField";
 import { CTA } from "@/components/common/Cta";
 import { Overlay } from "@/components/layout/Overlay";
+import { OtpInput } from "@/components/common/OtpInput";
 import { verifyLogin } from "@/services/verify-login";
 
 export function VerifyLogin() {
@@ -27,17 +28,8 @@ export function VerifyLogin() {
           method="POST"
           className={`${styles.form} ${styles.fadeInSection}`}
         >
-          <InputField
-            type="text"
-            name="verificationCode"
-            id="verification-code"
-            placeholder="Enter your verification code"
-            autofocus={true}
-          />
-          <CTA
-            btnIcon="fa-check-double"
-            btnLabel="verify"
-          />
+          <OtpInput id="verify-login-otp" />
+          <CTA btnIcon="fa-check-double" btnLabel="verify" />
         </form>
         <p className="text-sm text-pong-primary/70 text-center mt-8">
           Trouble receiving your code? Check your spam scroll or contact the

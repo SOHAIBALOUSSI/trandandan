@@ -102,6 +102,7 @@ function verifyOtpCode() {
       const waitTime = Math.max(0, 1200 - elapsed);
 
       if (response.ok) {
+        sessionStorage.setItem("reset_flag", "ok");
         setTimeout(() => {
           feedback.className = `${styles.formMessage} text-pong-success`;
           feedback.textContent = VerifyCodeRes.CODE_VERIFIED;

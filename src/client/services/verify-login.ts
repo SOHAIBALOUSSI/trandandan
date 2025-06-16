@@ -15,7 +15,7 @@ export function verifyLogin(mode: string | null) {
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
     const codeInput = form.querySelector(
-      "#verification-code"
+      "#verify-login-otp"
     ) as HTMLInputElement;
     const code = codeInput.value.trim();
 
