@@ -14,10 +14,21 @@ export function verifyLogin(mode: string | null) {
 
     if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
-    const codeInput = form.querySelector(
-      "#verify-login-otp"
-    ) as HTMLInputElement;
-    const code = codeInput.value.trim();
+    const btnLabelText = btnLabel.textContent;
+
+    const otpInputs = form.querySelectorAll<HTMLInputElement>(
+      "#verify-login-otp input"
+    );
+
+    const otpCode = Array.from(otpInputs)
+      .map((input) => input.value.trim())
+      .join("");
+
+    if (otpCode.length !== 6) {
+      feedback.className = `${styles.formMessage} text-pong-error`;
+      feedback.textContent = "Please enter a valid 6-digit OTP code.";
+      return;
+    }
 
     // Reset feedback and button state
     feedback.textContent = "";
@@ -35,7 +46,7 @@ export function verifyLogin(mode: string | null) {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otpCode: code }),
+        body: JSON.stringify({ otpCode: otpCode }),
       });
 
       const result = await response.json();
@@ -57,20 +68,28 @@ export function verifyLogin(mode: string | null) {
         setTimeout(() => {
           const errorMsg =
             Verify2FaRes[result?.code] ||
-            "Error during verify 2fa. Please try again.";
+            "Error during 2fa verification. Please try again.";
           feedback.className = `${styles.formMessage} text-pong-error`;
           feedback.textContent = errorMsg;
+          otpInputs.forEach((input) => {
+            input.value = "";
+          });
+          otpInputs[0].focus();
         }, waitTime);
       }
     } catch (error) {
       feedback.className = `${styles.formMessage} text-pong-error`;
       feedback.textContent = Verify2FaRes.INTERNAL_SERVER_ERROR;
+      otpInputs.forEach((input) => {
+        input.value = "";
+      });
+      otpInputs[0].focus();
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
-        btnLabel.textContent = "verify";
+        btnLabel.textContent = btnLabelText;
       }, 1300);
     }
   });
