@@ -88,17 +88,15 @@ export async function fortyTwoLoginHandler(request, reply) {
         setAuthCookies(reply, accessToken, refreshToken);
         if (isNewUser) {
             this.rabbit.produceMessage({
-                userId: user.id,
-                username: user.username,
-                email: user.email,
-                avatar_url: userInfo.image.link
-            }, 
-            'profile.user.created'
-        );
-            return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
+                    userId: user.id,
+                    username: user.username,
+                    email: user.email,
+                    avatar_url: userInfo.image.link
+                }, 
+                'profile.user.created'
+            );
         }
-        else
-            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
+      return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

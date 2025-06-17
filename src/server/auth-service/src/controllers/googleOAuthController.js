@@ -1,7 +1,7 @@
 import { addUserAndOAuthIdentity, findOauthIdentity, findUserByEmail, findUserById, linkOAuthIdentityToUser } from "../models/userDAO.js";
 import { addToken, findValidTokenByUid } from "../models/tokenDAO.js";
 import { createResponse, generateUsername } from "../utils/utils.js";
-import { setAuthCookies } from "../utils/authCookies.js";
+import { setAuthCookies, clearAuthCookies } from "../utils/authCookies.js";
 
 export async function   googleSetupHandler(request, reply) {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
@@ -87,17 +87,15 @@ export async function googleLoginHandler(request, reply) {
         setAuthCookies(reply, accessToken, refreshToken);
         if (isNewUser) {
             this.rabbit.produceMessage({
-                userId: user.id,
-                username: user.username,
-                email: user.email,
-                avatar_url: userInfo.picture
-            },
-            'profile.user.created'
-        );
-            return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
+                    userId: user.id,
+                    username: user.username,
+                    email: user.email,
+                    avatar_url: userInfo.picture
+                },
+                'profile.user.created'
+            );
         }
-        else
-            return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
+        return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
