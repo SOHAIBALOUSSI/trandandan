@@ -1,9 +1,11 @@
-import { MainHeader } from "@/components/common/MainHeader";
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
-import { Hero } from "@/components/home/Hero";
-import { QuickLinks } from "@/components/home/QuickLinks";
+import { QuickStatsCards } from "@/components/home/QuickStatsCards";
+import { ActionButtons } from "@/components/home/ActionButtons";
+import { RecentActivityFeed } from "@/components/home/RecentActivityFeed";
+import { LeaderboardPreview } from "@/components/home/LeaderboardPreview";
 import { styles } from "@/styles/styles";
+import { Hero } from "@/components/home/Hero";
 
 export function Home() {
   return (
@@ -11,10 +13,12 @@ export function Home() {
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-2rem)] overflow-y-auto">
-          <MainHeader isDark={false} title="the club" titleSpan="hall" />
+        <main className="px-20 pt-20 md:pt-24 h-[calc(100vh-2rem)] overflow-y-auto">
           <Hero />
-          <QuickLinks />
+          <QuickStatsCards />
+          <ActionButtons />
+          <RecentActivityFeed />
+          <LeaderboardPreview />
         </main>
       </div>
     </section>

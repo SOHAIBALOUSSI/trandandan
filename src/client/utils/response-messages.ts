@@ -20,8 +20,6 @@ export const RegisterRes: Record<string, string> = {
   PASSWORD_POLICY:
     "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
   USER_EXISTS: "This racket is already in the club. Try signing in instead.",
-  FST_ERR_VALIDATION:
-    "Your credentials need a bit more polish. Check your input and try again.",
   USER_REGISTERED:
     "Welcome to the club, champion! Your racket is ready for the game.",
   INTERNAL_SERVER_ERROR:
@@ -69,8 +67,6 @@ export const UpdatePasswordRes: Record<string, string> = {
     "Your new passwords don’t match. Adjust your swing and re-enter.",
   UNAUTHORIZED:
     "You need to log in first. The court isn’t open to unregistered rackets.",
-  FST_ERR_VALIDATION:
-    "Your credentials need a bit more polish. Check your input and try again.",
   USER_LOGGED_IN: "Your password is updated successfully!",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish the rally with verification.",

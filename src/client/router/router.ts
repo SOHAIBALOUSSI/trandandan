@@ -66,18 +66,26 @@ export async function router(): Promise<void> {
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
 
-  const authed = await isAuthenticated();
+  let authed = false;
 
-  if (!isPublic && !authed) {
-    history.replaceState(null, "", "/signin");
-    await router();
-    return;
+  if (!isPublic) {
+    authed = await isAuthenticated();
+    if (!authed) {
+      history.replaceState(null, "", "/signin");
+      await router();
+      return;
+    }
   }
 
-  if (isPublic && authed) {
-    history.replaceState(null, "", "/salon");
-    await router();
-    return;
+  if (isPublic) {
+    if (!authed) {
+      authed = await isAuthenticated();
+    }
+    if (authed) {
+      history.replaceState(null, "", "/salon");
+      await router();
+      return;
+    }
   }
 
   if (path === "password_update") {
