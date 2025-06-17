@@ -11,7 +11,5 @@ export const emailValidation = {
 }
 
 export const passwordValidation = {
-    type: 'string',
-    minLength: 8,
-    maxLength: 15
+    type: 'string'
 }
