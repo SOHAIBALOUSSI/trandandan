@@ -4,6 +4,7 @@ import sqlitePlugin from './plugins/sqlite-plugin.js'
 import friendsRoutes from './routes/friendsRoutes.js';
 import { createFriendshipTable } from './database/createFriendshipsTable.js';
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
+import { deleteFriendships } from './models/friendshipDAO.js';
 
 const server = fastify({ logger: true });
 
@@ -13,8 +14,12 @@ await server.register(sqlitePlugin);
 await createFriendshipTable(server.db);
 await server.register(rabbitmqPlugin);
 
-// server.rabbit.consumeMessages();
-
+server.rabbit.consumeMessages(async (request) => {
+    if (request.type === 'DELETE') {
+        const userId = request.userId;
+        await deleteFriendships(server.db, userId);
+    }
+})
 await server.register(friendsRoutes, { prefix: '/friends' });
 
 console.log("friends service initialization is done...");

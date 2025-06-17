@@ -5,7 +5,8 @@ import {
     findUserById, 
     findUserByEmail,
     updateUser,  
-    updateEmailById
+    updateEmailById,
+    deleteUser
 } from '../models/userDAO.js';
 import { 
     findToken,
@@ -393,7 +394,7 @@ export async function verifyUpdateCredentialsHandler(request, reply) {
             this.rabbit.produceMessage({
                 type: 'UPDATE',
                 email: pending_credentials.new_email
-            }, 'profile.email.updated')
+            }, 'profile.email.updated');
             await updateEmailById(this.db, pending_credentials.new_email, user.id);
         }
         if (pending_credentials.new_password)
@@ -402,6 +403,43 @@ export async function verifyUpdateCredentialsHandler(request, reply) {
         await deletePendingCredentials(this.db, user.id);
         
         return reply.code(200).send(createResponse(200, 'CREDENTIALS_UPDATED'));
+    } catch (error) {
+        console.log(error); 
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));        
+    }
+}
+
+export async function deleteUserDataHandler(request, reply) {
+    const userId = request.user?.id;
+    try {
+        const user = await findUserById(this.db, userId);
+        if (!user)
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
+
+        this.rabbit.produceMessage({
+            type: 'DELETE',
+            userId: user.id
+        }, 'profile.user.deleted');
+
+        this.rabbit.produceMessage({
+            type: 'DELETE',
+            userId: user.id
+        }, 'chat.user.deleted');
+        
+        this.rabbit.produceMessage({
+            type: 'DELETE',
+            userId: user.id
+        }, 'notifications.user.deleted');
+
+        this.rabbit.produceMessage({
+            type: 'DELETE',
+            userId: user.id
+        }, 'friends.user.deleted');
+
+        await deleteUser(this.db, user.id);
+        clearAuthCookies(reply);
+
+        return reply.code(200).send(createResponse(200, 'USER_DATA_DELETED'));
     } catch (error) {
         console.log(error); 
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));        

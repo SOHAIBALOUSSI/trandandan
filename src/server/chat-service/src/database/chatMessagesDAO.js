@@ -36,3 +36,7 @@ export async function getMessageById(db, id) {
     return result;
     
 }
+
+export async function deleteMessages(db, id) {
+    await db.run('DELETE FROM messages WHERE recipient_id = ? OR sender_id = ?', [id, id]);
+}
