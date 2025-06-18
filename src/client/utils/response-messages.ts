@@ -100,3 +100,10 @@ export const Verify2FaRes: Record<string, string> = {
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
+
+export const DeleteAccountRes: Record<string, string> = {
+  UNAUTHORIZED: "Unauthorized. Only logged-in champs can delete their account.",
+  USER_DATA_DELETED: "Your account has been successfully deleted.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
