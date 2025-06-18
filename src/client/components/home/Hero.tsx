@@ -6,75 +6,35 @@ import FemaleAvatar from "@/assets/female.png";
 export function Hero() {
   const user = getCurrentUser();
 
+  let avatar;
+  const isAvatarSet = user?.gender;
+  if (isAvatarSet) {
+    avatar = user?.gender === "M" ? MaleAvatar : FemaleAvatar;
+  } else {
+    avatar = user?.avatarUrl;
+  }
+
   return (
-    <div className="flex items-center gap-6 bg-pong-secondary/20 rounded-xl p-6 mb-6 shadow-lg">
-      <img
-        src={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
-        alt="profile"
-        className="w-20 h-20 rounded-full border-4 border-pong-accent shadow"
-      />
-      <div>
-        <h2 className="text-2xl font-bold text-pong-dark-primary">
-          Welcome back,{" "}
-          <span className="text-pong-dark-accent">{user?.username}</span>!
-        </h2>
-        <p className="text-pong-dark-secondary mt-1">
-          Level {user?.level} • Rank {user?.rank}
-        </p>
-        <p className="text-pong-dark--primary/70 italic mt-2">
-          "Every champion was once a contender that refused to give up."
-        </p>
+    <div className="p-6 md:p-10 shadow-xl shadow-black/60 max-w-5xl mx-auto mb-10 rounded-xl backdrop-blur-md">
+      <div className="flex flex-col md:flex-row items-center gap-6">
+        <img
+          src={avatar}
+          alt="profile"
+          className="w-24 h-24 md:w-28 md:h-28 rounded-full shadow-md hover:scale-105 transition-all duration-300"
+        />
+        <div className="text-center md:text-left">
+          <h2 className="text-2xl md:text-3xl font-bold text-pong-dark-primary">
+            Welcome back,{" "}
+            <span className="text-pong-dark-accent">{user?.username}</span>!
+          </h2>
+          <p className="text-pong-dark-secondary mt-1 text-sm md:text-base">
+            Ranked #{user?.rank} in BHV Club • Level {user?.level}
+          </p>
+          <p className="text-pong-dark-primary/70 italic mt-2 text-xs md:text-sm">
+            "Every champion was once a contender who refused to give up."
+          </p>
+        </div>
       </div>
     </div>
   );
-
-  //   return (
-  //     <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:justify-between md:items-start text-center w-[90%] max-w-5xl mx-auto mt-6 md:mt-12">
-  //       <div
-  //         id="player-level"
-  //         className="bg-pong-dark-highlight/30 text-white px-8 py-4 rounded-xl shadow-lg w-full md:w-auto transition-transform duration-300 hover:scale-105"
-  //       >
-  //         <p className="text-sm font-medium uppercase tracking-widest text-pong-dark-secondary">
-  //           Grade
-  //         </p>
-  //         <span className="text-lg md:text-xl font-bold">
-  //           {user?.level.toString()}
-  //         </span>
-  //       </div>
-
-  //       <div
-  //         id="player-sold"
-  //         className="md:order-2 bg-pong-dark-highlight/30 text-white px-8 py-4 rounded-xl shadow-lg w-full md:w-auto transition-transform duration-300 hover:scale-105"
-  //       >
-  //         <p className="text-sm font-medium uppercase tracking-widest text-pong-dark-secondary">
-  //           Sold
-  //         </p>
-  //         <span className="text-lg md:text-xl font-bold">
-  //           {user?.solde.toString()} F
-  //         </span>
-  //       </div>
-
-  //       <div
-  //         id="hero-welcome"
-  //         className="flex flex-col items-center md:order-1 justify-center gap-3"
-  //       >
-  //         <p className="text-sm text-pong-secondary italic">
-  //           Ranked #{user?.rank} in BHV Club
-  //         </p>
-  //         <img
-  //           src={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
-  //           alt="profile image"
-  //           className="w-[110px] h-[110px] rounded-full shadow-md mb-2 hover:shadow-xl transition-shadow duration-300"
-  //         />
-  //         <p className="text-base font-medium leading-snug">
-  //           Welcome back,{" "}
-  //           <span className="font-semibold text-pong-secondary normal-case">
-  //             {user?.username}
-  //           </span>
-  //           !<br />
-  //           Your paddle is polished. Let’s play.
-  //         </p>
-  //       </div>
-  //     </div>
-  //   );
 }

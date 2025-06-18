@@ -2,28 +2,33 @@ import { styles } from "@/styles/styles";
 
 export function RecentActivityFeed() {
   return (
-    <div className="bg-white rounded-xl shadow p-6 mb-8">
-      <h2 className="text-pong-primary text-lg font-bold mb-4">
+    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 mb-10">
+      <h2 className="text-pong-dark-primary text-xl font-extrabold mb-5 tracking-tight">
         Recent Activity
       </h2>
       <ul className="space-y-4">
-        <li className="flex items-center">
-          <span className="text-pong-secondary text-sm">User123</span>
-          <span className="text-pong-primary text-sm ml-2">
-            won a match against User456
-          </span>
+        <li className="flex items-start gap-3 hover:bg-white/10 p-3 rounded-md transition-all">
+          <i className="fas fa-trophy text-pong-accent text-lg mt-1"></i>
+          <div className="text-sm">
+            <span className="text-pong-secondary font-semibold">User123</span>{" "}
+            <span className="text-pong-dark-primary">won a match against</span>{" "}
+            <span className="text-pong-secondary font-semibold">User456</span>
+          </div>
         </li>
-        <li className="flex items-center">
-          <span className="text-pong-secondary text-sm">User789</span>
-          <span className="text-pong-primary text-sm ml-2">
-            joined the tournament
-          </span>
+        <li className="flex items-start gap-3 hover:bg-white/10 p-3 rounded-md transition-all">
+          <i className="fas fa-flag text-pong-accent text-lg mt-1"></i>
+          <div className="text-sm">
+            <span className="text-pong-secondary font-semibold">User789</span>{" "}
+            <span className="text-pong-dark-primary">joined the tournament</span>
+          </div>
         </li>
-        <li className="flex items-center">
-          <span className="text-pong-secondary text-sm">User456</span>
-          <span className="text-pong-primary text-sm ml-2">
-            lost a match against User123
-          </span>
+        <li className="flex items-start gap-3 hover:bg-white/10 p-3 rounded-md transition-all">
+          <i className="fas fa-skull-crossbones text-pong-error text-lg mt-1"></i>
+          <div className="text-sm">
+            <span className="text-pong-secondary font-semibold">User456</span>{" "}
+            <span className="text-pong-dark-primary">lost a match to</span>{" "}
+            <span className="text-pong-secondary font-semibold">User123</span>
+          </div>
         </li>
       </ul>
     </div>
