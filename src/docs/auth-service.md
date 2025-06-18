@@ -21,6 +21,7 @@ The `auth-service` is responsible for handling user authentication, registration
 | POST   | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |
 | POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                   |
 | POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                 |
+| DELETE | `/delete`          | Deletes all data related to userId permanently across all services     | Yes                      | (none)                 |
 
 **Prefix: /2fa**
 
@@ -88,6 +89,16 @@ The `auth-service` is responsible for handling user authentication, registration
 ```
 
 **Prefix: /auth**
+
+- `/delete`
+
+```yaml
+
+  401: UNAUTHORIZED
+  200: USER_DATA_DELETED
+  500: INTERNAL_SERVER_ERROR
+
+```
 
 - `/login`
 

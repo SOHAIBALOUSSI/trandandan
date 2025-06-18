@@ -5,7 +5,7 @@ import RabbitMQClient from './libs/rabbitMQ.js';
 import { WebSocketServer, WebSocket } from 'ws';
 import { verifyToken } from './middleware/authMiddleware.js';
 import dotenv from 'dotenv';
-import { addMessage, getAllMessages, getMessageById, markAsDelivered, markAsRead } from './database/chatMessagesDAO.js';
+import { addMessage, deleteMessages, getAllMessages, getMessageById, markAsDelivered, markAsRead } from './database/chatMessagesDAO.js';
 
 dotenv.config();
 let db;
@@ -110,3 +110,11 @@ wss.on('error', (error) => {
     console.error('WebSocket: Server error:', error);
     process.exit(1);
 });
+
+
+rabbit.consumeMessages(async (request) => {
+    if (request.type === 'DELETE') {
+        const userId = request.userId;
+        await deleteMessages(db, userId);
+    }
+})

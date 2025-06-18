@@ -9,7 +9,8 @@ import {
     lostPasswordHandler, 
     updatePasswordHandler, 
     updateCredentialsHandler,
-    verifyUpdateCredentialsHandler
+    verifyUpdateCredentialsHandler,
+    deleteUserDataHandler
 } from '../controllers/authController.js';
 import { 
     googleLoginHandler, 
@@ -110,6 +111,10 @@ async function authRoutes(fastify) {
         handler: verifyUpdateCredentialsHandler
     });
 
+    fastify.delete('/delete', {
+        preHandler: fastify.authenticate,
+        handler: deleteUserDataHandler
+    });
 }
 
 export default authRoutes;

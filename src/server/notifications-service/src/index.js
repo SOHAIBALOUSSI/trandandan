@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import sqlite3 from 'sqlite3';
 import dotenv from 'dotenv';
 import { open } from 'sqlite';
-import { addNotification, getAllNotifications, markAsDelivered } from "./database/notificationsDAO.js";
+import { addNotification, deleteNotifications, getAllNotifications, markAsDelivered } from "./database/notificationsDAO.js";
 import { verifyToken } from "./middleware/authMiddleware.js";
 
 
@@ -67,19 +67,25 @@ wss.on('connection', async (ws, request) => {
 });
 
 rabbit.consumeMessages(async (notification) =>{
-  console.log('RabbitMQ: notification received: ', notification);
-  const recipient = notification.to;
-  console.log('RabbitMQ: recipient: ', recipient);
-  if (recipient) {
-    const notificationId = await addNotification(db, notification);
-    const connections = users.get(recipient);
-    if (connections) {
-      const message = JSON.stringify(notification);
-      for (const conn of connections) {
-        if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
-          conn.send(message);
+  if (notification.type === 'DELETE') {
+    const userId = notification.userId;
+    await deleteNotifications(db, userId);
+  }
+  else {
+    console.log('RabbitMQ: notification received: ', notification);
+    const recipient = notification.to;
+    console.log('RabbitMQ: recipient: ', recipient);
+    if (recipient) {
+      const notificationId = await addNotification(db, notification);
+      const connections = users.get(recipient);
+      if (connections) {
+        const message = JSON.stringify(notification);
+        for (const conn of connections) {
+          if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
+            conn.send(message);
+        }
+        await markAsDelivered(db, notificationId);
       }
-      await markAsDelivered(db, notificationId);
     }
   }
 })
