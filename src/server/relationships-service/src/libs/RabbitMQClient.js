@@ -29,7 +29,7 @@ class RabbitMQClient {
         this.channel.on('error', async (error) => { console.log('RabbitMQ channel error: ', error); });
         await this.channel.assertExchange(this.exchange, this.exchangeType, { durable: true });
         await this.channel.assertQueue(this.queueName, { durable: true });
-        await this.channel.bindQueue(this.queueName, this.exchange, 'friends.#');
+        await this.channel.bindQueue(this.queueName, this.exchange, 'relationships.#');
 
         this.isConnecting = false;
         this.reconnectAttempts = 0;

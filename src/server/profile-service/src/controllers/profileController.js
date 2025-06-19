@@ -1,5 +1,4 @@
 import { 
-    findDuplicateEmail, 
     findDuplicateUsername, 
     getProfileById, 
     updateProfileById 

@@ -416,7 +416,7 @@ export async function deleteUserDataHandler(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
 
-        const targets = ['profile', 'chat', 'notifications', 'friends'];
+        const targets = ['profile', 'chat', 'notifications', 'relationships'];
         for (const target of targets) {
             this.rabbit.produceMessage({
                 type: 'DELETE',
