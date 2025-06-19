@@ -265,5 +265,6 @@ export const styles = {
 	px-20 pt-20 md:pt-26 
 	h-[calc(100vh-2rem)] 
 	overflow-y-auto
+	flex flex-col items-center justify-start
   `,
 };

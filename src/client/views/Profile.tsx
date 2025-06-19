@@ -4,10 +4,16 @@ import { MainHeader } from "@/components/common/MainHeader";
 import { MemberCard } from "@/components/profile/MemberCard";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
+import { handleUpdateInfos } from "@/handlers/handle-update-infos";
+import { CTA } from "@/components/common/Cta";
 import MaleAvatar from "@/assets/male.png";
 import FemaleAvatar from "@/assets/female.png";
 
 export function Profile() {
+  setTimeout(() => {
+    handleUpdateInfos();
+  }, 0);
+
   const user = getCurrentUser();
   if (!user) {
     return (
@@ -22,14 +28,13 @@ export function Profile() {
       </section>
     );
   }
-
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-2rem)] overflow-y-auto">
-          <MainHeader isDark={false} title="user" titleSpan="profile" />
+        <main className={styles.pageContent}>
+          {/* <MainHeader isDark={false} title="club member" titleSpan="ledger" /> */}
           <MemberCard
             name={user?.username}
             email={user?.email}
@@ -38,6 +43,19 @@ export function Profile() {
             avatar={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
             rank={user?.rank.toString()}
           />
+          <button id="edit-btn" className={`${styles.btnOneStyles} my-2`}>
+            Edit
+          </button>
+          <form id="edit-form" className="hidden flex-col gap-4">
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="name"
+              className="p-2"
+            />
+            <CTA btnIcon="fa-edit" btnLabel="submit" />
+          </form>
         </main>
       </div>
     </section>
