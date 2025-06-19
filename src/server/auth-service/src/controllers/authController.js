@@ -416,26 +416,14 @@ export async function deleteUserDataHandler(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
 
-        this.rabbit.produceMessage({
-            type: 'DELETE',
-            userId: user.id
-        }, 'profile.user.deleted');
-
-        this.rabbit.produceMessage({
-            type: 'DELETE',
-            userId: user.id
-        }, 'chat.user.deleted');
+        const targets = ['profile', 'chat', 'notifications', 'friends'];
+        for (const target of targets) {
+            this.rabbit.produceMessage({
+                type: 'DELETE',
+                userId: user.id
+            }, `${target}.user.deleted`);
+        }
         
-        this.rabbit.produceMessage({
-            type: 'DELETE',
-            userId: user.id
-        }, 'notifications.user.deleted');
-
-        this.rabbit.produceMessage({
-            type: 'DELETE',
-            userId: user.id
-        }, 'friends.user.deleted');
-
         await deleteUser(this.db, user.id);
         clearAuthCookies(reply);
 

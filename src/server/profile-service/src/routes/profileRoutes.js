@@ -3,13 +3,6 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 import { updateProfileSchema } from "../schemas/profileSchema.js";
 
 async function profileRoutes(fastify) {
-    // fastify.post('/register', {
-    //     schema: {
-    //         body: createProfileSchema
-    //     },
-    //     preHandler: verifyToken,
-    //     handler: createProfile
-    // })
 
     fastify.get('/:id', {
         preHandler: verifyToken,
