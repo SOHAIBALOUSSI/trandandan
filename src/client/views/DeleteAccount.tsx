@@ -2,12 +2,12 @@ import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
-import { deleteProfile } from "@/services/handle-delete-profile";
+import { deleteAccount } from "@/handlers/handle-delete-account";
 import { CTA } from "@/components/common/Cta";
 
 export function DeleteAccount() {
   setTimeout(() => {
-    deleteProfile();
+    deleteAccount();
   }, 0);
 
   return (

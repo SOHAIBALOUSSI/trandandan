@@ -1,7 +1,7 @@
 import { styles } from "@/styles/styles";
 import { DeleteAccountRes } from "@/utils/response-messages";
 
-export function deleteProfile() {
+export function deleteAccount() {
   const form = document.getElementById(
     "delete-account-form"
   ) as HTMLFormElement;

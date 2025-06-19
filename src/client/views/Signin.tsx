@@ -1,13 +1,13 @@
 import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
-import { handleSignIn } from "@/services/handle-signin";
+import { handleSignIn } from "@/handlers/handle-signin";
 import { MainHeader } from "@/components/common/MainHeader";
 import { SignInForm } from "@/components/auth/SignInForm";
 import { Overlay } from "@/components/layout/Overlay";
 import {
   handleGoogleSignin,
   handle42Signin,
-} from "@/services/handle-remote-signin";
+} from "@/handlers/handle-remote-signin";
 
 export function Signin() {
   setTimeout(() => {

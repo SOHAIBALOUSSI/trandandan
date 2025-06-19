@@ -1,6 +1,6 @@
-import { handleLostPassword } from "@/services/handle-lost-password";
+import { handleLostPassword } from "@/handlers/handle-lost-password";
 import { verifyOtpCode } from "@/services/verify-otp-code";
-import { handleOtpInput } from "@/services/handle-otp-input";
+import { handleOtpInput } from "@/handlers/handle-otp-input";
 import { Footer } from "@/components/layout/Footer";
 import { InputField } from "@/components/common/InputField";
 import { styles } from "@/styles/styles";
