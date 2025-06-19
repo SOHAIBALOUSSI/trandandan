@@ -260,6 +260,10 @@ export const styles = {
   `,
   // === End Button Primary styles ===
 
-  //   Start Button Secondary styles  //
-  //   End Button Secondary styles  //
+  // === Start Page Content styles ===
+  pageContent: `
+	px-20 pt-20 md:pt-26 
+	h-[calc(100vh-2rem)] 
+	overflow-y-auto
+  `,
 };

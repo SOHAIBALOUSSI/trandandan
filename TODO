@@ -1,3 +1,4 @@
 - add show password option
 - customize css styles for required attribute
 - calcul the rank of the player (backend)
+- add (matches / wins / losses) in profile
