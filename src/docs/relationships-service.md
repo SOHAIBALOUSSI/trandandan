@@ -140,6 +140,3 @@ The relationships-service handles all operations related to friend management, i
 - Only authenticated users can manage friend operations.
 - Accepting or rejecting requests updates the friendship status.
 - Friends list includes only accepted friends.
-
-## To Add
-- Real-time notifications via WebSocket or rabbitMQ

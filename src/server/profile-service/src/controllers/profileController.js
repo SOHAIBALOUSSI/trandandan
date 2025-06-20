@@ -29,7 +29,7 @@ export async function updateProfile(request, reply) {
         if (tokenId != id)
             return reply.code(403).send(createResponse(403, 'UNAUTHORIZED'));
         
-        const { username,    avatar_url, solde, rank, level } = request.body;
+        const { username, avatar_url, solde, rank, level, matches_played } = request.body;
         
         const profile = await getProfileById(this.db, id);
         if (!profile)
@@ -47,20 +47,12 @@ export async function updateProfile(request, reply) {
                 username: username
             }, 'auth.username.updated');
         }
-        // if (email) {
-        //     dupUser = await findDuplicateEmail(this.db, username);
-        //     if (dupUser)
-        //         return reply.code(400).send(createResponse(400, 'EMAIL_EXISTS'));
-        //     updatedFields.email = email;
-        //     this.rabbit.produceMessage({
-        //         id: id,
-        //         email: email
-        //     }, 'auth.email.updated');
-        // } 
+
         if (avatar_url) updatedFields.avatar_url = avatar_url;
         if (solde !== undefined) updatedFields.solde = solde;
         if (rank !== undefined) updatedFields.rank = rank;
         if (level !== undefined) updatedFields.level = level;
+        if (matches_played !== undefined) updatedFields.matches_played = matches_played;
 
         if (Object.keys(updatedFields).length === 0)
             return reply.code(400).send(createResponse(400, 'MISSING_FIELDS'));

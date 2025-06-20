@@ -10,8 +10,7 @@ import authRoutes from './routes/authRoutes.js';
 import twoFARoutes from './routes/2FARoutes.js';
 import { createOAuthIdentityTable } from './database/createOAuthIdentityTable.js';
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
-import { updateEmailById, updateUsernameById } from './models/userDAO.js';
-import { findTwoFaByUid } from './models/twoFaDAO.js';
+import { updateUsernameById } from './models/userDAO.js';
 import { createPendingCredentialsTable } from './database/createPendingCredentialsTable.js';
 
 const server = fastify({logger: true});
