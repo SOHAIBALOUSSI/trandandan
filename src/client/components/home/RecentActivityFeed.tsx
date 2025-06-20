@@ -2,7 +2,7 @@ import { styles } from "@/styles/styles";
 
 export function RecentActivityFeed() {
   return (
-    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 my-6 max-w-5xl mx-auto">
+    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 my-6 w-full max-w-5xl mx-auto">
       <h2 className="text-pong-dark-primary text-xl font-extrabold mb-5 tracking-tight">
         Recent Activity
       </h2>
@@ -19,7 +19,10 @@ export function RecentActivityFeed() {
           <i className="fas fa-flag text-pong-accent text-lg mt-1"></i>
           <div className="text-sm">
             <span className="text-pong-secondary font-semibold">User789</span>{" "}
-            <span className="text-pong-dark-primary">joined the tournament</span>
+            <span className="text-pong-dark-primary">left the club </span>{" "}
+            <span className="text-pong-dark-primary/60">
+              "Thanks for the good times, I'm heading out now"
+            </span>
           </div>
         </li>
         <li className="flex items-start gap-3 hover:bg-white/10 p-3 rounded-md transition-all">

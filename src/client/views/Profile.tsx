@@ -52,7 +52,7 @@ export function Profile() {
               name="name"
               id="name"
               placeholder="name"
-              className="p-2"
+              className="p-2 text-pong-dark-primary rounded-md bg-pong-secondary/10 border border-pong-dark-secondary focus:outline-none focus:ring-2 focus:ring-pong-accent transition-all"
             />
             <CTA btnIcon="fa-edit" btnLabel="submit" />
           </form>

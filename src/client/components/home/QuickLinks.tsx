@@ -27,7 +27,7 @@ function QuickLink(props: {
 
 export function QuickLinks() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-12 max-w-5xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-12 w-full max-w-5xl mx-auto">
       <QuickLink
         title="Commence a Duel"
         href="/arena"
