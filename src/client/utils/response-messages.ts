@@ -107,3 +107,40 @@ export const DeleteAccountRes: Record<string, string> = {
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
+
+export const UpdateCredentialsRes: Record<string, string> = {
+  BOTH_PASSWORDS_REQUIRED:
+    "Both new password and confirmation are required. Please fill them in.",
+  UNMATCHED_PASSWORDS:
+    "Your new passwords don’t match. Adjust your swing and re-enter.",
+  PASSWORD_POLICY:
+    "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
+  EMAIL_EXISTS:
+    "This email is already linked to another account. Please use a different email.",
+  UNAUTHORIZED:
+    "Unauthorized. You need to be logged in to update your credentials.",
+  CREDENTIALS_UPDATED: "Your credentials have been successfully updated.",
+  TWOFA_REQUIRED:
+    "Two-factor authentication required. Let’s finish your warm-up with verification.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const VerifyUpdateCredentialsRes: Record<string, string> = {
+  NO_PENDING_CREDENTIALS:
+    "No pending credentials to update. Please check your request.",
+  TWOFA_NOT_SET:
+    "Two-factor authentication is not set up. Please set it up before updating credentials.",
+  TWOFA_NOT_ENABLED:
+    "Two-factor authentication is not enabled. Please enable it before updating credentials.",
+  EMAIL_EXISTS:
+    "This email is already linked to another account. Please use a different email.",
+  UNAUTHORIZED:
+    "Unauthorized. You need to be logged in to update your credentials.",
+  OTP_REQUIRED:
+    "OTP required. Please enter the code sent to your authenticator app or email.",
+  OTP_INVALID: "Invalid OTP. Please check the code and try again.",
+  CREDENTIALS_UPDATED: "Your credentials have been successfully updated.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};

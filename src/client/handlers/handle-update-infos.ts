@@ -1,6 +1,4 @@
 import { getCurrentUser, setCurrentUser } from "@/utils/user-store";
-import { authFetch } from "@/services/auth-fetch";
-import { router } from "@/router/router";
 
 export function handleUpdateInfos() {
   const editBtn = document.getElementById("edit-btn");
@@ -28,18 +26,9 @@ export function handleUpdateInfos() {
       const user = getCurrentUser();
       if (!user) return;
 
-      let usernameUpdated = false;
-
       if (name && name !== user.username) {
         try {
-          const res = await authFetch("/auth/me");
-          if (!res.ok) return null;
-
-          const result = await res.json();
-          const id = result.data?.id;
-          if (!id) return null;
-
-          const profileRes = await fetch(`/profile/${id}`, {
+          const profileRes = await fetch(`/profile/${user.id}`, {
             method: "PATCH",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
@@ -47,7 +36,6 @@ export function handleUpdateInfos() {
           });
           if (profileRes.ok) {
             user.username = name;
-            usernameUpdated = true;
           } else {
             alert("Failed to update username.");
             return;
