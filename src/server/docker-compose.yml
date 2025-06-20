@@ -29,10 +29,10 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  friends:
-    container_name: friends-service
-    build: ./friends-service
-    image: friends-service
+  relationships:
+    container_name: relationships-service
+    build: ./relationships-service
+    image: relationships-service
     restart: always
     env_file:
       - .env

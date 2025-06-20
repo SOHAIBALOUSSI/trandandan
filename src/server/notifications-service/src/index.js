@@ -48,8 +48,10 @@ wss.on('connection', async (ws, request) => {
         ws.send(JSON.stringify(notification));  
     }
   }
-  else 
+  else {
     ws.close(1008, 'Unauthorized');
+    return ;
+  }
 
   ws.on('error', (error) => {
     console.error('WebSocket: Client error:', error);
@@ -70,6 +72,9 @@ rabbit.consumeMessages(async (notification) =>{
   if (notification.type === 'DELETE') {
     const userId = notification.userId;
     await deleteNotifications(db, userId);
+      users.get(userId).forEach((ws) => {
+        ws.close(1010, 'Mandatory exit');
+      });
   }
   else {
     console.log('RabbitMQ: notification received: ', notification);

@@ -48,8 +48,10 @@ wss.on('connection', async (ws, request) => {
                 ws.send(JSON.stringify(message));
         }
     }
-    else
+    else {
         ws.close(3000, 'Unauthorized');
+        return ;
+    }
 
 
     ws.on('message', async (message) => {
@@ -60,6 +62,10 @@ wss.on('connection', async (ws, request) => {
                 const recipient = payload.recipient_id;
                 console.log('WebSocket: recipient: ', recipient);
                 if (recipient) {
+                    if (recipient === ws.userId) {
+                        ws.close(1008, 'Malformed payload');
+                        return ;   
+                    }
                     const messageId = await addMessage(db, payload);
                     const connections = users.get(recipient);
                     if (connections) {
@@ -70,24 +76,34 @@ wss.on('connection', async (ws, request) => {
                         await markAsDelivered(db, messageId);
                     }
                 }
-            } else
+            } else {
                 ws.close(3000, 'Unauthorized');
+                return ;
+            }
         }
         else if (payload.type === 'MESSAGE_READ') {
             if (ws.isAuthenticated) {
                 console.log('WebSocket: payload received: ', payload);
                 if (payload.id) {
                     const msg = await getMessageById(db, payload.id)
-                    if (!msg)
+                    if (!msg) {
                         ws.close(1008, 'Malformed payload');
+                        return ;
+                    }
                     await markAsRead(db, msg.id);
-                } else
+                } else {
                     ws.close(1008, 'Malformed payload');
-            } else
+                    return ;
+                }
+            } else {
                 ws.close(3000, 'Unauthorized');
+                return ;
+            }
         }
-        else
+        else {
             ws.close(1008, 'Malformed payload');
+            return ;
+        }
     })
 
     ws.on('error', (error) => {
@@ -97,9 +113,9 @@ wss.on('connection', async (ws, request) => {
     ws.on('close', () => {
         console.log('WebSocket: Client disconnected.');
         if (ws.userId && users.has(ws.userId)) {
-        users.get(ws.userId).delete(ws);
-        if (users.get(ws.userId).size === 0) 
-            users.delete(ws.userId);
+            users.get(ws.userId).delete(ws);
+            if (users.get(ws.userId).size === 0) 
+                users.delete(ws.userId);
         }
     })
 
@@ -116,5 +132,8 @@ rabbit.consumeMessages(async (request) => {
     if (request.type === 'DELETE') {
         const userId = request.userId;
         await deleteMessages(db, userId);
+        users.get(userId).forEach((ws) => {
+            ws.close(1010, 'Mandatory exit');
+        });
     }
 })
