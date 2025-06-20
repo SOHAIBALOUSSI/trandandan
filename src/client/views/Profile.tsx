@@ -15,6 +15,7 @@ export function Profile() {
   }, 0);
 
   const user = getCurrentUser();
+
   if (!user) {
     return (
       <section className={styles.pageLayoutDark}>
@@ -28,6 +29,18 @@ export function Profile() {
       </section>
     );
   }
+
+  let avatar;
+  const isAvatarSet = user?.gender !== null;
+
+  if (isAvatarSet) {
+    avatar = user?.gender === "M" ? MaleAvatar : FemaleAvatar;
+  } else {
+    avatar = user?.avatar_url;
+  }
+  if (!avatar) {
+    avatar = "/default-avatar.png"; // Fallback if no avatar is set
+  }
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
@@ -40,7 +53,7 @@ export function Profile() {
             email={user?.email}
             sold={user?.solde.toString()}
             grade={user?.level.toString()}
-            avatar={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
+            avatar={avatar}
             rank={user?.rank.toString()}
           />
           <button id="edit-btn" className={`${styles.btnOneStyles} my-2`}>

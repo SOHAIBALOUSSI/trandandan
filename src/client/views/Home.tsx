@@ -13,7 +13,7 @@ export function Home() {
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className={styles.pageContent}>
+        <main className={`${styles.pageContent} gap-6`}>
           <Hero />
           <QuickStatsCards />
           <QuickLinks />

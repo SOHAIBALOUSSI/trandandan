@@ -28,24 +28,24 @@ export function QuickStatsCards() {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl mx-auto px-6">
       <Card
         value={`${user?.solde} F`}
-        label="Matches"
-        textColor="text-pong-dark-secondary"
-        bgColor="bg-pong-dark-highlight/10"
-      />
-      <Card
-        value="12"
         label="Solde"
         textColor="text-pong-dark-secondary"
         bgColor="bg-pong-dark-highlight/10"
       />
       <Card
-        value="8"
+        value={`${user?.matchesPlayed || 0}`}
+        label="Matches"
+        textColor="text-pong-dark-secondary"
+        bgColor="bg-pong-dark-highlight/10"
+      />
+      <Card
+        value={`${user?.matchesWon || 0}`}
         label="Wins"
         textColor="text-pong-success"
         bgColor="bg-green-600/20"
       />
       <Card
-        value="4"
+        value={`${user?.matchesLost || 0}`}
         label="Losses"
         textColor="text-pong-error"
         bgColor="bg-red-600/20"

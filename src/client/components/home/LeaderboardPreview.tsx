@@ -25,7 +25,7 @@ function UserCard(props: {
 
 export function LeaderboardPreview() {
   return (
-    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 my-6 w-full max-w-5xl mx-auto">
+    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 mb-6 w-full max-w-5xl mx-auto">
       <h3 className="text-xl font-extrabold text-pong-dark-primary mb-5 tracking-tight">
         Hall of Champions
       </h3>

@@ -7,15 +7,16 @@ export function Hero() {
   const user = getCurrentUser();
 
   let avatar;
-  const isAvatarSet = user?.gender;
+  const isAvatarSet = user?.gender !== null;
+
   if (isAvatarSet) {
     avatar = user?.gender === "M" ? MaleAvatar : FemaleAvatar;
   } else {
-    avatar = user?.avatarUrl;
+    avatar = user?.avatar_url;
   }
 
   return (
-    <div className="p-6 md:p-10 shadow-xl shadow-black/30 w-full max-w-5xl mx-auto mb-6 rounded-2xl backdrop-blur">
+    <div className="p-6 md:p-10 shadow-xl shadow-black/30 w-full max-w-5xl mx-auto rounded-2xl backdrop-blur">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
         <img
           src={avatar || "/default-avatar.png"}

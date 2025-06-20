@@ -88,6 +88,7 @@ export async function fortyTwoLoginHandler(request, reply) {
         setAuthCookies(reply, accessToken, refreshToken);
         if (isNewUser) {
             this.rabbit.produceMessage({
+					type: 'INSERT',
                     userId: user.id,
                     username: user.username,
                     email: user.email,
@@ -96,7 +97,7 @@ export async function fortyTwoLoginHandler(request, reply) {
                 'profile.user.created'
             );
         }
-      return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
+      return reply.redirect(process.env.FRONT_END_URL);
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

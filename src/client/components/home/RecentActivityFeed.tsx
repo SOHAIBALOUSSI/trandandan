@@ -2,7 +2,7 @@ import { styles } from "@/styles/styles";
 
 export function RecentActivityFeed() {
   return (
-    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 my-6 w-full max-w-5xl mx-auto">
+    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 w-full max-w-5xl mx-auto">
       <h2 className="text-pong-dark-primary text-xl font-extrabold mb-5 tracking-tight">
         Recent Activity
       </h2>
