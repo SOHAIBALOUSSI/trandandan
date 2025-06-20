@@ -21,6 +21,8 @@ The `auth-service` is responsible for handling user authentication, registration
 | POST   | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |
 | POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                   |
 | POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                 |
+| POST   | `/update-credentials`| Updates either email or password or both OR sends OTP code if 2fa enabled| Yes                      | { email or password or both }                 |
+| POST   | `/verify-update-credentials`| Verifies the OTP code then updates email or password or both if it's valid| Yes                      | { otpCode }                 |
 | DELETE | `/delete`          | Deletes all data related to userId permanently across all services     | Yes                      | (none)                 |
 
 **Prefix: /2fa**
@@ -213,6 +215,41 @@ The `auth-service` is responsible for handling user authentication, registration
   401: UNAUTHORIZED
   200: USER_LOGGED_IN
   206: TWOFA_REQUIRED
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/update-credentials`
+```yaml
+
+  400: {
+    BOTH_PASSWORDS_REQUIRED
+    UNMATCHED_PASSWORDS
+    PASSWORD_POLICY
+    EMAIL_EXISTS
+  } 
+  401: UNAUTHORIZED
+  200: CREDENTIALS_UPDATED
+  206: TWOFA_REQUIRED
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/verify-update-credentials`
+```yaml
+
+  400: {
+    NO PENDING_CREDENTIALS
+    TWOFA_NOT_SET
+    TWOFA_NOT_ENABLED
+    EMAIL_EXISTS
+  } 
+  401: {
+    UNAUTHORIZED
+    OTP_REQUIRED
+    OTP_INVALID
+  }
+  200: CREDENTIALS_UPDATED
   500: INTERNAL_SERVER_ERROR
 
 ```
