@@ -3,14 +3,17 @@ import dotenv from 'dotenv';
 import sqlitePlugin from './plugins/sqlite-plugin.js'
 import friendsRoutes from './routes/friendsRoutes.js';
 import { createFriendshipTable } from './database/createFriendshipsTable.js';
+import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
 
 const server = fastify({ logger: true });
 
 dotenv.config();
 
 await server.register(sqlitePlugin);
-
 await createFriendshipTable(server.db);
+await server.register(rabbitmqPlugin);
+
+// server.rabbit.consumeMessages();
 
 await server.register(friendsRoutes, { prefix: '/friends' });
 

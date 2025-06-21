@@ -1,6 +1,3 @@
-2. Consider using more secure token storage (httpOnly cookies) if possible.
-4. Add client-side validation for form fields.
-
-Subtle background pattern/image for depth (/assets/pingpong-bg.svg)
-
-change 2FA_REQUIRED to TWOFA_REQUIRED
+- add show password option
+- customize css styles for required attribute
+- calcul the rank of the player (backend)

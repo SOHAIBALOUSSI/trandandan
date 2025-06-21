@@ -1,6 +1,6 @@
 import { styles } from "@/styles/styles";
 
-export function RemoteSigninLink() {
+export function RemoteLink() {
   const remoteSection = (
     <div>
       <div className="line-divider relative w-full flex items-center justify-center mb-6 min-h-[2.5rem]">
@@ -10,17 +10,17 @@ export function RemoteSigninLink() {
         <button
           type="button"
           id="google-signin-btn"
-          className={`group ${styles.primaryButton} shadow-lg`}
+          className={styles.primaryButton}
         >
-          <i className="fa-solid fa-couch"></i>
+          <i className={`fa-solid fa-couch ${styles.primaryButtonIcon}`}></i>
           enter with google
         </button>
         <button
           type="button"
           id="ft-signin-btn"
-          className={`group ${styles.primaryButton} shadow-lg`}
+          className={styles.primaryButton}
         >
-          <i className="fa-solid fa-couch"></i>
+          <i className={`fa-solid fa-couch ${styles.primaryButtonIcon}`}></i>
           enter with 42
         </button>
       </div>

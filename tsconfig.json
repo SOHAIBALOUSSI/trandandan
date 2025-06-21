@@ -15,5 +15,5 @@
       "@/*": ["src/client/*"]
     }
   },
-  "include": ["src/client", "types/vite-env.d.ts"]
+  "include": ["src/client", "types"]
 }

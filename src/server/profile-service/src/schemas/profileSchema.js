@@ -1,13 +1,33 @@
-import { avatarUrlValidation, emailValidation, soldeValidation, usernameValidation } from "./validationSchemas.js"
+import { 
+    avatarUrlValidation, 
+    emailValidation, 
+    integerValidation, 
+    usernameValidation 
+} from "./validationSchemas.js"
 
 export const createProfileSchema = {
-    type: 'object',
-    required: ['username'],
-    properties: {
-        username: usernameValidation,
-        email: emailValidation
-    },
-    additionalProperties: false
+    oneOf: [
+        {
+            type: 'object',
+            required: ['username', 'email', 'gender'],
+            properties: {
+                username: usernameValidation,
+                email: emailValidation,
+                gender: { enum: ['F', 'M'] }
+            },
+            additionalProperties: false
+        },
+        {
+            type: 'object',
+            required: ['username', 'email', 'avatar_url'],
+            properties: {
+                username: usernameValidation,
+                email: emailValidation,
+                avatar_url: avatarUrlValidation
+            },
+            additionalProperties: false
+        }
+    ]
 }
 
 export const updateProfileSchema = {
@@ -16,9 +36,11 @@ export const updateProfileSchema = {
         username: usernameValidation,
         email: emailValidation,
         avatar_url :avatarUrlValidation,
-        solde: soldeValidation
+        solde: integerValidation,
+        rank: integerValidation,
+        level: integerValidation
     },
     minProperties: 1,
-    maxProperties: 4,
+    maxProperties: 6,
     additionalProperties: false
 }

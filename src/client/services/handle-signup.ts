@@ -1,74 +1,80 @@
 import { styles } from "@/styles/styles";
+import { RegisterRes } from "@/utils/response-messages";
+import { UserRegister } from "types/types";
 
 export function handleSignUp() {
-  const signupForm = document.querySelector<HTMLFormElement>("#signup-form");
-  const feedback = document.querySelector<HTMLDivElement>("#signup-feedback");
-  const submitBtn = document.querySelector<HTMLButtonElement>("#signup-btn");
-  const spinner = document.querySelector<HTMLSpanElement>("#spinner");
-  const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label");
+  const signupForm = document.getElementById("signup-form") as HTMLFormElement;
 
-  if (!signupForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
-
-  //  Error messages for the signup process
-  const signupErrorMessages: Record<string, string> = {
-    UNMATCHED_PASSWORDS: "Passwords don’t match. Recheck your grip.",
-    PASSWORD_POLICY:
-      "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
-    FST_ERR_VALIDATION:
-      "Your form is over the line — keep username and password under 15 characters.",
-    USER_EXISTS: "This racket is already in the club. Try signing in.",
-    PROFILE_CREATION_FAILED:
-      "We couldn’t get your locker set up. Give it another swing.",
-    INTERNAL_SERVER_ERROR:
-      "The club’s having a power outage. Try again shortly.",
-  };
-
-  signupForm.addEventListener("submit", async (e: Event) => {
+  signupForm?.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const username = (
-      signupForm.querySelector("#username") as HTMLInputElement
-    ).value.trim();
-    const email = (
-      signupForm.querySelector("#email") as HTMLInputElement
-    ).value.trim();
-    const password = (signupForm.querySelector("#password") as HTMLInputElement)
-      .value;
-    const confirmPassword = (
-      signupForm.querySelector("#confirm-password") as HTMLInputElement
-    ).value;
+    const feedback = signupForm.querySelector<HTMLDivElement>("#cta-feedback");
+    const submitBtn = signupForm.querySelector<HTMLButtonElement>("#cta-btn");
+    const spinner = signupForm.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = signupForm.querySelector<HTMLSpanElement>("#btn-label");
 
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Confirm Password:", confirmPassword);
+    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
 
+    const btnLabelText = btnLabel.textContent;
+
+    // Extract User Infos from the singup Form
+    const userInfos: UserRegister = {
+      username: (
+        signupForm.querySelector("#username") as HTMLInputElement
+      ).value.trim(),
+      email: (
+        signupForm.querySelector("#email") as HTMLInputElement
+      ).value.trim(),
+      gender:
+        (signupForm.querySelector("#gender") as HTMLSelectElement).value ===
+        "male"
+          ? "M"
+          : "F",
+      password: (
+        signupForm.querySelector("#password") as HTMLInputElement
+      ).value.trim(),
+      confirmPassword: (
+        signupForm.querySelector("#confirm-password") as HTMLInputElement
+      ).value.trim(),
+    };
+
+    // -----------------------------------------------------------
+    // console.log(`
+    // 	Username: ${userInfos.username}
+    // 	Email: ${userInfos.email}
+    // 	Gender: ${userInfos.gender}
+    // 	Password: ${userInfos.password}
+    // 	Confirm: ${userInfos.confirmPassword}
+    // `);
+    // -----------------------------------------------------------
+
+    // Reset feedback and button state
     feedback.textContent = "";
     feedback.className = styles.formMessage;
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
-    btnLabel.textContent = "Registering...";
+    btnLabel.textContent = "registering...";
 
+    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
       const response = await fetch("/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password, confirmPassword }),
+        body: JSON.stringify(userInfos),
       });
 
       const result = await response.json();
 
       const elapsed = Date.now() - startTime;
-      const waitTime = Math.max(0, 1200 - elapsed); // Ensure 1.2s minimum spinner
+      const waitTime = Math.max(0, 1200 - elapsed);
 
       if (response.ok) {
         setTimeout(() => {
-          feedback.textContent =
-            "Welcome, champion! Your racket has been registered.";
-          feedback.className = `${styles.formMessage} text-pong-success block`;
+          feedback.className = `${styles.formMessage} text-pong-success`;
+          feedback.textContent = RegisterRes.USER_REGISTERED;
 
           setTimeout(() => {
             history.pushState(null, "", "/signin");
@@ -77,22 +83,22 @@ export function handleSignUp() {
         }, waitTime);
       } else {
         setTimeout(() => {
-          const msg =
-            signupErrorMessages[result?.code] ||
-            "Couldn’t register your racket. Try again, champ.";
-          feedback.textContent = msg;
-          feedback.className = `${styles.formMessage} text-pong-error block`;
+          const errorMsg =
+            RegisterRes[result?.code] ||
+            "Error during registration. Please try again.";
+          feedback.className = `${styles.formMessage} text-pong-error`;
+          feedback.textContent = errorMsg;
         }, waitTime);
       }
     } catch (err) {
-      feedback.textContent = signupErrorMessages.INTERNAL_SERVER_ERROR;
-      feedback.className = `${styles.formMessage} text-pong-error block`;
+      feedback.className = `${styles.formMessage} text-pong-error`;
+      feedback.textContent = RegisterRes.INTERNAL_SERVER_ERROR;
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
-        btnLabel.textContent = "register your racket";
+        btnLabel.textContent = btnLabelText;
       }, 1300);
     }
   });

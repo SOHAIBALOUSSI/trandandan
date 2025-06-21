@@ -16,7 +16,6 @@ export const theme = {
       "pong-dark-primary": "#AEBABF",
       "pong-dark-accent": "#E05E4B",
       "pong-dark-secondary": "#D1A25F",
-      "pong-dark-secondary": "#EDDAC0",
       "pong-dark-highlight": "#838E91",
       "pong-bg-sport": "#F5F5F5",
       "pong-primary-sport": "#003049",
@@ -41,10 +40,26 @@ export const theme = {
         "0%": { filter: "blur(4px)", opacity: 0 },
         "100%": { filter: "blur(0)", opacity: 1 },
       },
+      backgroundPan: {
+        "0%": { backgroundPosition: "0% 0%" },
+        "100%": { backgroundPosition: "100% 100%" },
+      },
+      float: {
+        "0%, 100%": { transform: "translateY(0)" },
+        "50%": { transform: "translateY(-10px)" },
+      },
+      myPulse: {
+        "0%": { opacity: 1 },
+        "50%": { opacity: 0.7 },
+      },
     },
     animation: {
       "fade-in": "fadeInUp 0.8s ease-out forwards",
       "blur-in": "blurIn 0.6s ease-out forwards",
+      backgroundPan: "backgroundPan 20s linear infinite",
+      float: "float 3s ease-in-out infinite",
+      "spin-slow": "spin 20s linear infinite",
+      myPulse: "myPulse 1.3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
     },
   },
 };

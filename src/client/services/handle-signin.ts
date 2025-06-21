@@ -1,46 +1,39 @@
 import { styles } from "@/styles/styles";
+import { LoginRes } from "@/utils/response-messages";
 
-export function handleSignIN() {
-  const signInForm = document.querySelector<HTMLFormElement>("#signin-form");
-  const feedback = document.querySelector<HTMLDivElement>("#signin-feedback");
-  const submitBtn = document.querySelector<HTMLButtonElement>("#signin-btn");
-  const spinner = document.querySelector<HTMLSpanElement>("#spinner-in");
-  const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label-in");
+export function handleSignIn() {
+  const signInForm = document.getElementById("signin-form") as HTMLFormElement;
 
-  if (!signInForm || !feedback || !submitBtn || !spinner || !btnLabel) return;
-
-  // Error messages for the signin process
-  const signinErrorMessages: Record<string, string> = {
-    INVALID_CREDENTIALS:
-      "No matching racket in the locker room. Double-check your grip and try again.",
-    INVALID_PASSWORD:
-      "Wrong paddle pass — take another shot after checking your swing.",
-    INTERNAL_SERVER_ERROR:
-      "The court lights are out. Give it a moment and rally back.",
-  };
-
-  signInForm.addEventListener("submit", async (e) => {
+  signInForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const feedback = signInForm.querySelector<HTMLDivElement>("#cta-feedback");
+    const submitBtn = signInForm.querySelector<HTMLButtonElement>("#cta-btn");
+    const spinner = signInForm.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = signInForm.querySelector<HTMLSpanElement>("#btn-label");
+
+    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
+
+    const btnLabelText = btnLabel.textContent;
+
     const formData = new FormData(signInForm);
-    const loginValue = formData.get("login") as string;
+    const login = formData.get("login") as string;
     const password = formData.get("password") as string;
 
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginValue);
+    const isEmail: boolean = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(login);
     const payload = isEmail
-      ? { email: loginValue, password }
-      : { username: loginValue, password };
+      ? { email: login.trim(), password }
+      : { username: login.trim(), password };
 
-    console.log("Login:", loginValue);
-    console.log("Password:", password);
-
+    // Reset feedback and button state
     feedback.textContent = "";
     feedback.className = styles.formMessage;
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
-    btnLabel.textContent = "Entering...";
+    btnLabel.textContent = "entering...";
 
+    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
@@ -53,55 +46,47 @@ export function handleSignIN() {
       const result = await response.json();
 
       const elapsed = Date.now() - startTime;
-      const waitTime = Math.max(0, 1200 - elapsed); // Ensure 1.2s minimum spinner
+      const waitTime = Math.max(0, 1200 - elapsed);
 
-      if (response.ok) {
+      if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
-          feedback.textContent = "Welcome back, champ! Entering the lounge...";
-          feedback.className = `${styles.formMessage} text-pong-success block`;
-
-          localStorage.setItem("auth", "true");
-          result.data.accessToken &&
-            localStorage.setItem("accessToken", result.data.accessToken);
-          result.data.refreshToken &&
-            localStorage.setItem("refreshToken", result.data.refreshToken);
+          feedback.className = `${styles.formMessage} text-pong-success`;
+          feedback.textContent = LoginRes.USER_LOGGED_IN;
 
           setTimeout(() => {
             history.pushState(null, "", "/salon");
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, 1500);
         }, waitTime);
-      } else if (response.status === 206) {
-        /*
-			still some work to do here 
-		*/
+      } else if (response.ok && result.statusCode === 206) {
+        sessionStorage.setItem("2faMode", result.data?.twoFaType);
+
         setTimeout(() => {
-          result.tempToken &&
-            localStorage.setItem("tempToken", result.tempToken);
-          feedback.textContent =
-            "Security check! Time to prove it’s really you.";
-          feedback.className = `${styles.formMessage} text-pong-warning block`;
-          history.pushState(null, "", "/2fa/verify-login");
-          window.dispatchEvent(new PopStateEvent("popstate"));
+          feedback.className = `${styles.formMessage} text-pong-warning`;
+          feedback.textContent = LoginRes.TWOFA_REQUIRED;
+
+          setTimeout(() => {
+            history.pushState(null, "", "/verify_login");
+            window.dispatchEvent(new PopStateEvent("popstate"));
+          }, 1500);
         }, waitTime);
       } else {
         setTimeout(() => {
-          const msg =
-            signinErrorMessages[result?.code] ||
-            "Invalid paddle pass. Check your details and swing again.";
-          feedback.textContent = msg;
-          feedback.className = `${styles.formMessage} text-pong-error block`;
+          const errorMsg =
+            LoginRes[result?.code] || "Error during login. Please try again.";
+          feedback.className = `${styles.formMessage} text-pong-error`;
+          feedback.textContent = errorMsg;
         }, waitTime);
       }
     } catch (err) {
-      feedback.textContent = signinErrorMessages.INTERNAL_SERVER_ERROR;
-      feedback.className = `${styles.formMessage} text-pong-error block`;
+      feedback.className = `${styles.formMessage} text-pong-error`;
+      feedback.textContent = LoginRes.INTERNAL_SERVER_ERROR;
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
-        btnLabel.textContent = "enter the lounge";
+        btnLabel.textContent = btnLabelText;
       }, 1300);
     }
   });

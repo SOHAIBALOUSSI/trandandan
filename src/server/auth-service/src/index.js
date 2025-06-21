@@ -8,6 +8,11 @@ import { createTokenTable } from './database/createTokenTable.js';
 import { createTwoFaTable } from './database/createTwoFaTable.js';
 import authRoutes from './routes/authRoutes.js';
 import twoFARoutes from './routes/2FARoutes.js';
+import { createOAuthIdentityTable } from './database/createOAuthIdentityTable.js';
+import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
+import { updateEmailById, updateUsernameById } from './models/userDAO.js';
+import { findTwoFaByUid } from './models/twoFaDAO.js';
+import { createPendingCredentialsTable } from './database/createPendingCredentialsTable.js';
 
 const server = fastify({logger: true});
 
@@ -19,18 +24,29 @@ await server.register(jwtPlugin, {
     refreshTokenKey: process.env.RJWT_SECRET_KEY,
     tempTokenKey: process.env.TJWT_SECRET_KEY
 });
-await server.register(nodemailerPlugin);
 
 await createUserTable(server.db);
 await createTokenTable(server.db);
 await createTwoFaTable(server.db);
+await createOAuthIdentityTable(server.db);
+await createPendingCredentialsTable(server.db);
+
+await server.register(nodemailerPlugin);
+await server.register(rabbitmqPlugin);
+
+server.rabbit.consumeMessages(async (message) => {
+    const { id, username } = message;
+    if (username)
+        await updateUsernameById(server.db, username, id);
+    console.log('Auth: user updated.');
+});
 
 await server.register(authRoutes, { prefix: '/auth' });
 await server.register(twoFARoutes, { prefix: '/2fa' });
 console.log("auth service initialization is done...");
 
 const start = async () => {
-    try {
+    try {        
         await server.listen({ host: '0.0.0.0', port: 3000 });
         server.log.info("Server is listening on port 3000");
     }

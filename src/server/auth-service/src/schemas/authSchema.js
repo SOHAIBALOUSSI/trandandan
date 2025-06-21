@@ -2,12 +2,13 @@ import { emailValidation, passwordValidation, usernameValidation } from "./valid
 
 export const registerSchema = {
     type: 'object',
-    required: ['username', 'email', 'password', 'confirmPassword'],
+    required: ['username', 'email', 'password', 'confirmPassword', 'gender'],
     properties: {
         username:usernameValidation,
         email: emailValidation,
         password: passwordValidation,
         confirmPassword: passwordValidation,
+        gender: { enum: ['F', 'M'] }
     },
     additionalProperties: false
 }
@@ -47,14 +48,58 @@ export const tokenSchema = {
     additionalProperties: false
 }
 
-export const totpCodeSchema = {
+export const otpCodeSchema = {
     type: 'object',
-    required: ['totpCode'],
+    required: ['otpCode'],
     properties: {
-        totpCode: {
+        otpCode: {
             type: 'string',
+            pattern: '^[0-9]+$',    
             minLength: 6,
             maxLength: 6
-        }
+        },
+        additionalProperties: false
     }
 }
+
+export const methodTypeSchema = {
+    type: 'object',
+    required: ['method'],
+    properties: {
+        method: { enum: ['app', 'email'] }
+    },
+    additionalProperties: false
+}
+
+export const emailSchema = {
+    type: 'object',
+    required: ['email'],
+    properties: {
+        email: emailValidation
+    },
+    additionalProperties: false
+}
+
+export const passwordSchema = {
+    type: 'object',
+    required: ['password', 'confirmPassword'],
+    properties: {
+        password: passwordValidation,
+        confirmPassword: passwordValidation
+    },
+    additionalProperties: false
+}
+
+export const updateCredentialsSchema = {
+  type: 'object',
+  properties: {
+    email: emailValidation,
+    password: passwordValidation,
+    confirmPassword: passwordValidation
+  },
+  additionalProperties: false,
+  anyOf: [
+    { required: ['email'] },
+    { required: ['password', 'confirmPassword'] }
+  ]
+};
