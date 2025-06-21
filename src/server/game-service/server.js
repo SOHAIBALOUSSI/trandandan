@@ -3,6 +3,7 @@
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import cors from "@fastify/cors";
+import { getUserCookies } from "./routes/cookies.js";
 
 const fastify = Fastify();
 
@@ -28,6 +29,8 @@ fastify.register(async function (fastify) {
 import { remoteGame } from "./routes/remoteGameRoute.js";
 fastify.register(async function (fastify) {
   fastify.get("/remoteGame", { websocket: true }, (connection, req) => {
+    console.log("here")
+    console.log(getUserCookies(req))
     remoteGame(connection, req);
   });
 });

@@ -1,3 +1,7 @@
+import { getCurrentUser } from "@/utils/user-store";
+import { UserProfile } from "types/types";
+const userInfo = getCurrentUser();
+
 export function RemoteGame() {
   // Create a container element for the game
   const container = document.createElement('div');
@@ -67,45 +71,16 @@ export function RemoteGame() {
   const playerSide = container.querySelector('#playerSide') as HTMLElement;
 
   // Utility functions
-  function generateToken(): string {
-    let roomId = "";
-    const stringOfChar = "abcdefghijklmnopqrstuvwxyz0123456789";
-    for (let index = 0; index < 12; index++) {
-      roomId += stringOfChar[Math.floor(Math.random() * stringOfChar.length)];
-    }
-    return roomId;
-  }
-
-
-  // Get connection ID
-  let connectionId = localStorage.getItem("player");
-  if (!connectionId) {
-    connectionId = generateToken();
-    localStorage.setItem("player", connectionId);
-    console.log("Generated new connection ID:", connectionId);
-  } else {
-    console.log("Existing connection ID:", connectionId);
-  }
-
-  // Get username - don't automatically generate a token if missing
-  let userName = localStorage.getItem("userName");
-  if (!userName) {
-    console.error("User name is not set in localStorage");
-    // Here you might want to prompt the user for a username instead of generating a token
-    // userName = prompt("Please enter your username");
-    userName = generateToken(); // Generate a new token if userName is not set
-    localStorage.setItem("userName", userName);
-  } else {
-    console.log("Existing user name:", userName);
-  }
-
+  const userInfo = getCurrentUser();
+  console.log(userInfo)
   let roomdIdentif = "123";
   let socket: WebSocket;
 
   // Initialize the game
   function init() {
+    const userName: string = userInfo?.username ?? "username";
     socket = new WebSocket(
-      `ws://0.0.0.0:5000/remoteGame?token=${connectionId}&roomId=${roomdIdentif}`
+      `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.userId}&roomId=${roomdIdentif}`
     );
 
     let keys: Record<string, boolean> = {};
@@ -277,7 +252,22 @@ class FlowField {
         console.error("Error sending player data:", error);
       });
   }
-
+  private updateUserInfo(userInfo: UserProfile): void {
+    fetch(`http://0.0.0.0:5000/${userInfo.userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userInfo),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Server response:', data);
+      })
+      .catch((error) => {
+        console.error("Error sending player data:", error);
+      });
+  }
   private ballParticle(x: number, y: number): void {
     for (let i = 0; i < 5; i++) {
       this.particles.push({
@@ -422,10 +412,43 @@ class FlowField {
       this.deps.leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
 
       if (this.gameState.gameEndResult && this.gameState.gameEndResult.length !== 0) {
+        const userOldInfo = getCurrentUser();
+        
         this.gameState.endGame = true;
         this.deps.result.textContent = "You " + this.gameState.gameEndResult;
         this.deps.gameTabe.style.display = "block";
 
+        if (this.gameState.playerId === 1)
+        {
+          if (userOldInfo) {
+            userOldInfo.level += this.gameState.leftPlayerScore;
+            if (this.gameState.gameEndResult === "WON")
+            {
+                userOldInfo.level += 10;
+            }
+            else if (this.gameState.gameEndResult === "LOST")
+            {
+                if (userOldInfo.level > 5)
+                    userOldInfo.level -= 5;
+            }
+          }
+        }
+
+        if (this.gameState.playerId === 2)
+        {
+          if (userOldInfo) {
+            userOldInfo.level += this.gameState.rightPlayerScore;
+            if (this.gameState.gameEndResult === "WON")
+            {
+                userOldInfo.level += 10;
+            }
+            else if (this.gameState.gameEndResult === "LOST")
+            {
+                if (userOldInfo.level > 5)
+                    userOldInfo.level -= 5;
+            }
+          }
+        }
         const playerData: PlayerData = {
           userName: this.deps.userName,
           matchId: this.gameState.matchId,
@@ -437,6 +460,8 @@ class FlowField {
           leftPlayerBallHit: this.gameState.leftPlayerBallHit,
           rightPlayerBallHit: this.gameState.rightPlayerBallHit,
         };
+        if (userOldInfo)
+          this.updateUserInfo(userOldInfo);
         this.sendPlayerData(playerData);
         this.deps.restartButton.addEventListener("click", this.handleRestart.bind(this));
       }
