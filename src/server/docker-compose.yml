@@ -69,14 +69,14 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  # redis:
-  #   container_name: redis
-  #   build: ./redis
-  #   restart: always
-  #   networks:
-  #     - back-end
-  #   ports:
-  #     - "6379:6379"
+  redis:
+    container_name: redis
+    build: ./redis
+    restart: always
+    networks:
+      - back-end
+    expose:
+      - 6379
   
   rabbitmq:
     container_name: rabbitmq

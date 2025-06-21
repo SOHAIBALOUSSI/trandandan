@@ -17,6 +17,10 @@ export async function verifyToken(request, reply) {
         let cookie = getAuthCookies(request);
         
         const payload = jwt.verify(cookie.accessToken, process.env.AJWT_SECRET_KEY);
+        const idExist = await this.redis.sIsMember('userIds', `${payload.id}`);
+        console.log('idExist value: ', idExist);
+        if (!idExist)
+            return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         request.user = payload;
     } catch (error) {
         if (error.name === 'TokenExpiredError')

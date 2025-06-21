@@ -9,7 +9,9 @@ export async function blockHandler(request, reply) {
         if (!blockedId)
             return reply.code(400).send(createResponse(400, 'BLOCKED_REQUIRED'));
 
-        if (blockedId === userId)
+        const idExist = await this.redis.sIsMember('userIds', `${blockedId}`);
+        console.log('idExist value: ', idExist);
+        if (userId === blockedId || !idExist)
             return reply.code(400).send(createResponse(400, 'BLOCKED_INVALID'));
 
         const blockExist = await findBlock(this.db, blockedId, userId);
@@ -34,7 +36,9 @@ export async function unblockHandler(request, reply) {
         if (!blockedId)
             return reply.code(400).send(createResponse(400, 'BLOCKED_REQUIRED'));
 
-        if (blockedId === userId)
+        const idExist = await this.redis.sIsMember('userIds', `${blockedId}`);
+        console.log('idExist value: ', idExist);
+        if (userId === blockedId || !idExist)
             return reply.code(400).send(createResponse(400, 'BLOCKED_INVALID'));
 
         const blockExist = await findBlock(this.db, blockedId, userId);

@@ -130,7 +130,7 @@ export async function updatePasswordHandler(request, reply) {
             setTempAuthToken(reply, tempToken);
             return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type  }));
         }
-        const accessToken = this.jwt.signAT({ id: user.id });
+        const accessToken = await this.jwt.signAT({ id: user.id });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
         if (tokenExist) {
@@ -175,7 +175,7 @@ export async function loginHandler(request, reply) {
             setTempAuthToken(reply, tempToken);
             return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type  }));
         }
-        const accessToken = this.jwt.signAT({ id: user.id });
+        const accessToken = await this.jwt.signAT({ id: user.id });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
         if (tokenExist) {
@@ -206,7 +206,8 @@ export async function registerHandler(request, reply) {
         
         const hashedPassword = await hash(password, 10);
         const userId = await addUser(this.db, username, email, hashedPassword);
-                
+        
+        await this.redis.sAdd(`userIds`, `${userId}`);
         this.rabbit.produceMessage({
             type: 'INSERT',
             userId: userId,
@@ -278,7 +279,7 @@ export async function refreshHandler(request, reply) {
 
         await revokeToken(this.db, tokenExist.token);
 
-        const accessToken = this.jwt.signAT({ id: payload.id });
+        const accessToken = await this.jwt.signAT({ id: payload.id });
         const newRefreshToken = this.jwt.signRT({ id: payload.id });
 
         await addToken(this.db, newRefreshToken, payload.id);

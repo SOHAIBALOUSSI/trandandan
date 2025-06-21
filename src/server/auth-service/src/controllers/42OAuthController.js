@@ -90,7 +90,7 @@ export async function fortyTwoLoginHandler(request, reply) {
             }
         }
         
-        const accessToken = this.jwt.signAT({ id: user.id });
+        const accessToken = await this.jwt.signAT({ id: user.id });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
         if (tokenExist) {
@@ -101,6 +101,8 @@ export async function fortyTwoLoginHandler(request, reply) {
         }
         clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
+        await this.redis.sAdd(`userIds`, `${user.id}`);
+        
         if (isNewUser) {
             this.rabbit.produceMessage({
                 type: 'INSERT',

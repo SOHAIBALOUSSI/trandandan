@@ -1,7 +1,7 @@
 # Relationships Service
 
 ## Overview
-The relationships-service handles all operations related to friend management, including sending, accepting, and rejecting friend requests, listing friends, and removing friends.
+The relationships-service handles all operations related to friend management, including sending, accepting, and rejecting friend requests, listing friendsand removing friends + blocking users.
 
 ---
 
@@ -74,7 +74,10 @@ The relationships-service handles all operations related to friend management, i
 - `/accept`
 ```yaml
 
-  400: REQUESTER_REQUIRED,
+  400: {
+    REQUESTER_REQUIRED,
+    REQUESTER_INVALID,
+  }
   200: FRIEND_REQUEST_ACCEPTED,
   500: INTERNAL_SERVER_ERROR
 
@@ -83,7 +86,10 @@ The relationships-service handles all operations related to friend management, i
 - `/reject`
 ```yaml
 
-  400: REQUESTER_REQUIRED,
+  400: {
+    REQUESTER_REQUIRED,
+    REQUESTER_INVALID,
+  }
   200: FRIEND_REQUEST_REJECTED,
   500: INTERNAL_SERVER_ERROR
 
@@ -92,7 +98,10 @@ The relationships-service handles all operations related to friend management, i
 - `/:friendId` (DELETE)
 ```yaml
 
-  400: FRIEND_REQUIRED,
+  400: {
+    FRIEND_REQUIRED,
+    FRIEND_INVALID,
+  }
   200: FRIEND_REMOVED,
   500: INTERNAL_SERVER_ERROR
 
@@ -118,18 +127,22 @@ The relationships-service handles all operations related to friend management, i
 
 - `/:blockedId` (POST)
 ```yaml
-  400: BLOCKED_REQUIRED
-  400: BLOCKED_INVALID
-  400: BLOCKED_EXISTS
+  400: {
+    BLOCKED_REQUIRED
+    BLOCKED_INVALID
+    BLOCKED_EXISTS
+  }
   200: BLOCK_SUCCESS
   500: INTERNAL_SERVER_ERROR
 ```
 
 - `/:blockedId` (DELETE)
 ```yaml
-  400: BLOCKED_REQUIRED
-  400: BLOCKED_INVALID
-  400: BLOCKED_NOT_FOUND
+  400: {
+    BLOCKED_REQUIRED
+    BLOCKED_INVALID
+    BLOCKED_NOT_FOUND
+  } 
   200: UNBLOCK_SUCCESS
   500: INTERNAL_SERVER_ERROR
 ```

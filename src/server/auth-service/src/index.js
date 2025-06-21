@@ -12,6 +12,7 @@ import { createOAuthIdentityTable } from './database/createOAuthIdentityTable.js
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
 import { updateUsernameById } from './models/userDAO.js';
 import { createPendingCredentialsTable } from './database/createPendingCredentialsTable.js';
+import redisPlugin from './plugins/redis-plugin.js';
 
 const server = fastify({logger: true});
 
@@ -30,6 +31,7 @@ await createTwoFaTable(server.db);
 await createOAuthIdentityTable(server.db);
 await createPendingCredentialsTable(server.db);
 
+await server.register(redisPlugin);
 await server.register(nodemailerPlugin);
 await server.register(rabbitmqPlugin);
 
