@@ -1,5 +1,5 @@
-import { addBlock, findBlock, removeBlock } from "../models/blockDAO";
-import { createResponse } from "../utils/utils";
+import { addBlock, findBlock, removeBlock } from "../models/blockDAO.js";
+import { createResponse } from "../utils/utils.js";
 
 export async function blockHandler(request, reply) {
     try {

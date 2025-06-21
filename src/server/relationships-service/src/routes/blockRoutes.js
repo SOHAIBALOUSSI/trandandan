@@ -1,4 +1,4 @@
-import { verifyToken } from "../middleware/authMiddleware"
+import { verifyToken } from "../middleware/authMiddleware.js"
 import { blockHandler, unblockHandler } from '../controllers/blockController.js'
 import { blockSchema } from "../schemas/blockSchema.js";
 
