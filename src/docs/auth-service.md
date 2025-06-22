@@ -21,7 +21,7 @@ The `auth-service` is responsible for handling user authentication, registration
 | POST   | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |
 | POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                   |
 | POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                 |
-| POST   | `/update-credentials`| Updates either email or password or both OR sends OTP code if 2fa enabled| Yes                      | { email or password, confirmPassword or both }                 |
+| POST   | `/update-credentials`| Updates either email or password or both OR sends OTP code if 2fa enabled| Yes                      | { email or  (oldPassword, newPassword, confirmPassword) or both }                 |
 | POST   | `/verify-update-credentials`| Verifies the OTP code then updates email or password or both if it's valid| Yes                      | { otpCode }                 |
 | DELETE | `/delete`          | Deletes all data related to userId permanently across all services     | Yes                      | (none)                 |
 
@@ -223,7 +223,8 @@ The `auth-service` is responsible for handling user authentication, registration
 ```yaml
 
   400: {
-    BOTH_PASSWORDS_REQUIRED
+    PASSWORDS_REQUIRED
+    INVALID_PASSWORD
     UNMATCHED_PASSWORDS
     PASSWORD_POLICY
     EMAIL_EXISTS

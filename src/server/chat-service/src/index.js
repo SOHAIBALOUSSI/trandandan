@@ -89,7 +89,7 @@ wss.on('connection', async (ws, request) => {
             console.log('WebSocket: payload received: ', payload);
             const recipient = payload.recipient_id;
             console.log('WebSocket: recipient: ', recipient);
-
+            
             const idExist = await redis.sIsMember('userIds', `${recipient}`);
             console.log('idExist value: ', idExist);
             if (!idExist) {
@@ -97,9 +97,9 @@ wss.on('connection', async (ws, request) => {
                 return ;
             }
             if (recipient) {
-                if (recipient === ws.userId) {
-                    ws.close(1008, 'Malformed payload');
-                    return ;   
+                if (recipient === payload.sender_id || recipient === ws.userId) {
+                    ws.close(1008, 'Invalid message');
+                    return ;
                 }
                 const messageId = await addMessage(db, payload);
                 const connections = users.get(recipient);

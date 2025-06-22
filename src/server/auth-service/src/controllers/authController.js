@@ -297,22 +297,26 @@ export async function refreshHandler(request, reply) {
 
 export async function updateCredentialsHandler(request, reply) {
     const userId = request.user?.id;
-    const { email, password, confirmPassword } = request.body;
+    const { email, oldPassword, newPassword, confirmNewPassword } = request.body;
     try {
         
         const user = await findUserById(this.db, userId);
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
 
+        
         let hashedPassword = null;
-        if (password || confirmPassword) {
-            if (!password || !confirmPassword)
-                return reply.code(400).send(createResponse(400, 'BOTH_PASSWORDS_REQUIRED'));
-            if (password !== confirmPassword)
+        if (newPassword || confirmNewPassword || oldPassword) {
+            if (!newPassword || !confirmNewPassword || !oldPassword)
+                return reply.code(400).send(createResponse(400, 'PASSWORDS_REQUIRED'));
+            const matched = await compare(oldPassword, user.password);
+            if (!matched)
+                return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
+            if (newPassword !== confirmNewPassword)
                 return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
-            if (!validatePassword(password))
+            if (!validatePassword(newPassword))
                 return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
-            hashedPassword = await hash(password, 10);
+            hashedPassword = await hash(newPassword, 10);
         }
 
 
