@@ -1,6 +1,5 @@
 import { getCurrentUser } from "@/utils/user-store";
 import { UserProfile } from "types/types";
-const userInfo = getCurrentUser();
 
 export function RemoteGame() {
   // Create a container element for the game
@@ -253,7 +252,7 @@ class FlowField {
       });
   }
   private updateUserInfo(userInfo: UserProfile): void {
-    fetch(`http://0.0.0.0:5000/${userInfo.userId}`, {
+    fetch(`http://localhost:3001/${userInfo.userId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -412,7 +411,7 @@ class FlowField {
       this.deps.leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
 
       if (this.gameState.gameEndResult && this.gameState.gameEndResult.length !== 0) {
-        const userOldInfo = getCurrentUser();
+        const userUpdatedInfo = getCurrentUser();
         
         this.gameState.endGame = true;
         this.deps.result.textContent = "You " + this.gameState.gameEndResult;
@@ -420,32 +419,32 @@ class FlowField {
 
         if (this.gameState.playerId === 1)
         {
-          if (userOldInfo) {
-            userOldInfo.level += this.gameState.leftPlayerScore;
+          if (userUpdatedInfo) {
+            userUpdatedInfo.level += this.gameState.leftPlayerScore;
             if (this.gameState.gameEndResult === "WON")
             {
-                userOldInfo.level += 10;
+                userUpdatedInfo.level += 10;
             }
             else if (this.gameState.gameEndResult === "LOST")
             {
-                if (userOldInfo.level > 5)
-                    userOldInfo.level -= 5;
+                if (userUpdatedInfo.level > 5)
+                    userUpdatedInfo.level -= 5;
             }
           }
         }
 
         if (this.gameState.playerId === 2)
         {
-          if (userOldInfo) {
-            userOldInfo.level += this.gameState.rightPlayerScore;
+          if (userUpdatedInfo) {
+            userUpdatedInfo.level += this.gameState.rightPlayerScore;
             if (this.gameState.gameEndResult === "WON")
             {
-                userOldInfo.level += 10;
+                userUpdatedInfo.level += 10;
             }
             else if (this.gameState.gameEndResult === "LOST")
             {
-                if (userOldInfo.level > 5)
-                    userOldInfo.level -= 5;
+                if (userUpdatedInfo.level > 5)
+                    userUpdatedInfo.level -= 5;
             }
           }
         }
@@ -460,8 +459,8 @@ class FlowField {
           leftPlayerBallHit: this.gameState.leftPlayerBallHit,
           rightPlayerBallHit: this.gameState.rightPlayerBallHit,
         };
-        if (userOldInfo)
-          this.updateUserInfo(userOldInfo);
+        if (userUpdatedInfo)
+          this.updateUserInfo(userUpdatedInfo);
         this.sendPlayerData(playerData);
         this.deps.restartButton.addEventListener("click", this.handleRestart.bind(this));
       }
