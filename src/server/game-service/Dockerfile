@@ -7,8 +7,9 @@ WORKDIR /app
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
+
 # Install dependencies
-RUN npm install && apt-get update && apt-get install sqlite3 -y
+RUN npm install && apt-get update && apt-get install sqlite3 -y && npm install amqplib
 
 # Copy the rest of the application code to the working directory
 COPY . .
