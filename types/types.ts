@@ -2,16 +2,16 @@ export type UserProfile = {
   id: number;
   username: string;
   email: string;
-  avatar_url?: string;
-  gender?: string;
+  gender: string | null;
+  avatar_url: string;
   status: string;
   solde: number;
   rank: number;
   level: number;
-  joinDate: string;
-  matchesPlayed: number;
-  matchesWon: number;
-  matchesLost: number;
+  created_at: string;
+  matchesPlayed?: number;
+  matchesWon?: number;
+  matchesLost?: number;
 };
 
 export type UserRegister = {

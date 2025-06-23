@@ -15,7 +15,6 @@ export function Profile() {
   }, 0);
 
   const user = getCurrentUser();
-
   if (!user) {
     return (
       <section className={styles.pageLayoutDark}>
@@ -30,17 +29,6 @@ export function Profile() {
     );
   }
 
-  let avatar;
-  const isAvatarSet = user?.gender !== null;
-
-  if (isAvatarSet) {
-    avatar = user?.gender === "M" ? MaleAvatar : FemaleAvatar;
-  } else {
-    avatar = user?.avatar_url;
-  }
-  if (!avatar) {
-    avatar = "/default-avatar.png"; // Fallback if no avatar is set
-  }
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
@@ -53,7 +41,7 @@ export function Profile() {
             email={user?.email}
             sold={user?.solde.toString()}
             grade={user?.level.toString()}
-            avatar={avatar}
+            avatar={user?.avatar_url}
             rank={user?.rank.toString()}
           />
           <button id="edit-btn" className={`${styles.btnOneStyles} my-2`}>
@@ -67,6 +55,19 @@ export function Profile() {
               placeholder="name"
               className="normal-case placeholder:capitalize p-2 text-pong-dark-primary rounded-md bg-pong-secondary/10 border border-pong-dark-secondary focus:outline-none focus:ring-2 focus:ring-pong-accent transition-all"
             />
+            <input
+              type="file"
+              id="profile-photo"
+              name="profile-photo"
+              accept="image/*"
+              className="p-2 bg-white rounded-md border border-pong-dark-secondary"
+            />
+            <img
+              id="profile-photo-preview"
+              src=""
+              alt="Profile preview"
+              className="w-20 h-20 rounded-full object-cover border-2 border-pong-accent mt-2 hidden"
+            />{" "}
             <CTA btnIcon="fa-edit" btnLabel="submit" />
           </form>
         </main>

@@ -7,46 +7,74 @@ export function handleUpdateInfos() {
     const editForm = document.getElementById("edit-form") as HTMLFormElement;
     editForm?.classList.toggle("hidden");
     editForm?.classList.toggle("flex");
-    if (editForm?.classList.contains("hidden")) {
-      editBtn.textContent = "Edit";
-    } else {
-      editBtn.textContent = "Cancel";
-    }
+    editBtn.textContent = editForm?.classList.contains("hidden")
+      ? "Edit"
+      : "Cancel";
 
     const newForm = editForm.cloneNode(true) as HTMLFormElement;
     editForm.parentNode?.replaceChild(newForm, editForm);
 
+    const fileInput = newForm.querySelector<HTMLInputElement>("#profile-photo");
+    const previewImg = newForm.querySelector<HTMLImageElement>(
+      "#profile-photo-preview"
+    );
+    if (!fileInput || !previewImg) return;
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (file) {
+        previewImg.src = URL.createObjectURL(file);
+        previewImg.classList.remove("hidden");
+      } else {
+        previewImg.src = "";
+        previewImg.classList.add("hidden");
+      }
+    });
+
     newForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const nameInput = newForm.querySelector<HTMLInputElement>("#name");
 
-      if (!nameInput) return;
-
-      const name = nameInput.value.trim();
       const user = getCurrentUser();
       if (!user) return;
 
-      if (name && name !== user.username) {
-        try {
-          const profileRes = await fetch(`/profile/${user.id}`, {
-            method: "PATCH",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: name }),
-          });
-          if (profileRes.ok) {
-            user.username = name;
-          } else {
-            alert("Failed to update username.");
-            return;
-          }
-        } catch {
-          alert("Network error while updating username.");
-          return;
-        }
+      const nameInput = newForm.querySelector<HTMLInputElement>("#name");
+      const newName = nameInput?.value.trim();
+      const file = fileInput?.files?.[0];
+
+      const formData = new FormData();
+      let hasChange = false;
+
+      if (newName && newName !== user.username) {
+        formData.append("username", newName);
+        hasChange = true;
+      }
+      if (file) {
+        formData.append("avatar", file);
+        hasChange = true;
       }
 
-      setCurrentUser(user);
+      if (!hasChange) {
+        alert("No changes to update.");
+        return;
+      }
+
+      try {
+        const profileRes = await fetch(`/profile/${user.id}`, {
+          method: "PATCH",
+          credentials: "include",
+          body: formData,
+        });
+        console.log(profileRes.status, profileRes.statusText);
+        if (profileRes.ok) {
+          const updated = await profileRes.json();
+          setCurrentUser({ ...user, ...updated.data?.profile });
+        } else {
+          alert("Failed to update profile.");
+          return;
+        }
+      } catch {
+        alert("Network error while updating profile.");
+        return;
+      }
 
       history.pushState({}, "", "/my_profile");
       window.dispatchEvent(new PopStateEvent("popstate"));
