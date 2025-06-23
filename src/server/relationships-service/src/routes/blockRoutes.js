@@ -1,5 +1,5 @@
 import { verifyToken } from "../middleware/authMiddleware.js"
-import { blockHandler, unblockHandler } from '../controllers/blockController.js'
+import { blockHandler, unblockHandler, getListHandler } from '../controllers/blockController.js'
 import { blockSchema } from "../schemas/blockSchema.js";
 
 async function blockRoutes(fastify) {
@@ -17,6 +17,11 @@ async function blockRoutes(fastify) {
         },
         preHandler: verifyToken,
         handler: unblockHandler,
+    })
+
+    fastify.get('/list', {
+        preHandler: verifyToken,
+        handler: getListHandler
     })
 }
 

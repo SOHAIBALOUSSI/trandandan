@@ -288,7 +288,6 @@ export async function refreshHandler(request, reply) {
     } catch (error) {
         if (error.name === 'TokenExpiredError')
             return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_EXPIRED'));
-
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }

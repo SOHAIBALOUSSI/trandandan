@@ -25,6 +25,7 @@ The relationships-service handles all operations related to friend management, i
 | :----: | ------------ | --------------------------------------------------------------------- | :----------------------: | :--------------: |
 | POST   | `/:blockedId`| Blockes a user                                                        | Yes                      | { blockedId }    |
 | DELETE | `/:blockedId`| Unblock a user                                                        | Yes                      | { blockedId }    |
+| GET    | `/list`      | Fetched block list of the current user                                | Yes                      | (none)           |
 
 ---
 
@@ -144,6 +145,12 @@ The relationships-service handles all operations related to friend management, i
     BLOCKED_NOT_FOUND
   } 
   200: UNBLOCK_SUCCESS
+  500: INTERNAL_SERVER_ERROR
+```
+
+- `/list`
+```yaml
+  200: BLOCK_LIST_FETCHED
   500: INTERNAL_SERVER_ERROR
 ```
 

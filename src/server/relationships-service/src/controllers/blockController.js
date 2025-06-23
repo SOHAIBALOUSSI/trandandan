@@ -1,4 +1,4 @@
-import { addBlock, findBlock, removeBlock } from "../models/blockDAO.js";
+import { addBlock, findBlock, getBlockList, removeBlock } from "../models/blockDAO.js";
 import { createResponse } from "../utils/utils.js";
 
 export async function blockHandler(request, reply) {
@@ -48,6 +48,19 @@ export async function unblockHandler(request, reply) {
         await removeBlock(this.db, userId, blockedId);
 
         return reply.code(200).send(createResponse(200, 'UNBLOCK_SUCCESS'));
+    } catch (error) {
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+    }
+}
+
+export async function getListHandler(request, reply) {
+    try {
+        const userId = request.user.id;
+
+        const blockList = await getBlockList(this.db, userId);
+
+        return reply.code(200).send(createResponse(200, 'BlOCK_LIST_FETCHED', { blockList: blockList }));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
