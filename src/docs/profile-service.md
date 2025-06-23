@@ -15,6 +15,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 | PATCH  | `/:id`        | Update a user profile                 | Yes                      | { username/avatar_url/solde/level/rank } (one or many)|
 | GET    | `/:id`        | Retrieve a user profile by id         | Yes                      | (none)                                |
 | POST   | `/upload`     | Updates a user's avatar               | Yes                      | image as formData                     |
+| GET   | `/avatar/:fileName`| Fetches a user's avatar           | Yes                      | (none)                     |
 
 ---
 
