@@ -66,6 +66,16 @@ The `profile-service` is responsible for managing user profile data. It handles 
   500: INTERNAL_SERVER_ERROR
 
 ```
+
+- `/avatar/:fileName` 
+```yaml
+  400: FILE_NAME_REQUIRED
+  404: FILE_NOT_FOUND
+  200: AVATAR_UPLOADED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
 ---
 
 ## Schemas

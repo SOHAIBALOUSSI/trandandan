@@ -107,7 +107,7 @@ export async function getAvatarUrl(request, reply) {
             return reply.code(404).send(createResponse(404, 'FILE_NOT_FOUND'));
 
         const ext = path.extname(fileName).toLowerCase();
-        const mimeType = ((ext === '.jpeg' || ext === 'jpg') ? 'image/jpeg' :
+        const mimeType = ((ext === '.jpeg' || ext === '.jpg') ? 'image/jpeg' :
             ext === '.png' ? 'image/png' :
             ext === '.webp' ? 'image/webp' :
             'application/octet-stream');
