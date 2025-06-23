@@ -20,7 +20,7 @@ export const styles = {
   // === Start Hero styles ===
   heroTitleContainer: `
   	w-full max-w-screen-xl 
-	animate-fade-in
+	animate-fadeInUp
   `,
   heroTitle: `
 	leading-tight
@@ -40,7 +40,7 @@ export const styles = {
   `,
   heroCallToAction: `
   	flex flex-col items-center gap-2 
-	animate-fade-in
+	animate-fadeInUp
   `,
   heroSubtitle: `
     mt-2 text-pong-secondary
@@ -61,60 +61,57 @@ export const styles = {
 
   // === Start Primary Button styles ===
   primaryButton: `
-    group
+    group relative w-full md:w-[320px] mx-auto
+    px-6 py-4 md:px-8 md:py-5
     flex items-center justify-center gap-2
-    w-full md:w-[320px] mx-auto px-6 py-4 md:px-8 md:py-5
-    text-sm lg:text-base font-semibold text-white
-    bg-pong-accent hover:bg-pong-secondary
-    rounded-md
-	capitalize
-    cursor-pointer transform active:scale-[0.97]
-    transition-all duration-300
-	hover:shadow-lg
-	relative
-    focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
+    text-sm lg:text-base font-bold uppercase tracking-wider
+    text-white bg-pong-accent hover:bg-pong-secondary
+    rounded-xl shadow-md hover:shadow-lg
+    transition-all duration-300 transform active:scale-[0.97]
+    focus:outline-none focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
   `,
   primaryButtonIcon: `
-    transition-transform duration-300
-    group-hover:-translate-x-1
+	transition-transform duration-300 
+	group-hover:-translate-x-1
   `,
   // === End Primary Button styles ===
 
   // === Start Input Field styles ===
   inputField: `
-  	input-field
-	normal-case
-	w-full px-4 py-3
-	text-sm lg:text-base font-semibold
-	bg-pong-secondary/10
-	rounded-md
-	caret-inherit
-	placeholder:text-pong-primary/50 placeholder:capitalize
+	w-full px-5 py-3.5
+	text-sm lg:text-base font-semibold tracking-wide
+	text-pong-primary bg-pong-secondary/10
+	rounded-xl shadow-inner
+	border border-pong-primary/10 focus:border-pong-accent
+	placeholder:capitalize placeholder:text-pong-primary/50
+	focus:outline-none focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
+	focus:bg-white/40
 	transition-all duration-300
-	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
-	focus:bg-pong-secondary/20
+	backdrop-blur-md
   `,
   customSelect: `
-	w-full px-4 py-3
-    text-sm lg:text-base font-semibold
-    bg-pong-secondary/10
-    capitalize text-pong-primary
-   	rounded-md
-    transition-all duration-300
-    appearance-none
-    focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
-    focus:bg-pong-secondary/20
-    custom-select 
+  	w-full px-4 py-3 pr-10
+  	text-sm lg:text-base font-semibold
+  	bg-pong-secondary/10
+  	capitalize text-pong-primary
+  	rounded-md border border-pong-primary/10
+  	appearance-none
+  	transition-all duration-300
+  	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
+  	focus:bg-pong-secondary/20
+  	relative z-10
   `,
   // === End Input Field styles ===
 
   // === Start Form styles ===
   form: `
-	max-w-md w-full mx-auto	
-	bg-pong-bg/60 shadow-xl rounded-2xl
-	backdrop-blur
-	flex flex-col text-center align-center justify-center gap-6
-	px-6 py-10
+  max-w-md w-full mx-auto
+  bg-gradient-to-br from-pong-secondary/20 via-pong-bg/50 to-pong-accent/10
+  shadow-2xl rounded-3xl
+  backdrop-blur-sm border border-pong-accent/20
+  flex flex-col items-center text-center gap-6
+  px-8 py-12
+  animate-fadeInUp
   `,
   formMessage: `
   	text-center text-sm font-semibold min-h-[1.5rem] mb-2
@@ -123,56 +120,34 @@ export const styles = {
 
   // === Start Main Header styles ===
   titleDark: `
-  	capitalize
-    mb-8
+	capitalize 
 	text-pong-primary 
-	text-2xl md:text-3xl lg:text-4xl xl:text-5xl
-  `,
-  titleLight: `
-  	capitalize
-  	mb-8 
-	text-pong-dark-primary
-	text-2xl md:text-3xl lg:text-4xl xl:text-5xl
+	text-3xl md:text-4xl lg:text-5xl xl:text-6xl 
+	font-bold tracking-tight leading-tight	
   `,
   titleSpanDark: `
-  	font-playfair
-	text-pong-accent
-	relative
-	before:absolute before:w-full before:h-[3px] 
-	before:bg-pong-accent before:rounded-md 
-	before:bottom-[4px] before:left-0 
-	before:scale-x-0 before:transition-transform before:duration-300 
-	hover:before:scale-x-100
-  `,
-  titleSpanLight: `
-  	font-playfair 
-	text-pong-dark-accent
-	relative
-	before:absolute before:w-full before:h-[2px] 
-	before:bg-pong-dark-accent before:rounded-md 
-	before:bottom-0 before:left-0 
-	before:scale-x-0 before:transition-transform before:duration-300 
-	hover:before:scale-x-100
+	font-playfair 
+	text-pong-accent 
+	relative inline-block 
+	underline-animated
   `,
   subtitleDark: `
-  	flex flex-col font-semibold 
-	text-lg md:text-xl lg:text-2xl xl:text-3xl
+	font-semibold 
+	text-lg md:text-xl lg:text-2xl xl:text-3xl 
+	text-pong-primary
   `,
   subtitleParagraphDark: `
-  	text-pong-primary/80 
-	font-normal 
-	text-sm md:text-base lg:text-lg xl:text-xl
+	mt-2 
+	text-pong-primary/80 
+	text-sm md:text-base lg:text-lg xl:text-xl 
+	leading-relaxed
   `,
   // === End Main Header styles ===
 
   // === Start Animation styles ===
-  fadeInSection: `
-  	opacity-0 
-	animate-fade-in
-  `,
   blurInText: `
   	opacity-0 
-	animate-blur-in
+	animate-blurIn
   `,
   // === End Animation styles ===
 

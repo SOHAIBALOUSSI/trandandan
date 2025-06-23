@@ -5,46 +5,51 @@ import { styles } from "@/styles/styles";
 
 export function SignInForm() {
   return (
-    <form
-      method="POST"
-      id="signin-form"
-      className={`${styles.form} ${styles.fadeInSection}`}
-    >
+    <form id="signin-form" className={styles.form}>
       <InputField
         type={"text"}
         name={"login"}
         id={"login"}
-        placeholder={"username or email"}
+        placeholder={"Member ID or Email"}
       />
       <InputField
         type={"password"}
         name={"password"}
         id={"password"}
-        placeholder={"password"}
+        placeholder={"Secret Code"}
       />
-      <CTA
-        btnIcon="fa-couch"
-        btnLabel="enter the lounge"
-      />
-      <a
-        href="password_reset"
-        className="text-sm lg:text-base -mt-2 text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
-        data-link
-      >
-        lost your paddle?
-      </a>
-      <div>
-        <p className="text-sm lg:text-base font-bold">
-          new here?{" "}
-          <a
-            href="signup"
-            className="text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
-            data-link
-          >
-            join the club and make history.
-          </a>
-        </p>
+
+      <div className="flex justify-between items-center w-full text-sm text-pong-primary/70 mt-[-0.5rem]">
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="remember"
+            className="accent-pong-accent focus:ring-pong-primary"
+          />
+          keep me signed in
+        </label>
+        <a
+          href="password_reset"
+          className="underline hover:text-pong-accent transition"
+          data-link
+        >
+          forgot credentials?
+        </a>
       </div>
+
+      <CTA btnIcon="fa-door-open" btnLabel="enter the lounge" />
+
+      <p className="text-sm lg:text-base font-medium text-pong-primary/80 text-center">
+        not a member yet?{" "}
+        <a
+          href="signup"
+          className="text-pong-accent underline hover:text-pong-secondary transition"
+          data-link
+        >
+          apply for a paddle.
+        </a>
+      </p>
+
       <RemoteLink />
     </form>
   );

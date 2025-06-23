@@ -6,7 +6,7 @@ export function CTA(props: { btnIcon: string; btnLabel: string }) {
     <div>
       <div
         id="cta-feedback"
-        className={`${styles.formMessage} hidden`}
+        className="text-center text-sm font-semibold min-h-[1.5rem] mb-2 hidden"
         role="alert"
         aria-live="polite"
       ></div>

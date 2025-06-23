@@ -1,13 +1,10 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
-import { MainHeader } from "@/components/common/MainHeader";
 import { MemberCard } from "@/components/profile/MemberCard";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
 import { handleUpdateInfos } from "@/handlers/handle-update-infos";
 import { CTA } from "@/components/common/Cta";
-import MaleAvatar from "@/assets/male.png";
-import FemaleAvatar from "@/assets/female.png";
 
 export function Profile() {
   setTimeout(() => {
@@ -35,7 +32,6 @@ export function Profile() {
       <div className="w-full relative">
         <TopBar />
         <main className={styles.pageContent}>
-          {/* <MainHeader isDark={false} title="club member" titleSpan="ledger" /> */}
           <MemberCard
             name={user?.username}
             email={user?.email}

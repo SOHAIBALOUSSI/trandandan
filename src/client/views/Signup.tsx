@@ -20,7 +20,6 @@ export function Signup() {
     <section className={styles.pageLayoutLight}>
       <Overlay />
       <MainHeader
-        isDark={true}
         title="join"
         titleSpan="the club"
         subtitle="become a member"

@@ -20,7 +20,6 @@ export function Signin() {
     <section className={styles.pageLayoutLight}>
       <Overlay />
       <MainHeader
-        isDark={true}
         title="welcome back,"
         titleSpan="champion"
         subtitle="step into the club"

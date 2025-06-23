@@ -50,11 +50,10 @@ export const theme = {
       },
     },
     animation: {
-      "fade-in": "fadeInUp 0.8s ease-out forwards",
-      "blur-in": "blurIn 0.6s ease-out forwards",
+      fadeInUp: "fadeInUp 0.8s ease-out",
+      blurIn: "blurIn 0.6s ease-out forwards",
       backgroundPan: "backgroundPan 20s linear infinite",
       float: "float 3s ease-in-out infinite",
-      "spin-slow": "spin 20s linear infinite",
       myPulse: "myPulse 1.3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
     },
   },

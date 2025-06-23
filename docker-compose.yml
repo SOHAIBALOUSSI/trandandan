@@ -76,7 +76,7 @@ services:
   
   redis:
     container_name: redis
-    build: ./redis
+    build: src/server/redis
     restart: always
     networks:
       - trandenden-net

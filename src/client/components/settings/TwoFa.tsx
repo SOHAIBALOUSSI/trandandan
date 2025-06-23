@@ -98,7 +98,7 @@ function TwoFaMode(mode: "app" | "email") {
 
 export function TwoFa() {
   return (
-    <div className="bg-white/95 border border-pong-accent/20 rounded-2xl shadow-2xl p-8 m-4 w-full max-w-3xl mx-auto text-center animate-fade-in">
+    <div className="bg-white/95 border border-pong-accent/20 rounded-2xl shadow-2xl p-8 m-4 w-full max-w-3xl mx-auto text-center animate-fadeInUp">
       <h2 className="text-2xl font-bold mb-2 text-pong-dark-primary">
         Two-Factor Authentication
       </h2>
