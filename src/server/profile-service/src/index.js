@@ -6,8 +6,16 @@ import { createProfileTable } from './database/createProfileTable.js';
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
 import { addProfile, deleteProfile, updateProfileEmailById } from './models/profileDAO.js';
 import redisPlugin from './plugins/redis-plugin.js';
+import multipart from '@fastify/multipart'
+
 
 const server = fastify({ logger: true });
+await server.register(multipart, {
+    limits: {      
+        fileSize: 1000000,  
+        files: 1
+    }
+});
 
 dotenv.config();
 
