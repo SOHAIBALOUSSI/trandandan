@@ -2,7 +2,6 @@ services:
   auth:
     container_name: auth-service
     build: ./auth-service
-    image: auth-service
     restart: always
     env_file:
       - .env
@@ -17,7 +16,6 @@ services:
   profile:
     container_name: profile-service
     build: ./profile-service
-    image: profile-service
     restart: always
     env_file:
       - .env
@@ -25,14 +23,15 @@ services:
       - back-end
     ports:
       - "3001:3001"
+    volumes:
+      - "/home/msaadidi/Desktop/trandenden/src/server/uploads:/usr/src/app/uploads"
     depends_on:
       rabbitmq:
         condition: service_healthy
 
-  friends:
-    container_name: friends-service
-    build: ./friends-service
-    image: friends-service
+  relationships:
+    container_name: relationships-service
+    build: ./relationships-service
     restart: always
     env_file:
       - .env
@@ -47,7 +46,6 @@ services:
   notifications:
     container_name: notifications-service
     build: ./notifications-service
-    image: notifications-service
     restart: always
     env_file:
       - .env
@@ -62,7 +60,6 @@ services:
   chat:
     container_name: chat-service
     build: ./chat-service
-    image: chat-service
     restart: always
     env_file:
       - .env
@@ -74,6 +71,15 @@ services:
       rabbitmq:
         condition: service_healthy
 
+  redis:
+    container_name: redis
+    build: ./redis
+    restart: always
+    networks:
+      - back-end
+    expose:
+      - 6379
+  
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3-management

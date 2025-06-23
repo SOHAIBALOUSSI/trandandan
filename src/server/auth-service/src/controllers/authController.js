@@ -130,7 +130,7 @@ export async function updatePasswordHandler(request, reply) {
             setTempAuthToken(reply, tempToken);
             return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type  }));
         }
-        const accessToken = this.jwt.signAT({ id: user.id });
+        const accessToken = await this.jwt.signAT({ id: user.id });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
         if (tokenExist) {
@@ -175,7 +175,7 @@ export async function loginHandler(request, reply) {
             setTempAuthToken(reply, tempToken);
             return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type  }));
         }
-        const accessToken = this.jwt.signAT({ id: user.id });
+        const accessToken = await this.jwt.signAT({ id: user.id });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
         if (tokenExist) {
@@ -206,7 +206,8 @@ export async function registerHandler(request, reply) {
         
         const hashedPassword = await hash(password, 10);
         const userId = await addUser(this.db, username, email, hashedPassword);
-                
+        
+        await this.redis.sAdd(`userIds`, `${userId}`);
         this.rabbit.produceMessage({
             type: 'INSERT',
             userId: userId,
@@ -278,7 +279,7 @@ export async function refreshHandler(request, reply) {
 
         await revokeToken(this.db, tokenExist.token);
 
-        const accessToken = this.jwt.signAT({ id: payload.id });
+        const accessToken = await this.jwt.signAT({ id: payload.id });
         const newRefreshToken = this.jwt.signRT({ id: payload.id });
 
         await addToken(this.db, newRefreshToken, payload.id);
@@ -287,7 +288,6 @@ export async function refreshHandler(request, reply) {
     } catch (error) {
         if (error.name === 'TokenExpiredError')
             return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_EXPIRED'));
-
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
@@ -296,22 +296,26 @@ export async function refreshHandler(request, reply) {
 
 export async function updateCredentialsHandler(request, reply) {
     const userId = request.user?.id;
-    const { email, password, confirmPassword } = request.body;
+    const { email, oldPassword, newPassword, confirmNewPassword } = request.body;
     try {
         
         const user = await findUserById(this.db, userId);
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
 
+        
         let hashedPassword = null;
-        if (password || confirmPassword) {
-            if (!password || !confirmPassword)
-                return reply.code(400).send(createResponse(400, 'BOTH_PASSWORDS_REQUIRED'));
-            if (password !== confirmPassword)
+        if (newPassword || confirmNewPassword || oldPassword) {
+            if (!newPassword || !confirmNewPassword || !oldPassword)
+                return reply.code(400).send(createResponse(400, 'PASSWORDS_REQUIRED'));
+            const matched = await compare(oldPassword, user.password);
+            if (!matched)
+                return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
+            if (newPassword !== confirmNewPassword)
                 return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
-            if (!validatePassword(password))
+            if (!validatePassword(newPassword))
                 return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
-            hashedPassword = await hash(password, 10);
+            hashedPassword = await hash(newPassword, 10);
         }
 
 
@@ -416,26 +420,14 @@ export async function deleteUserDataHandler(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
 
-        this.rabbit.produceMessage({
-            type: 'DELETE',
-            userId: user.id
-        }, 'profile.user.deleted');
-
-        this.rabbit.produceMessage({
-            type: 'DELETE',
-            userId: user.id
-        }, 'chat.user.deleted');
+        const targets = ['profile', 'chat', 'notifications', 'relationships'];
+        for (const target of targets) {
+            this.rabbit.produceMessage({
+                type: 'DELETE',
+                userId: user.id
+            }, `${target}.user.deleted`);
+        }
         
-        this.rabbit.produceMessage({
-            type: 'DELETE',
-            userId: user.id
-        }, 'notifications.user.deleted');
-
-        this.rabbit.produceMessage({
-            type: 'DELETE',
-            userId: user.id
-        }, 'friends.user.deleted');
-
         await deleteUser(this.db, user.id);
         clearAuthCookies(reply);
 

@@ -94,12 +94,13 @@ export const updateCredentialsSchema = {
   type: 'object',
   properties: {
     email: emailValidation,
-    password: passwordValidation,
-    confirmPassword: passwordValidation
+    oldPassword: passwordValidation,
+    newPassword: passwordValidation,
+    confirmNewPassword: passwordValidation
   },
   additionalProperties: false,
   anyOf: [
     { required: ['email'] },
-    { required: ['password', 'confirmPassword'] }
+    { required: ['oldPassword', 'newPassword', 'confirmNewPassword'] }
   ]
 };

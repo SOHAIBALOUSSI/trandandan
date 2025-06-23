@@ -111,7 +111,7 @@ export async function verify2FAAppLogin(request, reply) {
         if (!isValid)
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
-        const accessToken = this.jwt.signAT({ id: userId });
+        const accessToken = await this.jwt.signAT({ id: userId });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
         if (tokenExist) {

@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     networks:
-      - transcendence
+      - trandenden-net
     ports:
       - "3000:3000"
     depends_on:
@@ -22,22 +22,22 @@ services:
     env_file:
       - .env
     networks:
-      - transcendence
+      - trandenden-net
     ports:
       - "3001:3001"
     depends_on:
       rabbitmq:
         condition: service_healthy
 
-  friends:
-    container_name: friends-service
-    build: src/server/friends-service
-    image: friends-service
+  relationships:
+    container_name: relationships-service
+    build: src/server/relationships-service
+    image: relationships-service
     restart: always
     env_file:
       - .env
     networks:
-      - transcendence
+      - trandenden-net
     ports:
       - "3002:3002"
     depends_on:
@@ -52,7 +52,7 @@ services:
     env_file:
       - .env
     networks:
-      - transcendence
+      - trandenden-net
     ports:
       - "3003:3003"
     depends_on:
@@ -67,12 +67,21 @@ services:
     env_file:
       - .env
     networks:
-      - transcendence
+      - trandenden-net
     ports:
       - "3004:3004"
     depends_on:
       rabbitmq:
         condition: service_healthy
+  
+  redis:
+    container_name: redis
+    build: ./redis
+    restart: always
+    networks:
+      - trandenden-net
+    expose:
+      - 6379
 
   rabbitmq:
     container_name: rabbitmq
@@ -81,7 +90,7 @@ services:
     env_file:
       - .env
     networks:
-      - transcendence
+      - trandenden-net
     ports:
       - "15672:15672"
       - "5672:5672"
@@ -106,15 +115,19 @@ services:
     depends_on:
       - auth
       - profile
-      - friends
+      - relationships
       - notifications
       - chat
+      - redis
+      - rabbitmq
+    env_file:
+      - .env
     networks:
-      - transcendence
+      - trandenden-net
     restart: always
     command: npm run dev
 
 networks:
-  transcendence:
-    name: transcendence
+  trandenden-net:
+    name: trandenden-net
     driver: bridge

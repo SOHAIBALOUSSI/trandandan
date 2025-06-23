@@ -17,7 +17,7 @@ async function jwtPlugin(fastify, options) {
       }
     },
 
-    signAT(payload, expiresIn = "15m") {
+    async signAT(payload, expiresIn = "15m") {
       try {
         return jwt.sign(payload, accessTokenKey, { expiresIn });
       } catch (error) {

@@ -1,7 +1,7 @@
-# Friends Service
+# Relationships Service
 
 ## Overview
-The friends-service handles all operations related to friend management, including sending, accepting, and rejecting friend requests, listing friends, and removing friends.
+The relationships-service handles all operations related to friend management, including sending, accepting, and rejecting friend requests, listing friendsand removing friends + blocking users.
 
 ---
 
@@ -19,6 +19,16 @@ The friends-service handles all operations related to friend management, includi
 
 ---
 
+### Prefix: /block
+
+| Method | Path         | Description                                                           | Authentication Required  | Body Required    |  
+| :----: | ------------ | --------------------------------------------------------------------- | :----------------------: | :--------------: |
+| POST   | `/:blockedId`| Blockes a user                                                        | Yes                      | { blockedId }    |
+| DELETE | `/:blockedId`| Unblock a user                                                        | Yes                      | { blockedId }    |
+| GET    | `/list`      | Fetched block list of the current user                                | Yes                      | (none)           |
+
+---
+
 ## Schemas
 
 - **Friend Request Schema**:
@@ -30,6 +40,8 @@ The friends-service handles all operations related to friend management, includi
 - **Delete Friend Schema**:
   - `friendId`: string, required
 
+- **Block/Unblock Schema**:
+  - `blockedId`: string, required
 ---
 
 ## Response Schema
@@ -46,6 +58,8 @@ The friends-service handles all operations related to friend management, includi
 ```
 
 ## Response Codes
+
+**Prefix: /friends**
 - `/request`
 ```yaml
 
@@ -61,7 +75,10 @@ The friends-service handles all operations related to friend management, includi
 - `/accept`
 ```yaml
 
-  400: REQUESTER_REQUIRED,
+  400: {
+    REQUESTER_REQUIRED,
+    REQUESTER_INVALID,
+  }
   200: FRIEND_REQUEST_ACCEPTED,
   500: INTERNAL_SERVER_ERROR
 
@@ -70,7 +87,10 @@ The friends-service handles all operations related to friend management, includi
 - `/reject`
 ```yaml
 
-  400: REQUESTER_REQUIRED,
+  400: {
+    REQUESTER_REQUIRED,
+    REQUESTER_INVALID,
+  }
   200: FRIEND_REQUEST_REJECTED,
   500: INTERNAL_SERVER_ERROR
 
@@ -79,7 +99,10 @@ The friends-service handles all operations related to friend management, includi
 - `/:friendId` (DELETE)
 ```yaml
 
-  400: FRIEND_REQUIRED,
+  400: {
+    FRIEND_REQUIRED,
+    FRIEND_INVALID,
+  }
   200: FRIEND_REMOVED,
   500: INTERNAL_SERVER_ERROR
 
@@ -100,12 +123,40 @@ The friends-service handles all operations related to friend management, includi
   500: INTERNAL_SERVER_ERROR
 
 ```
+
+**Prefix: /block**
+
+- `/:blockedId` (POST)
+```yaml
+  400: {
+    BLOCKED_REQUIRED
+    BLOCKED_INVALID
+    BLOCKED_EXISTS
+  }
+  200: BLOCK_SUCCESS
+  500: INTERNAL_SERVER_ERROR
+```
+
+- `/:blockedId` (DELETE)
+```yaml
+  400: {
+    BLOCKED_REQUIRED
+    BLOCKED_INVALID
+    BLOCKED_NOT_FOUND
+  } 
+  200: UNBLOCK_SUCCESS
+  500: INTERNAL_SERVER_ERROR
+```
+
+- `/list`
+```yaml
+  200: BLOCK_LIST_FETCHED
+  500: INTERNAL_SERVER_ERROR
+```
+
 ---
 
 ## Notes
 - Only authenticated users can manage friend operations.
 - Accepting or rejecting requests updates the friendship status.
 - Friends list includes only accepted friends.
-
-## To Add
-- Real-time notifications via WebSocket or rabbitMQ

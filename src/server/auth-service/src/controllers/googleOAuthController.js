@@ -74,7 +74,7 @@ export async function googleLoginHandler(request, reply) {
             }
         }
 
-        const accessToken = this.jwt.signAT({ id: user.id });
+        const accessToken = await this.jwt.signAT({ id: user.id });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
         if (tokenExist) {
@@ -85,18 +85,19 @@ export async function googleLoginHandler(request, reply) {
         }
         clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
+        await this.redis.sAdd(`userIds`, `${user.id}`);
+        
         if (isNewUser) {
             this.rabbit.produceMessage({
-					type: 'INSERT',
-                    userId: user.id,
-                    username: user.username,
-                    email: user.email,
-                    avatar_url: userInfo.picture
-                },
-                'profile.user.created'
-            );
+                type: 'INSERT',
+                userId: user.id,
+                username: user.username,
+                email: user.email,
+                avatar_url: userInfo.image.link
+            }, 'profile.user.created');
         }
-      return reply.redirect(process.env.FRONT_END_URL);
+
+        return reply.redirect(process.env.FRONT_END_URL);
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));

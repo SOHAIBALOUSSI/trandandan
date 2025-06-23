@@ -13,6 +13,8 @@ mkdir -p $SERVICE_NAME/src
 cat > $DOCKERFILE_PATH << EOL
 FROM node:slim
 
+RUN apt update && apt upgrade -y && apt install -y sqlite3
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./

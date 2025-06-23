@@ -5,6 +5,9 @@ import friendsRoutes from './routes/friendsRoutes.js';
 import { createFriendshipTable } from './database/createFriendshipsTable.js';
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
 import { deleteFriendships } from './models/friendshipDAO.js';
+import { createBlockTable } from './database/createBlockTable.js';
+import blockRoutes from './routes/blockRoutes.js';
+import redisPlugin from './plugins/redis-plugin.js';
 
 const server = fastify({ logger: true });
 
@@ -12,17 +15,25 @@ dotenv.config();
 
 await server.register(sqlitePlugin);
 await createFriendshipTable(server.db);
-await server.register(rabbitmqPlugin);
+await createBlockTable(server.db);
 
+await server.register(rabbitmqPlugin);
 server.rabbit.consumeMessages(async (request) => {
     if (request.type === 'DELETE') {
         const userId = request.userId;
-        await deleteFriendships(server.db, userId);
+        const idExist = await redis.sIsMember('userIds', `${userId}`);
+        console.log('idExist value: ', idExist);
+        if (idExist)
+            await deleteFriendships(server.db, userId);
     }
 })
-await server.register(friendsRoutes, { prefix: '/friends' });
 
-console.log("friends service initialization is done...");
+await server.register(redisPlugin);
+
+await server.register(friendsRoutes, { prefix: '/friends' });
+await server.register(blockRoutes, { prefix: '/block' });
+
+console.log("relationships service initialization is done...");
 
 const start = async () => {
     try {

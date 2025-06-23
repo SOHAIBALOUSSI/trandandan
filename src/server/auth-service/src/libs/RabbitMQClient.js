@@ -87,8 +87,8 @@ class RabbitMQClient {
       this.channel.consume(this.queueName, async (msg) => {
         if (msg !== null)
         {
-          const payload = JSON.parse(msg.content.toString())
           try {
+            const payload = JSON.parse(msg.content.toString())
             handleMessage(payload)
             this.channel.ack(msg);
           } catch (error) {
