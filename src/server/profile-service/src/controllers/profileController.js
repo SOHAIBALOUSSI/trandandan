@@ -13,7 +13,7 @@ export async function getProfile(request, reply) {
     try {
         const { id } = request.params;
         const tokenId = request.user?.id;
-        if (tokenId !== id) 
+        if (tokenId != id) 
             return reply.code(403).send(createResponse(403, 'UNAUTHORIZED'));
         
         const profile = await getProfileById(this.db, id);
@@ -31,7 +31,7 @@ export async function updateProfile(request, reply) {
     try {
         const { id } = request.params;
         const tokenId = request.user?.id;
-        if (tokenId !== id)
+        if (tokenId != id)
             return reply.code(403).send(createResponse(403, 'UNAUTHORIZED'));
         
         const { username, solde, rank, level, matches_played } = request.body;
