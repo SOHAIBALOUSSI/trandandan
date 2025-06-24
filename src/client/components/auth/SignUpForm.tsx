@@ -69,15 +69,11 @@ export function SignUpForm() {
         className={`${fontSizes.buttonFontSize} w-full font-medium text-pong-primary/80`}
       >
         already a member of the hall?{" "}
-        <a
-          href="signin"
-          className="text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
-          data-link
-        >
+        <a href="signin" className={styles.customFormLink} data-link>
           enter the lounge.
         </a>
       </p>
-	
+
       <RemoteLink />
     </form>
   );

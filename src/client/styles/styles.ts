@@ -19,6 +19,24 @@ export const styles = {
   `,
   // === End Page Layout styles ===
 
+  // === Start Custom Sections styles ===
+  customSectionStyles: `
+  	bg-pong-secondary/5 shadow-[0_8px_30px_rgba(0,0,0,0.15)]
+  	rounded-3xl border border-pong-accent/30
+  	backdrop-blur-md
+  	max-w-xl w-full mx-auto 
+  	px-8 py-10 md:py-14
+  `,
+  customForm: `
+  	flex flex-col gap-6
+  	w-full max-w-md mx-auto
+  	bg-pong-bg/70 shadow-xl rounded-2xl
+  	px-6 py-10
+  	backdrop-blur-md
+  	border border-pong-accent/20
+  `,
+  // === End Custom Sections styles ===
+
   // === Start Hero styles ===
   heroTitle: `
 	leading-tight
@@ -70,6 +88,7 @@ export const styles = {
 
   // === Start Input Field styles ===
   mainInputFieldStyles: `
+  	normal-case
 	input-field
 	w-full px-5 py-3.5
 	${fontSizes.buttonFontSize} 
@@ -78,6 +97,7 @@ export const styles = {
 	rounded-xl shadow-inner
 	border border-pong-primary/10 focus:border-pong-accent
 	placeholder:text-pong-primary/50
+	placeholder:capitalize
 	focus:outline-none focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
 	focus:bg-white/40
 	transition-all duration-300
@@ -133,13 +153,6 @@ export const styles = {
 	${fontSizes.bodyFontSize}
   `,
   // === End Main Header styles ===
-
-  // === Start Animation styles ===
-  blurInText: `
-  	opacity-0 
-	animate-blurIn
-  `,
-  // === End Animation styles ===
 
   // === Start Top Bar styles ===
   navBarStyle: `
@@ -202,25 +215,6 @@ export const styles = {
     group
   `,
 
-  // === Start Custom Sections styles ===
-  customSectionStyles: `
-  	bg-pong-secondary/5 shadow-[0_8px_30px_rgba(0,0,0,0.15)]
-  	rounded-3xl border border-pong-accent/30
-  	backdrop-blur-md
-  	max-w-xl w-full mx-auto 
-  	px-8 py-10 md:py-14
-  `,
-  customForm: `
-  	flex flex-col gap-6
-  	w-full max-w-md mx-auto
-  	bg-pong-bg/70 shadow-xl rounded-2xl
-  	px-6 py-10
-  	backdrop-blur-md
-  	border border-pong-accent/20
-  	animate-fadeInUp
-  `,
-  // === End Custom Sections styles ===
-
   // === Start Button Primary styles ===
   btnOneStyles: `
 	flex items-center justify-center 
@@ -241,6 +235,16 @@ export const styles = {
 	px-20 pt-20 md:pt-26 
 	h-[calc(100vh-2rem)] 
 	overflow-y-auto
-	flex flex-col items-center justify-start
+	flex flex-col items-center justify-start gap-6
   `,
+  // === End Page Content styles ===
+
+  // === Start Custom Links styles ===
+  customFormLink: `
+	text-pong-accent 
+	underline underline-offset-2 
+	hover:text-pong-secondary hover:underline-offset-4 
+	transition-all duration-300
+  `,
+  // === End Custom Links styles ===
 };

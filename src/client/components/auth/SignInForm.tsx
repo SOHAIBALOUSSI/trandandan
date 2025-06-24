@@ -47,11 +47,7 @@ export function SignInForm() {
         className={`${fontSizes.buttonFontSize} w-full font-medium text-pong-primary/80`}
       >
         not a member yet?{" "}
-        <a
-          href="signup"
-          className="text-pong-accent underline hover:text-pong-secondary transition"
-          data-link
-        >
+        <a href="signup" className={styles.customFormLink} data-link>
           apply for a paddle.
         </a>
       </p>

@@ -52,8 +52,16 @@ export function ResetPassword() {
           <OtpInput id="lost-pass-otp" />
           <CTA btnIcon="fa-check-double" btnLabel="verify code" />
         </form>
+
+        <p className={`${fontSizes.buttonFontSize} w-full my-6 font-medium text-pong-primary/80`}>
+          remembered your paddle?{" "}
+          <a href="signin" className={styles.customFormLink} data-link>
+            return to the club entrance
+          </a>
+        </p>
+
         <p className="w-full border-t border-pong-accent/10 my-6"></p>
-        <p className="text-sm text-pong-primary/70">
+        <p className="text-sm text-pong-primary/70 mt-4">
           didn't receive the serve? check your spam or promotions lounge.
         </p>
       </div>

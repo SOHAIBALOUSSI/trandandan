@@ -4,3 +4,5 @@
 - add (matches / wins / losses) in profile
 - activity (wins / losses / goodbye / join tournament)
 - add join date in member card
+- member card editable (an icon in the top right)
+- when the user click it highlight username for editing and also profile avatar

@@ -10,7 +10,6 @@ import { getCurrentUser } from "@/utils/user-store";
 
 export function Home() {
   const user = getCurrentUser();
-
   if (!user) {
     return (
       <section className={styles.pageLayoutDark}>
@@ -24,15 +23,16 @@ export function Home() {
       </section>
     );
   }
+
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className={`${styles.pageContent} gap-6`}>
+        <main className={styles.pageContent}>
           <Hero user={user} />
           <QuickStatsCards />
-          <QuickLinks />
+          {/* <QuickLinks /> */}
           <RecentActivityFeed />
           <LeaderboardPreview />
         </main>

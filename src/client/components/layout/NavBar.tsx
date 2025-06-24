@@ -117,7 +117,6 @@ export function NavBar() {
 
   // Settings items
   const settingsItems = [
-    { label: "Update Infos", path: "/my_profile", icon: "fa-user" },
     { label: "Access Keys", path: "/security", icon: "fa-lock" },
     { label: "Muted Players", path: "/blocked", icon: "fa-user-slash" },
     { label: "Wipe Account", path: "/delete_account", icon: "fa-trash" },

@@ -1,6 +1,5 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
-import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
 import { deleteAccount } from "@/handlers/handle-delete-account";
 import { CTA } from "@/components/common/Cta";
@@ -11,17 +10,11 @@ export function DeleteAccount() {
   }, 0);
 
   return (
-    <section className={styles.pageLayoutDark} id="blocked-section">
+    <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto flex flex-col items-center gap-10">
-          <MainHeader
-            isDark={false}
-            title="delete your account"
-            titleSpan="with honor"
-          />
-
+        <main className={styles.pageContent}>
           <p className="text-pong-dark-primary/80 text-center max-w-lg italic">
             Every paddle leaves a mark. Say a few words before parting ways with
             the club.

@@ -18,79 +18,110 @@ function TwoFaMode(mode: "app" | "email") {
 
   setTimeout(() => {
     const setupBtn = document.getElementById(setupId) as HTMLButtonElement;
-    const verifySection = document.getElementById(
-      verifySectionId
-    ) as HTMLDivElement;
-    const toggleBtn = document.getElementById(toggleId) as HTMLButtonElement;
+    const verifySection = document.getElementById(verifySectionId);
+    const toggleBtn = document.getElementById(toggleId);
+    const primaryBtn = document.getElementById(primaryId);
+    const statusLabel = document.getElementById(`${mode}-status`);
+    const setPrimaryBtn = document.getElementById(`${mode}-set-primary`);
+    const disableBtn = document.getElementById(`${mode}-disable`);
 
     if (setupBtn && !setupBtn.dataset.listener) {
       setupBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        setup2FA(isApp ? "app" : "email");
-
-        if (verifySection) verifySection.classList.remove("hidden");
-
+        setup2FA(mode);
+        verifySection?.classList.remove("hidden");
         setupBtn.classList.add("hidden");
-        if (toggleBtn) toggleBtn.classList.remove("hidden");
-
-        const primaryBtn = document.getElementById(
-          primaryId
-        ) as HTMLButtonElement;
-        if (primaryBtn) primaryBtn.classList.remove("hidden");
+        toggleBtn?.classList.remove("hidden");
       });
       setupBtn.dataset.listener = "true";
+    }
+
+    if (toggleBtn && !toggleBtn.dataset.listener) {
+      toggleBtn.addEventListener("click", () => {
+        verifySection?.classList.remove("hidden");
+      });
+      toggleBtn.dataset.listener = "true";
+    }
+
+    if (setPrimaryBtn && !setPrimaryBtn.dataset.listener) {
+      setPrimaryBtn.addEventListener("click", () => {
+        primaryBtn?.classList.remove("hidden");
+        if (statusLabel) {
+          statusLabel.textContent = "Primary";
+          statusLabel.className =
+            "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-pong-secondary/30 text-pong-secondary";
+        }
+      });
+      setPrimaryBtn.dataset.listener = "true";
+    }
+
+    if (disableBtn && !disableBtn.dataset.listener) {
+      disableBtn.addEventListener("click", () => {
+        verifySection?.classList.add("hidden");
+        primaryBtn?.classList.add("hidden");
+        toggleBtn?.classList.remove("hidden");
+        if (statusLabel) {
+          statusLabel.textContent = "Disabled";
+          statusLabel.className =
+            "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-red-200 text-red-700";
+        }
+      });
+      disableBtn.dataset.listener = "true";
     }
   }, 0);
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-pong-secondary/90 border border-pong-accent/30 shadow-lg rounded-xl px-6 py-5">
-        <span className="text-pong-accent font-semibold capitalize tracking-wide text-lg">
-          {mode === "app" ? "Authenticator App" : "Email OTP"}
-        </span>
-        <div className="flex items-center gap-4">
-          <button className={`${styles.primaryButton} w-28`} id={setupId}>
-            Setup
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-pong-secondary/90 shadow-lg rounded-xl px-6 pr-10 py-5 relative">
+      {/* Dots menu */}
+      <div className="absolute top-0 right-2 group">
+        <button className="text-white p-2 hover:text-pong-accent">
+          <i className="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <div className="hidden group-hover:flex flex-col absolute right-0 mt-2 bg-white text-sm text-pong-primary rounded-md shadow-md z-20">
+          <button
+            id={`${mode}-set-primary`}
+            className="px-4 py-2 hover:bg-pong-secondary/30"
+          >
+            Set as Primary
           </button>
           <button
-            className={`${styles.btnOneStyles} hidden`}
-            id={toggleId}
+            id={`${mode}-disable`}
+            className="px-4 py-2 hover:bg-pong-secondary/30"
           >
-            Enable
-          </button>
-          <button
-            className={`${styles.btnOneStyles} hidden`}
-            id={primaryId}
-          >
-            Primary
+            Disable
           </button>
         </div>
       </div>
-      <div
-        id={verifySectionId}
-        className="hidden flex-col items-center bg-white/95 border border-pong-accent/20 rounded-xl shadow-md px-6 py-5 mt-2"
-      >
-        <p
-          id={feedbackId}
-          className="text-pong-dark-primary text-sm my-2 text-center"
-        ></p>
-        <div id="2fa-app-qr" className="text-center mb-2"></div>
-        <input
-          id={otpInputId}
-          type="text"
-          maxLength={6}
-          pattern="[0-9]{6}"
-          placeholder="Enter 6-digit code"
-          className="py-3 px-8 text-center text-lg border-2 border-pong-accent rounded-lg focus:border-pong-secondary outline-none transition-all duration-200 bg-pong-secondary/10 tracking-widest mb-2"
-          autoComplete="one-time-code"
-        />
-        <button
-          id={verifyBtnId}
-          className="w-32 py-2 mt-1 bg-pong-accent text-white rounded-lg font-semibold hover:bg-pong-secondary transition-all duration-300 shadow"
+
+      <div className="flex items-center gap-3 text-pong-primary">
+        <i className={`fa-solid ${isApp ? "fa-mobile" : "fa-envelope"}`} />
+        <span className="font-semibold capitalize tracking-wide text-lg">
+          {isApp ? "Authenticator App" : "Email OTP"}
+        </span>
+        <span
+          id={`${mode}-status`}
+          className="ml-2 px-2 py-1 text-xs font-bold rounded-full bg-pong-accent/20 text-pong-accent"
         >
-          Verify
+          Disabled
+        </span>
+        <span
+          id={`${mode}-is-primary`}
+          className="ml-2 px-2 py-1 text-xs font-bold rounded-full bg-pong-primary/20 text-pong-primary"
+        >
+          Primary
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <button className={`${styles.primaryButton} w-28`} id={setupId}>
+          Setup
         </button>
-        <p id={verifyFeedbackId} className="text-pong-error text-sm mt-2"></p>
+        <button className={`${styles.btnOneStyles} hidden`} id={toggleId}>
+          Enable
+        </button>
+        <button className={`${styles.btnOneStyles} hidden`} id={primaryId}>
+          Primary
+        </button>
       </div>
     </div>
   );
@@ -98,11 +129,11 @@ function TwoFaMode(mode: "app" | "email") {
 
 export function TwoFa() {
   return (
-    <div className="bg-white/95 border border-pong-accent/20 rounded-2xl shadow-2xl p-8 m-4 w-full max-w-3xl mx-auto text-center animate-fadeInUp">
+    <div className="border border-pong-accent/20 rounded-2xl shadow-2xl p-8 m-4 w-full max-w-3xl mx-auto text-center animate-fadeInUp">
       <h2 className="text-2xl font-bold mb-2 text-pong-dark-primary">
         Two-Factor Authentication
       </h2>
-      <p className="mb-4 text-pong-primary/80">
+      <p className="mb-4 text-pong-dark-primary/80">
         Enhance your account security with two-factor authentication.
       </p>
       <div className="flex flex-col gap-6">

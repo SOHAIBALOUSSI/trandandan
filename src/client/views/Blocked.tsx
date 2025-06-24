@@ -5,12 +5,11 @@ import { styles } from "@/styles/styles";
 
 export function Blocked() {
   return (
-    <section className={styles.pageLayoutDark} id="blocked-section">
+    <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto flex flex-col items-center gap-8">
-        </main>
+        <main className={styles.pageContent}></main>
       </div>
     </section>
   );
