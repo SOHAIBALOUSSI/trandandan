@@ -23,8 +23,6 @@ services:
       - back-end
     ports:
       - "3001:3001"
-    volumes:
-      - "/home/msaadidi/Desktop/trandenden/src/server/uploads:/usr/src/app/uploads"
     depends_on:
       rabbitmq:
         condition: service_healthy

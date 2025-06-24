@@ -93,7 +93,7 @@ export async function googleLoginHandler(request, reply) {
                 userId: user.id,
                 username: user.username,
                 email: user.email,
-                avatar_url: userInfo.image.link
+                avatar_url: userInfo.picture
             }, 'profile.user.created');
         }
 

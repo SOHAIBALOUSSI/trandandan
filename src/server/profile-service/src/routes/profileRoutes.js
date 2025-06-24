@@ -1,4 +1,4 @@
-import { getProfile, updateProfile, uploadAvatarUrl } from "../controllers/profileController.js";
+import { getAvatarUrl, getProfile, updateProfile, uploadAvatarUrl } from "../controllers/profileController.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 import { updateProfileSchema } from "../schemas/profileSchema.js";
 
@@ -18,11 +18,13 @@ async function profileRoutes(fastify) {
     })
 
     fastify.post('/upload', {
-        // schema: {
-        //     body: updateProfileSchema
-        // },
         preHandler: verifyToken,
         handler: uploadAvatarUrl
+    })
+
+    fastify.get('/avatar/:fileName', {
+        preHandler: verifyToken,
+        handler: getAvatarUrl
     })
 }
 

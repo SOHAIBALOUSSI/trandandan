@@ -15,6 +15,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 | PATCH  | `/:id`        | Update a user profile                 | Yes                      | { username/avatar_url/solde/level/rank } (one or many)|
 | GET    | `/:id`        | Retrieve a user profile by id         | Yes                      | (none)                                |
 | POST   | `/upload`     | Updates a user's avatar               | Yes                      | image as formData                     |
+| GET   | `/avatar/:fileName`| Fetches a user's avatar           | Yes                      | (none)                     |
 
 ---
 
@@ -65,6 +66,16 @@ The `profile-service` is responsible for managing user profile data. It handles 
   500: INTERNAL_SERVER_ERROR
 
 ```
+
+- `/avatar/:fileName` 
+```yaml
+  400: FILE_NAME_REQUIRED
+  404: FILE_NOT_FOUND
+  200: AVATAR_UPLOADED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
 ---
 
 ## Schemas
