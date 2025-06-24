@@ -13,7 +13,7 @@ export async function blockHandler(request, reply) {
         if (userId === blockedId)
             return reply.code(400).send(createResponse(400, 'BLOCKED_INVALID'));
         
-        const blockExist = await this.redis.sIsMember(`blocker_${userId}`, `${blockedId}`);
+        const blockExist = await this.redis.sIsMember(`blocker:${userId}`, `${blockedId}`);
         if (blockExist)
             return reply.code(400).send(createResponse(400, 'BLOCK_EXISTS'));
         
@@ -27,7 +27,7 @@ export async function blockHandler(request, reply) {
             data: { exFriendId: blockedId } 
         }, 'notifications.friend.removed' );
 
-        await this.redis.sAdd(`blocker_${userId}`, `${blockedId}`);
+        await this.redis.sAdd(`blocker:${userId}`, `${blockedId}`);
 
         return reply.code(200).send(createResponse(200, 'BLOCK_SUCCESS'));
     } catch (error) {
@@ -48,13 +48,13 @@ export async function unblockHandler(request, reply) {
         if (userId === blockedId)
             return reply.code(400).send(createResponse(400, 'BLOCKED_INVALID'));
 
-        const blockExist = await this.redis.sIsMember(`blocker_${userId}`, `${blockedId}`);
+        const blockExist = await this.redis.sIsMember(`blocker:${userId}`, `${blockedId}`);
         if (!blockExist)
             return reply.code(400).send(createResponse(400, 'BLOCK_NOT_FOUND'));
 
         await removeBlock(this.db, userId, blockedId);
 
-        await this.sRem(`blocker_${userId}`, `${blockedId}`);
+        await this.sRem(`blocker:${userId}`, `${blockedId}`);
 
         return reply.code(200).send(createResponse(200, 'UNBLOCK_SUCCESS'));
     } catch (error) {
