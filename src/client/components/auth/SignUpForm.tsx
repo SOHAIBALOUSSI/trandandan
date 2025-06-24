@@ -2,22 +2,25 @@ import { InputField } from "../common/InputField";
 import { CTA } from "../common/Cta";
 import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
+import { fontSizes } from "@/styles/fontSizes";
 
 export function SignUpForm() {
   return (
-    <form id="signup-form" className={styles.form}>
+    <form id="signup-form" className={`${styles.form} animate-fadeInUp`}>
       <InputField
         type="text"
         name="username"
         id="username"
         placeholder="choose your noble name"
         autofocus={true}
+        className={styles.mainInputFieldStyles}
       />
       <InputField
         type="email"
         name="email"
         id="email"
         placeholder="your correspondence address"
+        className={styles.mainInputFieldStyles}
       />
       <div className="relative w-full text-left">
         <select
@@ -45,12 +48,14 @@ export function SignUpForm() {
         name="password"
         id="password"
         placeholder="forge your secret key"
+        className={styles.mainInputFieldStyles}
       />
       <InputField
         type="password"
         name="confirm-password"
         id="confirm-password"
         placeholder="confirm your secret key"
+        className={styles.mainInputFieldStyles}
       />
 
       <CTA btnIcon="fa-champagne-glasses" btnLabel="register your racket" />
@@ -60,19 +65,19 @@ export function SignUpForm() {
         of ping pong.
       </p>
 
-      <div className="text-center mt-4">
-        <p className="text-sm md:text-base font-semibold">
-          already a member of the hall?{" "}
-          <a
-            href="signin"
-            className="text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
-            data-link
-          >
-            enter the lounge.
-          </a>
-        </p>
-      </div>
-
+      <p
+        className={`${fontSizes.buttonFontSize} w-full font-medium text-pong-primary/80`}
+      >
+        already a member of the hall?{" "}
+        <a
+          href="signin"
+          className="text-pong-accent underline hover:text-pong-secondary transition-all duration-300"
+          data-link
+        >
+          enter the lounge.
+        </a>
+      </p>
+	
       <RemoteLink />
     </form>
   );

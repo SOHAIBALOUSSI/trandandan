@@ -2,16 +2,17 @@ import { styles } from "@/styles/styles";
 
 export function OtpInput(props: { id: string }) {
   const inputStyles = `
-	  w-8 h-10 md:w-12 md:h-14 
-	  text-sm md:text-xl text-center font-bold
-	  border border-pong-secondary/30
-	  rounded-xl shadow-sm
-	  caret-pong-accent
-	  bg-white/70
-	  text-pong-primary
-	  transition-all duration-300
-	  focus:outline-none focus:ring-1 focus:ring-pong-accent focus:border-pong-accent
-	`;
+  	w-10 h-12 md:w-14 md:h-16
+  	text-lg md:text-2xl text-center font-extrabold tracking-widest
+  	border border-pong-secondary/30
+  	rounded-2xl shadow-md
+  	caret-pong-accent
+  	bg-white/60 backdrop-blur
+  	text-pong-primary placeholder:text-pong-primary/30
+  	transition-all duration-300 ease-out focus:scale-105
+  	focus:outline-none focus:ring-2 focus:ring-pong-accent/70 focus:border-pong-accent
+  	focus:shadow-lg
+  `;
 
   return (
     <div id={props.id} className="flex justify-center gap-3 md:gap-4 w-full">

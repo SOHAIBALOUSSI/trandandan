@@ -5,10 +5,11 @@ export function BtnPrimary(props: {
   btnIcon: string;
   btnLabel: string;
 }) {
+  const { btnId, btnIcon, btnLabel } = props;
   return (
     <button
       type="submit"
-      id={props.btnId}
+      id={btnId}
       className={styles.primaryButton}
       aria-busy="false"
     >
@@ -18,10 +19,10 @@ export function BtnPrimary(props: {
         aria-hidden="true"
       ></span>
       <i
-        className={`fa-solid ${props.btnIcon} ${styles.primaryButtonIcon}`}
+        className={`fa-solid ${btnIcon} ${styles.primaryButtonIcon}`}
         aria-hidden="true"
       ></i>
-      <span id="btn-label">{props.btnLabel}</span>
+      <span id="btn-label">{btnLabel}</span>
     </button>
   );
 }

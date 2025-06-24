@@ -1,9 +1,9 @@
 import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
-import { handleSignUp } from "@/handlers/handle-signup";
 import { MainHeader } from "@/components/common/MainHeader";
 import { SignUpForm } from "@/components/auth/SignUpForm";
 import { Overlay } from "@/components/layout/Overlay";
+import { handleSignUp } from "@/handlers/handle-signup";
 import {
   handleGoogleSignin,
   handle42Signin,

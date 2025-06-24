@@ -2,21 +2,25 @@ import { InputField } from "../common/InputField";
 import { CTA } from "../common/Cta";
 import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
+import { fontSizes } from "@/styles/fontSizes";
 
 export function SignInForm() {
   return (
-    <form id="signin-form" className={styles.form}>
+    <form id="signin-form" className={`${styles.form} animate-fadeInUp`}>
       <InputField
-        type={"text"}
-        name={"login"}
-        id={"login"}
-        placeholder={"Member ID or Email"}
+        type="text"
+        name="login"
+        id="login"
+        placeholder="member ID or email"
+        autofocus={true}
+        className={styles.mainInputFieldStyles}
       />
       <InputField
-        type={"password"}
-        name={"password"}
-        id={"password"}
-        placeholder={"Secret Code"}
+        type="password"
+        name="password"
+        id="password"
+        placeholder="Secret Code"
+        className={styles.mainInputFieldStyles}
       />
 
       <div className="flex justify-between items-center w-full text-sm text-pong-primary/70 mt-[-0.5rem]">
@@ -39,7 +43,9 @@ export function SignInForm() {
 
       <CTA btnIcon="fa-door-open" btnLabel="enter the lounge" />
 
-      <p className="text-sm lg:text-base font-medium text-pong-primary/80 text-center">
+      <p
+        className={`${fontSizes.buttonFontSize} w-full font-medium text-pong-primary/80`}
+      >
         not a member yet?{" "}
         <a
           href="signup"

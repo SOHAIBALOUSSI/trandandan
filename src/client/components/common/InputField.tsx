@@ -4,7 +4,7 @@ export function InputField(props: {
   type: string;
   name: string;
   id: string;
-  placeholder: string;
+  placeholder?: string;
   autofocus?: boolean;
   className?: string;
 }) {
@@ -18,7 +18,7 @@ export function InputField(props: {
         required
         autoFocus={props.autofocus || false}
         autoComplete="off"
-        className={`${styles.inputField} ${props.className}`}
+        className={props.className}
       />
     </div>
   );

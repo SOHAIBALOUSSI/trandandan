@@ -1,3 +1,5 @@
+import { fontSizes } from "./fontSizes";
+
 export const styles = {
   // === Start Page Layout styles ===
   pageLayoutLight: `
@@ -5,8 +7,8 @@ export const styles = {
   	w-full min-h-screen
 	text-center
 	flex flex-col items-center justify-between gap-8
-	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
-	py-4 md:py-6
+	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12
+	py-6 md:py-10
 	text-pong-primary
   `,
   pageLayoutDark: `
@@ -18,17 +20,14 @@ export const styles = {
   // === End Page Layout styles ===
 
   // === Start Hero styles ===
-  heroTitleContainer: `
-  	w-full max-w-screen-xl 
-	animate-fadeInUp
-  `,
   heroTitle: `
 	leading-tight
 	text-[clamp(2.2rem,6vw,4.5rem)]
 	md:text-[clamp(3rem,8vw,7rem)]
 	xl:text-[clamp(4rem,10vw,9.25rem)]
 	md:leading-[1.1]
-	transition duration-300 hover:text-pong-secondary
+	hover:text-pong-secondary
+	transition duration-300
   `,
   heroTagline: `
   	mt-4 font-normal
@@ -38,21 +37,11 @@ export const styles = {
   	after:content-['...']
 	font-bold
   `,
-  heroCallToAction: `
-  	flex flex-col items-center gap-2 
-	animate-fadeInUp
-  `,
   heroSubtitle: `
     mt-2 text-pong-secondary
     md:text-[clamp(1rem,2vw,1.375rem)]
   `,
-  heroOverlay: `
- 	absolute inset-0 z-[-2] opacity-70 
-	bg-[url('../assets/background.png')] bg-repeat bg-cover 
-	animate-backgroundPan 
-  `,
   heroMascot: `
-	opacity-90 
 	w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24
 	absolute top-6 right-6 md:top-8 md:right-8 lg:top-10 lg:right-10
 	animate-float
@@ -61,10 +50,13 @@ export const styles = {
 
   // === Start Primary Button styles ===
   primaryButton: `
-    group relative w-full md:w-[320px] mx-auto
+    group 
+	relative 
+	w-full md:w-[320px] mx-auto
     px-6 py-4 md:px-8 md:py-5
     flex items-center justify-center gap-2
-    text-sm lg:text-base font-bold uppercase tracking-wider
+	${fontSizes.buttonFontSize}
+	font-bold capitalize tracking-wider
     text-white bg-pong-accent hover:bg-pong-secondary
     rounded-xl shadow-md hover:shadow-lg
     transition-all duration-300 transform active:scale-[0.97]
@@ -77,13 +69,15 @@ export const styles = {
   // === End Primary Button styles ===
 
   // === Start Input Field styles ===
-  inputField: `
+  mainInputFieldStyles: `
+	input-field
 	w-full px-5 py-3.5
-	text-sm lg:text-base font-semibold tracking-wide
+	${fontSizes.buttonFontSize} 
+	font-semibold tracking-wide
 	text-pong-primary bg-pong-secondary/10
 	rounded-xl shadow-inner
 	border border-pong-primary/10 focus:border-pong-accent
-	placeholder:capitalize placeholder:text-pong-primary/50
+	placeholder:text-pong-primary/50
 	focus:outline-none focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
 	focus:bg-white/40
 	transition-all duration-300
@@ -91,7 +85,8 @@ export const styles = {
   `,
   customSelect: `
   	w-full px-4 py-3 pr-10
-  	text-sm lg:text-base font-semibold
+  	${fontSizes.buttonFontSize}  
+	font-semibold
   	bg-pong-secondary/10
   	capitalize text-pong-primary
   	rounded-md border border-pong-primary/10
@@ -105,13 +100,12 @@ export const styles = {
 
   // === Start Form styles ===
   form: `
-  max-w-md w-full mx-auto
-  bg-gradient-to-br from-pong-secondary/20 via-pong-bg/50 to-pong-accent/10
-  shadow-2xl rounded-3xl
-  backdrop-blur-sm border border-pong-accent/20
-  flex flex-col items-center text-center gap-6
-  px-8 py-12
-  animate-fadeInUp
+  	max-w-md w-full mx-auto
+  	bg-gradient-to-br from-pong-secondary/20 via-pong-bg/50 to-pong-accent/10
+  	shadow-2xl rounded-3xl
+  	backdrop-blur-sm border border-pong-accent/20
+  	flex flex-col items-center gap-6
+  	px-8 py-12
   `,
   formMessage: `
   	text-center text-sm font-semibold min-h-[1.5rem] mb-2
@@ -120,10 +114,8 @@ export const styles = {
 
   // === Start Main Header styles ===
   titleDark: `
-	capitalize 
-	text-pong-primary 
-	text-3xl md:text-4xl lg:text-5xl xl:text-6xl 
-	font-bold tracking-tight leading-tight	
+	tracking-tight leading-tight
+	${fontSizes.sectionTitleFontSize}
   `,
   titleSpanDark: `
 	font-playfair 
@@ -133,14 +125,12 @@ export const styles = {
   `,
   subtitleDark: `
 	font-semibold 
-	text-lg md:text-xl lg:text-2xl xl:text-3xl 
-	text-pong-primary
+	${fontSizes.sectionSubtitleFontSize}
   `,
   subtitleParagraphDark: `
-	mt-2 
 	text-pong-primary/80 
-	text-sm md:text-base lg:text-lg xl:text-xl 
 	leading-relaxed
+	${fontSizes.bodyFontSize}
   `,
   // === End Main Header styles ===
 
@@ -212,13 +202,24 @@ export const styles = {
     group
   `,
 
-  // === Start Reset password section styles ===
+  // === Start Custom Sections styles ===
   customSectionStyles: `
-    bg-transparent shadow-2xl rounded-2xl border border-pong-accent/20
-	backdrop-blur-md
-    max-w-lg w-full mx-auto p-8
+  	bg-pong-secondary/5 shadow-[0_8px_30px_rgba(0,0,0,0.15)]
+  	rounded-3xl border border-pong-accent/30
+  	backdrop-blur-md
+  	max-w-xl w-full mx-auto 
+  	px-8 py-10 md:py-14
   `,
-  // === End Reset password section styles ===
+  customForm: `
+  	flex flex-col gap-6
+  	w-full max-w-md mx-auto
+  	bg-pong-bg/70 shadow-xl rounded-2xl
+  	px-6 py-10
+  	backdrop-blur-md
+  	border border-pong-accent/20
+  	animate-fadeInUp
+  `,
+  // === End Custom Sections styles ===
 
   // === Start Button Primary styles ===
   btnOneStyles: `

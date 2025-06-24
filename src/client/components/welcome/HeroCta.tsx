@@ -2,7 +2,7 @@ import { styles } from "@/styles/styles";
 
 export function HeroCta() {
   return (
-    <div className={styles.heroCallToAction}>
+    <div className="flex flex-col items-center gap-2">
       <a
         href="signin"
         className={`${styles.primaryButton} animate-myPulse hover:animate-none`}

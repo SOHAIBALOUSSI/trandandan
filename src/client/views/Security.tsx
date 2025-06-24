@@ -17,7 +17,6 @@ export function Security() {
       <div className="w-full relative">
         <TopBar />
         <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto flex flex-col items-center gap-8">
-          <MainHeader isDark={false} title="the ledger" titleSpan="room" />
           <TwoFa />
           <div>
             <h2 className="text-xl text-pong-dark-primary mb-4">
