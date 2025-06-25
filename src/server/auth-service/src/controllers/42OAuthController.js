@@ -109,7 +109,7 @@ export async function fortyTwoLoginHandler(request, reply) {
                 userId: user.id,
                 username: user.username,
                 email: user.email,
-                avatar_url: userInfo.picture
+                avatar_url: userInfo.image.link
             }, 'profile.user.created');
         }
 
