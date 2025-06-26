@@ -11,7 +11,7 @@ export function Security() {
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className={styles.pageContent}>
+        <main className={`${styles.pageContent}`}>
           <TwoFa />
           <ChangePassword />
           <ChangeEmail />

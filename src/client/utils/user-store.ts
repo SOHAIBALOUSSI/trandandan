@@ -1,4 +1,4 @@
-import type { UserProfile } from "../../../types/types";
+import { UserProfile } from "types/types";
 import MaleAvatar from "@/assets/male.png";
 import FemaleAvatar from "@/assets/female.png";
 

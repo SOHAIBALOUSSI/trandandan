@@ -1,3 +1,4 @@
+// Response messages for various authentication service actions
 export const LoginRes: Record<string, string> = {
   INVALID_CREDENTIALS:
     "No matching racket in the locker room. Double-check your grip and try again.",
@@ -20,16 +21,6 @@ export const RegisterRes: Record<string, string> = {
   PASSWORD_POLICY:
     "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
   USER_EXISTS: "This racket is already in the club. Try signing in instead.",
-  USER_REGISTERED:
-    "Welcome to the club, champion! Your racket is ready for the game.",
-  INTERNAL_SERVER_ERROR:
-    "The club’s lights are out at the moment. Try again shortly.",
-};
-
-export const RemoteRes: Record<string, string> = {
-  AUTH_CODE_REQUIRED:
-    "You need to bring your auth code to the court. Please provide it to continue.",
-  USER_LOGGED_IN: "Welcome back, champ! You’re cleared for the court.",
   USER_REGISTERED:
     "Welcome to the club, champion! Your racket is ready for the game.",
   INTERNAL_SERVER_ERROR:
@@ -78,6 +69,8 @@ export const Setup2FaRes: Record<string, string> = {
   UNAUTHORIZED: "Unauthorized access. Only logged-in champs can set up 2FA.",
   TWOFA_ALREADY_ENABLED:
     "Two-factor authentication is already active on this racket.",
+  TWOFA_ALREADY_PENDING:
+    "You're already mid-setup. Complete your 2FA to secure the club.",
   SCAN_QR:
     "Scan the QR code with your authenticator app to activate your 2FA defense.",
   CODE_SENT: "A 2FA code has been emailed. Enter it to complete the setup.",
@@ -85,18 +78,57 @@ export const Setup2FaRes: Record<string, string> = {
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
-export const Verify2FaRes: Record<string, string> = {
+export const Verify2FaSetupRes: Record<string, string> = {
   TWOFA_NOT_SET:
     "Two-factor authentication isn’t set up yet. Prepare your defense first.",
   TWOFA_ALREADY_ENABLED:
     "Two-factor authentication is already active on this racket.",
-  TWOFA_NOT_ENABLED: "2FA isn’t active yet. Step onto the setup court first.",
   UNAUTHORIZED: "Unauthorized. Only logged-in champs can verify 2FA.",
   OTP_REQUIRED: "OTP required. Enter your code to proceed.",
   OTP_INVALID: "Invalid OTP. That rally didn’t land — try again.",
   TWOFA_ENABLED:
     "Two-factor authentication successfully enabled. You’ve upgraded your game!",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const Verify2FaLoginRes: Record<string, string> = {
+  TWOFA_NOT_SET:
+    "Two-factor authentication isn’t set up yet. Prepare your defense first.",
+  TWOFA_NOT_ENABLED: "2FA isn’t active yet. Step onto the setup court first.",
+  UNAUTHORIZED: "Unauthorized. Only logged-in champs can verify 2FA.",
+  OTP_REQUIRED: "OTP required. Enter your code to proceed.",
+  OTP_INVALID: "Invalid OTP. That rally didn’t land — try again.",
   USER_LOGGED_IN: "Welcome back, champ! You’re cleared for the court.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const Disable2FaRes: Record<string, string> = {
+  UNAUTHORIZED: "Access denied. You must be logged in to disable 2FA.",
+  METHODS_NOT_ENABLED:
+    "No 2FA methods are active. You’ll need to set one up before disabling.",
+  METHOD_DISABLED: "This 2FA method is now disabled. You can play without it.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const Enable2FaRes: Record<string, string> = {
+  UNAUTHORIZED: "Access denied. Log in to enable two-factor authentication.",
+  METHODS_NOT_ENABLED:
+    "No available 2FA methods found. Please set one up first to enable it.",
+  METHOD_ENABLED: "You're all set — this two-factor method is now active.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const Primary2FaMethodRes: Record<string, string> = {
+  UNAUTHORIZED:
+    "Hold up! You must be logged in to manage your primary 2FA method.",
+  METHODS_NOT_ENABLED:
+    "You don’t have any 2FA methods set up. Get one going first.",
+  PRIMARY_METHOD_UPDATED:
+    "All set! Your primary 2FA method has been successfully updated.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
@@ -109,8 +141,10 @@ export const DeleteAccountRes: Record<string, string> = {
 };
 
 export const UpdateCredentialsRes: Record<string, string> = {
-  BOTH_PASSWORDS_REQUIRED:
-    "Both new password and confirmation are required. Please fill them in.",
+  PASSWORDS_REQUIRED:
+    "Both old and new passwords are required. Please provide them.",
+  INVALID_PASSWORD:
+    "Your old password is incorrect. Check your grip and try again.",
   UNMATCHED_PASSWORDS:
     "Your new passwords don’t match. Adjust your swing and re-enter.",
   PASSWORD_POLICY:
@@ -141,6 +175,33 @@ export const VerifyUpdateCredentialsRes: Record<string, string> = {
     "OTP required. Please enter the code sent to your authenticator app or email.",
   OTP_INVALID: "Invalid OTP. Please check the code and try again.",
   CREDENTIALS_UPDATED: "Your credentials have been successfully updated.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+// Response messages for various user profile service actions
+export const UpdateUserProfileRes: Record<string, string> = {
+  UNAUTHORIZED: "Unauthorized. Only logged-in champs can update their profile.",
+  PROFILE_NOT_FOUND: "Profile not found. Please check your request.",
+  USERNAME_EXISTS: "This username is already taken. Please choose another one.",
+  MISSING_FIELDS: "All fields are required. Please fill them in.",
+  ZERO_CHANGES: "No changes detected. Please modify at least one field.",
+  PROFILE_UPDATED: "Your profile has been successfully updated.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const UploadAvatarRes: Record<string, string> = {
+  FILE_REQUIRED: "An avatar file is required. Please upload an image.",
+  AVATAR_UPLOADED: "Your avatar has been successfully uploaded.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const GetUserAvatarRes: Record<string, string> = {
+  FILE_NAME_REQUIRED: "A file name is required to retrieve the avatar.",
+  FILE_NOT_FOUND: "Avatar not found. Please check the file name.",
+  AVATAR_UPLOADED: "Your avatar has been successfully retrieved.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };

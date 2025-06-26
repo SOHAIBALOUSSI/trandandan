@@ -247,4 +247,35 @@ export const styles = {
 	transition-all duration-300
   `,
   // === End Custom Links styles ===
+
+  // === Start Custom Cards styles ===
+  settingsLayout: `
+  	bg-pong-dark-bg 
+	border border-pong-accent/30 rounded-3xl 
+	shadow-2xl 
+	w-full max-w-3xl 
+	p-8 md:p-10 
+	my-4 mx-auto
+  `,
+  enabledStyle: `
+	ml-2 px-2 py-1 
+	text-xs font-bold 
+	rounded-full 
+	bg-pong-success/10 
+	text-pong-success/90
+  `,
+  disabledStyle: `
+	ml-2 px-2 py-1 
+	text-xs font-bold 
+	rounded-full 
+	bg-pong-error/10 
+	text-pong-error/90
+  `,
+  primaryStyle: `
+	ml-2 px-2 py-1 
+	text-xs font-bold 
+	rounded-full 
+	bg-pong-primary/30 
+	text-pong-dark-accent 
+  `,
 };

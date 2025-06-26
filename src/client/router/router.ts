@@ -68,34 +68,34 @@ export async function router(): Promise<void> {
 
   let authed = false;
 
-//   if (!isPublic) {
+  if (!isPublic) {
     authed = await isAuthenticated();
-//     if (!authed) {
-//       history.replaceState(null, "", "/signin");
-//       await router();
-//       return;
-//     }
-//   }
+    if (!authed) {
+      history.replaceState(null, "", "/signin");
+      await router();
+      return;
+    }
+  }
 
-//   if (isPublic) {
-//     if (!authed) {
-//       authed = await isAuthenticated();
-//     }
-//     if (authed) {
-//       history.replaceState(null, "", "/salon");
-//       await router();
-//       return;
-//     }
-//   }
+  if (isPublic) {
+    if (!authed) {
+      authed = await isAuthenticated();
+    }
+    if (authed) {
+      history.replaceState(null, "", "/salon");
+      await router();
+      return;
+    }
+  }
 
-//   if (path === "password_update") {
-//     const token = sessionStorage.getItem("reset_flag");
-//     if (!token) {
-//       history.replaceState(null, "", "/password_reset");
-//       await router();
-//       return;
-//     }
-//   }
+  if (path === "password_update") {
+    const token = sessionStorage.getItem("reset_flag");
+    if (!token) {
+      history.replaceState(null, "", "/password_reset");
+      await router();
+      return;
+    }
+  }
 
   // Handle unknown routes
   if (!render) {

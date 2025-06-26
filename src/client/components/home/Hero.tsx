@@ -1,7 +1,3 @@
-import { styles } from "@/styles/styles";
-import { getCurrentUser } from "@/utils/user-store";
-import MaleAvatar from "@/assets/male.png";
-import FemaleAvatar from "@/assets/female.png";
 import { UserProfile } from "types/types";
 
 export function Hero(props: { user: UserProfile | null }) {

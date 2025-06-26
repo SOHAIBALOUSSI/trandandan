@@ -1,5 +1,5 @@
 import { styles } from "@/styles/styles";
-import { Verify2FaRes } from "@/utils/response-messages";
+import { Verify2FaLoginRes } from "@/utils/response-messages";
 
 export function verifyLogin(mode: string | null) {
   const form = document.getElementById("verify-login-form") as HTMLFormElement;
@@ -57,7 +57,7 @@ export function verifyLogin(mode: string | null) {
       if (response.ok) {
         setTimeout(() => {
           feedback.className = `${styles.formMessage} text-pong-success`;
-          feedback.textContent = Verify2FaRes.USER_LOGGED_IN;
+          feedback.textContent = Verify2FaLoginRes.USER_LOGGED_IN;
 
           setTimeout(() => {
             history.pushState(null, "", "/salon");
@@ -67,7 +67,7 @@ export function verifyLogin(mode: string | null) {
       } else {
         setTimeout(() => {
           const errorMsg =
-            Verify2FaRes[result?.code] ||
+            Verify2FaLoginRes[result?.code] ||
             "Error during 2fa verification. Please try again.";
           feedback.className = `${styles.formMessage} text-pong-error`;
           feedback.textContent = errorMsg;
@@ -79,7 +79,7 @@ export function verifyLogin(mode: string | null) {
       }
     } catch (error) {
       feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.textContent = Verify2FaRes.INTERNAL_SERVER_ERROR;
+      feedback.textContent = Verify2FaLoginRes.INTERNAL_SERVER_ERROR;
       otpInputs.forEach((input) => {
         input.value = "";
       });
