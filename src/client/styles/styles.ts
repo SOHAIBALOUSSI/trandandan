@@ -135,7 +135,7 @@ export const styles = {
   // === Start Main Header styles ===
   titleDark: `
 	tracking-tight leading-tight
-	${fontSizes.sectionTitleFontSize}
+	${fontSizes.titleFontSize}
   `,
   titleSpanDark: `
 	font-playfair 
@@ -145,7 +145,7 @@ export const styles = {
   `,
   subtitleDark: `
 	font-semibold 
-	${fontSizes.sectionSubtitleFontSize}
+	${fontSizes.subtitleFontSize}
   `,
   subtitleParagraphDark: `
 	text-pong-primary/80 
@@ -232,10 +232,10 @@ export const styles = {
 
   // === Start Page Content styles ===
   pageContent: `
-	px-20 pt-20 md:pt-26 
+	px-12 md:px-20 pt-20 md:pt-26 
 	h-[calc(100vh-2rem)] 
 	overflow-y-auto
-	flex flex-col items-center justify-start gap-6
+	flex flex-col items-center gap-6
   `,
   // === End Page Content styles ===
 

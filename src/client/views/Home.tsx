@@ -16,7 +16,7 @@ export function Home() {
         <NavBar />
         <div className="w-full relative">
           <TopBar />
-          <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto flex items-center justify-center">
+          <main className="h-[100vh] flex items-center justify-center">
             <p className="text-white">Loading...</p>
           </main>
         </div>
@@ -34,7 +34,7 @@ export function Home() {
           <QuickStatsCards />
           {/* <QuickLinks /> */}
           <RecentActivityFeed />
-          <LeaderboardPreview />
+          <LeaderboardPreview user={user} />
         </main>
       </div>
     </section>

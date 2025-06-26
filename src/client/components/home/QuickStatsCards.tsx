@@ -1,3 +1,4 @@
+import { fontSizes } from "@/styles/fontSizes";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
 
@@ -9,12 +10,10 @@ function Card(props: {
 }) {
   return (
     <div
-      className={`${props.bgColor} backdrop-blur-sm rounded-xl shadow-md p-4 flex flex-col items-center hover:scale-[1.02] transition-transform duration-300`}
+      className={`${props.bgColor} ${fontSizes.bodyFontSize} rounded-xl shadow-md p-4 flex flex-col items-center hover:scale-[1.02] transition-transform duration-300`}
     >
-      <span className={`${props.textColor} text-2xl font-extrabold`}>
-        {props.value}
-      </span>
-      <span className="text-pong-dark-primary/90 text-sm mt-1 font-medium">
+      <span className={`${props.textColor} font-extrabold`}>{props.value}</span>
+      <span className={`text-pong-dark-primary mt-1 font-medium`}>
         {props.label}
       </span>
     </div>
@@ -25,7 +24,7 @@ export function QuickStatsCards() {
   const user = getCurrentUser();
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl mx-auto px-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl mx-auto">
       <Card
         value={`${user?.solde} F`}
         label="Solde"
