@@ -24,21 +24,21 @@ export async function setup2FAApp(request, reply) {
             name: `trandenden (${user.username})`,
             length: 32
         });
+        const otpauthUrl = secret.otpauth_url;
+        const qrCodeUrl = await QRCode.toDataURL(otpauthUrl);
+
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'app');
         if (!twoFa)
             await storeTempSecret(this.db, secret.base32, userId);
         else
         {
             if (twoFa.temp_secret)
-                return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_PENDING'));
+                return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_PENDING', { qrCode: qrCodeUrl }));
             if (twoFa.enabled && twoFa.type === 'app')
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
             await updateTempSecret(this.db, secret.base32, user.id);
         }
-        
-        const otpauthUrl = secret.otpauth_url;
-        const qrCodeUrl = await QRCode.toDataURL(otpauthUrl);
-        
+                
         return reply.code(200).send(createResponse(200, 'SCAN_QR', { qrCode: qrCodeUrl }));
     } catch (error) {
         console.log(error);

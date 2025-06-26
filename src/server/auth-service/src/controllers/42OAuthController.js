@@ -19,7 +19,7 @@ import {
 } from "../utils/authCookies.js";
 
 export async function   fortyTwoSetupHandler(request, reply) {
-    const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code&prompt=consent`;
+    const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code`;
     reply.redirect(url);
 }
 
@@ -109,7 +109,7 @@ export async function fortyTwoLoginHandler(request, reply) {
                 userId: user.id,
                 username: user.username,
                 email: user.email,
-                avatar_url: userInfo.picture
+                avatar_url: userInfo.image.link
             }, 'profile.user.created');
         }
 
