@@ -3,7 +3,7 @@ import { styles } from "@/styles/styles";
 export function OtpInput(props: { id: string }) {
   const inputStyles = `
   	w-10 h-12 md:w-14 md:h-16
-  	text-lg md:text-2xl text-center font-extrabold tracking-widest
+  	text-lg md:text-2xl text-center font-bold tracking-widest
   	border border-pong-secondary/30
   	rounded-2xl shadow-md
   	caret-pong-accent

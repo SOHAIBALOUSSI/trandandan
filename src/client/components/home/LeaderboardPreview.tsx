@@ -1,15 +1,8 @@
-import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import FemaleAvatar from "@/assets/female.png";
 import MaleAvatar from "@/assets/male.png";
 import { UserProfile } from "types/types";
-
-type UserRank = {
-  rank: number;
-  name: string;
-  level: string;
-  avatarUrl: string;
-};
+import { UserRank } from "types/types";
 
 export function LeaderboardPreview(props: { user: UserProfile | null }) {
   const { user } = props;
@@ -27,6 +20,7 @@ export function LeaderboardPreview(props: { user: UserProfile | null }) {
       >
         Hall of Champions
       </h2>
+
       <ol className={`space-y-3 ${fontSizes.smallTextFontSize}`}>
         {topThree.map((user) => (
           <li
@@ -50,22 +44,28 @@ export function LeaderboardPreview(props: { user: UserProfile | null }) {
           </li>
         ))}
       </ol>
-      <div className="flex items-center justify-between mt-6">
-        <div className={`flex items-center gap-2 bg-black/70 rounded-md px-3 py-2 shadow ${fontSizes.verysmallTextFontSize}`}>
-          <span className="font-bold text-pong-accent">Your Rank</span>
-          <span className="font-semibold text-pong-dark-primary">
-            {user?.rank}
-          </span>
+
+      <div
+        className={`flex items-center justify-between mt-6 ${fontSizes.verysmallTextFontSize}`}
+      >
+        <div className="flex items-center gap-4 bg-gradient-to-r from-black/70 to-black/60 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg border border-white/10 transition hover:border-pong-accent">
           <img
             src={user?.avatar_url}
             alt="Your Avatar"
-            className="w-7 h-7 rounded-full border border-pong-accent"
+            className="w-9 h-9 rounded-full shadow-md"
           />
-          <span className="text-pong-dark-primary">{user?.username}</span>
-          <span className="text-pong-secondary italic">
-            Level {user?.level}
-          </span>
+          <div className="flex flex-col">
+            <span className="text-white/70">Your Rank</span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-pong-accent">#{user?.rank}</span>
+              <span className="bg-pong-dark-bg text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                Level {user?.level}
+              </span>
+            </div>
+          </div>
+          <i className="fa-solid fa-trophy text-yellow-400 ml-auto text-xl"></i>
         </div>
+
         <a
           href="chamber"
           className="text-pong-accent hover:underline font-semibold ml-4"

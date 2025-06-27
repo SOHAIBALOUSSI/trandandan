@@ -8,7 +8,7 @@ export function ChangePassword() {
 
   return (
     <div className={styles.settingsLayout}>
-      <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
         Forge a New Passphrase
       </h2>
       <p className="text-base md:text-lg text-white/80 mb-8 leading-relaxed">

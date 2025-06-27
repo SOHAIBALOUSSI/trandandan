@@ -205,7 +205,7 @@ export function TwoFa() {
 
   return (
     <div className={styles.settingsLayout}>
-      <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
         Secure Your Club Access
       </h2>
       <p className="text-base md:text-lg text-white/80 mb-8 leading-relaxed">

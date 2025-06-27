@@ -12,7 +12,7 @@ function Card(props: {
     <div
       className={`${props.bgColor} ${fontSizes.bodyFontSize} rounded-xl shadow-md p-4 flex flex-col items-center hover:scale-[1.02] transition-transform duration-300`}
     >
-      <span className={`${props.textColor} font-extrabold`}>{props.value}</span>
+      <span className={`${props.textColor} font-bold`}>{props.value}</span>
       <span className={`text-pong-dark-primary mt-1 font-medium`}>
         {props.label}
       </span>

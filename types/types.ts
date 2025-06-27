@@ -21,3 +21,10 @@ export type UserRegister = {
   password: string;
   confirmPassword: string;
 };
+
+export type UserRank = {
+  rank: number;
+  name: string;
+  level: string;
+  avatarUrl: string;
+};

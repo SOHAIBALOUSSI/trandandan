@@ -1,52 +1,73 @@
-export function MemberCard(props: {
-  name: string;
-  email: string;
-  sold: string;
-  grade: string;
-  avatar: string;
-  rank: string;
-}) {
-  const { name, email, sold, grade, avatar, rank } = props;
+import { UserProfile } from "types/types";
+
+export function MemberCard(props: { user: UserProfile | null }) {
+  const { user } = props;
+
+  const joined = user?.created_at
+    ? new Date(user.created_at).toLocaleDateString("en-GB", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
+
   return (
-    <div className="flex flex-col gap-6 p-6 md:p-8 bg-gradient-to-br from-[#1a1a1a] via-[#111111] to-[#0d0d0d] rounded-3xl w-full max-w-2xl mx-auto border border-pong-dark-highlight/40 shadow-lg backdrop-blur-xl relative">
-      <div className="absolute top-4 right-4 text-pong-secondary hover:text-pong-accent transition-colors duration-300 cursor-pointer">
-        <i className="fa-solid fa-pen" />
-      </div>
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-wide text-pong-accent text-center mb-2 md:mb-4">
+    <div className="flex flex-col gap-6 p-6 md:p-8 bg-gradient-to-br from-[#1a1a1a] via-[#111111] to-[#0d0d0d] rounded-3xl w-full max-w-2xl mx-auto border border-pong-dark-highlight/40 shadow-lg backdrop-blur-xl">
+      <h2 className="text-center text-2xl md:text-3xl font-extrabold text-pong-accent tracking-tight">
         BHV Member Card
       </h2>
+
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
-        <img
-          src={avatar}
-          alt="Profile avatar"
-          className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 shadow-xl object-cover bg-pong-bg"
-        />
+        <div className="relative">
+          <div className="p-1 rounded-full bg-gradient-to-tr from-pong-accent to-pong-dark-accent shadow-lg">
+            <img
+              src={user?.avatar_url}
+              alt="Profile avatar"
+              className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover bg-pong-bg border-4 border-pong-bg shadow-xl"
+            />
+          </div>
+        </div>
+
         <div className="flex flex-col gap-3 flex-1 w-full">
           <div>
-            <span className="block text-xs uppercase text-pong-secondary tracking-widest mb-1">
-              Name
+            <span className="block uppercase text-pong-secondary tracking-widest mb-1 text-xs md:text-sm">
+              Username
             </span>
-            <span className="block text-lg sm:text-xl font-bold text-pong-dark-primary border-b-2 border-pong-accent/40 pb-1 break-words">
-              {name}
+            <span
+              id="member-username"
+              className="block font-bold text-pong-dark-primary border-b-2 border-pong-accent/40 pb-1 break-words normal-case text-lg md:text-xl focus:outline-none focus:border-pong-accent focus:bg-pong-accent/10 focus:shadow-lg focus:ring-2 focus:ring-pong-accent focus:px-2 focus:border-none transition-all duration-200"
+            >
+              {user?.username}
             </span>
           </div>
+
           <div>
-            <span className="block text-xs uppercase text-pong-secondary tracking-widest mb-1">
+            <span className="block uppercase text-pong-secondary tracking-widest mb-1 text-xs md:text-sm">
               Email
             </span>
-            <span className="normal-case block text-sm sm:text-base font-medium text-pong-dark-primary/80 border-b border-pong-dark-highlight pb-1 break-all">
-              {email}
+            <span className="block font-medium text-pong-dark-primary/80 border-b border-pong-dark-highlight pb-1 break-all text-base normal-case">
+              {user?.email}
             </span>
           </div>
+
+          <div>
+            <span className="block uppercase text-pong-secondary tracking-widest mb-1 text-xs md:text-sm">
+              Joined
+            </span>
+            <span className="block text-sm md:text-base text-white/70">
+              {joined}
+            </span>
+          </div>
+
           <div className="flex flex-wrap gap-3 mt-4">
             <span className="bg-pong-secondary/20 text-pong-secondary px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              Sold: {sold}
+              Sold: {user?.solde}
             </span>
             <span className="bg-pong-highlight/20 text-pong-highlight px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              Grade: {grade}
+              Grade: {user?.level}
             </span>
             <span className="bg-yellow-400/20 text-yellow-300 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              Rank: {rank}
+              Rank: {user?.rank}
             </span>
           </div>
         </div>
