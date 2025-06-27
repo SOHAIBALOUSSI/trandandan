@@ -44,7 +44,7 @@ export function ResetPassword() {
         <form id="lost-pass-otp-form" className={`${styles.customForm} hidden`}>
           <label
             htmlFor="otp"
-            className={`${fontSizes.buttonFontSize} text-pong-primary font-semibold`}
+            className={`${fontSizes.bodyFontSize} text-pong-primary font-semibold`}
           >
             paste the code we just served you
           </label>

@@ -19,11 +19,11 @@ export function MemberCard(props: { user: UserProfile | null }) {
 
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
         <div className="relative">
-          <div className="p-1 rounded-full bg-gradient-to-tr from-pong-accent to-pong-dark-accent shadow-lg">
+          <div className="w-24 h-24 md:w-28 md:h-28 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg">
             <img
               src={user?.avatar_url}
               alt="Profile avatar"
-              className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover bg-pong-bg border-4 border-pong-bg shadow-xl"
+              className="w-full h-full rounded-full object-cover"
             />
           </div>
         </div>

@@ -3,6 +3,7 @@ import FemaleAvatar from "@/assets/female.png";
 import MaleAvatar from "@/assets/male.png";
 import { UserProfile } from "types/types";
 import { UserRank } from "types/types";
+import { styles } from "@/styles/styles";
 
 export function LeaderboardPreview(props: { user: UserProfile | null }) {
   const { user } = props;
@@ -66,11 +67,7 @@ export function LeaderboardPreview(props: { user: UserProfile | null }) {
           <i className="fa-solid fa-trophy text-yellow-400 ml-auto text-xl"></i>
         </div>
 
-        <a
-          href="chamber"
-          className="text-pong-accent hover:underline font-semibold ml-4"
-          data-link
-        >
+        <a href="chamber" className={styles.customBtnLink} data-link>
           View More &rarr;
         </a>
       </div>

@@ -48,9 +48,10 @@ export function verifyOtpCode() {
       const result = await response.json();
 
       if (response.ok) {
-        sessionStorage.setItem("reset_flag", "ok");
         setTimeout(() => {
-          displayToast(VerifyCodeRes.CODE_VERIFIED, "success");
+          displayToast(VerifyCodeRes.CODE_VERIFIED, "success", {
+            noProgressBar: true,
+          });
           setTimeout(() => {
             history.pushState(null, "", "/password_update");
             window.dispatchEvent(new PopStateEvent("popstate"));

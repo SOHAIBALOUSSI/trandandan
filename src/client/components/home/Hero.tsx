@@ -1,4 +1,5 @@
 import { fontSizes } from "@/styles/fontSizes";
+import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";
 
 export function Hero(props: { user: UserProfile | null }) {
@@ -7,11 +8,14 @@ export function Hero(props: { user: UserProfile | null }) {
   return (
     <div className="p-6 md:p-10 shadow-xl shadow-black/30 w-full max-w-5xl mx-auto rounded-2xl backdrop-blur-md">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-        <img
-          src={user?.avatar_url}
-          alt="Profile Avatar"
-          className="w-24 h-24 md:w-28 md:h-28 rounded-full shadow-md object-cover mb-4 md:mb-0 hover:scale-105 transition-transform duration-300"
-        />
+        <div className="w-28 h-28 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg hover:scale-105 transition-transform duration-300">
+          <img
+            src={user?.avatar_url}
+            alt="Profile Avatar"
+            className="w-full h-full rounded-full object-cover"
+          />
+        </div>
+
         <div className="text-center md:text-left flex-1">
           <h2
             className={`${fontSizes.titleFontSize} font-bold text-pong-dark-primary mb-2`}
@@ -33,11 +37,7 @@ export function Hero(props: { user: UserProfile | null }) {
           >
             “Every champion was once a contender who refused to give up.”
           </p>
-          <a
-            href="my_profile"
-            className={`inline-block px-6 py-2 bg-pong-accent hover:bg-pong-dark-accent text-white rounded-lg shadow transition-colors duration-200 ${fontSizes.buttonFontSize} font-semibold`}
-            data-link
-          >
+          <a href="my_profile" className={styles.customBtnLink} data-link>
             View Profile
           </a>
         </div>

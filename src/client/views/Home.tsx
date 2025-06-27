@@ -7,6 +7,7 @@ import { RecentActivityFeed } from "@/components/home/RecentActivityFeed";
 import { LeaderboardPreview } from "@/components/home/LeaderboardPreview";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
+import { Loading } from "@/components/common/Loading";
 
 export function Home() {
   const user = getCurrentUser();
@@ -16,9 +17,7 @@ export function Home() {
         <NavBar />
         <div className="w-full relative">
           <TopBar />
-          <main className="h-[100vh] flex items-center justify-center">
-            <p className="text-white">Loading...</p>
-          </main>
+          <Loading />
         </div>
       </section>
     );
@@ -32,7 +31,6 @@ export function Home() {
         <main className={styles.pageContent}>
           <Hero user={user} />
           <QuickStatsCards />
-          {/* <QuickLinks /> */}
           <RecentActivityFeed />
           <LeaderboardPreview user={user} />
         </main>

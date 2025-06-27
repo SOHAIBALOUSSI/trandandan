@@ -70,7 +70,9 @@ export function handleUpdatePassword() {
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(UpdatePasswordRes.USER_LOGGED_IN, "success");
+          displayToast(UpdatePasswordRes.USER_LOGGED_IN, "success", {
+            noProgressBar: true,
+          });
           setTimeout(() => {
             history.pushState(null, "", "/salon");
             window.dispatchEvent(new PopStateEvent("popstate"));

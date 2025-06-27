@@ -54,7 +54,9 @@ export function handleLostPassword() {
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(LostPasswordRes.CODE_SENT, "success");
+          displayToast(LostPasswordRes.CODE_SENT, "success", {
+            noProgressBar: true,
+          });
           emailInput.value = "";
           form.classList.add("hidden");
           otpForm.classList.remove("hidden");

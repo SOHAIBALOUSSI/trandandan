@@ -88,15 +88,6 @@ export async function router(): Promise<void> {
     }
   }
 
-  if (path === "password_update") {
-    const token = sessionStorage.getItem("reset_flag");
-    if (!token) {
-      history.replaceState(null, "", "/password_reset");
-      await router();
-      return;
-    }
-  }
-
   // Handle unknown routes
   if (!render) {
     history.replaceState(null, "", "/welcome");

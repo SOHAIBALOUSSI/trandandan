@@ -255,6 +255,17 @@ export const styles = {
 	hover:text-pong-secondary hover:underline-offset-4 
 	transition-all duration-300
   `,
+  customBtnLink: `
+	inline-block 
+	px-6 py-2 
+	bg-pong-accent 
+	hover:bg-pong-dark-accent 
+	text-white 
+	rounded-lg shadow 
+	transition-colors duration-200 
+	${fontSizes.buttonFontSize} 
+	font-semibold
+  `,
   // === End Custom Links styles ===
 
   // === Start Custom Cards styles ===

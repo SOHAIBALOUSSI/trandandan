@@ -57,6 +57,7 @@ export const UpdatePasswordRes: Record<string, string> = {
     "Your new passwords don’t match. Adjust your swing and re-enter.",
   UNAUTHORIZED:
     "You need to log in first. The court isn’t open to unregistered rackets.",
+  TOKEN_REQUIRED: "A reset token is required to update your password.",
   USER_LOGGED_IN: "Your password is updated successfully!",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish the rally with verification.",

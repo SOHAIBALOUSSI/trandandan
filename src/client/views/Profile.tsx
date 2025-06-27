@@ -9,6 +9,7 @@ import { fontSizes } from "@/styles/fontSizes";
 import { updateUsername } from "@/services/update-username";
 import { displayToast } from "@/utils/display-toast";
 import { UpdateUserProfileRes } from "@/utils/response-messages";
+import { Loading } from "@/components/common/Loading";
 
 export function Profile() {
   const user = getCurrentUser();
@@ -18,9 +19,7 @@ export function Profile() {
         <NavBar />
         <div className="w-full relative">
           <TopBar />
-          <main className="h-[100vh] flex items-center justify-center">
-            <p className="text-white">Loading...</p>
-          </main>
+          <Loading />
         </div>
       </section>
     );
