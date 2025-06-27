@@ -1,4 +1,5 @@
 import { styles } from "@/styles/styles";
+import { displayToast } from "@/utils/display-toast";
 import { UpdateCredentialsRes } from "@/utils/response-messages";
 
 export function handleChangePassword() {
@@ -6,15 +7,14 @@ export function handleChangePassword() {
     "change-password-form"
   ) as HTMLFormElement;
 
-  form?.addEventListener("submit", async (e) => {
+  form?.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const feedback = form.querySelector<HTMLDivElement>("#cta-feedback");
-    const submitBtn = form.querySelector<HTMLButtonElement>("#cta-btn");
+    const submitBtn = form.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = form.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
 
-    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
+    if (!submitBtn || !spinner || !btnLabel) return;
 
     const btnLabelText = btnLabel.textContent;
 
@@ -25,15 +25,11 @@ export function handleChangePassword() {
     const password = passwordInput?.value.trim();
     const confirmPassword = confirmPasswordInput?.value.trim();
 
-    // Reset feedback and button state
-    feedback.textContent = "";
-    feedback.className = styles.formMessage;
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
     btnLabel.textContent = "Changing...";
 
-    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
@@ -54,8 +50,7 @@ export function handleChangePassword() {
 
       if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
-          feedback.className = `${styles.formMessage} text-pong-success`;
-          feedback.textContent = UpdateCredentialsRes.CREDENTIALS_UPDATED;
+          displayToast(UpdateCredentialsRes.CREDENTIALS_UPDATED, "success");
 
           setTimeout(() => {
             history.pushState(null, "", "/salon");
@@ -64,8 +59,7 @@ export function handleChangePassword() {
         }, waitTime);
       } else if (response.ok && result.statusCode === 206) {
         setTimeout(() => {
-          feedback.className = `${styles.formMessage} text-pong-warning`;
-          feedback.textContent = UpdateCredentialsRes.TWOFA_REQUIRED;
+          displayToast(UpdateCredentialsRes.TWOFA_REQUIRED, "warning");
           setTimeout(() => {
             history.pushState(null, "", "/verification");
             window.dispatchEvent(new PopStateEvent("popstate"));
@@ -76,13 +70,11 @@ export function handleChangePassword() {
           const errorMsg =
             UpdateCredentialsRes[result?.code] ||
             "Error during password change. Please try again.";
-          feedback.className = `${styles.formMessage} text-pong-error`;
-          feedback.textContent = errorMsg;
+          displayToast(errorMsg, "error");
         }, waitTime);
       }
     } catch (err) {
-      feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.textContent = UpdateCredentialsRes.INTERNAL_SERVER_ERROR;
+      displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

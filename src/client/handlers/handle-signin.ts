@@ -1,40 +1,50 @@
-import { styles } from "@/styles/styles";
+import { displayToast } from "@/utils/display-toast";
 import { LoginRes } from "@/utils/response-messages";
 
 export function handleSignIn() {
   const signInForm = document.getElementById("signin-form") as HTMLFormElement;
+  if (!signInForm) return;
 
-  signInForm?.addEventListener("submit", async (e) => {
+  signInForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const feedback = signInForm.querySelector<HTMLDivElement>("#cta-feedback");
-    const submitBtn = signInForm.querySelector<HTMLButtonElement>("#cta-btn");
+    const submitBtn =
+      signInForm.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = signInForm.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = signInForm.querySelector<HTMLSpanElement>("#btn-label");
+    const loginInput = signInForm.querySelector<HTMLInputElement>("#login");
+    const passwordInput =
+      signInForm.querySelector<HTMLInputElement>("#password");
 
-    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
+    if (!submitBtn || !spinner || !btnLabel || !loginInput || !passwordInput)
+      return;
 
     const btnLabelText = btnLabel.textContent;
+    const feedbackDelay = 900;
+    const redirectDelay = 1500;
 
     const formData = new FormData(signInForm);
     const login = formData.get("login") as string;
     const password = formData.get("password") as string;
+
+    if (!login.trim()) {
+      loginInput.focus();
+      return;
+    }
+    if (!password.trim()) {
+      passwordInput.focus();
+      return;
+    }
 
     const isEmail: boolean = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(login);
     const payload = isEmail
       ? { email: login.trim(), password }
       : { username: login.trim(), password };
 
-    // Reset feedback and button state
-    feedback.textContent = "";
-    feedback.className = styles.formMessage;
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
     btnLabel.textContent = "entering...";
-
-    // Start the timer to calculate wait time
-    const startTime = Date.now();
 
     try {
       const response = await fetch("/auth/login", {
@@ -45,49 +55,44 @@ export function handleSignIn() {
 
       const result = await response.json();
 
-      const elapsed = Date.now() - startTime;
-      const waitTime = Math.max(0, 1200 - elapsed);
-
       if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
-          feedback.className = `${styles.formMessage} text-pong-success`;
-          feedback.textContent = LoginRes.USER_LOGGED_IN;
-
+          displayToast(LoginRes.USER_LOGGED_IN, "success", {
+            noProgressBar: true,
+          });
           setTimeout(() => {
             history.pushState(null, "", "/salon");
             window.dispatchEvent(new PopStateEvent("popstate"));
-          }, 1500);
-        }, waitTime);
+          }, redirectDelay);
+        }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
         sessionStorage.setItem("2faMode", result.data?.twoFaType);
 
         setTimeout(() => {
-          feedback.className = `${styles.formMessage} text-pong-warning`;
-          feedback.textContent = LoginRes.TWOFA_REQUIRED;
-
+          displayToast(LoginRes.TWOFA_REQUIRED, "warning", {
+            noProgressBar: true,
+          });
           setTimeout(() => {
             history.pushState(null, "", "/verify_login");
             window.dispatchEvent(new PopStateEvent("popstate"));
-          }, 1500);
-        }, waitTime);
+          }, redirectDelay);
+        }, feedbackDelay);
       } else {
         setTimeout(() => {
           const errorMsg =
             LoginRes[result?.code] || "Error during login. Please try again.";
-          feedback.className = `${styles.formMessage} text-pong-error`;
-          feedback.textContent = errorMsg;
-        }, waitTime);
+          displayToast(errorMsg, "error");
+        }, feedbackDelay);
       }
     } catch (err) {
-      feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.textContent = LoginRes.INTERNAL_SERVER_ERROR;
+      displayToast(LoginRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
         btnLabel.textContent = btnLabelText;
-      }, 1300);
+      }, feedbackDelay + 300);
     }
   });
 }

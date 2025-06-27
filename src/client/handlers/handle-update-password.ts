@@ -1,88 +1,99 @@
-import { styles } from "@/styles/styles";
+import { displayToast } from "@/utils/display-toast";
 import { UpdatePasswordRes } from "@/utils/response-messages";
 
 export function handleUpdatePassword() {
   const form = document.getElementById(
     "update-password-form"
   ) as HTMLFormElement;
+  if (!form) return;
 
-  form?.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const feedback = form.querySelector<HTMLDivElement>("#cta-feedback");
-    const submitBtn = form.querySelector<HTMLButtonElement>("#cta-btn");
+    const submitBtn = form.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = form.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
+    const passwordInput = form.querySelector<HTMLInputElement>("#new-password");
+    const confirmPasswordInput = form.querySelector<HTMLInputElement>(
+      "#confirm-new-password"
+    );
 
-    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
+    if (
+      !submitBtn ||
+      !spinner ||
+      !btnLabel ||
+      !passwordInput ||
+      !confirmPasswordInput
+    ) {
+      return;
+    }
 
     const btnLabelText = btnLabel.textContent;
+    const feedbackDelay = 900;
+    const redirectDelay = 1500;
 
-    const password = (
-      form.querySelector("#new-password") as HTMLInputElement
-    ).value.trim();
-    const confirmPassword = (
-      form.querySelector("#confirm-new-password") as HTMLInputElement
-    ).value.trim();
+    const password = passwordInput.value.trim();
+    const confirmPassword = confirmPasswordInput.value.trim();
 
-    const payload = {
-      password: password,
-      confirmPassword: confirmPassword,
-    };
+    if (!password) {
+      passwordInput.focus();
+      return;
+    }
+    if (!confirmPassword) {
+      confirmPasswordInput.focus();
+      return;
+    }
+    if (password !== confirmPassword) {
+      displayToast(UpdatePasswordRes.UNMATCHED_PASSWORDS, "error");
+      confirmPasswordInput.value = "";
+      passwordInput.focus();
+      return;
+    }
 
-    // Reset feedback and button state
-    feedback.textContent = "";
-    feedback.className = styles.formMessage;
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
     btnLabel.textContent = "updating...";
-
-    // Start the timer to calculate wait time
-    const startTime = Date.now();
 
     try {
       const response = await fetch("/auth/update-password", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          password: password,
+          confirmPassword: confirmPassword,
+        }),
       });
 
       const result = await response.json();
 
-      const elapsed = Date.now() - startTime;
-      const waitTime = Math.max(0, 1200 - elapsed);
-
       if (response.ok) {
         setTimeout(() => {
-          feedback.className = `${styles.formMessage} text-pong-success`;
-          feedback.textContent = UpdatePasswordRes.USER_LOGGED_IN;
-
+          displayToast(UpdatePasswordRes.USER_LOGGED_IN, "success");
           setTimeout(() => {
             history.pushState(null, "", "/salon");
             window.dispatchEvent(new PopStateEvent("popstate"));
-          }, 1500);
-        }, waitTime);
+          }, redirectDelay);
+        }, feedbackDelay);
       } else {
         setTimeout(() => {
+          console.log(result);
           const errorMsg =
             UpdatePasswordRes[result?.code] ||
             "Error during password update. Please try again.";
-          feedback.className = `${styles.formMessage} text-pong-error`;
-          feedback.textContent = errorMsg;
-        }, waitTime);
+          displayToast(errorMsg, "error");
+        }, feedbackDelay);
       }
     } catch (error) {
-      feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.textContent = UpdatePasswordRes.INTERNAL_SERVER_ERROR;
+      displayToast(UpdatePasswordRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.setAttribute("aria-busy", "false");
         spinner.classList.add("hidden");
         btnLabel.textContent = btnLabelText;
-      }, 1300);
+      }, feedbackDelay + 300);
     }
   });
 }

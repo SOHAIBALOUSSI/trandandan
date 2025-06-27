@@ -6,7 +6,6 @@ export function InputField(props: {
   id: string;
   placeholder?: string;
   autofocus?: boolean;
-  className?: string;
 }) {
   return (
     <div className="w-full text-left">
@@ -15,10 +14,9 @@ export function InputField(props: {
         name={props.name}
         id={props.id}
         placeholder={props.placeholder}
-        required
         autoFocus={props.autofocus || false}
         autoComplete="off"
-        className={props.className}
+        className={styles.mainInputFieldStyles}
       />
     </div>
   );

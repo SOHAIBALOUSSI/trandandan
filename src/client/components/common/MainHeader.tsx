@@ -9,7 +9,7 @@ export function MainHeader(props: {
   const { title, titleSpan, subtitle, subtitleParagraph } = props;
 
   return (
-    <div className="flex flex-col items-center animate-fadeInUp space-y-6">
+    <div className="flex flex-col items-center space-y-6 animate-fadeInUp">
       <h1 className={styles.titleDark}>
         {title} <span className={styles.titleSpanDark}>{titleSpan}</span>
       </h1>

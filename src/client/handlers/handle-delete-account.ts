@@ -1,4 +1,5 @@
 import { styles } from "@/styles/styles";
+import { displayToast } from "@/utils/display-toast";
 import { DeleteAccountRes } from "@/utils/response-messages";
 
 export function deleteAccount() {
@@ -6,27 +7,22 @@ export function deleteAccount() {
     "delete-account-form"
   ) as HTMLFormElement;
 
-  form?.addEventListener("submit", async (e) => {
+  form?.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const feedback = document.querySelector<HTMLDivElement>("#cta-feedback");
-    const submitBtn = document.querySelector<HTMLButtonElement>("#cta-btn");
+    const submitBtn = document.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = document.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label");
 
-    if (!feedback || !submitBtn || !spinner || !btnLabel) return;
+    if (!submitBtn || !spinner || !btnLabel) return;
 
     const btnLabelText = btnLabel.textContent;
 
-    // Reset feedback and button state
-    feedback.textContent = "";
-    feedback.className = styles.formMessage;
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
     btnLabel.textContent = "deleting...";
 
-    // Start the timer to calculate wait time
     const startTime = Date.now();
 
     try {
@@ -42,8 +38,7 @@ export function deleteAccount() {
 
       if (response.ok) {
         setTimeout(() => {
-          feedback.className = `${styles.formMessage} text-pong-success`;
-          feedback.textContent = DeleteAccountRes.USER_DATA_DELETED;
+          displayToast(DeleteAccountRes.USER_DATA_DELETED, "success");
 
           setTimeout(() => {
             history.pushState(null, "", "/");
@@ -55,13 +50,11 @@ export function deleteAccount() {
           const errorMsg =
             DeleteAccountRes[result?.code] ||
             "Error during delete. Please try again.";
-          feedback.className = `${styles.formMessage} text-pong-error`;
-          feedback.textContent = errorMsg;
+          displayToast(errorMsg, "error");
         }, waitTime);
       }
     } catch (error) {
-      feedback.className = `${styles.formMessage} text-pong-error`;
-      feedback.textContent = DeleteAccountRes.INTERNAL_SERVER_ERROR;
+      displayToast(DeleteAccountRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

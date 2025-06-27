@@ -116,6 +116,18 @@ export const styles = {
   	focus:bg-pong-secondary/20
   	relative z-10
   `,
+  otpInputStyle: `
+  	w-10 h-12 md:w-14 md:h-16
+  	text-lg md:text-2xl text-center font-bold tracking-widest
+  	border border-pong-secondary/30
+  	rounded-2xl shadow-md
+  	caret-pong-accent
+  	bg-white/60 backdrop-blur
+  	text-pong-primary placeholder:text-pong-primary/30
+  	transition-all duration-300 ease-out focus:scale-105
+  	focus:outline-none focus:ring-2 focus:ring-pong-accent/70 focus:border-pong-accent
+  	focus:shadow-lg
+  `,
   // === End Input Field styles ===
 
   // === Start Form styles ===
@@ -126,9 +138,6 @@ export const styles = {
   	backdrop-blur-sm border border-pong-accent/20
   	flex flex-col items-center gap-6
   	px-8 py-12
-  `,
-  formMessage: `
-  	text-center text-sm font-semibold min-h-[1.5rem] mb-2
   `,
   // === End Form styles ===
 

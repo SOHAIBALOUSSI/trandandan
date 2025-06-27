@@ -1,5 +1,5 @@
 import { InputField } from "../common/InputField";
-import { CTA } from "../common/Cta";
+import { SubmitBtn } from "../common/SubmitBtn";
 import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
@@ -13,14 +13,12 @@ export function SignInForm() {
         id="login"
         placeholder="member ID or email"
         autofocus={true}
-        className={styles.mainInputFieldStyles}
       />
       <InputField
         type="password"
         name="password"
         id="password"
         placeholder="Secret Code"
-        className={styles.mainInputFieldStyles}
       />
 
       <div className="flex justify-between items-center w-full text-sm text-pong-primary/70 mt-[-0.5rem]">
@@ -41,7 +39,7 @@ export function SignInForm() {
         </a>
       </div>
 
-      <CTA btnIcon="fa-door-open" btnLabel="enter the lounge" />
+      <SubmitBtn btnIcon="fa-door-open" btnLabel="enter the lounge" />
 
       <p
         className={`${fontSizes.buttonFontSize} w-full font-medium text-pong-primary/80`}

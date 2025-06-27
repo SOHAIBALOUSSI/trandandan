@@ -2,7 +2,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { deleteAccount } from "@/handlers/handle-delete-account";
-import { CTA } from "@/components/common/Cta";
+import { SubmitBtn } from "@/components/common/SubmitBtn";
 
 export function DeleteAccount() {
   setTimeout(() => {
@@ -37,7 +37,10 @@ export function DeleteAccount() {
           </div>
 
           <form id="delete-account-form">
-            <CTA btnIcon="fa-trash" btnLabel="checkout & leave the club" />
+            <SubmitBtn
+              btnIcon="fa-trash"
+              btnLabel="checkout & leave the club"
+            />
           </form>
         </main>
       </div>

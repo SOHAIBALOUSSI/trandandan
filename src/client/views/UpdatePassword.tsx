@@ -2,8 +2,8 @@ import { handleUpdatePassword } from "@/handlers/handle-update-password";
 import { Footer } from "@/components/layout/Footer";
 import { styles } from "@/styles/styles";
 import { InputField } from "@/components/common/InputField";
-import { CTA } from "@/components/common/Cta";
 import { Overlay } from "@/components/layout/Overlay";
+import { SubmitBtn } from "@/components/common/SubmitBtn";
 
 export function UpdatePassword() {
   setTimeout(() => {
@@ -23,26 +23,24 @@ export function UpdatePassword() {
           <i className="fa-solid fa-table-tennis-paddle-ball text-pong-accent text-3xl animate-bounce" />
         </div>
 
-        <form id="update-password-form" className={`${styles.customForm}`}>
+        <form id="update-password-form" className={styles.customForm}>
           <InputField
             type="password"
             name="newPassword"
             id="new-password"
             placeholder="forge your new key"
             autofocus={true}
-            className={styles.mainInputFieldStyles}
           />
           <InputField
             type="password"
             name="newPasswordConfirm"
             id="confirm-new-password"
             placeholder="confirm the forged key"
-            className={styles.mainInputFieldStyles}
           />
-          <CTA btnIcon="fa-lock" btnLabel="lock it in" />
+          <SubmitBtn btnIcon="fa-lock" btnLabel="lock it in" />
         </form>
         <p className="w-full border-t border-pong-accent/10 my-6"></p>
-        <p className="text-sm text-pong-primary/70">
+        <p className="text-xs md:text-sm text-pong-primary/70">
           this is how champions protect their legacy.{" "}
         </p>
       </div>

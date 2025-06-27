@@ -30,7 +30,7 @@ export function handleUpdateInfos() {
       }
     });
 
-    newForm.addEventListener("submit", async (e) => {
+    newForm.addEventListener("submit", async (e: Event) => {
       e.preventDefault();
 
       const user = getCurrentUser();

@@ -1,8 +1,8 @@
 import { InputField } from "../common/InputField";
-import { CTA } from "../common/Cta";
 import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
+import { SubmitBtn } from "../common/SubmitBtn";
 
 export function SignUpForm() {
   return (
@@ -13,22 +13,15 @@ export function SignUpForm() {
         id="username"
         placeholder="choose your noble name"
         autofocus={true}
-        className={styles.mainInputFieldStyles}
       />
       <InputField
-        type="email"
+        type="text"
         name="email"
         id="email"
         placeholder="your correspondence address"
-        className={styles.mainInputFieldStyles}
       />
       <div className="relative w-full text-left">
-        <select
-          name="gender"
-          id="gender"
-          required
-          className={styles.customSelect}
-        >
+        <select name="gender" id="gender" className={styles.customSelect}>
           <option value="" disabled selected hidden>
             select your title of elegance
           </option>
@@ -48,17 +41,17 @@ export function SignUpForm() {
         name="password"
         id="password"
         placeholder="forge your secret key"
-        className={styles.mainInputFieldStyles}
       />
       <InputField
         type="password"
         name="confirm-password"
         id="confirm-password"
         placeholder="confirm your secret key"
-        className={styles.mainInputFieldStyles}
       />
-
-      <CTA btnIcon="fa-champagne-glasses" btnLabel="register your racket" />
+      <SubmitBtn
+        btnIcon="fa-champagne-glasses"
+        btnLabel="register your racket"
+      />
 
       <p className="text-xs text-center text-pong-primary/70 -mt-2 italic">
         by joining, you swear on honor to compete fairly and uphold the spirit

@@ -1,15 +1,11 @@
 import { styles } from "@/styles/styles";
 
-export function BtnPrimary(props: {
-  btnId: string;
-  btnIcon: string;
-  btnLabel: string;
-}) {
-  const { btnId, btnIcon, btnLabel } = props;
+export function SubmitBtn(props: { btnIcon: string; btnLabel: string }) {
+  const { btnIcon, btnLabel } = props;
   return (
     <button
       type="submit"
-      id={btnId}
+      id="submit-btn"
       className={styles.primaryButton}
       aria-busy="false"
     >

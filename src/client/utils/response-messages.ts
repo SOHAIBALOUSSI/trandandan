@@ -21,8 +21,7 @@ export const RegisterRes: Record<string, string> = {
   PASSWORD_POLICY:
     "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
   USER_EXISTS: "This racket is already in the club. Try signing in instead.",
-  USER_REGISTERED:
-    "Welcome to the club, champion! Your racket is ready for the game.",
+  USER_REGISTERED: "Welcome aboard! Sign in to unlock your club experience.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
@@ -41,7 +40,7 @@ export const VerifyCodeRes: Record<string, string> = {
   CODE_NOT_SET:
     "Verification code wasn't set properly. Reset your footing and try again.",
   UNAUTHORIZED:
-    "You need to log in first. Grab your racket and head to the court.",
+    "You need to verify your identity first. The court isn’t open to unregistered rackets.",
   OTP_REQUIRED: "OTP required. Enter the code to complete the match.",
   OTP_INVALID:
     "That code doesn’t match our playbook. Double-check and try again.",

@@ -1,9 +1,9 @@
 import { styles } from "@/styles/styles";
-import { CTA } from "@/components/common/Cta";
+import { SubmitBtn } from "../common/SubmitBtn";
 
 export function EditUserInfos() {
   return (
-    <div >
+    <div>
       <button id="edit-btn" className={`${styles.btnOneStyles} my-2`}>
         Edit
       </button>
@@ -28,7 +28,7 @@ export function EditUserInfos() {
           alt="Profile preview"
           className="w-20 h-20 rounded-full object-cover border-2 border-pong-accent mt-2 hidden"
         />{" "}
-        <CTA btnIcon="fa-edit" btnLabel="submit" />
+        <SubmitBtn btnIcon="fa-edit" btnLabel="submit" />
       </form>
     </div>
   );

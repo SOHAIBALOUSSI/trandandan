@@ -1,11 +1,11 @@
 import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
-import { CTA } from "@/components/common/Cta";
 import { Overlay } from "@/components/layout/Overlay";
 import { OtpInput } from "@/components/common/OtpInput";
 import { verifyLogin } from "@/services/verify-login";
 import { handleOtpInput } from "@/handlers/handle-otp-input";
 import { fontSizes } from "@/styles/fontSizes";
+import { SubmitBtn } from "@/components/common/SubmitBtn";
 
 export function VerifyLogin() {
   const twofaMode = sessionStorage.getItem("2faMode");
@@ -44,10 +44,10 @@ export function VerifyLogin() {
             {label}
           </label>
           <OtpInput id="verify-login-otp" />
-          <CTA btnIcon="fa-check-double" btnLabel="verify" />
+          <SubmitBtn btnIcon="fa-check-double" btnLabel="verify" />
         </form>
         <p className="w-full border-t border-pong-accent/10 my-6"></p>
-        <p className="text-sm text-pong-primary/70">
+        <p className="text-xs md:text-sm text-pong-primary/70">
           trouble receiving your code? contact the front desk.
         </p>
       </div>

@@ -4,10 +4,10 @@ import { handleOtpInput } from "@/handlers/handle-otp-input";
 import { Footer } from "@/components/layout/Footer";
 import { InputField } from "@/components/common/InputField";
 import { styles } from "@/styles/styles";
-import { CTA } from "@/components/common/Cta";
 import { Overlay } from "@/components/layout/Overlay";
 import { OtpInput } from "@/components/common/OtpInput";
 import { fontSizes } from "@/styles/fontSizes";
+import { SubmitBtn } from "@/components/common/SubmitBtn";
 
 export function ResetPassword() {
   setTimeout(() => {
@@ -30,16 +30,15 @@ export function ResetPassword() {
           <i className="fa-solid fa-table-tennis-paddle-ball text-pong-accent text-3xl animate-bounce" />
         </div>
 
-        <form id="lost-password-form" className={`${styles.customForm}`}>
+        <form id="lost-password-form" className={styles.customForm}>
           <InputField
-            type="email"
+            type="text"
             name="email"
             id="reset-pass-email"
             placeholder="your racket’s registered email"
             autofocus={true}
-            className={styles.mainInputFieldStyles}
           />
-          <CTA btnIcon="fa-envelope" btnLabel="send me the code" />
+          <SubmitBtn btnIcon="fa-envelope" btnLabel="send me the code" />
         </form>
 
         <form id="lost-pass-otp-form" className={`${styles.customForm} hidden`}>
@@ -50,10 +49,12 @@ export function ResetPassword() {
             paste the code we just served you
           </label>
           <OtpInput id="lost-pass-otp" />
-          <CTA btnIcon="fa-check-double" btnLabel="verify code" />
+          <SubmitBtn btnIcon="fa-check-double" btnLabel="verify code" />
         </form>
 
-        <p className={`${fontSizes.buttonFontSize} w-full my-6 font-medium text-pong-primary/80`}>
+        <p
+          className={`${fontSizes.buttonFontSize} w-full my-6 font-medium text-pong-primary/80`}
+        >
           remembered your paddle?{" "}
           <a href="signin" className={styles.customFormLink} data-link>
             return to the club entrance
@@ -61,7 +62,7 @@ export function ResetPassword() {
         </p>
 
         <p className="w-full border-t border-pong-accent/10 my-6"></p>
-        <p className="text-sm text-pong-primary/70 mt-4">
+        <p className="text-xs md:text-sm text-pong-primary/70 mt-4">
           didn't receive the serve? check your spam or promotions lounge.
         </p>
       </div>
