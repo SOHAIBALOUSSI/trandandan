@@ -29,8 +29,9 @@ fastify.register(async function (fastify) {
 import { remoteGame } from "./routes/remoteGameRoute.js";
 fastify.register(async function (fastify) {
   fastify.get("/remoteGame", { websocket: true }, (connection, req) => {
-    console.log("here")
-    console.log(getUserCookies(req))
+      const { token, roomId } = req.query;
+  console.log("Token:", token);
+  console.log("Room ID:", roomId);
     remoteGame(connection, req);
   });
 });
