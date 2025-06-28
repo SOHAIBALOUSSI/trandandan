@@ -22,7 +22,7 @@ export function ChangePassword() {
         strong phrase — worthy of a champion’s credentials.
       </p>
 
-      <div></div>
+      <a href="change_password" data-link>click here</a>
 
       <p className="text-pong-warning text-xs md:text-sm italic mt-2">
         Use a mix of letters, numbers, and symbols for maximum protection.

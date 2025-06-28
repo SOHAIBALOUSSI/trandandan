@@ -14,8 +14,12 @@ import { Security } from "@/views/Security";
 import { Blocked } from "@/views/Blocked";
 import { DeleteAccount } from "@/views/DeleteAccount";
 import { Logout } from "@/views/Logout";
+import { UpdateCredentialsPassword } from "@/views/UpdateCredentialsPassword";
+import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
+import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentialsRes";
 import { getUserProfile } from "@/services/get-user-profile";
 import { setCurrentUser } from "@/utils/user-store";
+import { VerifyUpdateCredentialsRes } from "@/utils/response-messages";
 
 // Define the routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
@@ -32,6 +36,9 @@ const routes: Record<string, () => HTMLElement> = {
   members: Friends,
   my_profile: Profile,
   security: Security,
+  change_password: UpdateCredentialsPassword,
+  change_email: UpdateCredentialsEmail,
+  verify_update: VerifyUpdateCredentials,
   blocked: Blocked,
   delete_account: DeleteAccount,
   checkout: Logout,
