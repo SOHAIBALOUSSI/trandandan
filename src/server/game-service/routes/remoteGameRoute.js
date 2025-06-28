@@ -1,4 +1,3 @@
-
 function gameLogic(gameState) {
   let step = 8;
   if (
@@ -77,7 +76,8 @@ function gameLogic(gameState) {
     gameState.paddelRightY = 240;
     gameState.ballX = 1000 / 2;
     gameState.ballY = 300;
-    gameState.ballSpeed = 3;
+    gameState.ballSpeed = 5;
+    gameState.hitCount = 0; // Reset hit count when ball resets
   }
   return gameState;
 }
@@ -94,12 +94,23 @@ export function remoteGame(connection, req) {
   for (const [id] of Object.entries(rooms)) {
 
     if (id === playerRoomdId) {
+      if (rooms[id].rateLimited >= 2) {
+        
+        rooms[id].players.forEach((player) => {
+          player.connection.send("disconnected.");
+          player.connection.close();
+        });
+        delete rooms[id];
+        return;
+      }
       rooms[id].players.forEach((player) => {
         if (player.token === token) {
           if (rooms[id].player1Timeout) clearTimeout(rooms[id].player1Timeout);
           if (rooms[id].player2Timeout) clearTimeout(rooms[id].player2Timeout);
           rooms[id].gameState.alive = true;
           rooms[id].gameState.disconnected = true; // reconnnected
+          rooms[id].rateLimited++;
+          // Reset ball speed and hit count for reconnected player
           player.connection = connection;
           joined = true;
           roomId = id;
@@ -123,6 +134,7 @@ export function remoteGame(connection, req) {
     roomId = playerRoomdId;
     rooms[roomId] = {
       players: [{ token: token, connection: connection }],
+      rateLimited: 0,
       gameState: {
         matchId: "",
         playerId: 1,
@@ -137,7 +149,7 @@ export function remoteGame(connection, req) {
         leftPlayerScore: 0,
         rightPlayerScore: 0,
         rounds: 5,
-        ballSpeed: 3,
+        ballSpeed: 5,
         hitCount: 0,
         gameEndResult: "",
         endGame: false,
@@ -149,15 +161,23 @@ export function remoteGame(connection, req) {
       },
     };
   }
-  
   if (rooms[roomId].players.length === 2) {
+    if (!rooms[roomId].players.every((player) => player.connection.readyState === WebSocket.OPEN))
+    {
+      rooms[roomId].players.forEach((player) => {
+        player.connection.send("One or both players are not connected.");
+        player.connection.close();
+      });
+      delete rooms[roomId];
+      return;
+    }
     const [
       { toke1: token1, connection: player1 },
       { token2: token2, connection: player2 },
     ] = rooms[roomId].players;
 
     rooms[roomId].gameState.startTime = Date.now();
-
+    
     const handleMessage = (playerId) => (msg) => {
       try {
         // parse the game stat from the client
@@ -179,7 +199,6 @@ export function remoteGame(connection, req) {
         rooms[roomId].gameState.matchId = roomId;
         // game logic
         const updatedState = gameLogic(rooms[roomId].gameState);
-        
         // check score
         if (updatedState.rightPlayerScore === updatedState.rounds) {
           updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
@@ -231,7 +250,7 @@ export function remoteGame(connection, req) {
           player1.close();
           player2.close();
         }
-      }, 30000);
+      }, 10000);
       player1.removeAllListeners();
       player2.removeAllListeners();
     });
@@ -249,7 +268,7 @@ export function remoteGame(connection, req) {
           player2.close();
           player1.close();
         }
-      }, 30000);
+      }, 10000);
       player1.removeAllListeners();
       player2.removeAllListeners();
     });
