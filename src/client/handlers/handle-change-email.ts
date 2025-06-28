@@ -15,30 +15,57 @@ export function handleChangeEmail() {
 
     const email = emailInput.value.trim();
 
+    if (!email) {
+      emailInput.focus();
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      emailInput.focus();
+      displayToast(
+        "That doesn’t look like a valid email. Check the format and try again.",
+        "error"
+      );
+      return;
+    }
+
+    const feedbackDelay = 900;
+    const redirectDelay = 1500;
+
+    btn.disabled = true;
+    btn.setAttribute("aria-busy", "true");
+
     try {
       const response = await fetch("/auth/update-credentials", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email }),
+        body: JSON.stringify({ email }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast("email updated successfully", "success", {
-            noProgressBar: true,
-          });
-        }, 800);
+          displayToast("Email updated successfully.", "success");
+          setTimeout(() => {
+            history.pushState(null, "", "/security");
+            window.dispatchEvent(new PopStateEvent("popstate"));
+          }, redirectDelay);
+        }, feedbackDelay);
       } else {
-        setTimeout(() => {
-          const errorMsg = UpdateCredentialsRes[result.code];
-          displayToast(errorMsg, "error");
-        }, 800);
+        const errorMsg =
+          UpdateCredentialsRes[result.code] || "Failed to update email.";
+        displayToast(errorMsg, "error");
+        emailInput.focus();
       }
     } catch (error) {
       displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
+      emailInput.focus();
+    } finally {
+      btn.disabled = false;
+      btn.removeAttribute("aria-busy");
     }
   });
 }

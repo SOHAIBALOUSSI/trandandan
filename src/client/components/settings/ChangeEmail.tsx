@@ -22,7 +22,9 @@ export function ChangeEmail() {
         we’ll send a carrier dove with a confirmation scroll.
       </p>
 
-      <a href="change_email" data-link>click here</a>
+      <a href="change_email" className="text-pong-accent-sport" data-link>
+        click here
+      </a>
 
       <p className="text-pong-warning text-xs md:text-sm italic mt-2">
         Ensure your new email is valid and accessible, as it will be used for

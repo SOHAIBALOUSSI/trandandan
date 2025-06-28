@@ -38,7 +38,7 @@ const routes: Record<string, () => HTMLElement> = {
   security: Security,
   change_password: UpdateCredentialsPassword,
   change_email: UpdateCredentialsEmail,
-  verify_update: VerifyUpdateCredentials,
+  verification: VerifyUpdateCredentials,
   blocked: Blocked,
   delete_account: DeleteAccount,
   checkout: Logout,

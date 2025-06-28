@@ -1,4 +1,3 @@
-import { styles } from "@/styles/styles";
 import { displayToast } from "@/utils/display-toast";
 import { UpdateCredentialsRes } from "@/utils/response-messages";
 
@@ -6,82 +5,90 @@ export function handleChangePassword() {
   const form = document.getElementById(
     "change-password-form"
   ) as HTMLFormElement;
+  if (!form) return;
 
-  form?.addEventListener("submit", async (e: Event) => {
+  form.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const submitBtn = form.querySelector<HTMLButtonElement>("#submit-btn");
-    const spinner = form.querySelector<HTMLSpanElement>("#spinner");
-    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
+    const btn = form.querySelector<HTMLButtonElement>("#submit-btn");
+    const oldPasswordInput =
+      form.querySelector<HTMLInputElement>("#old-password");
+    const newPasswordInput =
+      form.querySelector<HTMLInputElement>("#new-password");
+    const confirmPasswordInput = form.querySelector<HTMLInputElement>(
+      "#confirm-new-password"
+    );
 
-    if (!submitBtn || !spinner || !btnLabel) return;
+    if (!btn || !oldPasswordInput || !newPasswordInput || !confirmPasswordInput)
+      return;
 
-    const btnLabelText = btnLabel.textContent;
-
-    const passwordInput = form.querySelector<HTMLInputElement>("#password");
-    const confirmPasswordInput =
-      form.querySelector<HTMLInputElement>("#confirm-password");
-
-    const password = passwordInput?.value.trim();
+    const oldPassword = oldPasswordInput?.value.trim();
+    const newPassword = newPasswordInput?.value.trim();
     const confirmPassword = confirmPasswordInput?.value.trim();
 
-    submitBtn.disabled = true;
-    submitBtn.setAttribute("aria-busy", "true");
-    spinner.classList.remove("hidden");
-    btnLabel.textContent = "Changing...";
+    if (!oldPassword) {
+      oldPasswordInput.focus();
+      return;
+    }
+    if (!newPassword) {
+      newPasswordInput.focus();
+      return;
+    }
+    if (!confirmPassword) {
+      confirmPasswordInput.focus();
+      return;
+    }
 
-    const startTime = Date.now();
+    const feedbackDelay = 900;
+    const redirectDelay = 1500;
+
+    btn.disabled = true;
+    btn.setAttribute("aria-busy", "true");
 
     try {
       const response = await fetch("/auth/update-credentials", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          password: password,
-          confirmPassword: confirmPassword,
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+          confirmNewPassword: confirmPassword,
         }),
       });
 
       const result = await response.json();
 
-      const elapsed = Date.now() - startTime;
-      const waitTime = Math.max(0, 1200 - elapsed);
-
       if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
-          displayToast(UpdateCredentialsRes.CREDENTIALS_UPDATED, "success");
+          displayToast("password updated successfully", "success");
 
           setTimeout(() => {
-            history.pushState(null, "", "/salon");
+            history.pushState(null, "", "/security");
             window.dispatchEvent(new PopStateEvent("popstate"));
-          }, 1500);
-        }, waitTime);
+          }, redirectDelay);
+        }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
         setTimeout(() => {
           displayToast(UpdateCredentialsRes.TWOFA_REQUIRED, "warning");
           setTimeout(() => {
             history.pushState(null, "", "/verification");
             window.dispatchEvent(new PopStateEvent("popstate"));
-          }, 1500);
-        }, waitTime);
+          }, redirectDelay);
+        }, feedbackDelay);
       } else {
         setTimeout(() => {
           const errorMsg =
             UpdateCredentialsRes[result?.code] ||
             "Error during password change. Please try again.";
           displayToast(errorMsg, "error");
-        }, waitTime);
+        }, feedbackDelay);
       }
     } catch (err) {
       displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.removeAttribute("aria-busy");
-        spinner.classList.add("hidden");
-        btnLabel.textContent = btnLabelText;
-      }, 1300);
+      btn.disabled = false;
+      btn.removeAttribute("aria-busy");
     }
   });
 }
