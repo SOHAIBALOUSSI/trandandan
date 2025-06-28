@@ -46,15 +46,17 @@ export function RemoteGame() {
         <h1 class="text-5xl font-bold text-ping-yellow">GAME OVER</h1>
         <h1 id="result" class="text-2xl mt-2 text-amber-50">WON</h1>
         <button id="restartButton" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
-      </div>
-    </div>
-    <div id="disconnected" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
-      <div class="flex flex-col items-center justify-center h-full px-20 py-4">
-        <h1 class="text-5xl font-bold text-ping-yellow">GAME OVER</h1>
-        <h1 class="text-2xl mt-2 text-amber-50">OPPONENT DISCONNECTED</h1>
-        <button id="exit" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
-      </div>
-    </div>
+        </div>
+        </div>
+        <div id="disconnected" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+          <div class="flex flex-col items-center justify-center h-full px-20 py-4">
+            <h1 class="text-5xl font-bold text-ping-yellow">GAME OVER</h1>
+            <h1 class="text-2xl mt-2 text-amber-50"> DISCONNECTED</h1>
+          </div>
+        </div>
+        <div id="exitTab" class="h-80 w-150 bg-game-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
+          <button id="exit" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
+        </div>
   `;
 
   // Initialize game elements
@@ -69,6 +71,9 @@ export function RemoteGame() {
   const exit = container.querySelector('#exit') as HTMLElement;
   const playerSide = container.querySelector('#playerSide') as HTMLElement;
 
+  exit.addEventListener("click", () => {
+    window.location.href = "/salon";
+  });
   // Utility functions
   const userInfo = getCurrentUser();
   console.log(userInfo)
@@ -81,7 +86,6 @@ export function RemoteGame() {
     socket = new WebSocket(
       `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.userId}&roomId=${roomdIdentif}`
     );
-
     let keys: Record<string, boolean> = {};
 
     window.addEventListener('keydown', (key: KeyboardEvent) => {
@@ -111,6 +115,7 @@ export function RemoteGame() {
     };
 
     socket.onclose = () => {
+      
       console.log("match ended");
     };
 
@@ -216,7 +221,7 @@ class FlowField {
       playerId: 0,
       ballX: 500,
       ballY: 300,
-      ballSpeed: 3,
+      ballSpeed: 5,
       flagX: false,
       flagY: false,
       paddleLeftY: 240,
@@ -342,6 +347,7 @@ class FlowField {
 
   private handleRestart(): void {
     this.deps.gameTabe.style.display = "none";
+    const userInfo = getCurrentUser();
 
     // Reset the game state
     this.gameState = {
@@ -349,7 +355,7 @@ class FlowField {
       playerId: 0,
       ballX: 500,
       ballY: 300,
-      ballSpeed: 3,
+      ballSpeed: 5,
       flagX: false,
       flagY: false,
       paddleLeftY: 240,
@@ -373,7 +379,7 @@ class FlowField {
       this.deps.socket.readyState === WebSocket.CLOSING
     ) {
       const newSocket = new WebSocket(
-        `ws://0.0.0.0:5000/remoteGame?token=${localStorage.getItem("player")}&roomId=${this.deps.roomdIdentif}`
+        `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.userId}&roomId=${this.deps.roomdIdentif}`
       );
       
       newSocket.onopen = () => {
@@ -465,10 +471,8 @@ class FlowField {
         this.deps.restartButton.addEventListener("click", this.handleRestart.bind(this));
       }
     } catch (error) {
+      console.error("Error parsing game state:", error);
       this.deps.disconnectedResult.style.display = "block";
-      this.deps.exit.addEventListener("click", () => {
-        window.location.href = "/salon";
-      });
     }
   }
 
