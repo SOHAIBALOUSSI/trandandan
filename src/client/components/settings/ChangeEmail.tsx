@@ -1,5 +1,6 @@
 import { styles } from "@/styles/styles";
 import { handleChangeEmail } from "@/handlers/handle-change-email";
+import { fontSizes } from "@/styles/fontSizes";
 
 export function ChangeEmail() {
   setTimeout(() => {
@@ -8,12 +9,24 @@ export function ChangeEmail() {
 
   return (
     <div className={styles.settingsLayout}>
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-        Change of Contact Scroll
+      <h2
+        className={`flex items-center gap-2 text-white ${fontSizes.smallTitleFontSize}`}
+      >
+        <span className="text-pong-accent">🛡️</span>
+        <span className="font-bold"> Change of Contact Scroll</span>
       </h2>
-      <p className="text-base md:text-lg text-white/80 mb-8 leading-relaxed">
+      <p
+        className={`${fontSizes.smallTextFontSize} text-white/80 leading-relaxed`}
+      >
         Time to update your registered parchment? Enter your new email below and
         we’ll send a carrier dove with a confirmation scroll.
+      </p>
+
+      <div></div>
+
+      <p className="text-pong-warning text-xs md:text-sm italic mt-2">
+        Ensure your new email is valid and accessible, as it will be used for
+        account recovery and notifications.
       </p>
     </div>
   );

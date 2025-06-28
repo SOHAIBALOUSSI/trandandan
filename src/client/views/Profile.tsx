@@ -5,11 +5,11 @@ import { RecentMatches } from "@/components/profile/RecentMatches";
 import { BadgesAndTrophies } from "@/components/profile/BadgesAndTrophies";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
-import { fontSizes } from "@/styles/fontSizes";
 import { updateUsername } from "@/services/update-username";
 import { displayToast } from "@/utils/display-toast";
 import { UpdateUserProfileRes } from "@/utils/response-messages";
 import { Loading } from "@/components/common/Loading";
+import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 
 export function Profile() {
   const user = getCurrentUser();
@@ -100,17 +100,10 @@ export function Profile() {
       <div className="w-full relative">
         <TopBar />
         <main className="px-6 md:px-20 pt-20 md:pt-24 h-[calc(100vh-2rem)] overflow-y-auto">
-          <div className="text-center mb-10">
-            <h1
-              className={`${fontSizes.titleFontSize} font-bold text-white tracking-tight mb-4`}
-            >
-              Member Profile
-            </h1>
-            <p className={`text-white/70 mt-2 ${fontSizes.subtitleFontSize}`}>
-              Review your identity, matches, and achievements.
-            </p>
-            <div className="mx-auto mt-3 w-16 h-1 bg-pong-dark-accent rounded-full" />
-          </div>
+          <SecondaryHeader
+            title="Member Profile"
+            subtitle="Review your identity, matches, and achievements."
+          />
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
             <div className="order-1 flex flex-col items-center space-y-6">

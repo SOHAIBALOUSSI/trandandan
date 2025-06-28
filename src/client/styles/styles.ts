@@ -226,22 +226,22 @@ export const styles = {
 
   // === Start Button Primary styles ===
   btnOneStyles: `
-	flex items-center justify-center 
-	px-6 py-4 
-	text-sm lg:text-base 
+	px-4 py-2 
+	${fontSizes.buttonFontSize}
 	font-semibold text-white 
-	bg-pong-dark-accent hover:bg-pong-dark-secondary 
-	rounded-md capitalize 
+	bg-pong-accent hover:bg-pong-dark-accent 
+	hover:shadow-lg 
+	rounded-md 
 	cursor-pointer 
 	transform active:scale-[0.97] 
-	transition-all duration-300 hover:shadow-lg 
-	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2 
+	transition-all duration-300
+	focus:outline-none focus:ring-1 focus:ring-pong-primary focus:ring-offset-2 
   `,
   // === End Button Primary styles ===
 
   // === Start Page Content styles ===
   pageContent: `
-	px-12 md:px-20 pt-20 md:pt-26 
+	px-12 md:px-20 pt-20 md:pt-24 
 	h-[calc(100vh-2rem)] 
 	overflow-y-auto
 	flex flex-col items-center gap-6
@@ -270,12 +270,12 @@ export const styles = {
 
   // === Start Custom Cards styles ===
   settingsLayout: `
-  	bg-pong-dark-bg 
-	border border-pong-accent/30 rounded-3xl 
-	shadow-2xl 
-	w-full max-w-3xl 
+  	flex flex-col gap-6
+	bg-pong-dark-custom border border-pong-dark-highlight/30 
+	w-full max-w-5xl 
 	p-8 md:p-10 
-	my-4 mx-auto
+	rounded-2xl 
+	shadow-lg
   `,
   enabledStyle: `
 	ml-2 px-2 py-1 
