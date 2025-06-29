@@ -58,7 +58,7 @@ export function handleUpdateInfos() {
       }
 
       try {
-        const profileRes = await fetch(`/profile/${user.id}`, {
+        const profileRes = await fetch(`/profile/user/${user.id}`, {
           method: "PATCH",
           credentials: "include",
           body: formData,

@@ -29,20 +29,20 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  # relationships:
-  #   container_name: relationships-service
-  #   build: src/server/relationships-service
-  #   image: relationships-service
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - trandenden-net
-  #   ports:
-  #     - "3002:3002"
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
+  relationships:
+    container_name: relationships-service
+    build: src/server/relationships-service
+    image: relationships-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - trandenden-net
+    ports:
+      - "3002:3002"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   # notifications:
   #   container_name: notifications-service
@@ -115,7 +115,7 @@ services:
     depends_on:
       - auth
       - profile
-      # - relationships
+      - relationships
       # - notifications
       # - chat
       - redis

@@ -5,7 +5,7 @@ export function updateUsername(
   const formData = new FormData();
   formData.append("username", newUsername);
 
-  return fetch(`/profile/${userId}`, {
+  return fetch(`/profile/user/${userId}`, {
     method: "PATCH",
     credentials: "include",
     headers: {
