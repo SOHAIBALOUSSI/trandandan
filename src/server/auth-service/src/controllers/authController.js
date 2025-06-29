@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import speakeasy from 'speakeasy';
 import {
     findUser, 
     addUser, 
