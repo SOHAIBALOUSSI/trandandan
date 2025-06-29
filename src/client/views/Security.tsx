@@ -5,8 +5,25 @@ import { TwoFa } from "@/components/settings/TwoFa";
 import { ChangePassword } from "@/components/settings/ChangePassword";
 import { ChangeEmail } from "@/components/settings/ChangeEmail";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
+import { getCurrentUser } from "@/utils/user-store";
+import { Loading } from "@/components/common/Loading";
 
 export function Security() {
+  const user = getCurrentUser();
+  if (!user) {
+    return (
+      <section className={styles.pageLayoutDark}>
+        <NavBar />
+        <div className="w-full relative">
+          <TopBar />
+          <Loading />
+        </div>
+      </section>
+    );
+  }
+
+  const isNotRemoteUser: boolean = user.gender !== null;
+
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
@@ -18,8 +35,17 @@ export function Security() {
             subtitle="Manage your credentials and protect your club profile."
           />
           <TwoFa />
-          <ChangePassword />
-          <ChangeEmail />
+
+          {isNotRemoteUser ? (
+            <>
+              <ChangePassword />
+              <ChangeEmail />
+            </>
+          ) : (
+            <div className="text-center text-gray-500 mt-4">
+              Remote users cannot change password or email.
+            </div>
+          )}
         </main>
       </div>
     </section>
