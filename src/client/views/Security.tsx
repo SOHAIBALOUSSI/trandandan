@@ -37,10 +37,10 @@ export function Security() {
           <TwoFa />
 
           {isNotRemoteUser ? (
-            <>
+            <div className="flex flex-col gap-6">
               <ChangePassword />
               <ChangeEmail />
-            </>
+            </div>
           ) : (
             <div className="text-center text-gray-500 mt-4">
               Remote users cannot change password or email.
