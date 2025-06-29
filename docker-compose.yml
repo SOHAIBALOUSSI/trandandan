@@ -135,7 +135,7 @@ services:
     env_file:
       - .env
     networks:
-      - transcendence
+      - trandenden-net
     ports:
       - "5000:5000"
 

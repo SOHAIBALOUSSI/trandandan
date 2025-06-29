@@ -9,16 +9,19 @@ export function Game() {
       title: "1 vs 1 — Lounge Duel",
       text: "Challenge a friend beside you in an elegant local match. Pure skill, no lag — just legacy.",
       bg: "/assets/local-duel.jpg",
+      route: "/local",
     },
     {
       title: "Tournament — Club Cup",
       text: "Gather champions in-house. Compete in a local bracket to earn eternal bragging rights in the lounge.",
       bg: "/assets/tournament-cup.jpg",
+      route: "/tournaments",
     },
     {
       title: "1 vs 1 — Remote Arena",
       text: "Face a rival across the network. Ping-pong from across the globe, prestige from your own paddle.",
       bg: "/assets/remote-battle.jpg",
+      route: "/remote",
     },
   ];
 
@@ -80,14 +83,17 @@ export function Game() {
                   key={index}
                   className="min-w-full h-[28rem] flex justify-center items-center text-center px-6 bg-cover bg-center bg-no-repeat"
                 >
-                  <div className="bg-black/60 p-8 rounded-2xl shadow-lg max-w-md mx-auto cursor-pointer hover:scale-105 transition-all duration-300">
+                  <a
+                    href={mode.route}
+                    className="bg-black/60 p-8 rounded-2xl shadow-lg max-w-md mx-auto cursor-pointer hover:scale-105 transition-all duration-300 block text-inherit no-underline"
+                  >
                     <h2 className="text-3xl font-bold text-white mb-4 drop-shadow">
                       {mode.title}
                     </h2>
                     <p className="text-lg text-white/90 drop-shadow leading-relaxed">
                       {mode.text}
                     </p>
-                  </div>
+                  </a>
                 </div>
               ))}
             </div>
