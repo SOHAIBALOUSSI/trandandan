@@ -1,4 +1,5 @@
 import { 
+    fetchAllProfiles,
     findDuplicateUsername, 
     getProfileById, 
     updateAvatarUrlById, 
@@ -119,6 +120,16 @@ export async function getAvatarUrl(request, reply) {
         });
         
         return reply.type(mimeType).send(stream);
+    } catch (error) {
+        console.log(error);
+        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+    }
+}
+
+export async function getAllProfiles(request, reply) {
+    try {
+        const allProfiles = await fetchAllProfiles(this.db);
+        return reply.code(200).send(createResponse(200, 'PROFILES_FETCHED', { profiles: allProfiles }));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
