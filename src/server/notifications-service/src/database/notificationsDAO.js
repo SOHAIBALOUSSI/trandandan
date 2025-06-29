@@ -29,3 +29,7 @@ export async function getAllNotifications(db, recipientId) {
     console.log('Fetching all notifications: ', result);
     return (result);
 }
+
+export async function deleteNotifications(db, id) {
+    await db.run('DELETE FROM notifications WHERE recipient_id = ? OR sender_id = ?', [id, id]);
+}

@@ -5,7 +5,7 @@ import { router } from "./router/router";
 
 // Setup SPA link interception
 export function setupSPA(): void {
-  document.addEventListener("click", async (e) => {
+  document.addEventListener("click", async (e: Event) => {
     const target = e.target as HTMLElement;
     const link = target.closest("[data-link]") as HTMLAnchorElement | null;
 

@@ -1,4 +1,4 @@
-import { handleLogout } from "@/services/handle-logout";
+import { handleLogout } from "@/handlers/handle-logout";
 
 let hasLoggedOut: boolean = false;
 

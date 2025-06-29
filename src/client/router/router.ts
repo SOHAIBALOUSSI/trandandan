@@ -18,8 +18,12 @@ import { LocalGame } from "@/components/game/local";
 import { RemoteGame } from "@/components/game/remote";
 import { Tournaments } from "@/components/game/tournaments";
 
+import { UpdateCredentialsPassword } from "@/views/UpdateCredentialsPassword";
+import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
+import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentialsRes";
 import { getUserProfile } from "@/services/get-user-profile";
 import { setCurrentUser } from "@/utils/user-store";
+import { VerifyUpdateCredentialsRes } from "@/utils/response-messages";
 
 // Define the routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
@@ -41,6 +45,9 @@ const routes: Record<string, () => HTMLElement> = {
   tournaments: Tournaments,
   my_profile: Profile,
   security: Security,
+  change_password: UpdateCredentialsPassword,
+  change_email: UpdateCredentialsEmail,
+  verification: VerifyUpdateCredentials,
   blocked: Blocked,
   delete_account: DeleteAccount,
   checkout: Logout,
@@ -75,24 +82,23 @@ export async function router(): Promise<void> {
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
 
-  const authed = await isAuthenticated();
+  let authed = false;
 
-  if (!isPublic && !authed) {
-    history.replaceState(null, "", "/signin");
-    await router();
-    return;
+  if (!isPublic) {
+    authed = await isAuthenticated();
+    if (!authed) {
+      history.replaceState(null, "", "/signin");
+      await router();
+      return;
+    }
   }
 
-  if (isPublic && authed) {
-    history.replaceState(null, "", "/salon");
-    await router();
-    return;
-  }
-
-  if (path === "password_update") {
-    const token = sessionStorage.getItem("reset_flag");
-    if (!token) {
-      history.replaceState(null, "", "/password_reset");
+  if (isPublic) {
+    if (!authed) {
+      authed = await isAuthenticated();
+    }
+    if (authed) {
+      history.replaceState(null, "", "/salon");
       await router();
       return;
     }

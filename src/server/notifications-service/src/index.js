@@ -4,8 +4,9 @@ import { WebSocketServer, WebSocket } from 'ws';
 import sqlite3 from 'sqlite3';
 import dotenv from 'dotenv';
 import { open } from 'sqlite';
-import { addNotification, getAllNotifications, markAsDelivered } from "./database/notificationsDAO.js";
+import { addNotification, deleteNotifications, getAllNotifications, markAsDelivered } from "./database/notificationsDAO.js";
 import { verifyToken } from "./middleware/authMiddleware.js";
+import { createClient } from 'redis';
 
 
 dotenv.config();
@@ -27,6 +28,21 @@ let db;
   }
 })();
 
+let redis;
+(async() => {
+  try {
+    redis = await createClient({
+      url: 'redis://redis:6379'
+    })
+    .on("error", (err) => console.log("Redis Client Error", err))
+    .connect();
+    console.log('Redis is connected...', redis);
+  } catch (error) {
+    console.error('Failed to connect redis-server:', error);
+    process.exit(1);
+  }
+})();
+
 const users = new Map();
 
 const wss = new WebSocketServer({ port: 3003 });
@@ -37,8 +53,8 @@ await rabbit.connect();
 
 wss.on('connection', async (ws, request) => {
   console.log('WebSocket: Client connected.');
-  verifyToken(ws, request);
-  if (ws.userId) {
+  await verifyToken(ws, request, redis);
+  if (ws.isAuthenticated) {
     if (!users.has(ws.userId))
       users.set(ws.userId, new Set());
     users.get(ws.userId).add(ws);
@@ -48,8 +64,10 @@ wss.on('connection', async (ws, request) => {
         ws.send(JSON.stringify(notification));  
     }
   }
-  else 
-    ws.close(1008, 'Unauthorized');
+  else {
+    ws.close(3000, 'Unauthorized');
+    return ;
+  }
 
   ws.on('error', (error) => {
     console.error('WebSocket: Client error:', error);
@@ -57,7 +75,7 @@ wss.on('connection', async (ws, request) => {
 
   ws.on('close', () => {
     console.log('WebSocket: Client disconnected.');
-    if (ws.userId && users.has(ws.userId)) {
+    if (ws.isAuthenticated && users.has(ws.userId)) {
       users.get(ws.userId).delete(ws);
       if (users.get(ws.userId).size === 0) 
         users.delete(ws.userId);
@@ -67,19 +85,36 @@ wss.on('connection', async (ws, request) => {
 });
 
 rabbit.consumeMessages(async (notification) =>{
-  console.log('RabbitMQ: notification received: ', notification);
-  const recipient = notification.to;
-  console.log('RabbitMQ: recipient: ', recipient);
-  if (recipient) {
-    const notificationId = await addNotification(db, notification);
-    const connections = users.get(recipient);
-    if (connections) {
-      const message = JSON.stringify(notification);
-      for (const conn of connections) {
-        if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
-          conn.send(message);
+  if (notification.type === 'DELETE') {
+    const userId = notification.userId;
+    const idExist = await redis.sIsMember('userIds', `${userId}`);
+    console.log('idExist value: ', idExist);
+    if (!idExist)
+      return ;
+    await deleteNotifications(db, userId);
+    users.get(userId).forEach((ws) => {
+      ws.close(1010, 'Mandatory exit');
+    });
+  }
+  else {
+    console.log('RabbitMQ: notification received: ', notification);
+    const recipient = notification.to;
+    const idExist = await redis.sIsMember('userIds', `${recipient}`);
+    console.log('idExist value: ', idExist);
+    if (!idExist) 
+      return ;
+    console.log('RabbitMQ: recipient: ', recipient);
+    if (recipient) {
+      const notificationId = await addNotification(db, notification);
+      const connections = users.get(recipient);
+      if (connections) {
+        const message = JSON.stringify(notification);
+        for (const conn of connections) {
+          if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
+            conn.send(message);
+        }
+        await markAsDelivered(db, notificationId);
       }
-      await markAsDelivered(db, notificationId);
     }
   }
 })

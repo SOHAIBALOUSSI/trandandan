@@ -2,7 +2,7 @@ import { styles } from "@/styles/styles";
 
 export function HeroTitle() {
   return (
-    <div className={styles.heroTitleContainer}>
+    <div className="w-full max-w-screen-xl">
       <h1 className={styles.heroTitle}>
         Welcome to the{" "}
         <span className="text-pong-accent font-playfair">

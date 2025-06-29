@@ -1,13 +1,13 @@
 import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
-import { handleSignUp } from "@/services/handle-signup";
 import { MainHeader } from "@/components/common/MainHeader";
 import { SignUpForm } from "@/components/auth/SignUpForm";
 import { Overlay } from "@/components/layout/Overlay";
+import { handleSignUp } from "@/handlers/handle-signup";
 import {
   handleGoogleSignin,
   handle42Signin,
-} from "@/services/handle-remote-signin";
+} from "@/handlers/handle-remote-signin";
 
 export function Signup() {
   setTimeout(() => {
@@ -20,7 +20,6 @@ export function Signup() {
     <section className={styles.pageLayoutLight}>
       <Overlay />
       <MainHeader
-        isDark={true}
         title="join"
         titleSpan="the club"
         subtitle="become a member"

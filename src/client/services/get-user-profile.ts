@@ -1,4 +1,4 @@
-import { authFetch } from "@/utils/auth-fetch";
+import { authFetch } from "@/services/auth-fetch";
 import { setCurrentUser } from "@/utils/user-store";
 
 export async function getUserProfile() {

@@ -1,57 +1,46 @@
+import { fontSizes } from "@/styles/fontSizes";
 import { styles } from "@/styles/styles";
-import { getCurrentUser } from "@/utils/user-store";
-import MaleAvatar from "@/assets/male.png";
-import FemaleAvatar from "@/assets/female.png";
+import { UserProfile } from "types/types";
 
-export function Hero() {
-  const user = getCurrentUser();
+export function Hero(props: { user: UserProfile | null }) {
+  const { user } = props;
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:justify-between md:items-start text-center w-[90%] max-w-5xl mx-auto mt-6 md:mt-12">
-      <div
-        id="player-level"
-        className="bg-pong-dark-highlight/30 text-white px-8 py-4 rounded-xl shadow-lg w-full md:w-auto transition-transform duration-300 hover:scale-105"
-      >
-        <p className="text-sm font-medium uppercase tracking-widest text-pong-dark-secondary">
-          Grade
-        </p>
-        <span className="text-lg md:text-xl font-bold">
-          {user?.level.toString()}
-        </span>
-      </div>
+    <div className="p-6 md:p-10 shadow-xl shadow-black/30 w-full max-w-5xl mx-auto rounded-2xl backdrop-blur-md">
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+        <div className="w-28 h-28 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg hover:scale-105 transition-transform duration-300">
+          <img
+            src={user?.avatar_url}
+            alt="Profile Avatar"
+            className="w-full h-full rounded-full object-cover"
+          />
+        </div>
 
-      <div
-        id="player-sold"
-        className="md:order-2 bg-pong-dark-highlight/30 text-white px-8 py-4 rounded-xl shadow-lg w-full md:w-auto transition-transform duration-300 hover:scale-105"
-      >
-        <p className="text-sm font-medium uppercase tracking-widest text-pong-dark-secondary">
-          Sold
-        </p>
-        <span className="text-lg md:text-xl font-bold">
-          {user?.solde.toString()} F
-        </span>
-      </div>
-
-      <div
-        id="hero-welcome"
-        className="flex flex-col items-center md:order-1 justify-center gap-3"
-      >
-        <p className="text-sm text-pong-secondary italic">
-          Ranked #{user?.rank} in BHV Club
-        </p>
-        <img
-          src={user?.gender === "M" ? MaleAvatar : FemaleAvatar}
-          alt="profile image"
-          className="w-[110px] h-[110px] rounded-full shadow-md mb-2 hover:shadow-xl transition-shadow duration-300"
-        />
-        <p className="text-base font-medium leading-snug">
-          Welcome back,{" "}
-          <span className="font-semibold text-pong-secondary normal-case">
-            {user?.username}
-          </span>
-          !<br />
-          Your paddle is polished. Let’s play.
-        </p>
+        <div className="text-center md:text-left flex-1">
+          <h2
+            className={`${fontSizes.titleFontSize} font-bold text-pong-dark-primary mb-2`}
+          >
+            Welcome back,{" "}
+            <span className="text-pong-dark-accent normal-case">
+              {user?.username}
+            </span>
+            !
+          </h2>
+          <p
+            className={`text-pong-dark-secondary ${fontSizes.subtitleFontSize} font-semibold mb-3`}
+          >
+            Ranked #{user?.rank} in BHV Club • Level {user?.level}
+          </p>
+          <hr className="my-4 border-pong-accent/20" />
+          <p
+            className={`text-pong-dark-primary/70 italic ${fontSizes.smallTextFontSize} mb-4`}
+          >
+            “Every champion was once a contender who refused to give up.”
+          </p>
+          <a href="my_profile" className={styles.customBtnLink} data-link>
+            View Profile
+          </a>
+        </div>
       </div>
     </div>
   );

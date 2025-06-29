@@ -1,18 +1,25 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
-import { MainHeader } from "@/components/common/MainHeader";
 import { styles } from "@/styles/styles";
 import { TwoFa } from "@/components/settings/TwoFa";
+import { ChangePassword } from "@/components/settings/ChangePassword";
+import { ChangeEmail } from "@/components/settings/ChangeEmail";
+import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 
 export function Security() {
   return (
-    <section className={styles.pageLayoutDark} id="settings-section">
+    <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto flex flex-col items-center gap-8">
-          <MainHeader isDark={false} title="the ledger" titleSpan="room" />
+        <main className={styles.pageContent}>
+          <SecondaryHeader
+            title="Security & Access"
+            subtitle="Manage your credentials and protect your club profile."
+          />
           <TwoFa />
+          <ChangePassword />
+          <ChangeEmail />
         </main>
       </div>
     </section>

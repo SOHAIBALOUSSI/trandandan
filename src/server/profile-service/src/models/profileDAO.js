@@ -61,6 +61,14 @@ export async function updateProfileById(db, id, updatedFields) {
     return result.changes;    
 }
 
+export async function updateAvatarUrlById(db, id, avatar_url) {
+    await db.run(`UPDATE profile SET avatar_url = ?, updated_at = DATETIME('now') WHERE userId = ?`, [avatar_url, id]);
+}
+
 export async function updateProfileEmailById(db, id, email) {
     await db.run(`UPDATE profile SET email = ?, updated_at = DATETIME('now') WHERE userId = ?`, [email, id]);
+}
+
+export async function deleteProfile(db, id) {
+    await db.run('DELETE FROM profile WHERE userId = ?', [id]);
 }

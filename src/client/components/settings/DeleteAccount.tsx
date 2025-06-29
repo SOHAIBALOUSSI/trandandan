@@ -8,7 +8,7 @@ export function DeleteAccount() {
         This action is irreversible. All your data will be permanently deleted.
       </p>
 
-      {/* <BtnPrimary
+      {/* <SubmitBtn
 		label="Delete Account"
 		className="w-full mt-4 bg-pong-error hover:bg-red-700"
 	  /> */}

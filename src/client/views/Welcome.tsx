@@ -10,7 +10,7 @@ export function Welcome() {
     <section className={styles.pageLayoutLight}>
       <Overlay />
       <img src={mascot} alt="Ping Pong Mascot" className={styles.heroMascot} />
-      <div className="flex flex-col items-center justify-center gap-16 min-h-[80vh]">
+      <div className="flex flex-col items-center justify-center gap-16 min-h-[80vh] animate-fadeInUp">
         <HeroTitle />
         <HeroCta />
       </div>

@@ -1,20 +1,38 @@
-import { MainHeader } from "@/components/common/MainHeader";
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { Hero } from "@/components/home/Hero";
+import { QuickStatsCards } from "@/components/home/QuickStatsCards";
 import { QuickLinks } from "@/components/home/QuickLinks";
+import { RecentActivityFeed } from "@/components/home/RecentActivityFeed";
+import { LeaderboardPreview } from "@/components/home/LeaderboardPreview";
 import { styles } from "@/styles/styles";
+import { getCurrentUser } from "@/utils/user-store";
+import { Loading } from "@/components/common/Loading";
 
 export function Home() {
+  const user = getCurrentUser();
+  if (!user) {
+    return (
+      <section className={styles.pageLayoutDark}>
+        <NavBar />
+        <div className="w-full relative">
+          <TopBar />
+          <Loading />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-2rem)] overflow-y-auto">
-          <MainHeader isDark={false} title="the club" titleSpan="hall" />
-          <Hero />
-          <QuickLinks />
+        <main className={styles.pageContent}>
+          <Hero user={user} />
+          <QuickStatsCards />
+          <RecentActivityFeed />
+          <LeaderboardPreview user={user} />
         </main>
       </div>
     </section>

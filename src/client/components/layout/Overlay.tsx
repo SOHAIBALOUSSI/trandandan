@@ -1,6 +1,11 @@
-import { styles } from "@/styles/styles";
-import mascot from "@/assets/pong-mascot.png";
-
 export function Overlay() {
-  return <div className={styles.heroOverlay} />;
+  return (
+    <div
+      className={`
+	 	absolute inset-0 z-[-2] opacity-70 
+		bg-[url('../assets/background.png')] bg-repeat bg-cover 
+		animate-backgroundPan 
+	`}
+    />
+  );
 }

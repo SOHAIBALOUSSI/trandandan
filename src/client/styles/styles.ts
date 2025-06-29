@@ -1,3 +1,5 @@
+import { fontSizes } from "./fontSizes";
+
 export const styles = {
   // === Start Page Layout styles ===
   pageLayoutLight: `
@@ -5,8 +7,8 @@ export const styles = {
   	w-full min-h-screen
 	text-center
 	flex flex-col items-center justify-between gap-8
-	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 
-	py-4 md:py-6
+	px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12
+	py-6 md:py-10
 	text-pong-primary
   `,
   pageLayoutDark: `
@@ -17,18 +19,33 @@ export const styles = {
   `,
   // === End Page Layout styles ===
 
-  // === Start Hero styles ===
-  heroTitleContainer: `
-  	w-full max-w-screen-xl 
-	animate-fade-in
+  // === Start Custom Sections styles ===
+  customSectionStyles: `
+  	bg-pong-secondary/5 shadow-[0_8px_30px_rgba(0,0,0,0.15)]
+  	rounded-3xl border border-pong-accent/30
+  	backdrop-blur-md
+  	max-w-xl w-full mx-auto 
+  	px-8 py-10 md:py-14
   `,
+  customForm: `
+  	flex flex-col gap-6
+  	w-full max-w-md mx-auto
+  	bg-pong-bg/70 shadow-xl rounded-2xl
+  	px-6 py-10
+  	backdrop-blur-md
+  	border border-pong-accent/20
+  `,
+  // === End Custom Sections styles ===
+
+  // === Start Hero styles ===
   heroTitle: `
 	leading-tight
 	text-[clamp(2.2rem,6vw,4.5rem)]
 	md:text-[clamp(3rem,8vw,7rem)]
 	xl:text-[clamp(4rem,10vw,9.25rem)]
 	md:leading-[1.1]
-	transition duration-300 hover:text-pong-secondary
+	hover:text-pong-secondary
+	transition duration-300
   `,
   heroTagline: `
   	mt-4 font-normal
@@ -38,21 +55,11 @@ export const styles = {
   	after:content-['...']
 	font-bold
   `,
-  heroCallToAction: `
-  	flex flex-col items-center gap-2 
-	animate-fade-in
-  `,
   heroSubtitle: `
     mt-2 text-pong-secondary
     md:text-[clamp(1rem,2vw,1.375rem)]
   `,
-  heroOverlay: `
- 	absolute inset-0 z-[-2] opacity-70 
-	bg-[url('../assets/background.png')] bg-repeat bg-cover 
-	animate-backgroundPan 
-  `,
   heroMascot: `
-	opacity-90 
 	w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24
 	absolute top-6 right-6 md:top-8 md:right-8 lg:top-10 lg:right-10
 	animate-float
@@ -61,120 +68,100 @@ export const styles = {
 
   // === Start Primary Button styles ===
   primaryButton: `
-    group
+    group 
+	relative 
+	w-full md:w-[320px] mx-auto
+    px-6 py-4 md:px-8 md:py-5
     flex items-center justify-center gap-2
-    w-full md:w-[320px] mx-auto px-6 py-4 md:px-8 md:py-5
-    text-sm lg:text-base font-semibold text-white
-    bg-pong-accent hover:bg-pong-secondary
-    rounded-md
-	capitalize
-    cursor-pointer transform active:scale-[0.97]
-    transition-all duration-300
-	hover:shadow-lg
-	relative
-    focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
+	${fontSizes.buttonFontSize}
+	font-bold capitalize tracking-wider
+    text-white bg-pong-accent hover:bg-pong-secondary
+    rounded-xl shadow-md hover:shadow-lg
+    transition-all duration-300 transform active:scale-[0.97]
+    focus:outline-none focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
   `,
   primaryButtonIcon: `
-    transition-transform duration-300
-    group-hover:-translate-x-1
+	transition-transform duration-300 
+	group-hover:-translate-x-1
   `,
   // === End Primary Button styles ===
 
   // === Start Input Field styles ===
-  inputField: `
-  	input-field
-	normal-case
-	w-full px-4 py-3
-	text-sm lg:text-base font-semibold
-	bg-pong-secondary/10
-	rounded-md
-	caret-inherit
-	placeholder:text-pong-primary/50 placeholder:capitalize
+  mainInputFieldStyles: `
+  	normal-case
+	input-field
+	w-full px-5 py-3.5
+	${fontSizes.buttonFontSize} 
+	font-semibold tracking-wide
+	text-pong-primary bg-pong-secondary/10
+	rounded-xl shadow-inner
+	border border-pong-primary/10 focus:border-pong-accent
+	placeholder:text-pong-primary/50
+	placeholder:capitalize
+	focus:outline-none focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
+	focus:bg-white/40
 	transition-all duration-300
-	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
-	focus:bg-pong-secondary/20
+	backdrop-blur-md
   `,
   customSelect: `
-	w-full px-4 py-3
-    text-sm lg:text-base font-semibold
-    bg-pong-secondary/10
-    capitalize text-pong-primary
-   	rounded-md
-    transition-all duration-300
-    appearance-none
-    focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
-    focus:bg-pong-secondary/20
-    custom-select 
+  	w-full px-4 py-3 pr-10
+  	${fontSizes.buttonFontSize}  
+	font-semibold
+  	bg-pong-secondary/10
+  	capitalize text-pong-primary
+  	rounded-md border border-pong-primary/10
+  	appearance-none
+  	transition-all duration-300
+  	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
+  	focus:bg-pong-secondary/20
+  	relative z-10
+  `,
+  otpInputStyle: `
+  	w-10 h-12 md:w-14 md:h-16
+  	text-lg md:text-2xl text-center font-bold tracking-widest
+  	border border-pong-secondary/30
+  	rounded-2xl shadow-md
+  	caret-pong-accent
+  	bg-white/60 backdrop-blur
+  	text-pong-primary placeholder:text-pong-primary/30
+  	transition-all duration-300 ease-out focus:scale-105
+  	focus:outline-none focus:ring-2 focus:ring-pong-accent/70 focus:border-pong-accent
+  	focus:shadow-lg
   `,
   // === End Input Field styles ===
 
   // === Start Form styles ===
   form: `
-	max-w-md w-full mx-auto	
-	bg-pong-bg/60 shadow-xl rounded-2xl
-	backdrop-blur
-	flex flex-col text-center align-center justify-center gap-6
-	px-6 py-10
-  `,
-  formMessage: `
-  	text-center text-sm font-semibold min-h-[1.5rem] mb-2
+  	max-w-md w-full mx-auto
+  	bg-gradient-to-br from-pong-secondary/20 via-pong-bg/50 to-pong-accent/10
+  	shadow-2xl rounded-3xl
+  	backdrop-blur-sm border border-pong-accent/20
+  	flex flex-col items-center gap-6
+  	px-8 py-12
   `,
   // === End Form styles ===
 
   // === Start Main Header styles ===
   titleDark: `
-  	capitalize
-    mb-8
-	text-pong-primary 
-	text-2xl md:text-3xl lg:text-4xl xl:text-5xl
-  `,
-  titleLight: `
-  	capitalize
-  	mb-8 
-	text-pong-dark-primary
-	text-2xl md:text-3xl lg:text-4xl xl:text-5xl
+	tracking-tight leading-tight
+	${fontSizes.titleFontSize}
   `,
   titleSpanDark: `
-  	font-playfair
-	text-pong-accent
-	relative
-	before:absolute before:w-full before:h-[3px] 
-	before:bg-pong-accent before:rounded-md 
-	before:bottom-[4px] before:left-0 
-	before:scale-x-0 before:transition-transform before:duration-300 
-	hover:before:scale-x-100
-  `,
-  titleSpanLight: `
-  	font-playfair 
-	text-pong-dark-accent
-	relative
-	before:absolute before:w-full before:h-[2px] 
-	before:bg-pong-dark-accent before:rounded-md 
-	before:bottom-0 before:left-0 
-	before:scale-x-0 before:transition-transform before:duration-300 
-	hover:before:scale-x-100
+	font-playfair 
+	text-pong-accent 
+	relative inline-block 
+	underline-animated
   `,
   subtitleDark: `
-  	flex flex-col font-semibold 
-	text-lg md:text-xl lg:text-2xl xl:text-3xl
+	font-semibold 
+	${fontSizes.subtitleFontSize}
   `,
   subtitleParagraphDark: `
-  	text-pong-primary/80 
-	font-normal 
-	text-sm md:text-base lg:text-lg xl:text-xl
+	text-pong-primary/80 
+	leading-relaxed
+	${fontSizes.bodyFontSize}
   `,
   // === End Main Header styles ===
-
-  // === Start Animation styles ===
-  fadeInSection: `
-  	opacity-0 
-	animate-fade-in
-  `,
-  blurInText: `
-  	opacity-0 
-	animate-blur-in
-  `,
-  // === End Animation styles ===
 
   // === Start Top Bar styles ===
   navBarStyle: `
@@ -237,29 +224,78 @@ export const styles = {
     group
   `,
 
-  // === Start Reset password section styles ===
-  customSectionStyles: `
-    bg-transparent shadow-2xl rounded-2xl border border-pong-accent/20
-	backdrop-blur-md
-    max-w-lg w-full mx-auto p-8
-  `,
-  // === End Reset password section styles ===
-
   // === Start Button Primary styles ===
   btnOneStyles: `
-	flex items-center justify-center 
-	px-6 py-4 
-	text-sm lg:text-base 
+	px-4 py-2 
+	${fontSizes.buttonFontSize}
 	font-semibold text-white 
-	bg-pong-dark-accent hover:bg-pong-dark-secondary 
-	rounded-md capitalize 
+	bg-pong-accent hover:bg-pong-dark-accent 
+	hover:shadow-lg 
+	rounded-md 
 	cursor-pointer 
 	transform active:scale-[0.97] 
-	transition-all duration-300 hover:shadow-lg 
-	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2 
+	transition-all duration-300
+	focus:outline-none focus:ring-1 focus:ring-pong-primary focus:ring-offset-2 
   `,
   // === End Button Primary styles ===
 
-  //   Start Button Secondary styles  //
-  //   End Button Secondary styles  //
+  // === Start Page Content styles ===
+  pageContent: `
+	px-12 md:px-20 pt-20 md:pt-24 
+	h-[calc(100vh-2rem)] 
+	overflow-y-auto
+	flex flex-col items-center gap-6
+  `,
+  // === End Page Content styles ===
+
+  // === Start Custom Links styles ===
+  customFormLink: `
+	text-pong-accent 
+	underline underline-offset-2 
+	hover:text-pong-secondary hover:underline-offset-4 
+	transition-all duration-300
+  `,
+  customBtnLink: `
+	inline-block 
+	px-6 py-2 
+	bg-pong-accent 
+	hover:bg-pong-dark-accent 
+	text-white 
+	rounded-lg shadow 
+	transition-colors duration-200 
+	${fontSizes.buttonFontSize} 
+	font-semibold
+  `,
+  // === End Custom Links styles ===
+
+  // === Start Custom Cards styles ===
+  settingsLayout: `
+  	flex flex-col gap-6
+	bg-pong-dark-custom border border-pong-dark-highlight/30 
+	w-full max-w-5xl 
+	p-8 md:p-10 
+	rounded-2xl 
+	shadow-lg
+  `,
+  enabledStyle: `
+	ml-2 px-2 py-1 
+	text-xs font-bold 
+	rounded-full 
+	bg-pong-success/10 
+	text-pong-success/90
+  `,
+  disabledStyle: `
+	ml-2 px-2 py-1 
+	text-xs font-bold 
+	rounded-full 
+	bg-pong-error/10 
+	text-pong-error/90
+  `,
+  primaryStyle: `
+	ml-2 px-2 py-1 
+	text-xs font-bold 
+	rounded-full 
+	bg-pong-primary/30 
+	text-pong-dark-accent 
+  `,
 };
