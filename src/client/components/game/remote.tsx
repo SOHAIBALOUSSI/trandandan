@@ -465,8 +465,8 @@ class FlowField {
           leftPlayerBallHit: this.gameState.leftPlayerBallHit,
           rightPlayerBallHit: this.gameState.rightPlayerBallHit,
         };
-        if (userUpdatedInfo)
-          this.updateUserInfo(userUpdatedInfo);
+        // if (userUpdatedInfo)
+        //   this.updateUserInfo(userUpdatedInfo);
         this.sendPlayerData(playerData);
         this.deps.restartButton.addEventListener("click", this.handleRestart.bind(this));
       }
