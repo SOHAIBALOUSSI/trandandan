@@ -4,32 +4,32 @@ import { updateProfileSchema } from "../schemas/profileSchema.js";
 
 async function profileRoutes(fastify) {
 
-    fastify.get('/:id', {
-        preHandler: verifyToken,
-        handler: getProfile
-    })
-
     fastify.get('/all', {
         preHandler: verifyToken,
         handler: getAllProfiles
     })
-
-    fastify.patch('/:id', {
+    
+    fastify.post('/upload', {
+        preHandler: verifyToken,
+        handler: uploadAvatarUrl
+    })
+    
+    fastify.get('/avatar/:fileName', {
+        preHandler: verifyToken,
+        handler: getAvatarUrl
+    })
+    
+    fastify.get('/user/:id', {
+        preHandler: verifyToken,
+        handler: getProfile
+    })
+    
+    fastify.patch('/user/:id', {
         schema: {
             body: updateProfileSchema
         },
         preHandler: verifyToken,
         handler: updateProfile
-    })
-
-    fastify.post('/upload', {
-        preHandler: verifyToken,
-        handler: uploadAvatarUrl
-    })
-
-    fastify.get('/avatar/:fileName', {
-        preHandler: verifyToken,
-        handler: getAvatarUrl
     })
 }
 
