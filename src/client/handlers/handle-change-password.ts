@@ -38,6 +38,14 @@ export function handleChangePassword() {
       confirmPasswordInput.focus();
       return;
     }
+    if (newPassword !== confirmPassword) {
+      confirmPasswordInput.focus();
+      displayToast(
+        "New password and confirmation do not match. Please try again.",
+        "error"
+      );
+      return;
+    }
 
     const feedbackDelay = 900;
     const redirectDelay = 1500;
@@ -69,6 +77,7 @@ export function handleChangePassword() {
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
+        sessionStorage.setItem("2faModeUpdate", result.data?.twoFaType);
         setTimeout(() => {
           displayToast(UpdateCredentialsRes.TWOFA_REQUIRED, "warning");
           setTimeout(() => {

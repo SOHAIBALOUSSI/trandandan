@@ -46,11 +46,20 @@ export function handleChangeEmail() {
 
       const result = await response.json();
 
-      if (response.ok) {
+      if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
           displayToast("Email updated successfully.", "success");
           setTimeout(() => {
             history.pushState(null, "", "/security");
+            window.dispatchEvent(new PopStateEvent("popstate"));
+          }, redirectDelay);
+        }, feedbackDelay);
+      } else if (response.ok && result.statusCode === 206) {
+        sessionStorage.setItem("2faModeUpdate", result.data?.twoFaType);
+        setTimeout(() => {
+          displayToast(UpdateCredentialsRes.TWOFA_REQUIRED, "warning");
+          setTimeout(() => {
+            history.pushState(null, "", "/verification");
             window.dispatchEvent(new PopStateEvent("popstate"));
           }, redirectDelay);
         }, feedbackDelay);
