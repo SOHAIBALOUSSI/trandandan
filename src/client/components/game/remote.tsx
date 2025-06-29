@@ -425,7 +425,22 @@ class FlowField {
 
         if (this.gameState.playerId === 1)
         {
+          
           if (userUpdatedInfo) {
+            if (this.gameState.gameEndResult === "WON") {
+              if (typeof userUpdatedInfo.matchesWon === "number") {
+                userUpdatedInfo.matchesWon += 1;
+              } else {
+                userUpdatedInfo.matchesWon = 1;
+              }
+            } else if (this.gameState.gameEndResult === "LOST") {
+              if (typeof userUpdatedInfo.matchesLost === "number") {
+                userUpdatedInfo.matchesLost += 1;
+              } else {
+                userUpdatedInfo.matchesLost = 1;
+              }
+            }
+
             userUpdatedInfo.level += this.gameState.leftPlayerScore;
             if (this.gameState.gameEndResult === "WON")
             {
@@ -466,7 +481,7 @@ class FlowField {
           rightPlayerBallHit: this.gameState.rightPlayerBallHit,
         };
         // if (userUpdatedInfo)
-        //   this.updateUserInfo(userUpdatedInfo);
+          // this.updateUserInfo(userUpdatedInfo);
         this.sendPlayerData(playerData);
         this.deps.restartButton.addEventListener("click", this.handleRestart.bind(this));
       }
