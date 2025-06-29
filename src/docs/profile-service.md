@@ -38,9 +38,18 @@ The `profile-service` is responsible for managing user profile data. It handles 
 - `/:id` (GET)
 ```yaml
 
-  403: UNAUTHORIZED,
+  401: UNAUTHORIZED,
   400: PROFILE_NOT_FOUND,
   200: PROFILE_FETCHED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/all` (GET)
+```yaml
+
+  401: UNAUTHORIZED,
+  200: PROFILES_FETCHED,
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -48,7 +57,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 - `/:id` (PATCH)
 ```yaml
 
-  403: UNAUTHORIZED,
+  401: UNAUTHORIZED,
   400: {
     PROFILE_NOT_FOUND,
     USERNAME_EXISTS,
@@ -62,6 +71,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 
 - `/upload` 
 ```yaml
+  401: UNAUTHORIZED,
   400: FILE_REQUIRED,
   200: AVATAR_UPLOADED,
   500: INTERNAL_SERVER_ERROR
@@ -70,6 +80,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 
 - `/avatar/:fileName` 
 ```yaml
+  401: UNAUTHORIZED,
   400: FILE_NAME_REQUIRED
   404: FILE_NOT_FOUND
   200: AVATAR_UPLOADED,
