@@ -1,4 +1,3 @@
-
 export function LocalGame() {
   // Create a container element for the game
   const container = document.createElement("div");
@@ -45,6 +44,9 @@ export function LocalGame() {
         <button id="restart" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
       </div>
     </div>
+    <div id="exitTab" class="h-80 w-150 bg-game-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
+      <button id="exit" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
+    </div>
   `;
 
   // Initialize game elements
@@ -59,7 +61,11 @@ export function LocalGame() {
   const gameTab = container.querySelector("#gameTab") as HTMLElement;
   const result = container.querySelector("#result") as HTMLElement;
   const restart = container.querySelector("#restart") as HTMLElement;
+  const exit = container.querySelector("#exit") as HTMLElement;
 
+  exit.addEventListener("click", () => {
+    window.location.href = "/arena"; // Redirect to the home page
+  });
   // Game state and logic
   let socketLocal: WebSocket;
   let keys: { [key: string]: boolean } = {};

@@ -77,6 +77,9 @@ export function Tournaments() {
         </div>
       </div>
     </div>
+    <div id="exitTab" class="h-80 w-150 bg-game-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
+      <button id="exit" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
+    </div>
   `;
 
   // Get DOM elements
@@ -101,6 +104,7 @@ export function Tournaments() {
   const resultStat = container.querySelector('#resultStat') as HTMLElement;
   const restartTournoi = container.querySelector('#restartTournoi') as HTMLElement;
   const start = container.querySelector('#start') as HTMLElement;
+  const exit = container.querySelector('#exit') as HTMLElement;
   console.log("[client] Tournaments component is being initialized"); 
 
   // Game state
@@ -108,6 +112,9 @@ export function Tournaments() {
   let socketLocal: WebSocket;
   const Players: string[] = [];
   const Winners: string[] = [];
+  exit.addEventListener("click", () => {  
+    window.location.href = "/arena"; // Redirect to the home page
+  });
 
   // Initialize the game
   function init() {

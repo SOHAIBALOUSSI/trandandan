@@ -72,7 +72,7 @@ export function RemoteGame() {
   const playerSide = container.querySelector('#playerSide') as HTMLElement;
 
   exit.addEventListener("click", () => {
-    window.location.href = "/salon";
+    window.location.href = "/arena";
   });
   // Utility functions
   const userInfo = getCurrentUser();
