@@ -7,7 +7,7 @@ This document provides details about the `/invite` and `/accept` routes in the g
 
 ## Endpoints
 
-### `/invite`
+### `http://localhost:5000/invite`
 **Description:**
 This route is used to send a game invitation from one player to another.
 
@@ -49,7 +49,7 @@ POST
 
 ---
 
-### `/accept`
+### `http://localhost:5000/accept`
 **Description:**
 This route is used to accept a game invitation.
 
