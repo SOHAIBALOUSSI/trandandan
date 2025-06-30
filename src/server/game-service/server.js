@@ -2,11 +2,10 @@
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 import cors from "@fastify/cors";
-import { getUserCookies } from "./routes/cookies.js";
-import  RabbitMGame  from "./routes/RabbitMGame.js"
-
+import redisPlugin from "./routes/redis.js";
 const fastify = Fastify();
 
+fastify.register(redisPlugin);
 fastify.register(cors, {
   origin: "*", // Allow all origins
   methods: ["GET", "POST", "DELETE"], // Allow specific HTTP methods
@@ -47,11 +46,22 @@ fastify.register(async function name(fastify) {
 import invitePlayer from './routes/invite.js';
 fastify.register(async function name(fastify) {
   fastify.post("/invite", async (req, reply) => {
-    invitePlayer(req, reply);
+    return invitePlayer(req, reply, fastify);
   });
 });
 
-
+import Accept from "./routes/accept.js";
+fastify.register(async function name(fastify) {
+  fastify.post("/accept", async (req, reply) => {
+    return Accept(req, reply, fastify);
+  });
+});
+import getRoomId from "./routes/getRoomId.js";
+fastify.register(async function name(req, reply) {
+  fastify.post("/getRoomId", async (req, reply) => {
+    return getRoomId(req, reply, fastify);
+  });
+});
 fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);
