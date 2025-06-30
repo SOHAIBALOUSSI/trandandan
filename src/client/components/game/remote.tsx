@@ -76,9 +76,39 @@ export function RemoteGame() {
   });
   // Utility functions
   const userInfo = getCurrentUser();
-  console.log(userInfo)
-  let roomdIdentif = "123";
+
+
+  const getRoomIdByUserId = async (userId: number) => {
+    return fetch('http://localhost:5000/getRoomId', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),  // send { userId: someNumber }
+    })
+    .then(response => {
+      if (!response.ok) {
+        // Handle HTTP errors (like 404, 500)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();  // Parse JSON body
+    })
+    .then(data => {
+      // data will be the JSON response from your Fastify route
+      // e.g. { message: "Room found", roomData: "room-123" }
+      return data.roomData;  // return the roomData string
+    })
+    .catch(err => {
+      console.error("Fetch error:", err);
+      return null;  // or handle error how you want
+    });
+  };
+
+
+  let roomdIdentif =  getRoomIdByUserId(userInfo?.id ?? 0);
+  console.log("roomdIdentif:", roomdIdentif);
   let socket: WebSocket;
+
 
   // Initialize the game
   function init() {
@@ -135,6 +165,9 @@ export function RemoteGame() {
 
   return container;
 }
+let flag_one: boolean = true;
+let flag_two: boolean = true;
+let flag_update: boolean = true;
 
 // Interfaces
 interface GameState {
@@ -250,28 +283,14 @@ class FlowField {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('Server response:', data);
+        // console.log('Server response:', data);
       })
       .catch((error) => {
         console.error("Error sending player data:", error);
       });
   }
-  private updateUserInfo(userInfo: UserProfile): void {
-    fetch(`http://localhost:3001/${userInfo.userId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userInfo),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Server response:', data);
-      })
-      .catch((error) => {
-        console.error("Error sending player data:", error);
-      });
-  }
+
+  
   private ballParticle(x: number, y: number): void {
     for (let i = 0; i < 5; i++) {
       this.particles.push({
@@ -386,7 +405,9 @@ class FlowField {
         console.log("WebSocket reconnected");
         newSocket.send(JSON.stringify(this.gameState));
       };
-
+      flag_one = true;
+      flag_two = true;
+      flag_update = true;
       newSocket.onmessage = (event: MessageEvent) => {
         this.updateGameState(event.data);
       };
@@ -402,12 +423,46 @@ class FlowField {
       this.deps.socket = newSocket;
     }
   }
-
+  public normalizeUser(raw: any): UserProfile {
+    return {
+      id: raw.id,
+      userId: raw.userId,
+      username: raw.username,
+      email: raw.email,
+      gender: raw.gender,
+      avatar_url: raw.avatar_url,
+      status: raw.status,
+      solde: raw.solde,
+      rank: raw.rank,
+      level: raw.level,
+      created_at: raw.created_at,
+      matchesPlayed: raw.matches_played ?? 0,
+      matchesWon: raw.matches_won ?? 0,
+      matchesLost: raw.matches_lost ?? 0,
+    };
+  }
+  public updateUser(currentUser: UserProfile): void {
+    fetch(`/profile/${currentUser.userId}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(currentUser)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("User updated successfully:", data);
+      }
+      )
+      .catch((error) => {
+        console.error("Error updating user:", error);
+      });
+    }
   public updateGameState(data: string): void {
     try {
       const parsedData: GameState = JSON.parse(data);
       this.gameState = parsedData;
-
       if (this.gameState.playerId === 1) {
         this.deps.playerSide.innerText = "YOU ARE ON THE LEFT SIDE";
       } else if (this.gameState.playerId === 2) {
@@ -415,70 +470,57 @@ class FlowField {
       }
       this.deps.rightPlayerScore.textContent = String(this.gameState.rightPlayerScore);
       this.deps.leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
-
       if (this.gameState.gameEndResult && this.gameState.gameEndResult.length !== 0) {
-        const userUpdatedInfo = getCurrentUser();
+        const currentUser = getCurrentUser();
+        console.log("currentUser:", currentUser);
+        // const currentUser: UserProfile = this.normalizeUser(rawUser);
         
         this.gameState.endGame = true;
         this.deps.result.textContent = "You " + this.gameState.gameEndResult;
         this.deps.gameTabe.style.display = "block";
 
-        if (this.gameState.playerId === 1)
+        if (this.gameState.playerId === 1 && flag_one === true) 
         {
-          
-          if (userUpdatedInfo) {
-            if (this.gameState.gameEndResult === "WON") {
-              if (typeof userUpdatedInfo.matchesWon === "number") {
-                userUpdatedInfo.matchesWon += 1;
-              } else {
-                userUpdatedInfo.matchesWon = 1;
-              }
-            } else if (this.gameState.gameEndResult === "LOST") {
-              if (typeof userUpdatedInfo.matchesLost === "number") {
-                userUpdatedInfo.matchesLost += 1;
-              } else {
-                userUpdatedInfo.matchesLost = 1;
-              }
+          flag_one = false;
+          if (currentUser) {
+            if (this.gameState.gameEndResult === "Won") {
+              currentUser.matchesWon += 1;
+            } else if (this.gameState.gameEndResult === "Lost") {
+                currentUser.matchesLost += 1;
             }
-
-            userUpdatedInfo.level += this.gameState.leftPlayerScore;
-            if (this.gameState.gameEndResult === "WON")
+            currentUser.matchesPlayed += 1;
+            currentUser.level += this.gameState.leftPlayerScore;
+            if (this.gameState.gameEndResult === "Won")
             {
-                userUpdatedInfo.level += 10;
+                currentUser.level += 10;
             }
-            else if (this.gameState.gameEndResult === "LOST")
+            else if (this.gameState.gameEndResult === "Lost")
             {
-                if (userUpdatedInfo.level > 5)
-                    userUpdatedInfo.level -= 5;
+                if (currentUser.level > 5)
+                    currentUser.level -= 5;
             }
           }
         }
 
-        if (this.gameState.playerId === 2)
+        if (this.gameState.playerId === 2 && flag_two === true) 
         {
-          if (userUpdatedInfo) {
-            if (this.gameState.gameEndResult === "WON") {
-              if (typeof userUpdatedInfo.matchesWon === "number") {
-                userUpdatedInfo.matchesWon += 1;
-              } else {
-                userUpdatedInfo.matchesWon = 1;
-              }
-            } else if (this.gameState.gameEndResult === "LOST") {
-              if (typeof userUpdatedInfo.matchesLost === "number") {
-                userUpdatedInfo.matchesLost += 1;
-              } else {
-                userUpdatedInfo.matchesLost = 1;
-              }
+          flag_two = false;
+          if (currentUser) {
+            if (this.gameState.gameEndResult === "Won") {
+              currentUser.matchesWon += 1;
+            } else if (this.gameState.gameEndResult === "Lost") {
+                currentUser.matchesLost += 1;
             }
-            userUpdatedInfo.level += this.gameState.rightPlayerScore;
-            if (this.gameState.gameEndResult === "WON")
+            currentUser.matchesPlayed += 1;
+            currentUser.level += this.gameState.rightPlayerScore;
+            if (this.gameState.gameEndResult === "Won")
             {
-                userUpdatedInfo.level += 10;
+                currentUser.level += 10;
             }
-            else if (this.gameState.gameEndResult === "LOST")
+            else if (this.gameState.gameEndResult === "Lost")
             {
-                if (userUpdatedInfo.level > 5)
-                    userUpdatedInfo.level -= 5;
+                if (currentUser.level > 5)
+                    currentUser.level -= 5;
             }
           }
         }
@@ -493,8 +535,14 @@ class FlowField {
           leftPlayerBallHit: this.gameState.leftPlayerBallHit,
           rightPlayerBallHit: this.gameState.rightPlayerBallHit,
         };
-        if (userUpdatedInfo)
-          this.updateUserInfo(userUpdatedInfo);
+        if (currentUser && flag_update === true)
+        {
+          flag_update = false;
+          if (this.gameState.playerId === 1)
+            this.updateUser(currentUser);
+          else if (this.gameState.playerId === 2)
+            this.updateUser(currentUser);
+        }
         this.sendPlayerData(playerData);
         this.deps.restartButton.addEventListener("click", this.handleRestart.bind(this));
       }
