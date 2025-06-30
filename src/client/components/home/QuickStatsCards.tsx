@@ -1,6 +1,5 @@
 import { fontSizes } from "@/styles/fontSizes";
-import { styles } from "@/styles/styles";
-import { getCurrentUser } from "@/utils/user-store";
+import { UserProfile } from "types/types";
 
 function Card(props: {
   value: string;
@@ -10,18 +9,18 @@ function Card(props: {
 }) {
   return (
     <div
-      className={`${props.bgColor} ${fontSizes.bodyFontSize} rounded-xl shadow-md p-4 flex flex-col items-center hover:scale-[1.02] transition-transform duration-300`}
+      className={`${props.bgColor} rounded-xl shadow-md px-4 py-2 flex flex-col items-center transform hover:scale-[1.02] transition-all duration-300`}
     >
-      <span className={`${props.textColor} font-bold`}>{props.value}</span>
-      <span className={`text-pong-dark-primary mt-1 font-medium`}>
+      <span className={`${props.textColor} ${fontSizes.bodyFontSize} font-bold`}>{props.value}</span>
+      <span className={`text-pong-dark-primary mt-1 font-medium ${fontSizes.smallTextFontSize}`}>
         {props.label}
       </span>
     </div>
   );
 }
 
-export function QuickStatsCards() {
-  const user = getCurrentUser();
+export function QuickStatsCards(props: { user: UserProfile | null }) {
+  const { user } = props;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl mx-auto">

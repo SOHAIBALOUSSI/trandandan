@@ -2,7 +2,6 @@ import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { Hero } from "@/components/home/Hero";
 import { QuickStatsCards } from "@/components/home/QuickStatsCards";
-import { QuickLinks } from "@/components/home/QuickLinks";
 import { RecentActivityFeed } from "@/components/home/RecentActivityFeed";
 import { LeaderboardPreview } from "@/components/home/LeaderboardPreview";
 import { styles } from "@/styles/styles";
@@ -30,7 +29,7 @@ export function Home() {
         <TopBar />
         <main className={styles.pageContent}>
           <Hero user={user} />
-          <QuickStatsCards />
+          <QuickStatsCards user={user} />
           <RecentActivityFeed />
           <LeaderboardPreview user={user} />
         </main>

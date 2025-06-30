@@ -111,11 +111,11 @@ export function Profile() {
               <div className="flex flex-row items-center justify-center gap-4">
                 <button
                   id="update-username-btn"
-                  className={styles.btnOneStyles}
+                  className={styles.darkSubmitBtn}
                 >
                   Edit Username
                 </button>
-                <button id="update-avatar-btn" className={styles.btnOneStyles}>
+                <button id="update-avatar-btn" className={styles.darkSubmitBtn}>
                   Update Avatar
                 </button>
               </div>

@@ -1,7 +1,7 @@
 import { fontSizes } from "./fontSizes";
 
 export const styles = {
-  // === Start Page Layout styles ===
+  // === Start Section Layout styles ===
   pageLayoutLight: `
   	relative overflow-hidden
   	w-full min-h-screen
@@ -17,9 +17,6 @@ export const styles = {
   	bg-gradient-to-b from-[#1b1b1b] via-[#141414] to-[#0a0a0a]
   	relative
   `,
-  // === End Page Layout styles ===
-
-  // === Start Custom Sections styles ===
   customSectionStyles: `
   	bg-pong-secondary/5 shadow-[0_8px_30px_rgba(0,0,0,0.15)]
   	rounded-3xl border border-pong-accent/30
@@ -27,15 +24,13 @@ export const styles = {
   	max-w-xl w-full mx-auto 
   	px-8 py-10 md:py-14
   `,
-  customForm: `
-  	flex flex-col gap-6
-  	w-full max-w-md mx-auto
-  	bg-pong-bg/70 shadow-xl rounded-2xl
-  	px-6 py-10
-  	backdrop-blur-md
-  	border border-pong-accent/20
+  pageContent: `
+	px-6 md:px-16 pt-20 md:pt-24 
+	h-[calc(100vh-2rem)] 
+	overflow-y-auto
+	flex flex-col items-center gap-6
   `,
-  // === End Custom Sections styles ===
+  // === End Section Layout styles ===
 
   // === Start Hero styles ===
   heroTitle: `
@@ -61,13 +56,13 @@ export const styles = {
   `,
   heroMascot: `
 	w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24
-	absolute top-6 right-6 md:top-8 md:right-8 lg:top-10 lg:right-10
+	absolute top-8 right-8 lg:top-10 lg:right-10
 	animate-float
   `,
   // === End Hero styles ===
 
-  // === Start Primary Button styles ===
-  primaryButton: `
+  // === Start Buttons styles ===
+  lightPrimaryBtn: `
     group 
 	relative 
 	w-full md:w-[320px] mx-auto
@@ -77,48 +72,88 @@ export const styles = {
 	font-bold capitalize tracking-wider
     text-white bg-pong-accent hover:bg-pong-secondary
     rounded-xl shadow-md hover:shadow-lg
-    transition-all duration-300 transform active:scale-[0.97]
-    focus:outline-none focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
+    transition-all duration-300 
+	transform active:scale-[0.97]
+    focus:outline-none focus:ring-2 
+	focus:ring-pong-accent focus:ring-offset-2
   `,
-  primaryButtonIcon: `
+  lightPrimaryBtnIcon: `
 	transition-transform duration-300 
 	group-hover:-translate-x-1
   `,
-  // === End Primary Button styles ===
+  darkPrimaryBtn: `
+    inline-block
+    ${fontSizes.buttonFontSize}
+    font-semibold
+    capitalize
+    px-6 py-2
+    rounded-lg
+    bg-pong-accent
+    text-white
+    transition-all duration-300
+    hover:bg-pong-dark-accent
+    focus:outline-none
+    focus:ring-2 focus:ring-pong-accent/50
+    active:scale-[0.98]
+  `,
+  darkSubmitBtn: `
+	px-6 py-3
+	${fontSizes.buttonFontSize}
+	font-semibold
+	text-white
+	bg-pong-accent
+	rounded-xl
+	shadow-md
+	hover:bg-pong-dark-accent
+	hover:shadow-pong-accent/40
+	focus:outline-none
+	focus:ring-2
+	focus:ring-pong-primary/60
+	focus:ring-offset-2
+	focus:ring-offset-pong-dark
+	active:scale-[0.97]
+	transition-all duration-300 ease-in-out
+	disabled:opacity-50 disabled:cursor-not-allowed
+  `,
+
+  // === End Buttons styles ===
 
   // === Start Input Field styles ===
-  mainInputFieldStyles: `
-  	normal-case
+  InputFieldOne: `
+  	normal-case placeholder:capitalize
 	input-field
 	w-full px-5 py-3.5
-	${fontSizes.buttonFontSize} 
+	${fontSizes.inputFontSize} 
 	font-semibold tracking-wide
-	text-pong-primary bg-pong-secondary/10
+	bg-pong-secondary/10
 	rounded-xl shadow-inner
 	border border-pong-primary/10 focus:border-pong-accent
 	placeholder:text-pong-primary/50
-	placeholder:capitalize
-	focus:outline-none focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
+	focus:outline-none 
+	focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
 	focus:bg-white/40
 	transition-all duration-300
 	backdrop-blur-md
   `,
-  customSelect: `
-  	w-full px-4 py-3 pr-10
-  	${fontSizes.buttonFontSize}  
-	font-semibold
+  selectField: `
+  	capitalize
+  	w-full px-5 py-3.5
+  	${fontSizes.inputFontSize}  
+	font-semibold tracking-wide
   	bg-pong-secondary/10
-  	capitalize text-pong-primary
-  	rounded-md border border-pong-primary/10
+  	rounded-xl shadow-inner 
+	border border-pong-primary/10 focus:border-pong-accent
   	appearance-none
+  	focus:outline-none 
+	focus:ring-2 focus:ring-pong-accent focus:ring-offset-2
+  	focus:bg-white/40
   	transition-all duration-300
-  	focus:outline-none focus:ring-2 focus:ring-pong-primary focus:ring-offset-2
-  	focus:bg-pong-secondary/20
   	relative z-10
   `,
   otpInputStyle: `
   	w-10 h-12 md:w-14 md:h-16
-  	text-lg md:text-2xl text-center font-bold tracking-widest
+  	${fontSizes.inputFontSize}
+	text-center font-bold tracking-widest
   	border border-pong-secondary/30
   	rounded-2xl shadow-md
   	caret-pong-accent
@@ -131,7 +166,7 @@ export const styles = {
   // === End Input Field styles ===
 
   // === Start Form styles ===
-  form: `
+  mainForm: `
   	max-w-md w-full mx-auto
   	bg-gradient-to-br from-pong-secondary/20 via-pong-bg/50 to-pong-accent/10
   	shadow-2xl rounded-3xl
@@ -139,11 +174,26 @@ export const styles = {
   	flex flex-col items-center gap-6
   	px-8 py-12
   `,
+  secForm: `
+  	w-full max-w-md mx-auto
+  	bg-pong-bg/70 shadow-md rounded-2xl
+  	flex flex-col items-center gap-6
+  	px-8 py-12
+  	backdrop-blur-md
+  	border border-pong-accent/20
+  `,
+  customFormLink: `
+	text-pong-accent 
+	underline underline-offset-2 
+	hover:text-pong-secondary hover:underline-offset-4 
+	transition-all duration-300
+  `,
   // === End Form styles ===
 
-  // === Start Main Header styles ===
+  // === Start Title Dark styles ===
   titleDark: `
 	tracking-tight leading-tight
+	font-bold
 	${fontSizes.titleFontSize}
   `,
   titleSpanDark: `
@@ -161,7 +211,7 @@ export const styles = {
 	leading-relaxed
 	${fontSizes.bodyFontSize}
   `,
-  // === End Main Header styles ===
+  // === End Title Dark styles ===
 
   // === Start Top Bar styles ===
   navBarStyle: `
@@ -224,52 +274,8 @@ export const styles = {
     group
   `,
 
-  // === Start Button Primary styles ===
-  btnOneStyles: `
-	px-4 py-2 
-	${fontSizes.buttonFontSize}
-	font-semibold text-white 
-	bg-pong-accent hover:bg-pong-dark-accent 
-	hover:shadow-lg 
-	rounded-md 
-	cursor-pointer 
-	transform active:scale-[0.97] 
-	transition-all duration-300
-	focus:outline-none focus:ring-1 focus:ring-pong-primary focus:ring-offset-2 
-  `,
-  // === End Button Primary styles ===
-
-  // === Start Page Content styles ===
-  pageContent: `
-	px-12 md:px-20 pt-20 md:pt-24 
-	h-[calc(100vh-2rem)] 
-	overflow-y-auto
-	flex flex-col items-center gap-6
-  `,
-  // === End Page Content styles ===
-
-  // === Start Custom Links styles ===
-  customFormLink: `
-	text-pong-accent 
-	underline underline-offset-2 
-	hover:text-pong-secondary hover:underline-offset-4 
-	transition-all duration-300
-  `,
-  customBtnLink: `
-	inline-block 
-	px-6 py-2 
-	bg-pong-accent 
-	hover:bg-pong-dark-accent 
-	text-white 
-	rounded-lg shadow 
-	transition-colors duration-200 
-	${fontSizes.buttonFontSize} 
-	font-semibold
-  `,
-  // === End Custom Links styles ===
-
   // === Start Custom Cards styles ===
-  settingsLayout: `
+  cardOneStyle: `
   	flex flex-col gap-6
 	bg-pong-dark-custom border border-pong-dark-highlight/30 
 	w-full max-w-5xl 
@@ -277,25 +283,14 @@ export const styles = {
 	rounded-2xl 
 	shadow-lg
   `,
-  enabledStyle: `
-	ml-2 px-2 py-1 
-	text-xs font-bold 
-	rounded-full 
-	bg-pong-success/10 
-	text-pong-success/90
-  `,
-  disabledStyle: `
-	ml-2 px-2 py-1 
-	text-xs font-bold 
-	rounded-full 
-	bg-pong-error/10 
-	text-pong-error/90
-  `,
-  primaryStyle: `
-	ml-2 px-2 py-1 
-	text-xs font-bold 
-	rounded-full 
-	bg-pong-primary/30 
-	text-pong-dark-accent 
+  // === End Custom Cards styles ===
+
+  //   === Start Custom List styles ===
+  listStyle: `
+  	flex items-start gap-3 
+	hover:bg-pong-dark-highlight/10 
+	p-3 
+	rounded-md 
+	transition-all
   `,
 };

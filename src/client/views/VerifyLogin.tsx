@@ -30,13 +30,13 @@ export function VerifyLogin() {
       <Overlay />
       <div className={`${styles.customSectionStyles} animate-fadeInUp`}>
         <h1 className={styles.titleDark}>verify your identity</h1>
-        <p className={`${styles.subtitleParagraphDark} my-6`}>{subtitle}</p>
+        <p className={`${styles.subtitleParagraphDark} my-4`}>{subtitle}</p>
 
-        <div className="flex justify-center mb-6">
-          <i className="fa-solid fa-table-tennis-paddle-ball text-pong-accent text-3xl animate-bounce" />
+        <div className="flex justify-center mb-4">
+          <i className="fa-solid fa-table-tennis-paddle-ball text-pong-accent text-xl md:text-2xl animate-bounce" />
         </div>
 
-        <form id="verify-login-form" className={`${styles.customForm}`}>
+        <form id="verify-login-form" className={`${styles.secForm}`}>
           <label
             htmlFor="otp"
             className={`${fontSizes.buttonFontSize} text-pong-primary font-semibold`}
@@ -46,7 +46,7 @@ export function VerifyLogin() {
           <OtpInput id="verify-login-otp" />
           <SubmitBtn btnIcon="fa-check-double" btnLabel="verify" />
         </form>
-        <p className="w-full border-t border-pong-accent/10 my-6"></p>
+        <p className="w-full border-t border-pong-accent/10 my-4"></p>
         <p className="text-xs md:text-sm text-pong-primary/70">
           trouble receiving your code? contact the front desk.
         </p>

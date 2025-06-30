@@ -17,58 +17,46 @@ export function LeaderboardPreview(props: { user: UserProfile | null }) {
   return (
     <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
       <h2
-        className={`text-pong-dark-primary font-bold mb-5 tracking-tight ${fontSizes.subtitleFontSize}`}
+        className={`text-pong-dark-primary font-bold mb-8 tracking-tight ${fontSizes.smallTitleFontSize}`}
       >
-        Hall of Champions
+        BHV Club’s Elite
       </h2>
 
-      <ol className={`space-y-3 ${fontSizes.smallTextFontSize}`}>
+      <ol className={`space-y-3 ${fontSizes.bodyFontSize}`}>
         {topThree.map((user) => (
           <li
             key={user.rank}
-            className="flex items-center gap-4 p-3 rounded-md hover:bg-white/10 transition-all"
+            className={styles.listStyle + " items-center gap-4"}
           >
-            <span className="text-lg font-bold text-pong-accent w-6 text-center">
+            <span className="text-sm md:text-lg font-bold text-pong-dark-accent w-6 text-center">
               {user.rank}
             </span>
             <img
               src={user.avatarUrl}
               alt="Profile Avatar"
-              className="w-10 h-10 rounded-full shadow"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full"
             />
             <span className="font-semibold text-pong-dark-primary">
               {user.name}
             </span>
-            <span className="ml-auto text-sm text-pong-secondary italic">
+            <span className="ml-auto text-xs md:text-sm text-pong-secondary italic">
               Level {user.level}
             </span>
           </li>
         ))}
       </ol>
 
-      <div
-        className={`flex items-center justify-between mt-6 ${fontSizes.verysmallTextFontSize}`}
-      >
-        <div className="flex items-center gap-4 bg-gradient-to-r from-black/70 to-black/60 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg border border-white/10 transition hover:border-pong-accent">
-          <img
-            src={user?.avatar_url}
-            alt="Your Avatar"
-            className="w-9 h-9 rounded-full shadow-md"
-          />
-          <div className="flex flex-col">
-            <span className="text-white/70">Your Rank</span>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-pong-accent">#{user?.rank}</span>
-              <span className="bg-pong-dark-bg text-white text-xs font-semibold px-2 py-0.5 rounded-full">
-                Level {user?.level}
-              </span>
-            </div>
-          </div>
-          <i className="fa-solid fa-trophy text-yellow-400 ml-auto text-xl"></i>
+      <div className="flex items-center justify-between mt-8">
+        <div className="bg-pong-dark-bg/50 rounded-xl px-4 py-3 border border-white/10 text-white/70">
+          <span className="block text-sm">
+            {user?.rank && user.rank <= 10
+              ? "You're close to greatness — keep pushing!"
+              : "Your journey has just begun..."}
+          </span>
         </div>
 
-        <a href="chamber" className={styles.customBtnLink} data-link>
-          View More &rarr;
+        <a href="chamber" className={styles.darkPrimaryBtn} data-link>
+          View Full Rankings
         </a>
       </div>
     </div>

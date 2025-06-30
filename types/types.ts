@@ -28,3 +28,9 @@ export type UserRank = {
   level: string;
   avatarUrl: string;
 };
+
+export type Activity =
+  | { type: "win"; user: string; targetUser: string }
+  | { type: "loss"; user: string; targetUser: string }
+  | { type: "tournament"; user: string; tournament: string }
+  | { type: "delete"; user: string; message?: string };

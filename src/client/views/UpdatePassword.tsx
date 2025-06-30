@@ -16,15 +16,15 @@ export function UpdatePassword() {
       <Overlay />
       <div className={`${styles.customSectionStyles} animate-fadeInUp`}>
         <h1 className={styles.titleDark}>one final serve, champion.</h1>
-        <p className={`${styles.subtitleParagraphDark} my-6`}>
+        <p className={`${styles.subtitleParagraphDark} my-4`}>
           set your new password to secure your spot in the club.
         </p>
 
-        <div className="flex justify-center mb-6">
-          <i className="fa-solid fa-table-tennis-paddle-ball text-pong-accent text-3xl animate-bounce" />
+        <div className="flex justify-center mb-4">
+          <i className="fa-solid fa-table-tennis-paddle-ball text-pong-accent text-xl md:text-2xl animate-bounce" />
         </div>
 
-        <form id="update-password-form" className={styles.customForm}>
+        <form id="update-password-form" className={styles.secForm}>
           <InputField
             type="password"
             name="newPassword"
@@ -42,7 +42,7 @@ export function UpdatePassword() {
         </form>
 
         <p
-          className={`${fontSizes.buttonFontSize} w-full my-6 font-medium text-pong-primary/80`}
+          className={`${fontSizes.buttonFontSize} w-full my-4 font-medium text-pong-primary/80`}
         >
           remembered your paddle?{" "}
           <a href="signin" className={styles.customFormLink} data-link>

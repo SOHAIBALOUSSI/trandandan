@@ -282,7 +282,7 @@ export function TwoFa() {
   }, 0);
 
   return (
-    <div className={styles.settingsLayout}>
+    <div className={styles.cardOneStyle}>
       <h2
         className={`flex items-center gap-2 text-white ${fontSizes.smallTitleFontSize}`}
       >

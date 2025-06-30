@@ -4,19 +4,19 @@ export function InputField(props: {
   type: string;
   name: string;
   id: string;
-  placeholder?: string;
+  placeholder: string;
   autofocus?: boolean;
 }) {
   return (
-    <div className="w-full text-left">
+    <div className="w-full">
       <input
         type={props.type}
         name={props.name}
         id={props.id}
         placeholder={props.placeholder}
-        autoFocus={props.autofocus || false}
+        autoFocus={props.autofocus ?? false}
         autoComplete="off"
-        className={styles.mainInputFieldStyles}
+        className={styles.InputFieldOne}
       />
     </div>
   );
