@@ -35,7 +35,7 @@ export async function updateProfile(request, reply) {
         if (tokenId != id)
             return reply.code(403).send(createResponse(403, 'UNAUTHORIZED'));
         
-        const { username, solde, rank, level, matches_played } = request.body;
+        const { username, solde, rank, level, matches_played, matches_won, matches_lost } = request.body;
         
         const profile = await getProfileById(this.db, id);
         if (!profile)
@@ -57,6 +57,8 @@ export async function updateProfile(request, reply) {
         if (rank !== undefined) updatedFields.rank = rank;
         if (level !== undefined) updatedFields.level = level;
         if (matches_played !== undefined) updatedFields.matches_played = matches_played;
+        if (matches_won !== undefined) updatedFields.matches_won = matches_won;
+        if (matches_lost !== undefined) updatedFields.matches_lost = matches_lost;
 
         if (Object.keys(updatedFields).length === 0)
             return reply.code(400).send(createResponse(400, 'MISSING_FIELDS'));
@@ -131,7 +133,6 @@ export async function getAllProfiles(request, reply) {
         const allProfiles = await fetchAllProfiles(this.db);
         return reply.code(200).send(createResponse(200, 'PROFILES_FETCHED', { profiles: allProfiles }));
     } catch (error) {
-        console.log(error);
-        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+        
     }
 }
