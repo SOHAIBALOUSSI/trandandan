@@ -171,6 +171,18 @@ a {
 }
 /* End Custom Designs */
 
+/* Start Game Mode Design */
+#game-mode-0 {
+  background-image: url(../assets/local-duel-bg.png);
+}
+#game-mode-1 {
+  background-image: url(../assets/tournament-cup-bg.png);
+}
+#game-mode-2 {
+  background-image: url(../assets/remote-battle-bg.png);
+}
+/* End Game Mode Design */
+
 /* Mobile First Approach */
 @media (min-width: 576px) {
 }

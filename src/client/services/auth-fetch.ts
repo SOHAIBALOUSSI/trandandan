@@ -1,4 +1,4 @@
-import { router } from "@/router/router";
+import { router } from "@/router";
 
 async function refreshToken() {
   const res = await fetch("/auth/refresh", {

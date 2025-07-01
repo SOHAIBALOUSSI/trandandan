@@ -6,7 +6,7 @@ import { RecentActivityFeed } from "@/components/home/RecentActivityFeed";
 import { LeaderboardPreview } from "@/components/home/LeaderboardPreview";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
-import { Loading } from "@/components/common/Loading";
+import { Loader } from "@/components/common/Loader";
 
 export function Home() {
   const user = getCurrentUser();
@@ -16,7 +16,7 @@ export function Home() {
         <NavBar />
         <div className="w-full relative">
           <TopBar />
-          <Loading />
+          <Loader />
         </div>
       </section>
     );

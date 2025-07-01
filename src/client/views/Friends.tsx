@@ -1,7 +1,7 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
-import { loadAllUsersList } from "@/services/get-all-users";
+import { loadAllUsersList } from "@/services/get-users";
 
 export function Friends() {
   setTimeout(() => {

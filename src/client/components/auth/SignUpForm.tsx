@@ -3,7 +3,7 @@ import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { SubmitBtn } from "../common/SubmitBtn";
-import { handleSignUp } from "@/handlers/handle-signup";
+import { handleSignUp } from "@/handlers/signup";
 
 export function SignUpForm() {
   setTimeout(() => {

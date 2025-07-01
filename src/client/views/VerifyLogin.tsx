@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Overlay } from "@/components/layout/Overlay";
 import { OtpInput } from "@/components/common/OtpInput";
 import { verifyLogin } from "@/services/verify-login";
-import { handleOtpInput } from "@/handlers/handle-otp-input";
+import { handleOtpInput } from "@/handlers/otp-input";
 import { fontSizes } from "@/styles/fontSizes";
 import { SubmitBtn } from "@/components/common/SubmitBtn";
 

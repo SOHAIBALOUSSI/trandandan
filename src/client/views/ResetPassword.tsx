@@ -1,4 +1,4 @@
-import { handleUpdatePassword } from "@/handlers/handle-update-password";
+import { handleUpdatePassword } from "@/handlers/reset-password";
 import { Footer } from "@/components/layout/Footer";
 import { styles } from "@/styles/styles";
 import { InputField } from "@/components/common/InputField";

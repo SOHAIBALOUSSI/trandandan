@@ -1,7 +1,7 @@
 import "./styles/all.min.css";
 import "./styles/normalize.css";
 import "./styles/main.css";
-import { router } from "./router/router";
+import { router } from "./router";
 
 // Setup SPA link interception
 export function setupSPA(): void {

@@ -19,7 +19,7 @@ export async function loadAllUsersList() {
   const list = document.getElementById("all-users-list");
   if (!list) return;
 
-  list.innerHTML = `<li class="text-white text-center">Loading...</li>`;
+  list.innerHTML = `<li class="text-white text-center">Loader...</li>`;
 
   const users = await getAllUsers();
 

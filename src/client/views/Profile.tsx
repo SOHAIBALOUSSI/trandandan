@@ -8,7 +8,7 @@ import { getCurrentUser } from "@/utils/user-store";
 import { updateUsername } from "@/services/update-username";
 import { displayToast } from "@/utils/display-toast";
 import { UpdateUserProfileRes } from "@/utils/response-messages";
-import { Loading } from "@/components/common/Loading";
+import { Loader } from "@/components/common/Loader";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 
 export function Profile() {
@@ -19,7 +19,7 @@ export function Profile() {
         <NavBar />
         <div className="w-full relative">
           <TopBar />
-          <Loading />
+          <Loader />
         </div>
       </section>
     );

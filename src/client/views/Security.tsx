@@ -6,7 +6,7 @@ import { ChangePassword } from "@/components/settings/ChangePassword";
 import { ChangeEmail } from "@/components/settings/ChangeEmail";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { getCurrentUser } from "@/utils/user-store";
-import { Loading } from "@/components/common/Loading";
+import { Loader } from "@/components/common/Loader";
 
 export function Security() {
   const user = getCurrentUser();
@@ -16,7 +16,7 @@ export function Security() {
         <NavBar />
         <div className="w-full relative">
           <TopBar />
-          <Loading />
+          <Loader />
         </div>
       </section>
     );
