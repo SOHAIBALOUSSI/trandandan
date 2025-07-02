@@ -5,7 +5,7 @@ import { UserProfile } from "types/types";
 import { UserRank } from "types/types";
 import { styles } from "@/styles/styles";
 
-export function LeaderboardPreview(props: { user: UserProfile | null }) {
+export function LeaderboardPreview(props: { user: UserProfile }) {
   const { user } = props;
 
   const topThree: UserRank[] = [
@@ -46,10 +46,10 @@ export function LeaderboardPreview(props: { user: UserProfile | null }) {
         ))}
       </ol>
 
-      <div className="flex items-center justify-between mt-8">
+      <div className="flex items-center justify-between mt-8 gap-4">
         <div className="bg-pong-dark-bg/50 rounded-xl px-4 py-3 border border-white/10 text-white/70">
           <span className="block text-sm">
-            {user?.rank && user.rank <= 10
+            {user.rank && user.rank <= 10
               ? "You're close to greatness — keep pushing!"
               : "Your journey has just begun..."}
           </span>

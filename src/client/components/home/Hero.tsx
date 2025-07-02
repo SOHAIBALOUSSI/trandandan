@@ -2,7 +2,7 @@ import { fontSizes } from "@/styles/fontSizes";
 import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";
 
-export function Hero(props: { user: UserProfile | null }) {
+export function Hero(props: { user: UserProfile }) {
   const { user } = props;
 
   return (
@@ -10,7 +10,7 @@ export function Hero(props: { user: UserProfile | null }) {
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
         <div className="w-28 h-28 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg hover:scale-105 transition-transform duration-300">
           <img
-            src={user?.avatar_url}
+            src={user.avatar_url}
             alt="Profile Avatar"
             className="w-full h-full rounded-full object-cover"
           />
@@ -22,14 +22,14 @@ export function Hero(props: { user: UserProfile | null }) {
           >
             Welcome back,{" "}
             <span className="text-pong-dark-accent normal-case">
-              {user?.username}
+              {user.username}
             </span>
             !
           </h2>
           <p
             className={`text-pong-dark-secondary ${fontSizes.bodyFontSize} font-semibold mb-3`}
           >
-            Ranked #{user?.rank} in BHV Club • Level {user?.level}
+            Ranked #{user.rank} in BHV Club • Level {user.level}
           </p>
           <hr className="my-4 border-pong-accent/20" />
           <p

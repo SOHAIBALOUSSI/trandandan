@@ -11,39 +11,45 @@ function Card(props: {
     <div
       className={`${props.bgColor} rounded-xl shadow-md px-4 py-2 flex flex-col items-center transform hover:scale-[1.02] transition-all duration-300`}
     >
-      <span className={`${props.textColor} ${fontSizes.bodyFontSize} font-bold`}>{props.value}</span>
-      <span className={`text-pong-dark-primary mt-1 font-medium ${fontSizes.smallTextFontSize}`}>
+      <span
+        className={`${props.textColor} ${fontSizes.bodyFontSize} font-bold`}
+      >
+        {props.value}
+      </span>
+      <span
+        className={`text-pong-dark-primary mt-1 font-medium ${fontSizes.smallTextFontSize}`}
+      >
         {props.label}
       </span>
     </div>
   );
 }
 
-export function QuickStatsCards(props: { user: UserProfile | null }) {
+export function QuickStatsCards(props: { user: UserProfile }) {
   const { user } = props;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl mx-auto">
       <Card
-        value={`${user?.solde} F`}
+        value={`${user.solde} F`}
         label="Solde"
         textColor="text-pong-dark-secondary"
         bgColor="bg-pong-dark-highlight/10"
       />
       <Card
-        value={`${user?.matchesPlayed || 0}`}
+        value={`${user.matchesPlayed || 0}`}
         label="Matches"
         textColor="text-pong-dark-secondary"
         bgColor="bg-pong-dark-highlight/10"
       />
       <Card
-        value={`${user?.matchesWon || 0}`}
+        value={`${user.matchesWon || 0}`}
         label="Wins"
         textColor="text-pong-success"
         bgColor="bg-green-600/20"
       />
       <Card
-        value={`${user?.matchesLost || 0}`}
+        value={`${user.matchesLost || 0}`}
         label="Losses"
         textColor="text-pong-error"
         bgColor="bg-red-600/20"

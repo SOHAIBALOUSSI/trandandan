@@ -119,7 +119,7 @@ export function NavBar() {
   const settingsItems = [
     { label: "Access Keys", path: "/security", icon: "fa-lock" },
     { label: "Muted Players", path: "/blocked", icon: "fa-user-slash" },
-    { label: "Wipe Account", path: "/delete_account", icon: "fa-trash" },
+    { label: "Wipe Account", path: "/wipe_account", icon: "fa-trash" },
   ];
 
   // === Dropdown menu ===

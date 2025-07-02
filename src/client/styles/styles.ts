@@ -25,7 +25,7 @@ export const styles = {
   	px-8 py-10 md:py-14
   `,
   pageContent: `
-	px-6 md:px-16 pt-20 md:pt-24 
+	px-6 md:px-16 pt-20 md:pt-24 pb-8 md:pb-12 
 	h-[calc(100vh-2rem)] 
 	overflow-y-auto
 	flex flex-col items-center gap-6
@@ -95,6 +95,7 @@ export const styles = {
     focus:outline-none
     focus:ring-2 focus:ring-pong-accent/50
     active:scale-[0.98]
+	text-center
   `,
   darkSubmitBtn: `
 	px-6 py-3

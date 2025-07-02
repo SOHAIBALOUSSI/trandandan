@@ -42,8 +42,12 @@ export function Security() {
               <ChangeEmail />
             </div>
           ) : (
-            <div className="text-center text-gray-500 mt-4">
-              Remote users cannot change password or email.
+            <div className={styles.cardOneStyle}>
+              <p className="text-white/80 text-sm sm:text-base leading-relaxed">
+                <i className="fa-solid fa-circle-exclamation text-pong-warning mr-2"></i>
+                As a remote player, password and email settings are managed
+                externally. For security reasons, these fields are locked.
+              </p>
             </div>
           )}
         </main>

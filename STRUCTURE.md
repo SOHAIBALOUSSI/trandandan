@@ -1,3 +1,4 @@
+```
 ├── public/                                 # Public static assets served by the frontend
 │   └── assets/                             # Public images, logos, and icons
 │
@@ -114,3 +115,4 @@
 ├── tailwind.config.js                    # Tailwind config
 ├── README.md                             # Main project documentation
 ├── STRUCTURE.md                          # Description of folder and architecture
+```
