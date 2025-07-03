@@ -1,5 +1,9 @@
 import { UserProfile } from "types/types";
 
+function getAvatarUrl(fileName: string): string {
+  return `/profile/avatar/${fileName}`;
+}
+
 export function uploadAvatar(props: { user: UserProfile }) {
   const btn = document.getElementById("upload-avatar-btn") as HTMLButtonElement;
   const avatar = document.getElementById("member-avatar") as HTMLImageElement;
@@ -39,15 +43,16 @@ export function uploadAvatar(props: { user: UserProfile }) {
       const data = await res.json();
 
       if (res.ok && data?.data?.avatar_url) {
-        const avatarUrl = `/profile/avatar/${data.data.avatar_url}`;
+        const fileName = data.data.avatar_url;
+        const avatarUrl = getAvatarUrl(fileName);
+
         avatar.src = avatarUrl;
-        props.user.avatar_url = avatarUrl;
+        props.user.avatar_url = fileName;
       } else {
-        alert(data?.code || "Failed to upload avatar.");
+        console.error("Failed to upload avatar:", data);
       }
     } catch (error) {
-      alert("Error uploading avatar.");
-      console.log(error);
+      console.error("Error uploading avatar:", error);
     } finally {
       fileInput!.value = "";
     }

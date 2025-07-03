@@ -2,7 +2,7 @@ import { fontSizes } from "@/styles/fontSizes";
 import { UserProfile } from "types/types";
 
 function Card(props: {
-  value: string;
+  value: number | string;
   label: string;
   textColor: string;
   bgColor: string;
@@ -37,19 +37,19 @@ export function QuickStatsCards(props: { user: UserProfile }) {
         bgColor="bg-pong-dark-highlight/10"
       />
       <Card
-        value={`${user.matchesPlayed || 0}`}
+        value={user.matches_played}
         label="Matches"
         textColor="text-pong-dark-secondary"
         bgColor="bg-pong-dark-highlight/10"
       />
       <Card
-        value={`${user.matchesWon || 0}`}
+        value={user.matches_won}
         label="Wins"
         textColor="text-pong-success"
         bgColor="bg-green-600/20"
       />
       <Card
-        value={`${user.matchesLost || 0}`}
+        value={user.matches_lost}
         label="Losses"
         textColor="text-pong-error"
         bgColor="bg-red-600/20"
