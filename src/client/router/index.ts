@@ -19,6 +19,7 @@ import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
 import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentials";
 import { getUserProfile } from "@/services/get-user-profile";
 import { setCurrentUser } from "@/utils/user-store";
+import { Notifications } from "@/views/Notifications";
 
 // Define the routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
@@ -40,6 +41,7 @@ const routes: Record<string, () => HTMLElement> = {
   verification: VerifyUpdateCredentials,
   blocked: Blocked,
   wipe_account: DeleteAccount,
+  notifs: Notifications,
   checkout: Logout,
 };
 

@@ -1,121 +1,45 @@
-export async function getAllUsers() {
+import { UserProfile } from "types/types";
+import MaleAvatar from "@/assets/default-male-avatar.png";
+import FemaleAvatar from "@/assets/default-female-avatar.png";
+import { styles } from "@/styles/styles";
+
+async function getAllUsers() {
   try {
     const res = await fetch("/profile/all", {
       credentials: "include",
     });
-    if (!res.ok) {
-      console.error("Failed to fetch users:", res.statusText);
-      return [];
-    }
+
+    if (!res.ok) return [];
+
     const data = await res.json();
     return data.data.profiles;
   } catch (err) {
-    console.error("Error fetching users:", err);
+    console.error("Error fetching all users:", err);
     return [];
   }
 }
 
-export function addFriend(id: number) {
-  const addBtn = document.getElementById(
-    `add-friend-btn-${id}`
-  ) as HTMLButtonElement;
-  if (!addBtn) return;
-
-  console.log(addBtn);
-
-  addBtn.addEventListener("click", async (e: Event) => {
-    e.preventDefault();
-
-    try {
-      const res = await fetch("/profile/request", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ addresseeId: id }),
-      });
-
+function sendFriendRequest(id: number) {
+  fetch("/friends/request", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ addresseeId: id }),
+  })
+    .then(async (res) => {
       const data = await res.json();
-      if (data.ok) {
-        console.log(data);
+      if (!res.ok) {
+        console.error("Friend request failed:", data);
       } else {
-        const msg = "Error sending friend request";
-        console.log(msg);
+        console.log("Friend request sent:", data);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  });
+    })
+    .catch((err) => console.error("Error:", err));
 }
 
-export function acceptFriend(id: number) {
-  const acceptBtn = document.getElementById(
-    `accept-friend-btn-${id}`
-  ) as HTMLButtonElement;
-  if (!acceptBtn) return;
-
-  console.log(acceptBtn);
-
-  acceptBtn.addEventListener("click", async (e: Event) => {
-    e.preventDefault();
-
-    try {
-      const res = await fetch("/profile/accept", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requesterId: id }),
-      });
-
-      const data = await res.json();
-      if (data.ok) {
-        console.log(data);
-      } else {
-        const msg = "Error accept friend request";
-        console.log(msg);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  });
-}
-
-export function rejectFriend(id: number) {
-  const rejectBtn = document.getElementById(
-    `reject-friend-btn-${id}`
-  ) as HTMLButtonElement;
-  if (!rejectBtn) return;
-
-  console.log(rejectBtn);
-
-  rejectBtn.addEventListener("click", async (e: Event) => {
-    e.preventDefault();
-
-    try {
-      const res = await fetch("/profile/reject", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requesterId: id }),
-      });
-
-      const data = await res.json();
-      if (data.ok) {
-        console.log(data);
-      } else {
-        const msg = "Error accept friend request";
-        console.log(msg);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  });
-}
-
-export async function loadAllUsersList() {
-  const list = document.getElementById("all-users-list");
+export async function hydrateAllMembers(currentUser: UserProfile) {
+  const list = document.getElementById("all-users-list") as HTMLUListElement;
   if (!list) return;
-
-  list.innerHTML = `<li class="text-white text-center">Loader...</li>`;
 
   const users = await getAllUsers();
 
@@ -124,52 +48,45 @@ export async function loadAllUsersList() {
     return;
   }
 
-  list.innerHTML = users
-    .map(
-      (user: { userId: number; username: string }) => `
-      <li class="flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-          <span class="text-lg font-semibold text-white normal-case">${user.username}</span>
-        </div>
-        <button class="bg-pong-accent hover:bg-pong-dark-accent text-white font-semibold px-4 py-2 rounded-md transition-all" id="add-friend-btn-${user.userId}">
-          Add Friend
-        </button>
-      </li>
-    `
-    )
-    .join("");
-}
+  list.innerHTML = "";
 
-export async function listPendingRequests() {
-  try {
-    const res = await fetch("/profile/requests", {
-      credentials: "include",
-    });
-    if (!res.ok) {
-      console.error("Failed to fetch pending requests:", res.statusText);
-      return [];
-    }
-    const data = await res.json();
-    return data.data.requests;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-}
+  users.forEach((user: UserProfile) => {
+    if (user.id !== currentUser.id) {
+      const li = document.createElement("li");
+      li.className = "flex items-center justify-between gap-4 p-3 rounded-md";
 
-export async function listFriends() {
-  try {
-    const res = await fetch("/profile/", {
-      credentials: "include",
-    });
-    if (!res.ok) {
-      console.log("Failed to fetch friend list", res.statusText);
-      return [];
+      const avatar = document.createElement("img");
+      avatar.src = user.avatar_url
+        ? user.avatar_url
+        : user.gender === "M"
+        ? (user.avatar_url = MaleAvatar)
+        : FemaleAvatar;
+      avatar.alt = `${user.username}'s avatar`;
+      avatar.className =
+        "w-10 h-10 rounded-full object-cover border border-pong-accent/30 bg-gray-700";
+
+      const name = document.createElement("span");
+      name.className = "text-lg font-semibold text-white normal-case";
+      name.textContent = user.username;
+
+      const btn = document.createElement("button");
+      btn.className = styles.darkPrimaryBtn;
+      btn.textContent = "Add Friend";
+      btn.onclick = () => {
+        btn.disabled = true;
+        btn.textContent = "Request Sent";
+        btn.style.backgroundColor = "#4a5568";
+        sendFriendRequest(user.id);
+      };
+
+      const left = document.createElement("div");
+      left.className = "flex items-center space-x-4";
+      left.appendChild(avatar);
+      left.appendChild(name);
+
+      li.appendChild(left);
+      li.appendChild(btn);
+      list.appendChild(li);
     }
-    const data = await res.json();
-    return data.data.friends;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
+  });
 }
