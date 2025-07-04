@@ -205,3 +205,28 @@ export const GetUserAvatarRes: Record<string, string> = {
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
+
+// Response messages for various Relationships service actions
+export const FriendRequestRes: Record<string, string> = {
+  ADDRESSEE_REQUIRED: "Addressee is required to send a friend request.",
+  ADDRESSEE_INVALID: "Invalid addressee. Please check the user ID.",
+  FRIEND_REQUEST_SENT: "Friend request sent successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const FriendAcceptRes: Record<string, string> = {
+  REQUESTER_REQUIRED: "Requester is required to accept a friend request.",
+  REQUESTER_INVALID: "Invalid requester. Please check the user ID.",
+  FRIEND_REQUEST_ACCEPTED: "Friend request accepted successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const FriendRejectRes: Record<string, string> = {
+  REQUESTER_REQUIRED: "Requester is required to accept a friend request.",
+  REQUESTER_INVALID: "Invalid requester. Please check the user ID.",
+  FRIEND_REQUEST_REJECTED: "Friend request rejected successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};

@@ -23,9 +23,9 @@ export const theme = {
       "pong-highlight-sport": "#FCBF49",
       "pong-footer": "#7391a1",
       "pong-dark-custom": "#0e0e0e",
-      "pong-error": "#d90429",
-      "pong-success": "#38b000",
-      "pong-warning": "#ffb703",
+      "pong-error": "#ef4444",
+      "pong-success": "#22c55e",
+      "pong-warning": "#f59e0b",
       "pong-info": "#2196F3",
     },
     keyframes: {

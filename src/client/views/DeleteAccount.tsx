@@ -1,7 +1,7 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
-import { deleteAccount } from "@/handlers/handle-delete-account";
+import { deleteAccount } from "@/handlers/delete-account";
 import { SubmitBtn } from "@/components/common/SubmitBtn";
 
 export function DeleteAccount() {

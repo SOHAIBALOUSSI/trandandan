@@ -9,27 +9,50 @@ export function displayToast(
   const toast = document.createElement("div");
   toast.id = "global-toast";
 
-  toast.className = `fixed top-6 left-1/2 transform -translate-x-1/2 px-6 py-4 rounded-xl shadow-2xl text-white z-50 flex flex-col items-center min-w-[240px] max-w-sm w-fit backdrop-blur-md border ${
+  toast.className = `
+    fixed top-6 left-1/2 transform -translate-x-1/2 z-50
+    px-6 py-4 sm:px-8 sm:py-5
+    min-w-[250px] max-w-sm w-fit
+    rounded-2xl border shadow-xl backdrop-blur-md
+    flex flex-col items-center gap-2
+    text-white animate-toast-slide-down
+    ${
+      type === "success"
+        ? "bg-pong-success/90 border-pong-success/40"
+        : type === "error"
+        ? "bg-pong-error/90 border-pong-error/40"
+        : "bg-pong-warning/90 border-pong-warning/40"
+    }
+  `;
+
+  const icon = document.createElement("i");
+  icon.className = `fa-solid ${
     type === "success"
-      ? "bg-green-600/90 border-green-400/40"
+      ? "fa-circle-check"
       : type === "error"
-      ? "bg-red-600/90 border-red-400/40"
-      : "bg-yellow-600/90 border-yellow-400/40"
-  } animate-toast-slide-down`;
+      ? "fa-circle-xmark"
+      : "fa-triangle-exclamation"
+  } text-xl`;
+  icon.style.marginBottom = "0.25rem";
+  icon.style.color = "#ffffff";
 
   const msg = document.createElement("span");
-  msg.className = "text-sm sm:text-base font-medium text-center";
+  msg.className =
+    "text-sm sm:text-base font-semibold text-center tracking-wide leading-snug";
   msg.textContent = message;
+
+  toast.appendChild(icon);
   toast.appendChild(msg);
 
-  const duration = type === "success" ? 2000 : 3000;
+  const duration = type === "success" ? 2200 : 3200;
 
   if (!options?.noProgressBar) {
     const progress = document.createElement("div");
     progress.className =
-      "h-1 w-full bg-white/20 rounded-b-lg mt-3 overflow-hidden";
+      "h-1 w-full bg-white/20 rounded-b-xl mt-1 overflow-hidden";
     const bar = document.createElement("div");
-    bar.className = "h-full bg-white will-change-[width]";
+    bar.className =
+      "h-full bg-white transition-[width] ease-linear duration-1000";
     bar.style.width = "100%";
     bar.style.transition = `width ${duration}ms linear`;
     progress.appendChild(bar);
@@ -45,7 +68,7 @@ export function displayToast(
   setTimeout(() => {
     toast.style.opacity = "0";
     toast.style.transform = "translate(-50%, -20px)";
-    toast.style.transition = "opacity 0.5s, transform 0.5s";
+    toast.style.transition = "opacity 0.5s ease, transform 0.5s ease";
     setTimeout(() => {
       toast.remove();
     }, 500);

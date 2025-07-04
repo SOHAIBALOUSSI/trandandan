@@ -9,9 +9,9 @@ export type UserProfile = {
   rank: number;
   level: number;
   created_at: string;
-  matchesPlayed?: number;
-  matchesWon?: number;
-  matchesLost?: number;
+  matches_played: number;
+  matches_won: number;
+  matches_lost: number;
 };
 
 export type UserRegister = {
@@ -28,3 +28,9 @@ export type UserRank = {
   level: string;
   avatarUrl: string;
 };
+
+export type Activity =
+  | { type: "win"; user: string; targetUser: string }
+  | { type: "loss"; user: string; targetUser: string }
+  | { type: "tournament"; user: string; tournament: string }
+  | { type: "delete"; user: string; message?: string };

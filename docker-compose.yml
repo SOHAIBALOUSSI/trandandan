@@ -29,35 +29,35 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  # relationships:
-  #   container_name: relationships-service
-  #   build: src/server/relationships-service
-  #   image: relationships-service
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - trandenden-net
-  #   ports:
-  #     - "3002:3002"
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
+  friends:
+    container_name: friends-service
+    build: src/server/relationships-service
+    image: friends-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - trandenden-net
+    ports:
+      - "3002:3002"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
-  # notifications:
-  #   container_name: notifications-service
-  #   build: src/server/notifications-service
-  #   image: notifications-service
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - trandenden-net
-  #   ports:
-  #     - "3003:3003"
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
+  notifications:
+    container_name: notifications-service
+    build: src/server/notifications-service
+    image: notifications-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - trandenden-net
+    ports:
+      - "3003:3003"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   # chat:
   #   container_name: chat-service
@@ -73,7 +73,7 @@ services:
   #   depends_on:
   #     rabbitmq:
   #       condition: service_healthy
-  
+
   redis:
     container_name: redis
     build: src/server/redis
@@ -115,8 +115,8 @@ services:
     depends_on:
       - auth
       - profile
-      # - relationships
-      # - notifications
+      - friends
+      - notifications
       # - chat
       - redis
       - rabbitmq

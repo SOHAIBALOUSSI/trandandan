@@ -16,6 +16,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 | GET    | `/user/:id`   | Retrieve a user profile by id         | Yes                      | (none)                                |
 | POST   | `/upload`     | Updates a user's avatar               | Yes                      | image as formData                     |
 | GET   | `/avatar/:fileName`| Fetches a user's avatar           | Yes                      | (none)                     |
+| GET   | `/all`         | Fetches all users                     | Yes                      | (none)                     |
 
 ---
 
@@ -61,6 +62,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 
 - `/upload` 
 ```yaml
+  401: UNAUTHORIZED,
   400: FILE_REQUIRED,
   200: AVATAR_UPLOADED,
   500: INTERNAL_SERVER_ERROR
@@ -69,6 +71,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 
 - `/avatar/:fileName` 
 ```yaml
+  401: UNAUTHORIZED,
   400: FILE_NAME_REQUIRED
   404: FILE_NOT_FOUND
   200: AVATAR_UPLOADED,

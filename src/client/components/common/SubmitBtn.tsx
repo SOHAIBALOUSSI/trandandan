@@ -6,7 +6,7 @@ export function SubmitBtn(props: { btnIcon: string; btnLabel: string }) {
     <button
       type="submit"
       id="submit-btn"
-      className={styles.primaryButton}
+      className={styles.lightPrimaryBtn}
       aria-busy="false"
     >
       <span
@@ -15,7 +15,7 @@ export function SubmitBtn(props: { btnIcon: string; btnLabel: string }) {
         aria-hidden="true"
       ></span>
       <i
-        className={`fa-solid ${btnIcon} ${styles.primaryButtonIcon}`}
+        className={`fa-solid ${btnIcon} ${styles.lightPrimaryBtnIcon}`}
         aria-hidden="true"
       ></i>
       <span id="btn-label">{btnLabel}</span>

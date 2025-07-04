@@ -3,10 +3,15 @@ import { SubmitBtn } from "../common/SubmitBtn";
 import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
+import { handleSignIn } from "@/handlers/signin";
 
 export function SignInForm() {
+  setTimeout(() => {
+    handleSignIn();
+  }, 0);
+
   return (
-    <form id="signin-form" className={`${styles.form} animate-fadeInUp`}>
+    <form id="signin-form" className={`${styles.mainForm} animate-fadeInUp`}>
       <InputField
         type="text"
         name="login"
@@ -32,7 +37,7 @@ export function SignInForm() {
         </label>
         <a
           href="password_reset"
-          className="underline hover:text-pong-accent transition"
+          className="underline underline-offset-1 hover:text-pong-accent hover:underline-offset-2 transition-all duration-300"
           data-link
         >
           forgot credentials?
@@ -42,7 +47,7 @@ export function SignInForm() {
       <SubmitBtn btnIcon="fa-door-open" btnLabel="enter the lounge" />
 
       <p
-        className={`${fontSizes.buttonFontSize} w-full font-medium text-pong-primary/80`}
+        className={`${fontSizes.inputFontSize} w-full font-medium text-pong-primary/80`}
       >
         not a member yet?{" "}
         <a href="signup" className={styles.customFormLink} data-link>
@@ -51,6 +56,11 @@ export function SignInForm() {
       </p>
 
       <RemoteLink />
+
+      <p className="text-xs text-center text-pong-primary/70 italic">
+        by signing in, you return to the arena — ready to rally, rise, and
+        respect the code of champions.
+      </p>
     </form>
   );
 }

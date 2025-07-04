@@ -1,4 +1,4 @@
-import { handleChangeEmail } from "@/handlers/handle-change-email";
+import { handleChangeEmail } from "@/handlers/change-email";
 import { styles } from "@/styles/styles";
 
 export function UpdateCredentialsEmail() {

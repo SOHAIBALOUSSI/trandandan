@@ -91,7 +91,7 @@ export function setup2FA(mode: "app" | "email") {
             statusLabel.textContent = "Enabled";
             statusLabel.className =
               "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700";
-            primaryLabel.textContent = "Prmiary";
+            primaryLabel.textContent = "Primary";
             primaryLabel.className =
               "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-blue-200 text-blue-700";
             setPrimaryBtn.setAttribute("disable", "true");

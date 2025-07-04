@@ -2,7 +2,7 @@ import { fontSizes } from "@/styles/fontSizes";
 
 export function SecondaryHeader(props: { title: string; subtitle: string }) {
   return (
-    <div className="text-center mb-10">
+    <div className="text-center mb-10 w-full max-w-2xl mx-auto px-4">
       <h1
         className={`${fontSizes.titleFontSize} font-bold text-white tracking-tight mb-4`}
       >

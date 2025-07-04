@@ -1,5 +1,5 @@
 import { styles } from "@/styles/styles";
-import { handleVerifyCredentials } from "@/handlers/handle-verify-update-credentials";
+import { handleVerifyCredentials } from "@/handlers/verify-update-credentials";
 
 export function VerifyUpdateCredentials() {
   const twofaMode = sessionStorage.getItem("2faModeUpdate");

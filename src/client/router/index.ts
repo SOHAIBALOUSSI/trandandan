@@ -2,7 +2,7 @@ import { Welcome } from "@/views/Welcome";
 import { Signin } from "@/views/Signin";
 import { Signup } from "@/views/Signup";
 import { ResetPassword } from "@/views/LostPassword";
-import { UpdatePassword } from "@/views/UpdatePassword";
+import { UpdatePassword } from "@/views/ResetPassword";
 import { VerifyLogin } from "@/views/VerifyLogin";
 import { Home } from "@/views/Home";
 import { Game } from "@/views/Game";
@@ -16,10 +16,10 @@ import { DeleteAccount } from "@/views/DeleteAccount";
 import { Logout } from "@/views/Logout";
 import { UpdateCredentialsPassword } from "@/views/UpdateCredentialsPassword";
 import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
-import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentialsRes";
+import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentials";
 import { getUserProfile } from "@/services/get-user-profile";
 import { setCurrentUser } from "@/utils/user-store";
-import { VerifyUpdateCredentialsRes } from "@/utils/response-messages";
+import { Notifications } from "@/views/Notifications";
 
 // Define the routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
@@ -40,7 +40,8 @@ const routes: Record<string, () => HTMLElement> = {
   change_email: UpdateCredentialsEmail,
   verification: VerifyUpdateCredentials,
   blocked: Blocked,
-  delete_account: DeleteAccount,
+  wipe_account: DeleteAccount,
+  notifs: Notifications,
   checkout: Logout,
 };
 
@@ -66,7 +67,7 @@ async function isAuthenticated(): Promise<boolean> {
 
 // Router function to handle navigation and rendering
 export async function router(): Promise<void> {
-  const app = document.getElementById("app");
+  const app = document.getElementById("app") as HTMLDivElement;
   if (!app) return;
 
   const path = location.pathname.slice(1) || "welcome";
@@ -87,8 +88,7 @@ export async function router(): Promise<void> {
   if (isPublic) {
     if (!authed) {
       authed = await isAuthenticated();
-    }
-    if (authed) {
+    } else {
       history.replaceState(null, "", "/salon");
       await router();
       return;
@@ -97,7 +97,9 @@ export async function router(): Promise<void> {
 
   // Handle unknown routes
   if (!render) {
-    history.replaceState(null, "", "/welcome");
+    isPublic
+      ? history.replaceState(null, "", "/welcome")
+      : history.replaceState(null, "", "/salon");
     await router();
     return;
   }

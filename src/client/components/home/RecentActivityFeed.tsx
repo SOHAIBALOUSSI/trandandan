@@ -1,10 +1,6 @@
 import { fontSizes } from "@/styles/fontSizes";
-
-type Activity =
-  | { type: "win"; user: string; targetUser: string }
-  | { type: "loss"; user: string; targetUser: string }
-  | { type: "tournament"; user: string; tournament: string }
-  | { type: "delete"; user: string; message: string };
+import { styles } from "@/styles/styles";
+import { Activity } from "types/types";
 
 function WinActivity({
   user,
@@ -14,8 +10,8 @@ function WinActivity({
   targetUser: string;
 }) {
   return (
-    <li className="flex items-start gap-3 hover:bg-white/10 p-3 rounded-md transition-all">
-      <i className="fas fa-trophy text-pong-success text-lg mt-1"></i>
+    <li className={styles.listStyle}>
+      <i className="fas fa-trophy text-pong-success mt-1"></i>
       <div>
         <span className="text-pong-dark-secondary font-semibold">{user}</span>{" "}
         <span className="text-pong-dark-primary">won a match against</span>{" "}
@@ -35,8 +31,8 @@ function LossActivity({
   targetUser: string;
 }) {
   return (
-    <li className="flex items-start gap-3 hover:bg-white/10 p-3 rounded-md transition-all">
-      <i className="fas fa-skull-crossbones text-pong-error text-lg mt-1"></i>
+    <li className={styles.listStyle}>
+      <i className="fas fa-skull-crossbones text-pong-error mt-1"></i>
       <div>
         <span className="text-pong-dark-secondary font-semibold">{user}</span>{" "}
         <span className="text-pong-dark-primary">lost a match to</span>{" "}
@@ -56,8 +52,8 @@ function TournamentActivity({
   tournament: string;
 }) {
   return (
-    <li className="flex items-start gap-3 hover:bg-white/10 p-3 rounded-md transition-all">
-      <i className="fas fa-medal text-white/80 text-lg mt-1"></i>
+    <li className={styles.listStyle}>
+      <i className="fas fa-medal text-pong-info mt-1"></i>
       <div>
         <span className="text-pong-dark-secondary font-semibold">{user}</span>{" "}
         <span className="text-pong-dark-primary">joined the tournament</span>{" "}
@@ -74,16 +70,23 @@ function DeleteAccountActivity({
   message,
 }: {
   user: string;
-  message: string;
+  message: string | undefined;
 }) {
   return (
-    <li className="flex items-start gap-3 hover:bg-white/10 p-3 rounded-md transition-all">
-      <i className="fas fa-flag text-pong-warning text-lg mt-1"></i>
+    <li className={styles.listStyle}>
+      <i className="fas fa-flag text-pong-warning mt-1"></i>
       <div>
         <span className="text-pong-dark-secondary font-semibold">{user}</span>{" "}
-        <span className="text-pong-dark-primary">left the club</span>
-        {message && (
-          <span className="text-pong-dark-primary/80"> — "{message}"</span>
+        <span className="text-pong-dark-primary">
+          has signed off from the club
+        </span>
+        {message ? (
+          <span className="text-pong-dark-primary/80"> — “{message}”</span>
+        ) : (
+          <span className="text-pong-dark-primary/80">
+            {" "}
+            and left without a final word
+          </span>
         )}
       </div>
     </li>
@@ -130,18 +133,23 @@ export function RecentActivityFeed() {
       message: "Thanks for the good times, I'm heading out now",
     },
     { type: "win", user: "dexter", targetUser: "messi" },
+    { type: "loss", user: "messi", targetUser: "dexter" },
     { type: "tournament", user: "lamine lamal", tournament: "tournoi ramadan" },
+    {
+      type: "delete",
+      user: "hassan",
+    },
   ];
 
   return (
     <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
       <h2
-        className={`text-pong-dark-primary font-bold mb-5 tracking-tight ${fontSizes.subtitleFontSize}`}
+        className={`text-pong-dark-primary font-bold mb-8 tracking-tight ${fontSizes.smallTitleFontSize}`}
       >
         Recent Activity
       </h2>
       <ul
-        className={`space-y-4 ${fontSizes.smallTextFontSize} max-h-[340px] overflow-y-auto pr-2`}
+        className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`}
       >
         {activities.map(renderActivity)}
       </ul>

@@ -5,10 +5,10 @@ export function HeroCta() {
     <div className="flex flex-col items-center gap-2">
       <a
         href="signin"
-        className={`${styles.primaryButton} animate-myPulse hover:animate-none`}
+        className={`${styles.lightPrimaryBtn} animate-myPulse hover:animate-none`}
         data-link
       >
-        <i className={`fa-solid fa-ticket ${styles.primaryButtonIcon}`}></i>
+        <i className={`fa-solid fa-ticket ${styles.lightPrimaryBtnIcon}`}></i>
         Enter The Club
       </a>
       <p className={styles.heroSubtitle}>

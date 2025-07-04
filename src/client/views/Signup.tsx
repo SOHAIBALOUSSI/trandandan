@@ -1,25 +1,14 @@
 import { styles } from "@/styles/styles";
 import { Footer } from "@/components/layout/Footer";
-import { MainHeader } from "@/components/common/MainHeader";
+import { TitleDark } from "@/components/common/TitleDark";
 import { SignUpForm } from "@/components/auth/SignUpForm";
 import { Overlay } from "@/components/layout/Overlay";
-import { handleSignUp } from "@/handlers/handle-signup";
-import {
-  handleGoogleSignin,
-  handle42Signin,
-} from "@/handlers/handle-remote-signin";
 
 export function Signup() {
-  setTimeout(() => {
-    handleSignUp();
-    handleGoogleSignin();
-    handle42Signin();
-  }, 0);
-
   return (
     <section className={styles.pageLayoutLight}>
       <Overlay />
-      <MainHeader
+      <TitleDark
         title="join"
         titleSpan="the club"
         subtitle="become a member"

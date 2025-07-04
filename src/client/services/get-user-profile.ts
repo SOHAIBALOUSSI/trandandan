@@ -10,13 +10,12 @@ export async function getUserProfile() {
     const id = result.data?.id;
     if (!id) return null;
 
-    const profileRes = await authFetch(`/profile/${id}`);
+    const profileRes = await authFetch(`/profile/user/${id}`);
     if (!profileRes.ok) return null;
 
     const profile = await profileRes.json();
 
     setCurrentUser(profile);
-
     return profile;
   } catch (err) {
     console.error(err);

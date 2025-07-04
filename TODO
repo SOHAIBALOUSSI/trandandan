@@ -7,3 +7,4 @@
 - member card editable (an icon in the top right)
 - when the user click it highlight username for editing and also profile avatar
 - there will be 4 icons for ranking (top 5 - top 10 - top 20 - normal )
+- 'TWOFA_ALREADY_PENDING', { qrCode: qrCodeUrl }
