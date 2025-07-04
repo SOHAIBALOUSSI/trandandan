@@ -92,7 +92,7 @@ rabbit.consumeMessages(async (notification) =>{
     if (!idExist)
       return ;
     await deleteNotifications(db, userId);
-    users.get(userId).forEach((ws) => {
+    users.get(userId)?.forEach((ws) => {
       ws.close(1010, 'Mandatory exit');
     });
   }

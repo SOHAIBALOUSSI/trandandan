@@ -18,17 +18,18 @@ await createFriendshipTable(server.db);
 await createBlockTable(server.db);
 
 await server.register(rabbitmqPlugin);
+await server.register(redisPlugin);
+
 server.rabbit.consumeMessages(async (request) => {
     if (request.type === 'DELETE') {
         const userId = request.userId;
-        const idExist = await redis.sIsMember('userIds', `${userId}`);
+        const idExist = await server.redis.sIsMember('userIds', `${userId}`);
         console.log('idExist value: ', idExist);
         if (idExist)
             await deleteFriendships(server.db, userId);
     }
 })
 
-await server.register(redisPlugin);
 
 await server.register(friendsRoutes, { prefix: '/friends' });
 await server.register(blockRoutes, { prefix: '/block' });
