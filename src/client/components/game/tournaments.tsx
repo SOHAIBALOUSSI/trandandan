@@ -1,8 +1,10 @@
+import { navigateTo } from "@/utils/navigate-to-link";
 
 export function Tournaments() {
   // Create container element
-  const container = document.createElement('div');
-  container.className = 'w-full h-[100vh] overflow-hidden bg-game-bg font-orbitron relative';
+  const container = document.createElement("div");
+  container.className =
+    "w-full h-[100vh] overflow-hidden bg-game-bg font-orbitron relative";
 
   // Add HTML structure
   container.innerHTML = `
@@ -83,50 +85,58 @@ export function Tournaments() {
   `;
 
   // Get DOM elements
-  const canvas = container.querySelector('canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-  const rightPlayerScoreLocal = container.querySelector('#rightPlayerScoreLocal') as HTMLElement;
-  const leftPlayerScoreLocal = container.querySelector('#leftPlayerScoreLocal') as HTMLElement;
-  const gameTab = container.querySelector('#gameTab') as HTMLElement;
-  const result = container.querySelector('#result') as HTMLElement;
-  const restart = container.querySelector('#restart') as HTMLElement;
-  const players8 = container.querySelector('#eight_players') as HTMLElement;
-  const players4 = container.querySelector('#four_Players') as HTMLElement;
-  const selectTab = container.querySelector('#selectTab') as HTMLElement;
-  const inputPlayers = container.querySelector('#inputPlayers') as HTMLElement;
-  const playerIdField = container.querySelector('#playerIdField') as HTMLInputElement;
-  const addPlayerBtn = container.querySelector('#addPlayerBtn') as HTMLElement;
-  const tourTab = container.querySelector('#tourTab') as HTMLElement;
-  const prevMatch = container.querySelector('#prevMatch') as HTMLElement;
-  const currentMatch = container.querySelector('#currentMatch') as HTMLElement;
-  const nextMatch = container.querySelector('#nextMatch') as HTMLElement;
-  const resultTab = container.querySelector('#resultTab') as HTMLElement;
-  const resultStat = container.querySelector('#resultStat') as HTMLElement;
-  const restartTournoi = container.querySelector('#restartTournoi') as HTMLElement;
-  const start = container.querySelector('#start') as HTMLElement;
-  const exit = container.querySelector('#exit') as HTMLElement;
-  console.log("[client] Tournaments component is being initialized"); 
+  const canvas = container.querySelector("canvas") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+  const rightPlayerScoreLocal = container.querySelector(
+    "#rightPlayerScoreLocal"
+  ) as HTMLElement;
+  const leftPlayerScoreLocal = container.querySelector(
+    "#leftPlayerScoreLocal"
+  ) as HTMLElement;
+  const gameTab = container.querySelector("#gameTab") as HTMLElement;
+  const result = container.querySelector("#result") as HTMLElement;
+  const restart = container.querySelector("#restart") as HTMLElement;
+  const players8 = container.querySelector("#eight_players") as HTMLElement;
+  const players4 = container.querySelector("#four_Players") as HTMLElement;
+  const selectTab = container.querySelector("#selectTab") as HTMLElement;
+  const inputPlayers = container.querySelector("#inputPlayers") as HTMLElement;
+  const playerIdField = container.querySelector(
+    "#playerIdField"
+  ) as HTMLInputElement;
+  const addPlayerBtn = container.querySelector("#addPlayerBtn") as HTMLElement;
+  const tourTab = container.querySelector("#tourTab") as HTMLElement;
+  const prevMatch = container.querySelector("#prevMatch") as HTMLElement;
+  const currentMatch = container.querySelector("#currentMatch") as HTMLElement;
+  const nextMatch = container.querySelector("#nextMatch") as HTMLElement;
+  const resultTab = container.querySelector("#resultTab") as HTMLElement;
+  const resultStat = container.querySelector("#resultStat") as HTMLElement;
+  const restartTournoi = container.querySelector(
+    "#restartTournoi"
+  ) as HTMLElement;
+  const start = container.querySelector("#start") as HTMLElement;
+  const exit = container.querySelector("#exit") as HTMLElement;
+  console.log("[client] Tournaments component is being initialized");
 
   // Game state
   let numberOfPlayers = 0;
   let socketLocal: WebSocket;
   const Players: string[] = [];
   const Winners: string[] = [];
-  exit.addEventListener("click", () => {  
-    window.location.href = "/arena"; // Redirect to the home page
+  exit.addEventListener("click", () => {
+    navigateTo("/arena");
   });
 
   // Initialize the game
   function init() {
     socketLocal = new WebSocket("ws://0.0.0.0:5000/ws");
-    
+
     const keys: { [key: string]: boolean } = {};
 
-    window.addEventListener('keydown', (event: KeyboardEvent) => {
+    window.addEventListener("keydown", (event: KeyboardEvent) => {
       keys[event.key] = true;
     });
 
-    window.addEventListener('keyup', (event: KeyboardEvent) => {
+    window.addEventListener("keyup", (event: KeyboardEvent) => {
       keys[event.key] = false;
     });
 
@@ -145,23 +155,23 @@ export function Tournaments() {
       resultStat,
       restartTournoi,
       socketLocal,
-      start
+      start,
     });
 
     // Setup event listeners
-    players4.addEventListener('click', () => {
+    players4.addEventListener("click", () => {
       selectTab.style.display = "none";
       inputPlayers.style.display = "block";
       numberOfPlayers = 4;
     });
 
-    players8.addEventListener('click', () => {
+    players8.addEventListener("click", () => {
       selectTab.style.display = "none";
       inputPlayers.style.display = "block";
       numberOfPlayers = 8;
     });
 
-    addPlayerBtn.addEventListener('click', () => {
+    addPlayerBtn.addEventListener("click", () => {
       if (!playerIdField.checkValidity()) {
         alert("Invalid input! Please enter a valid player ID.");
         return;
@@ -181,8 +191,8 @@ export function Tournaments() {
         if (Players.length > 2) {
           nextMatch.textContent = `NEXT MATCH: ${Players[2]} vs ${Players[3]}`;
         }
-        
-        start.addEventListener('click', () => {
+
+        start.addEventListener("click", () => {
           start.style.display = "none";
           restart.style.display = "block";
           gameTab.style.display = "none";
@@ -331,16 +341,37 @@ class FlowFieldLocal {
     // Left paddle
     this.ctx.fillStyle = "#E0A458";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
-    this.ctx.strokeRect(10, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.strokeRect(
+      10,
+      this.gameState.paddleLeftY,
+      this.width,
+      this.height
+    );
 
     // Right paddle
-    this.ctx.fillRect(980, this.gameState.paddelRightY, this.width, this.height);
-    this.ctx.strokeRect(980, this.gameState.paddelRightY, this.width, this.height);
+    this.ctx.fillRect(
+      980,
+      this.gameState.paddelRightY,
+      this.width,
+      this.height
+    );
+    this.ctx.strokeRect(
+      980,
+      this.gameState.paddelRightY,
+      this.width,
+      this.height
+    );
 
     // Ball
     this.ctx.fillStyle = "#C44536";
     this.ctx.beginPath();
-    this.ctx.arc(this.gameState.ballX, this.gameState.ballY, 13, 0, Math.PI * 2);
+    this.ctx.arc(
+      this.gameState.ballX,
+      this.gameState.ballY,
+      13,
+      0,
+      Math.PI * 2
+    );
     this.ctx.fill();
     this.ctx.stroke();
 
@@ -383,7 +414,9 @@ class FlowFieldLocal {
   private setInitialStat() {
     if (this.deps.result.textContent === `Winner: ${this.deps.Players[1]}`) {
       this.deps.Winners.push(this.deps.Players[1]);
-    } else if (this.deps.result.textContent === `Winner: ${this.deps.Players[0]}`) {
+    } else if (
+      this.deps.result.textContent === `Winner: ${this.deps.Players[0]}`
+    ) {
       this.deps.Winners.push(this.deps.Players[0]);
     }
 
@@ -410,7 +443,7 @@ class FlowFieldLocal {
     if (this.deps.Players.length % 2 === 0) {
       this.deps.prevMatch.textContent = `PREVIOUS MATCH: ${oldPlayerLeft} vs ${oldPlayerRight}`;
       this.deps.currentMatch.textContent = `${this.deps.Players[0]} vs ${this.deps.Players[1]}`;
-      
+
       if (this.deps.Players.length >= 4) {
         this.deps.nextMatch.textContent = `NEXT MATCH: ${this.deps.Players[2]} vs ${this.deps.Players[3]}`;
       } else {
@@ -421,7 +454,7 @@ class FlowFieldLocal {
     this.resetGameState();
     this.deps.gameTab.style.display = "block";
     this.deps.socketLocal.close();
-    
+
     this.deps.restart.addEventListener("click", () => {
       this.deps.gameTab.style.display = "none";
       const newSocket = new WebSocket("ws://0.0.0.0:5000/ws");
@@ -452,8 +485,10 @@ class FlowFieldLocal {
     try {
       this.gameState = JSON.parse(data);
 
-      this.deps.rightPlayerScoreLocal.textContent = this.gameState.rightPlayerScore.toString();
-      this.deps.leftPlayerScoreLocal.textContent = this.gameState.leftPlayerScore.toString();
+      this.deps.rightPlayerScoreLocal.textContent =
+        this.gameState.rightPlayerScore.toString();
+      this.deps.leftPlayerScoreLocal.textContent =
+        this.gameState.leftPlayerScore.toString();
 
       if (this.gameState.rightPlayerScore === 5) {
         this.deps.result.textContent = `Winner: ${this.deps.Players[1]}`;

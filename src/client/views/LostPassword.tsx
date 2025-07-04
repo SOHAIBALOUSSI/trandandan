@@ -1,6 +1,6 @@
-import { handleLostPassword } from "@/handlers/handle-lost-password";
+import { handleLostPassword } from "@/handlers/lost-password";
 import { verifyOtpCode } from "@/services/verify-otp-code";
-import { handleOtpInput } from "@/handlers/handle-otp-input";
+import { handleOtpInput } from "@/handlers/otp-input";
 import { Footer } from "@/components/layout/Footer";
 import { InputField } from "@/components/common/InputField";
 import { styles } from "@/styles/styles";
@@ -21,16 +21,16 @@ export function ResetPassword() {
       <Overlay />
       <div className={`${styles.customSectionStyles} animate-fadeInUp`}>
         <h1 className={styles.titleDark}>lost your paddle?</h1>
-        <p className={`${styles.subtitleParagraphDark} my-6`}>
+        <p className={`${styles.subtitleParagraphDark} my-4`}>
           no worries, champion — enter your email and we’ll rally a code your
           way to reset it.
         </p>
 
-        <div className="flex justify-center mb-6">
-          <i className="fa-solid fa-table-tennis-paddle-ball text-pong-accent text-3xl animate-bounce" />
+        <div className="flex justify-center mb-4">
+          <i className="fa-solid fa-table-tennis-paddle-ball text-pong-accent text-xl md:text-2xl animate-bounce" />
         </div>
 
-        <form id="lost-password-form" className={styles.customForm}>
+        <form id="lost-password-form" className={styles.secForm}>
           <InputField
             type="text"
             name="email"
@@ -41,7 +41,7 @@ export function ResetPassword() {
           <SubmitBtn btnIcon="fa-envelope" btnLabel="send me the code" />
         </form>
 
-        <form id="lost-pass-otp-form" className={`${styles.customForm} hidden`}>
+        <form id="lost-pass-otp-form" className={`${styles.secForm} hidden`}>
           <label
             htmlFor="otp"
             className={`${fontSizes.bodyFontSize} text-pong-primary font-semibold`}
@@ -53,7 +53,7 @@ export function ResetPassword() {
         </form>
 
         <p
-          className={`${fontSizes.buttonFontSize} w-full my-6 font-medium text-pong-primary/80`}
+          className={`${fontSizes.buttonFontSize} w-full my-4 font-medium text-pong-primary/80`}
         >
           remembered your paddle?{" "}
           <a href="signin" className={styles.customFormLink} data-link>

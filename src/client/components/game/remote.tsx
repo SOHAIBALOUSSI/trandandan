@@ -1,10 +1,12 @@
+import { navigateTo } from "@/utils/navigate-to-link";
 import { getCurrentUser } from "@/utils/user-store";
 import { UserProfile } from "types/types";
 
 export function RemoteGame() {
   // Create a container element for the game
-  const container = document.createElement('div');
-  container.className = 'w-full h-[100vh] overflow-hidden bg-game-bg font-orbitron relative';
+  const container = document.createElement("div");
+  container.className =
+    "w-full h-[100vh] overflow-hidden bg-game-bg font-orbitron relative";
 
   // Add your game HTML structure
   container.innerHTML = `
@@ -60,50 +62,56 @@ export function RemoteGame() {
   `;
 
   // Initialize game elements
-  const canvas = container.querySelector('canvas') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-  const rightPlayerScore = container.querySelector('#rightPlayerScoreRemote') as HTMLElement;
-  const leftPlayerScore = container.querySelector('#leftPlayerScoreRemote') as HTMLElement;
-  const restartButton = container.querySelector('#restartButton') as HTMLButtonElement;
-  const result = container.querySelector('#result') as HTMLElement;
-  const gameTabe = container.querySelector('#gameTab') as HTMLElement;
-  const disconnectedResult = container.querySelector('#disconnected') as HTMLElement;
-  const exit = container.querySelector('#exit') as HTMLElement;
-  const playerSide = container.querySelector('#playerSide') as HTMLElement;
+  const canvas = container.querySelector("canvas") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+  const rightPlayerScore = container.querySelector(
+    "#rightPlayerScoreRemote"
+  ) as HTMLElement;
+  const leftPlayerScore = container.querySelector(
+    "#leftPlayerScoreRemote"
+  ) as HTMLElement;
+  const restartButton = container.querySelector(
+    "#restartButton"
+  ) as HTMLButtonElement;
+  const result = container.querySelector("#result") as HTMLElement;
+  const gameTabe = container.querySelector("#gameTab") as HTMLElement;
+  const disconnectedResult = container.querySelector(
+    "#disconnected"
+  ) as HTMLElement;
+  const exit = container.querySelector("#exit") as HTMLElement;
+  const playerSide = container.querySelector("#playerSide") as HTMLElement;
 
   exit.addEventListener("click", () => {
-    window.location.href = "/arena";
+    navigateTo("/arena");
   });
   // Utility functions
   const userInfo = getCurrentUser();
 
-
   const getRoomIdByUserId = async (userId: number) => {
-    return fetch('http://localhost:5000/getRoomId', {
-      method: 'POST',
+    return fetch("http://localhost:5000/getRoomId", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ userId }),  // send { userId: someNumber }
+      body: JSON.stringify({ userId }), // send { userId: someNumber }
     })
-    .then(response => {
-      if (!response.ok) {
-        // Handle HTTP errors (like 404, 500)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();  // Parse JSON body
-    })
-    .then(data => {
-      // data will be the JSON response from your Fastify route
-      // e.g. { message: "Room found", roomData: "room-123" }
-      return data.roomData;  // return the roomData string
-    })
-    .catch(err => {
-      console.error("Fetch error:", err);
-      return null;  // or handle error how you want
-    });
+      .then((response) => {
+        if (!response.ok) {
+          // Handle HTTP errors (like 404, 500)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse JSON body
+      })
+      .then((data) => {
+        // data will be the JSON response from your Fastify route
+        // e.g. { message: "Room found", roomData: "room-123" }
+        return data.roomData; // return the roomData string
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        return null; // or handle error how you want
+      });
   };
-
 
   let socket: WebSocket;
 
@@ -118,11 +126,11 @@ export function RemoteGame() {
     );
     let keys: Record<string, boolean> = {};
 
-    window.addEventListener('keydown', (key: KeyboardEvent) => {
+    window.addEventListener("keydown", (key: KeyboardEvent) => {
       keys[key.key] = true;
     });
 
-    window.addEventListener('keyup', (key: KeyboardEvent) => {
+    window.addEventListener("keyup", (key: KeyboardEvent) => {
       keys[key.key] = false;
     });
 
@@ -137,7 +145,7 @@ export function RemoteGame() {
       playerSide,
       socket,
       userName,
-      roomdIdentif
+      roomdIdentif,
     });
 
     socket.onopen = () => {
@@ -145,7 +153,6 @@ export function RemoteGame() {
     };
 
     socket.onclose = () => {
-      
       console.log("match ended");
     };
 
@@ -290,7 +297,6 @@ class FlowField {
       });
   }
 
-  
   private ballParticle(x: number, y: number): void {
     for (let i = 0; i < 5; i++) {
       this.particles.push({
@@ -332,16 +338,37 @@ class FlowField {
     // Paddle left
     this.ctx.fillStyle = "#E0A458";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
-    this.ctx.strokeRect(10, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.strokeRect(
+      10,
+      this.gameState.paddleLeftY,
+      this.width,
+      this.height
+    );
 
     // Paddle right
-    this.ctx.fillRect(980, this.gameState.paddelRightY, this.width, this.height);
-    this.ctx.strokeRect(980, this.gameState.paddelRightY, this.width, this.height);
+    this.ctx.fillRect(
+      980,
+      this.gameState.paddelRightY,
+      this.width,
+      this.height
+    );
+    this.ctx.strokeRect(
+      980,
+      this.gameState.paddelRightY,
+      this.width,
+      this.height
+    );
 
     // Ball
     this.ctx.fillStyle = "#C44536";
     this.ctx.beginPath();
-    this.ctx.arc(this.gameState.ballX, this.gameState.ballY, 13, 0, Math.PI * 2);
+    this.ctx.arc(
+      this.gameState.ballX,
+      this.gameState.ballY,
+      13,
+      0,
+      Math.PI * 2
+    );
     this.ctx.fill();
     this.ctx.stroke();
 
@@ -400,7 +427,7 @@ class FlowField {
       const newSocket = new WebSocket(
         `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.userId}&roomId=${this.deps.roomdIdentif}`
       );
-      
+
       newSocket.onopen = () => {
         console.log("WebSocket reconnected");
         newSocket.send(JSON.stringify(this.gameState));
@@ -423,7 +450,7 @@ class FlowField {
       this.deps.socket = newSocket;
     }
   }
-  public normalizeUser(raw: any): UserProfile {
+  public normalizeUser(raw: UserProfile): UserProfile {
     return {
       id: raw.id,
       userId: raw.userId,
@@ -436,9 +463,9 @@ class FlowField {
       rank: raw.rank,
       level: raw.level,
       created_at: raw.created_at,
-      matchesPlayed: raw.matches_played ?? 0,
-      matchesWon: raw.matches_won ?? 0,
-      matchesLost: raw.matches_lost ?? 0,
+      matches_played: raw.matches_played ?? 0,
+      matches_won: raw.matches_won ?? 0,
+      matches_lost: raw.matches_lost ?? 0,
     };
   }
   public updateUser(currentUser: UserProfile): void {
@@ -448,17 +475,16 @@ class FlowField {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(currentUser)
+      body: JSON.stringify(currentUser),
     })
       .then((response) => response.json())
       .then((data) => {
         console.log("User updated successfully:", data);
-      }
-      )
+      })
       .catch((error) => {
         console.error("Error updating user:", error);
       });
-    }
+  }
   public updateGameState(data: string): void {
     try {
       const parsedData: GameState = JSON.parse(data);
@@ -468,59 +494,56 @@ class FlowField {
       } else if (this.gameState.playerId === 2) {
         this.deps.playerSide.innerText = "YOU ARE ON THE RIGHT SIDE";
       }
-      this.deps.rightPlayerScore.textContent = String(this.gameState.rightPlayerScore);
-      this.deps.leftPlayerScore.textContent = String(this.gameState.leftPlayerScore);
-      if (this.gameState.gameEndResult && this.gameState.gameEndResult.length !== 0) {
+      this.deps.rightPlayerScore.textContent = String(
+        this.gameState.rightPlayerScore
+      );
+      this.deps.leftPlayerScore.textContent = String(
+        this.gameState.leftPlayerScore
+      );
+      if (
+        this.gameState.gameEndResult &&
+        this.gameState.gameEndResult.length !== 0
+      ) {
         const currentUser = getCurrentUser();
         console.log("currentUser:", currentUser);
         // const currentUser: UserProfile = this.normalizeUser(rawUser);
-        
+
         this.gameState.endGame = true;
         this.deps.result.textContent = "You " + this.gameState.gameEndResult;
         this.deps.gameTabe.style.display = "block";
 
-        if (this.gameState.playerId === 1 && flag_one === true) 
-        {
+        if (this.gameState.playerId === 1 && flag_one === true) {
           flag_one = false;
           if (currentUser) {
             if (this.gameState.gameEndResult === "Won") {
-              currentUser.matchesWon += 1;
+              currentUser.matches_won += 1;
             } else if (this.gameState.gameEndResult === "Lost") {
-                currentUser.matchesLost += 1;
+              currentUser.matches_lost += 1;
             }
-            currentUser.matchesPlayed += 1;
+            currentUser.matches_played += 1;
             currentUser.level += this.gameState.leftPlayerScore;
-            if (this.gameState.gameEndResult === "Won")
-            {
-                currentUser.level += 10;
-            }
-            else if (this.gameState.gameEndResult === "Lost")
-            {
-                if (currentUser.level > 5)
-                    currentUser.level -= 5;
+            if (this.gameState.gameEndResult === "Won") {
+              currentUser.level += 10;
+            } else if (this.gameState.gameEndResult === "Lost") {
+              if (currentUser.level > 5) currentUser.level -= 5;
             }
           }
         }
 
-        if (this.gameState.playerId === 2 && flag_two === true) 
-        {
+        if (this.gameState.playerId === 2 && flag_two === true) {
           flag_two = false;
           if (currentUser) {
             if (this.gameState.gameEndResult === "Won") {
-              currentUser.matchesWon += 1;
+              currentUser.matches_won += 1;
             } else if (this.gameState.gameEndResult === "Lost") {
-                currentUser.matchesLost += 1;
+              currentUser.matches_lost += 1;
             }
-            currentUser.matchesPlayed += 1;
+            currentUser.matches_played += 1;
             currentUser.level += this.gameState.rightPlayerScore;
-            if (this.gameState.gameEndResult === "Won")
-            {
-                currentUser.level += 10;
-            }
-            else if (this.gameState.gameEndResult === "Lost")
-            {
-                if (currentUser.level > 5)
-                    currentUser.level -= 5;
+            if (this.gameState.gameEndResult === "Won") {
+              currentUser.level += 10;
+            } else if (this.gameState.gameEndResult === "Lost") {
+              if (currentUser.level > 5) currentUser.level -= 5;
             }
           }
         }
@@ -535,16 +558,16 @@ class FlowField {
           leftPlayerBallHit: this.gameState.leftPlayerBallHit,
           rightPlayerBallHit: this.gameState.rightPlayerBallHit,
         };
-        if (currentUser && flag_update === true)
-        {
+        if (currentUser && flag_update === true) {
           flag_update = false;
-          if (this.gameState.playerId === 1)
-            this.updateUser(currentUser);
-          else if (this.gameState.playerId === 2)
-            this.updateUser(currentUser);
+          if (this.gameState.playerId === 1) this.updateUser(currentUser);
+          else if (this.gameState.playerId === 2) this.updateUser(currentUser);
         }
         this.sendPlayerData(playerData);
-        this.deps.restartButton.addEventListener("click", this.handleRestart.bind(this));
+        this.deps.restartButton.addEventListener(
+          "click",
+          this.handleRestart.bind(this)
+        );
       }
     } catch (error) {
       console.error("Error parsing game state:", error);

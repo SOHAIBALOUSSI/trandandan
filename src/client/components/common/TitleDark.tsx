@@ -1,6 +1,6 @@
 import { styles } from "@/styles/styles";
 
-export function MainHeader(props: {
+export function TitleDark(props: {
   title: string;
   titleSpan: string;
   subtitle: string;

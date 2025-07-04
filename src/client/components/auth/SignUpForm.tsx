@@ -3,10 +3,14 @@ import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { SubmitBtn } from "../common/SubmitBtn";
+import { handleSignUp } from "@/handlers/signup";
 
 export function SignUpForm() {
+  setTimeout(() => {
+    handleSignUp();
+  }, 0);
   return (
-    <form id="signup-form" className={`${styles.form} animate-fadeInUp`}>
+    <form id="signup-form" className={`${styles.mainForm} animate-fadeInUp`}>
       <InputField
         type="text"
         name="username"
@@ -21,7 +25,7 @@ export function SignUpForm() {
         placeholder="your correspondence address"
       />
       <div className="relative w-full text-left">
-        <select name="gender" id="gender" className={styles.customSelect}>
+        <select name="gender" id="gender" className={styles.selectField}>
           <option value="" disabled selected hidden>
             select your title of elegance
           </option>
@@ -48,18 +52,14 @@ export function SignUpForm() {
         id="confirm-password"
         placeholder="confirm your secret key"
       />
+
       <SubmitBtn
         btnIcon="fa-champagne-glasses"
         btnLabel="register your racket"
       />
 
-      <p className="text-xs text-center text-pong-primary/70 -mt-2 italic">
-        by joining, you swear on honor to compete fairly and uphold the spirit
-        of ping pong.
-      </p>
-
       <p
-        className={`${fontSizes.buttonFontSize} w-full font-medium text-pong-primary/80`}
+        className={`${fontSizes.inputFontSize} w-full font-medium text-pong-primary/80`}
       >
         already a member of the hall?{" "}
         <a href="signin" className={styles.customFormLink} data-link>
@@ -68,6 +68,11 @@ export function SignUpForm() {
       </p>
 
       <RemoteLink />
+
+      <p className="text-xs text-center text-pong-primary/70 italic">
+        by joining, you swear on honor to compete fairly and uphold the spirit
+        of ping pong.
+      </p>
     </form>
   );
 }

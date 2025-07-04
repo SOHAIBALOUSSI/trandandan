@@ -1,5 +1,5 @@
 import { clearCurrentUser } from "@/utils/user-store";
-import { router } from "@/router/router";
+import { router } from "@/router";
 
 export async function handleLogout(): Promise<void> {
   try {

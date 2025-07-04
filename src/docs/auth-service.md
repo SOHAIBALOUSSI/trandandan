@@ -262,6 +262,7 @@ The `auth-service` is responsible for handling user authentication, registration
 
   401: UNAUTHORIZED
   400: TWOFA_ALREADY_ENABLED
+  400: TWOFA_ALREADY_PENDING
   200: SCAN_QR
   500: INTERNAL_SERVER_ERROR
 

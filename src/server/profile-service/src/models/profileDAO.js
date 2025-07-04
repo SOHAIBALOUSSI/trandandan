@@ -72,3 +72,8 @@ export async function updateProfileEmailById(db, id, email) {
 export async function deleteProfile(db, id) {
     await db.run('DELETE FROM profile WHERE userId = ?', [id]);
 }
+
+export async function fetchAllProfiles(db) {
+    console.log('Fetching all profiles...');
+    return await db.all('SELECT * FROM profile');
+}

@@ -1,4 +1,4 @@
-import { handleChangePassword } from "@/handlers/handle-change-password";
+import { handleChangePassword } from "@/handlers/change-password";
 import { styles } from "@/styles/styles";
 
 export function UpdateCredentialsPassword() {

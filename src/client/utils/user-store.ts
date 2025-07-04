@@ -1,6 +1,6 @@
 import { UserProfile } from "types/types";
-import MaleAvatar from "@/assets/male.png";
-import FemaleAvatar from "@/assets/female.png";
+import MaleAvatar from "@/assets/default-male-avatar.png";
+import FemaleAvatar from "@/assets/default-female-avatar.png";
 
 let currentUser: UserProfile | null = null;
 

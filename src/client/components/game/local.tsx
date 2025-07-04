@@ -1,3 +1,5 @@
+import { navigateTo } from "@/utils/navigate-to-link";
+
 export function LocalGame() {
   // Create a container element for the game
   const container = document.createElement("div");
@@ -64,7 +66,7 @@ export function LocalGame() {
   const exit = container.querySelector("#exit") as HTMLElement;
 
   exit.addEventListener("click", () => {
-    window.location.href = "/arena"; // Redirect to the home page
+    navigateTo("/arena");
   });
   // Game state and logic
   let socketLocal: WebSocket;
