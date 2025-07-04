@@ -62,7 +62,7 @@ fastify.register(async function name(req, reply) {
     return getRoomId(req, reply, fastify);
   });
 });
-fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
+fastify.listen({ port: 5000 , host: `${process.ENV.HOST_NAME}`}, (err) => {
   if (err) {
     console.error(err);
     process.exit(1);

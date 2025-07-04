@@ -38,7 +38,7 @@ console.log("relationships service initialization is done...");
 
 const start = async () => {
     try {
-        await server.listen({ host: '0.0.0.0', port: 3002 });
+        await server.listen({ host: `${process.ENV.HOST_NAME}`, port: 3002 });
         server.log.info("Server is listening on port 3002");
     }
     catch (err) {

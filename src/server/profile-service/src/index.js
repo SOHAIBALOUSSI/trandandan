@@ -32,7 +32,7 @@ console.log("profile service initialization is done...");
 
 const start = async () => {
     try {
-        await server.listen({ host: '0.0.0.0', port: 3001 });
+        await server.listen({ host: `${process.ENV.HOST_NAME}`, port: 3001 });
         server.log.info("Server is listening on port 3001");
     }
     catch (err) {
