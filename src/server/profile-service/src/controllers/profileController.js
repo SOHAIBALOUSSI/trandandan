@@ -13,9 +13,6 @@ import path from 'node:path';
 export async function getProfile(request, reply) {
     try {
         const { id } = request.params;
-        const tokenId = request.user?.id;
-        if (tokenId != id) 
-            return reply.code(403).send(createResponse(403, 'UNAUTHORIZED'));
         
         const profile = await getProfileById(this.db, id);
         if (!profile)
