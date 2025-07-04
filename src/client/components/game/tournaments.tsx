@@ -128,7 +128,7 @@ export function Tournaments() {
 
   // Initialize the game
   function init() {
-    socketLocal = new WebSocket("ws://0.0.0.0:5000/ws");
+    socketLocal = new WebSocket("ws://localhost:5000/ws");
 
     const keys: { [key: string]: boolean } = {};
 

@@ -74,7 +74,7 @@ export function LocalGame() {
 
   // Initialize the game
   function init() {
-    socketLocal = new WebSocket("ws://0.0.0.0:5000/ws");
+    socketLocal = new WebSocket("ws://localhost:5000/ws");
 
     window.addEventListener("keydown", (event: KeyboardEvent) => {
       keys[event.key] = true;
