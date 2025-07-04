@@ -1,5 +1,6 @@
 export type UserProfile = {
   id: number;
+  userId: number;
   username: string;
   email: string;
   gender: string | null;

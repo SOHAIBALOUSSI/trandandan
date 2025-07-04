@@ -14,6 +14,10 @@ import { Security } from "@/views/Security";
 import { Blocked } from "@/views/Blocked";
 import { DeleteAccount } from "@/views/DeleteAccount";
 import { Logout } from "@/views/Logout";
+import { LocalGame } from "@/components/game/local";
+import { RemoteGame } from "@/components/game/remote";
+import { Tournaments } from "@/components/game/tournaments";
+
 import { UpdateCredentialsPassword } from "@/views/UpdateCredentialsPassword";
 import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
 import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentials";
@@ -34,6 +38,11 @@ const routes: Record<string, () => HTMLElement> = {
   chamber: Dashboard,
   lounge: Chat,
   members: Friends,
+  profile: Profile,
+  exit: Logout,
+  duel: LocalGame,
+  remote: RemoteGame,
+  tournament: Tournaments,
   my_profile: Profile,
   security: Security,
   change_password: UpdateCredentialsPassword,

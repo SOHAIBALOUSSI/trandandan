@@ -18,17 +18,18 @@ await createFriendshipTable(server.db);
 await createBlockTable(server.db);
 
 await server.register(rabbitmqPlugin);
+await server.register(redisPlugin);
+
 server.rabbit.consumeMessages(async (request) => {
     if (request.type === 'DELETE') {
         const userId = request.userId;
-        const idExist = await redis.sIsMember('userIds', `${userId}`);
+        const idExist = await server.redis.sIsMember('userIds', `${userId}`);
         console.log('idExist value: ', idExist);
         if (idExist)
             await deleteFriendships(server.db, userId);
     }
 })
 
-await server.register(redisPlugin);
 
 await server.register(friendsRoutes, { prefix: '/friends' });
 await server.register(blockRoutes, { prefix: '/block' });
@@ -37,7 +38,7 @@ console.log("relationships service initialization is done...");
 
 const start = async () => {
     try {
-        await server.listen({ host: '0.0.0.0', port: 3002 });
+        await server.listen({ host: `${process.env.HOST_NAME}`, port: 3002 });
         server.log.info("Server is listening on port 3002");
     }
     catch (err) {

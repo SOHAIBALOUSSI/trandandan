@@ -57,7 +57,7 @@ export const styles = {
   heroMascot: `
 	w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24
 	absolute top-8 right-8 lg:top-10 lg:right-10
-	animate-float
+	animate-myFloat
   `,
   // === End Hero styles ===
 

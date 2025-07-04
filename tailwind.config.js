@@ -4,6 +4,7 @@ export const theme = {
     fontFamily: {
       playfair: ["'Playfair Display'", "serif"],
       lora: ["Lora", "serif"],
+      orbitron: ["Orbitron", "sans-serif"],
     },
     colors: {
       "pong-bg": "#F3F0E8",
@@ -27,6 +28,9 @@ export const theme = {
       "pong-success": "#22c55e",
       "pong-warning": "#f59e0b",
       "pong-info": "#2196F3",
+      "game-bg": "#1B1B1B",
+      "ping-yellow": "#E0A458",
+      "game-border": "#AEBABF",
     },
     keyframes: {
       fadeInUp: {
@@ -41,7 +45,7 @@ export const theme = {
         "0%": { backgroundPosition: "0% 0%" },
         "100%": { backgroundPosition: "100% 100%" },
       },
-      float: {
+      myFloat: {
         "0%, 100%": { transform: "translateY(0)" },
         "50%": { transform: "translateY(-10px)" },
       },
@@ -54,7 +58,7 @@ export const theme = {
       fadeInUp: "fadeInUp 0.8s ease-out",
       blurIn: "blurIn 0.6s ease-out forwards",
       backgroundPan: "backgroundPan 20s linear infinite",
-      float: "float 3s ease-in-out infinite",
+      myFloat: "myFloat 3s ease-in-out infinite",
       myPulse: "myPulse 1.3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
     },
   },
