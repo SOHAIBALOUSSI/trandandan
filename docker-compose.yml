@@ -83,6 +83,18 @@ services:
     expose:
       - 6379
 
+  game:
+    container_name: game-service
+    build: src/server/game-service
+    image: game-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - trandenden-net
+    ports:
+      - "5000:5000"
+
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3-management
@@ -120,6 +132,7 @@ services:
       # - chat
       - redis
       - rabbitmq
+      - game
     env_file:
       - .env
     networks:

@@ -2,7 +2,7 @@ export function handleGoogleSignin() {
   const btn = document.getElementById("google-signin-btn");
 
   btn?.addEventListener("click", () => {
-    window.location.href = "/auth/google";
+    location.href = "/auth/google";
   });
 }
 
