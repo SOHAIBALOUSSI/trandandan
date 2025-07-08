@@ -16,7 +16,7 @@ export function TopBar() {
           </a>
         </button>
         <button className="text-xl text-pong-dark-primary hover:text-pong-dark-accent">
-          <a href="my_profile" data-link>
+          <a href="my_chamber" data-link>
             <i className="fa-regular fa-user"></i>
           </a>
         </button>

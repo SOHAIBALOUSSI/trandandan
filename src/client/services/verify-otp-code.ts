@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { VerifyCodeRes } from "@/utils/response-messages";
 
 export function verifyOtpCode() {
@@ -28,7 +29,9 @@ export function verifyOtpCode() {
       .join("");
 
     if (otpCode.length !== 6) {
-      displayToast("Please enter a valid 6-digit code.", "error");
+      displayToast("Please enter a valid 6-digit code.", "error", {
+        noProgressBar: true,
+      });
       return;
     }
 
@@ -52,9 +55,9 @@ export function verifyOtpCode() {
           displayToast(VerifyCodeRes.CODE_VERIFIED, "success", {
             noProgressBar: true,
           });
+
           setTimeout(() => {
-            history.pushState(null, "", "/password_update");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/password_update");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -62,7 +65,7 @@ export function verifyOtpCode() {
           const errorMsg =
             VerifyCodeRes[result?.code] ||
             "Error during OTP verification. Please try again.";
-          displayToast(errorMsg, "error");
+          displayToast(errorMsg, "error", { noProgressBar: true });
           otpInputs.forEach((input) => {
             input.value = "";
           });
@@ -70,7 +73,9 @@ export function verifyOtpCode() {
         }, feedbackDelay);
       }
     } catch (error) {
-      displayToast(VerifyCodeRes.INTERNAL_SERVER_ERROR, "error");
+      displayToast(VerifyCodeRes.INTERNAL_SERVER_ERROR, "error", {
+        noProgressBar: true,
+      });
       otpInputs.forEach((input) => {
         input.value = "";
       });

@@ -5,8 +5,7 @@ import { enable2FA } from "@/services/enable-2fa";
 import { disable2FA } from "@/services/disable-2fa";
 import { check2FA } from "@/services/check-2fa";
 import { fontSizes } from "@/styles/fontSizes";
-
-type TwoFAMethod = { type: "app" | "email"; enabled: 1 | 0; is_primary: 1 | 0 };
+import { TwoFAMethod } from "types/types";
 
 function update2FAUI(methods: TwoFAMethod[]) {
   ["app", "email"].forEach((type) => {
@@ -16,7 +15,6 @@ function update2FAUI(methods: TwoFAMethod[]) {
     const statusLabel = document.getElementById(`${type}-status-label`);
     const primaryLabel = document.getElementById(`${type}-primary-label`);
     const dotsMenuBtn = document.getElementById(`${type}-dots-menu-btn`);
-    const method = methods.find((m) => m.type === type);
 
     if (
       !setupBtn ||
@@ -28,6 +26,7 @@ function update2FAUI(methods: TwoFAMethod[]) {
     )
       return;
 
+    const method = methods.find((m) => m.type === type);
     if (!method) {
       // Method not set up : show only Setup
       setupBtn.classList.remove("hidden");

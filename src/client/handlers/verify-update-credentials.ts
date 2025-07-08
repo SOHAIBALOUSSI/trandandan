@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { VerifyUpdateCredentialsRes } from "@/utils/response-messages";
 
 export function handleVerifyCredentials() {
@@ -45,8 +46,7 @@ export function handleVerifyCredentials() {
             "success"
           );
           setTimeout(() => {
-            history.pushState(null, "", "/security");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/security");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -62,7 +62,7 @@ export function handleVerifyCredentials() {
       setTimeout(() => {
         btn.disabled = false;
         btn.removeAttribute("aria-busy");
-      }, feedbackDelay);
+      }, feedbackDelay + 300);
     }
   });
 }

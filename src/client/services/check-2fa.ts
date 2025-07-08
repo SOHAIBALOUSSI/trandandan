@@ -9,7 +9,6 @@ export async function check2FA(): Promise<
     }
     return [];
   } catch (error) {
-    console.error("Failed to fetch 2FA status:", error);
     return [];
   }
 }

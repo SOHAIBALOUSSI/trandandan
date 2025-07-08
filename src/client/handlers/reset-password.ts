@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdatePasswordRes } from "@/utils/response-messages";
 
 export function handleUpdatePassword() {
@@ -44,7 +45,9 @@ export function handleUpdatePassword() {
       return;
     }
     if (password !== confirmPassword) {
-      displayToast(UpdatePasswordRes.UNMATCHED_PASSWORDS, "error");
+      displayToast(UpdatePasswordRes.UNMATCHED_PASSWORDS, "error", {
+        noProgressBar: true,
+      });
       confirmPasswordInput.value = "";
       passwordInput.focus();
       return;
@@ -74,21 +77,21 @@ export function handleUpdatePassword() {
             noProgressBar: true,
           });
           setTimeout(() => {
-            history.pushState(null, "", "/salon");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/salon");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
         setTimeout(() => {
-          console.log(result);
           const errorMsg =
             UpdatePasswordRes[result?.code] ||
             "Error during password update. Please try again.";
-          displayToast(errorMsg, "error");
+          displayToast(errorMsg, "error", { noProgressBar: true });
         }, feedbackDelay);
       }
     } catch (error) {
-      displayToast(UpdatePasswordRes.INTERNAL_SERVER_ERROR, "error");
+      displayToast(UpdatePasswordRes.INTERNAL_SERVER_ERROR, "error", {
+        noProgressBar: true,
+      });
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

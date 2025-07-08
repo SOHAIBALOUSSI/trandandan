@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { Verify2FaLoginRes } from "@/utils/response-messages";
 
 export function verifyLogin(mode: string | null) {
@@ -11,23 +12,24 @@ export function verifyLogin(mode: string | null) {
     const submitBtn = form.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = form.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
+    const otpInputs = form.querySelectorAll<HTMLInputElement>(
+      "#verify-login-otp input"
+    );
 
-    if (!submitBtn || !spinner || !btnLabel) return;
+    if (!submitBtn || !spinner || !btnLabel || !otpInputs) return;
 
     const btnLabelText = btnLabel.textContent;
     const feedbackDelay = 900;
     const redirectDelay = 1500;
-
-    const otpInputs = form.querySelectorAll<HTMLInputElement>(
-      "#verify-login-otp input"
-    );
 
     const otpCode = Array.from(otpInputs)
       .map((input) => input.value.trim())
       .join("");
 
     if (otpCode.length !== 6) {
-      displayToast("Please enter a valid 6-digit code.", "error");
+      displayToast("Please enter a valid 6-digit code.", "error", {
+        noProgressBar: true,
+      });
       return;
     }
 
@@ -48,10 +50,12 @@ export function verifyLogin(mode: string | null) {
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(Verify2FaLoginRes.USER_LOGGED_IN, "success");
+          displayToast(Verify2FaLoginRes.USER_LOGGED_IN, "success", {
+            noProgressBar: true,
+          });
+
           setTimeout(() => {
-            history.pushState(null, "", "/salon");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/salon");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -59,7 +63,7 @@ export function verifyLogin(mode: string | null) {
           const errorMsg =
             Verify2FaLoginRes[result?.code] ||
             "Error during 2fa verification. Please try again.";
-          displayToast(errorMsg, "error");
+          displayToast(errorMsg, "error", { noProgressBar: true });
           otpInputs.forEach((input) => {
             input.value = "";
           });
@@ -67,7 +71,9 @@ export function verifyLogin(mode: string | null) {
         }, feedbackDelay);
       }
     } catch (error) {
-      displayToast(Verify2FaLoginRes.INTERNAL_SERVER_ERROR, "error");
+      displayToast(Verify2FaLoginRes.INTERNAL_SERVER_ERROR, "error", {
+        noProgressBar: true,
+      });
       otpInputs.forEach((input) => {
         input.value = "";
       });

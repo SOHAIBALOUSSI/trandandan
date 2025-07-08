@@ -1,5 +1,6 @@
 import { clearCurrentUser } from "@/utils/user-store";
 import { router } from "@/router";
+import { displayToast } from "@/utils/display-toast";
 
 export async function handleLogout(): Promise<void> {
   try {
@@ -8,7 +9,11 @@ export async function handleLogout(): Promise<void> {
       credentials: "include",
     });
   } catch (err) {
-    console.error(err);
+    displayToast(
+      "The club’s lights are out at the moment. Try again shortly.",
+      "error",
+      { noProgressBar: true }
+    );
   } finally {
     clearCurrentUser();
     history.replaceState(null, "", "/welcome");

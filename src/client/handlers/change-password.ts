@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdateCredentialsRes } from "@/utils/response-messages";
 
 export function handleChangePassword() {
@@ -72,8 +73,7 @@ export function handleChangePassword() {
           displayToast("password updated successfully", "success");
 
           setTimeout(() => {
-            history.pushState(null, "", "/security");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/security");
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
@@ -81,8 +81,7 @@ export function handleChangePassword() {
         setTimeout(() => {
           displayToast(UpdateCredentialsRes.TWOFA_REQUIRED, "warning");
           setTimeout(() => {
-            history.pushState(null, "", "/verification");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/verification");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -96,8 +95,10 @@ export function handleChangePassword() {
     } catch (err) {
       displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
-      btn.disabled = false;
-      btn.removeAttribute("aria-busy");
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.removeAttribute("aria-busy");
+      }, feedbackDelay + 300);
     }
   });
 }

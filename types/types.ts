@@ -33,5 +33,10 @@ export type UserRank = {
 export type Activity =
   | { type: "win"; user: string; targetUser: string }
   | { type: "loss"; user: string; targetUser: string }
-  | { type: "tournament"; user: string; tournament: string }
-  | { type: "delete"; user: string; message?: string };
+  | { type: "tournament"; user: string; tournament: string };
+
+export type TwoFAMethod = {
+  type: "app" | "email";
+  enabled: 1 | 0;
+  is_primary: 1 | 0;
+};

@@ -45,7 +45,7 @@ export const VerifyCodeRes: Record<string, string> = {
   OTP_INVALID:
     "That code doesn’t match our playbook. Double-check and try again.",
   CODE_VERIFIED:
-    "OTP verified successfully. Redirecting you to update your password...",
+    "OTP verified successfully. Redirecting you to update your password",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
@@ -153,7 +153,6 @@ export const UpdateCredentialsRes: Record<string, string> = {
     "This email is already linked to another account. Please use a different email.",
   UNAUTHORIZED:
     "Unauthorized. You need to be logged in to update your credentials.",
-  CREDENTIALS_UPDATED: "Your credentials have been successfully updated.",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish your warm-up with verification.",
   INTERNAL_SERVER_ERROR:

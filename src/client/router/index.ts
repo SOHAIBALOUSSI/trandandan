@@ -14,18 +14,17 @@ import { Security } from "@/views/Security";
 import { Blocked } from "@/views/Blocked";
 import { DeleteAccount } from "@/views/DeleteAccount";
 import { Logout } from "@/views/Logout";
-import { LocalGame } from "@/components/game/local";
-import { RemoteGame } from "@/components/game/remote";
-import { Tournaments } from "@/components/game/tournaments";
-
 import { UpdateCredentialsPassword } from "@/views/UpdateCredentialsPassword";
 import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
 import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentials";
+import { Notifications } from "@/views/Notifications";
+import { LocalGame } from "@/components/game/LocalGame";
+import { RemoteGame } from "@/components/game/RemoteGame";
+import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
 import { setCurrentUser } from "@/utils/user-store";
-import { Notifications } from "@/views/Notifications";
 
-// Define the routes and their corresponding components
+// Routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {
   welcome: Welcome,
   signin: Signin,
@@ -43,7 +42,7 @@ const routes: Record<string, () => HTMLElement> = {
   duel: LocalGame,
   remote: RemoteGame,
   tournament: Tournaments,
-  my_profile: Profile,
+  my_chamber: Profile,
   security: Security,
   change_password: UpdateCredentialsPassword,
   change_email: UpdateCredentialsEmail,
@@ -89,16 +88,6 @@ export async function router(): Promise<void> {
     authed = await isAuthenticated();
     if (!authed) {
       history.replaceState(null, "", "/signin");
-      await router();
-      return;
-    }
-  }
-
-  if (isPublic) {
-    if (!authed) {
-      authed = await isAuthenticated();
-    } else {
-      history.replaceState(null, "", "/salon");
       await router();
       return;
     }

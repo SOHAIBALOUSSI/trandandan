@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { RegisterRes } from "@/utils/response-messages";
 import { UserRegister } from "types/types";
 
@@ -51,11 +52,13 @@ export function handleSignUp() {
       confirmPassword: confirmPasswordInput.value.trim(),
     };
 
-    if (!userInfos.username) {
+    const { username, email, gender, password, confirmPassword } = userInfos;
+
+    if (!username) {
       usernameInput.focus();
       return;
     }
-    if (!userInfos.email) {
+    if (!email) {
       emailInput.focus();
       return;
     }
@@ -64,26 +67,29 @@ export function handleSignUp() {
       emailInput.focus();
       displayToast(
         "That doesn’t look like a valid email. Check the format and try again.",
-        "error"
+        "error",
+        { noProgressBar: true }
       );
       return;
     }
-    if (!userInfos.gender) {
+    if (!gender) {
       genderInput.focus();
       return;
     }
-    if (!userInfos.password) {
+    if (!password) {
       passwordInput.focus();
       return;
     }
-    if (!userInfos.confirmPassword) {
+    if (!confirmPassword) {
       confirmPasswordInput.focus();
       return;
     }
-    if (userInfos.password !== userInfos.confirmPassword) {
+    if (password !== confirmPassword) {
       confirmPasswordInput.focus();
       confirmPasswordInput.value = "";
-      displayToast(RegisterRes.UNMATCHED_PASSWORDS, "error");
+      displayToast(RegisterRes.UNMATCHED_PASSWORDS, "error", {
+        noProgressBar: true,
+      });
       return;
     }
 
@@ -107,8 +113,7 @@ export function handleSignUp() {
             noProgressBar: true,
           });
           setTimeout(() => {
-            history.pushState(null, "", "/signin");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/signin");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -116,11 +121,13 @@ export function handleSignUp() {
           const errorMsg =
             RegisterRes[result?.code] ||
             "Error during registration. Please try again.";
-          displayToast(errorMsg, "error");
+          displayToast(errorMsg, "error", { noProgressBar: true });
         }, feedbackDelay);
       }
     } catch (err) {
-      displayToast(RegisterRes.INTERNAL_SERVER_ERROR, "error");
+      displayToast(RegisterRes.INTERNAL_SERVER_ERROR, "error", {
+        noProgressBar: true,
+      });
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

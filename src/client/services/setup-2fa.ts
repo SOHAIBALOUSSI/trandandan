@@ -33,6 +33,7 @@ export function setup2FA(mode: "app" | "email") {
   const otpInputId = `${mode}-otp`;
   const verifyBtnId = `${mode}-verify-btn`;
   const qrImgId = "app-qr";
+
   const setupBtn = document.getElementById(
     `${mode}-setup-btn`
   ) as HTMLButtonElement;
@@ -49,7 +50,7 @@ export function setup2FA(mode: "app" | "email") {
     `${mode}-primary-label`
   ) as HTMLElement;
 
-  const verifySection = document.getElementById(verifySectionId);
+  const verifySection = document.getElementById(verifySectionId) as HTMLElement;
   const otpInput = document.getElementById(otpInputId) as HTMLInputElement;
   const verifyBtn = document.getElementById(verifyBtnId) as HTMLButtonElement;
   const qrImg = document.getElementById(qrImgId) as HTMLImageElement;

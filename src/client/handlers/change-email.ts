@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdateCredentialsRes } from "@/utils/response-messages";
 
 export function handleChangeEmail() {
@@ -41,7 +42,7 @@ export function handleChangeEmail() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email }),
       });
 
       const result = await response.json();
@@ -50,8 +51,7 @@ export function handleChangeEmail() {
         setTimeout(() => {
           displayToast("Email updated successfully.", "success");
           setTimeout(() => {
-            history.pushState(null, "", "/security");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/security");
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
@@ -59,8 +59,7 @@ export function handleChangeEmail() {
         setTimeout(() => {
           displayToast(UpdateCredentialsRes.TWOFA_REQUIRED, "warning");
           setTimeout(() => {
-            history.pushState(null, "", "/verification");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/verification");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -73,8 +72,10 @@ export function handleChangeEmail() {
       displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
       emailInput.focus();
     } finally {
-      btn.disabled = false;
-      btn.removeAttribute("aria-busy");
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.removeAttribute("aria-busy");
+      }, feedbackDelay + 300);
     }
   });
 }

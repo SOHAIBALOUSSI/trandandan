@@ -174,6 +174,7 @@ export const styles = {
   	backdrop-blur-sm border border-pong-accent/20
   	flex flex-col items-center gap-6
   	px-8 py-12
+	animate-fadeInUp
   `,
   secForm: `
   	w-full max-w-md mx-auto

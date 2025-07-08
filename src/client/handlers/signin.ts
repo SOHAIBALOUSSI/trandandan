@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { LoginRes } from "@/utils/response-messages";
 
 export function handleSignIn() {
@@ -24,22 +25,22 @@ export function handleSignIn() {
     const redirectDelay = 1500;
 
     const formData = new FormData(signInForm);
-    const login = formData.get("login") as string;
-    const password = formData.get("password") as string;
+    const login = (formData.get("login") as string).trim();
+    const password = (formData.get("password") as string).trim();
 
-    if (!login.trim()) {
+    if (!login) {
       loginInput.focus();
       return;
     }
-    if (!password.trim()) {
+    if (!password) {
       passwordInput.focus();
       return;
     }
 
     const isEmail: boolean = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(login);
     const payload = isEmail
-      ? { email: login.trim(), password }
-      : { username: login.trim(), password };
+      ? { email: login, password }
+      : { username: login, password };
 
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
@@ -60,9 +61,9 @@ export function handleSignIn() {
           displayToast(LoginRes.USER_LOGGED_IN, "success", {
             noProgressBar: true,
           });
+
           setTimeout(() => {
-            history.pushState(null, "", "/salon");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/salon");
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
@@ -72,20 +73,22 @@ export function handleSignIn() {
           displayToast(LoginRes.TWOFA_REQUIRED, "warning", {
             noProgressBar: true,
           });
+
           setTimeout(() => {
-            history.pushState(null, "", "/verify_login");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/verify_login");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
         setTimeout(() => {
           const errorMsg =
             LoginRes[result?.code] || "Error during login. Please try again.";
-          displayToast(errorMsg, "error");
+          displayToast(errorMsg, "error", { noProgressBar: true });
         }, feedbackDelay);
       }
     } catch (err) {
-      displayToast(LoginRes.INTERNAL_SERVER_ERROR, "error");
+      displayToast(LoginRes.INTERNAL_SERVER_ERROR, "error", {
+        noProgressBar: true,
+      });
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

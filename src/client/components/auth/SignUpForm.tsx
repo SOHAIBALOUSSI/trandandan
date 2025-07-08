@@ -9,8 +9,9 @@ export function SignUpForm() {
   setTimeout(() => {
     handleSignUp();
   }, 0);
+
   return (
-    <form id="signup-form" className={`${styles.mainForm} animate-fadeInUp`}>
+    <form id="signup-form" className={styles.mainForm}>
       <InputField
         type="text"
         name="username"

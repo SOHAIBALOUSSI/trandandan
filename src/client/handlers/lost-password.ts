@@ -3,7 +3,10 @@ import { LostPasswordRes } from "@/utils/response-messages";
 
 export function handleLostPassword() {
   const form = document.getElementById("lost-password-form") as HTMLFormElement;
-  if (!form) return;
+  const otpForm = document.getElementById(
+    "lost-pass-otp-form"
+  ) as HTMLFormElement;
+  if (!form || !otpForm) return;
 
   form.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
@@ -19,11 +22,6 @@ export function handleLostPassword() {
     const btnLabelText = btnLabel.textContent;
     const feedbackDelay = 900;
 
-    const otpForm = document.getElementById(
-      "lost-pass-otp-form"
-    ) as HTMLFormElement;
-    if (!otpForm) return;
-
     const email = emailInput.value.trim();
     if (!email) {
       emailInput.focus();
@@ -34,10 +32,12 @@ export function handleLostPassword() {
       emailInput.focus();
       displayToast(
         "That doesn’t look like a valid email. Check the format and try again.",
-        "error"
+        "error",
+        { noProgressBar: true }
       );
       return;
     }
+
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
@@ -68,11 +68,13 @@ export function handleLostPassword() {
           const errorMsg =
             LostPasswordRes[result?.code] ||
             "Error during lost password request. Please try again.";
-          displayToast(errorMsg, "error");
+          displayToast(errorMsg, "error", { noProgressBar: true });
         }, feedbackDelay);
       }
     } catch (error) {
-      displayToast(LostPasswordRes.INTERNAL_SERVER_ERROR, "error");
+      displayToast(LostPasswordRes.INTERNAL_SERVER_ERROR, "error", {
+        noProgressBar: true,
+      });
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
