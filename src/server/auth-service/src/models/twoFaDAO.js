@@ -60,7 +60,8 @@ export async function clearOtpCode(db, id, type) {
 
 export async function updateUser2FA(db, id, type) {
     const result = await db.run(`UPDATE twofa SET
-        enabled = TRUE
+        enabled = TRUE,
+        is_verified = TRUE,
         WHERE user_id = ? AND type = ?`,
         [id, type]
     );
@@ -96,9 +97,9 @@ export async function findPrimaryTwoFaByUid(db, id) {
     );
 }
 
-export async function getAllTwoFaMethodsByUid(db, id) {
-    console.log('Fetching all twoFa methods by UID');
-    return await db.all('SELECT enabled, is_primary, type FROM twofa WHERE user_id = ?',
+export async function getVerifiedTwoFaMethodsByUid(db, id) {
+    console.log('Fetching all verified twoFa methods by UID');
+    return await db.all('SELECT enabled, is_primary, type FROM twofa WHERE user_id = ? AND is_verified = TRUE',
         [id]
     );
 }

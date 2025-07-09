@@ -3,7 +3,7 @@ import {
     enableTwoFaByUidAndType, 
     findTwoFaByUidAndNotType, 
     findTwoFaByUidAndType, 
-    getAllTwoFaMethodsByUid, 
+    getVerifiedTwoFaMethodsByUid, 
     makeTwoFaPrimaryByUidAndType 
 } from "../models/twoFaDAO.js";
 import { findUserById } from "../models/userDAO.js";
@@ -17,7 +17,7 @@ export async function getTwoFaHandler(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
-        const methods = await getAllTwoFaMethodsByUid(this.db, user.id);
+        const methods = await getVerifiedTwoFaMethodsByUid(this.db, user.id);
         if (!methods)
             return reply.code(404).send(createResponse(404, 'NO_METHODS_FOUND'));
         return reply.code(200).send(createResponse(200, 'METHODS_FETCHED', { methods }));
