@@ -24,12 +24,6 @@ export function SignInForm() {
         placeholder="member ID or email"
         autofocus={true}
       />
-      <InputField
-        type="password"
-        name="password"
-        id="password"
-        placeholder="Secret Code"
-      />
       <div className="relative w-full">
         <input
           type="password"

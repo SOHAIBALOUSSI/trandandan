@@ -3,7 +3,7 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { VerifyUpdateCredentialsRes } from "@/utils/response-messages";
 import { clearCurrentUser } from "@/utils/user-store";
 
-export function handleVerifyCredentials(credential: "email" | "pass") {
+export function handleVerifyCredentials() {
   const verifyForm = document.getElementById(
     "verify-otp-form"
   ) as HTMLFormElement;
@@ -12,7 +12,7 @@ export function handleVerifyCredentials(credential: "email" | "pass") {
   verifyForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
-    const isPassword = credential === "pass";
+    const isPassword = sessionStorage.getItem("passwordUpdated") === "true";
 
     const btn = verifyForm.querySelector<HTMLButtonElement>("#submit-btn");
     const codeInput = verifyForm.querySelector<HTMLInputElement>("#otp");
@@ -54,7 +54,15 @@ export function handleVerifyCredentials(credential: "email" | "pass") {
 
           setTimeout(() => {
             isPassword ? navigateTo("/signin") : navigateTo("/security");
-            if (isPassword) clearCurrentUser();
+            if (isPassword) {
+              fetch("/auth/logout", {
+                method: "POST",
+                credentials: "include",
+              }).then(() => {
+                clearCurrentUser();
+              });
+              sessionStorage.removeItem("passwordUpdated");
+            }
           }, redirectDelay);
         }, feedbackDelay);
       } else {

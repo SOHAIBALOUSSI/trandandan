@@ -76,11 +76,25 @@ export function handleChangePassword() {
 
           setTimeout(() => {
             navigateTo("/signin");
-            clearCurrentUser();
+            fetch("/auth/logout", {
+              method: "POST",
+              credentials: "include",
+            })
+              .then(() => {
+                clearCurrentUser();
+              })
+              .catch(() => {
+                displayToast(
+                  "The club’s lights are out at the moment. Try again shortly.",
+                  "error"
+                );
+              });
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
+        sessionStorage.setItem("passwordUpdated", "true");
         sessionStorage.setItem("2faModeUpdate", result.data?.twoFaType);
+
         setTimeout(() => {
           displayToast(UpdateCredentialsRes.TWOFA_REQUIRED, "warning");
           setTimeout(() => {

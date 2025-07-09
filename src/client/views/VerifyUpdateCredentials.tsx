@@ -5,7 +5,7 @@ export function VerifyUpdateCredentials() {
   const twofaMode = sessionStorage.getItem("2faModeUpdate");
 
   setTimeout(() => {
-    handleVerifyCredentials("email");
+    handleVerifyCredentials();
   }, 0);
 
   const isAppMode = twofaMode === "app";
