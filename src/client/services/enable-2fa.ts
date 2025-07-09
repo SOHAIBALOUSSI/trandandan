@@ -1,4 +1,4 @@
-import { Enable2FaRes } from "@/utils/response-messages";
+import { Chage2FaStateRes } from "@/utils/response-messages";
 import { displayToast } from "@/utils/display-toast";
 
 export async function enable2FA(mode: "app" | "email", onUpdate?: () => void) {
@@ -11,11 +11,11 @@ export async function enable2FA(mode: "app" | "email", onUpdate?: () => void) {
     });
     const data = await res.json();
     displayToast(
-      Enable2FaRes[data.code] || "2FA enabled",
+      Chage2FaStateRes[data.code] || "2FA enabled",
       res.ok ? "success" : "error"
     );
     if (onUpdate) onUpdate();
-  } catch (error) {
+  } catch (err) {
     displayToast("Enable 2FA error", "error");
   }
 }

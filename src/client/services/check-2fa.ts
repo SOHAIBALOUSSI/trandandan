@@ -8,7 +8,7 @@ export async function check2FA(): Promise<
       return json.data.methods;
     }
     return [];
-  } catch (error) {
+  } catch (err) {
     return [];
   }
 }

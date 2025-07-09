@@ -11,8 +11,7 @@ export async function handleLogout(): Promise<void> {
   } catch (err) {
     displayToast(
       "The club’s lights are out at the moment. Try again shortly.",
-      "error",
-      { noProgressBar: true }
+      "error"
     );
   } finally {
     clearCurrentUser();

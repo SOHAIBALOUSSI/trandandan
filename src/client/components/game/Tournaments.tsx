@@ -497,7 +497,7 @@ class FlowFieldLocal {
         this.deps.result.textContent = `Winner: ${this.deps.Players[0]}`;
         this.setInitialStat();
       }
-    } catch (error) {
+    } catch (err) {
       console.error("Error updating game state:", error);
     }
   }

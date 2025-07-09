@@ -569,7 +569,7 @@ class FlowField {
           this.handleRestart.bind(this)
         );
       }
-    } catch (error) {
+    } catch (err) {
       console.error("Error parsing game state:", error);
       this.deps.disconnectedResult.style.display = "block";
     }

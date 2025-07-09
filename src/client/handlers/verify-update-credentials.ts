@@ -1,8 +1,9 @@
 import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { VerifyUpdateCredentialsRes } from "@/utils/response-messages";
+import { clearCurrentUser } from "@/utils/user-store";
 
-export function handleVerifyCredentials() {
+export function handleVerifyCredentials(credential: "email" | "pass") {
   const verifyForm = document.getElementById(
     "verify-otp-form"
   ) as HTMLFormElement;
@@ -11,6 +12,8 @@ export function handleVerifyCredentials() {
   verifyForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
+    const isPassword = credential === "pass";
+
     const btn = verifyForm.querySelector<HTMLButtonElement>("#submit-btn");
     const codeInput = verifyForm.querySelector<HTMLInputElement>("#otp");
 
@@ -18,7 +21,8 @@ export function handleVerifyCredentials() {
 
     const code = codeInput.value.trim();
 
-    if (!code) {
+    if (!code || code.length != 6) {
+      displayToast("Please enter a valid 6-digit code.", "error");
       codeInput.focus();
       return;
     }
@@ -41,12 +45,16 @@ export function handleVerifyCredentials() {
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(
-            VerifyUpdateCredentialsRes.CREDENTIALS_UPDATED,
-            "success"
-          );
+          isPassword
+            ? displayToast(
+                VerifyUpdateCredentialsRes.PASSWORD_UPDATED,
+                "success"
+              )
+            : displayToast(VerifyUpdateCredentialsRes.EMAIL_UPDATED, "success");
+
           setTimeout(() => {
-            navigateTo("/security");
+            isPassword ? navigateTo("/signin") : navigateTo("/security");
+            if (isPassword) clearCurrentUser();
           }, redirectDelay);
         }, feedbackDelay);
       } else {

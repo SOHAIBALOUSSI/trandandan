@@ -1,6 +1,6 @@
 import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
-import { Verify2FaLoginRes } from "@/utils/response-messages";
+import { Verify2FaRes } from "@/utils/response-messages";
 
 export function verifyLogin(mode: string | null) {
   const form = document.getElementById("verify-login-form") as HTMLFormElement;
@@ -50,7 +50,7 @@ export function verifyLogin(mode: string | null) {
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(Verify2FaLoginRes.USER_LOGGED_IN, "success", {
+          displayToast(Verify2FaRes.USER_LOGGED_IN, "success", {
             noProgressBar: true,
           });
 
@@ -61,7 +61,7 @@ export function verifyLogin(mode: string | null) {
       } else {
         setTimeout(() => {
           const errorMsg =
-            Verify2FaLoginRes[result?.code] ||
+            Verify2FaRes[result?.code] ||
             "Error during 2fa verification. Please try again.";
           displayToast(errorMsg, "error", { noProgressBar: true });
           otpInputs.forEach((input) => {
@@ -70,8 +70,8 @@ export function verifyLogin(mode: string | null) {
           otpInputs[0].focus();
         }, feedbackDelay);
       }
-    } catch (error) {
-      displayToast(Verify2FaLoginRes.INTERNAL_SERVER_ERROR, "error", {
+    } catch (err) {
+      displayToast(Verify2FaRes.INTERNAL_SERVER_ERROR, "error", {
         noProgressBar: true,
       });
       otpInputs.forEach((input) => {

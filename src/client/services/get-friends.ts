@@ -1,6 +1,6 @@
 import { UserProfile } from "types/types";
-import MaleAvatar from "@/assets/default-male-avatar.png";
-import FemaleAvatar from "@/assets/default-female-avatar.png";
+import MaleAvatar from "@/assets/male.png";
+import FemaleAvatar from "@/assets/female.png";
 
 export async function getAllFriends(): Promise<number[]> {
   try {
@@ -15,14 +15,14 @@ export async function getAllFriends(): Promise<number[]> {
       (f: { friend_id: number }) => f.friend_id
     );
     return friendIds;
-  } catch (error) {
+  } catch (err) {
     console.log(error);
     return [];
   }
 }
 
 export async function hydrateFriends() {
-  const list = document.getElementById("friend-list") as HTMLUListElement;
+  const list = document.getElementById("friends-list") as HTMLUListElement;
   if (!list) return;
 
   const friends = await getAllFriends();

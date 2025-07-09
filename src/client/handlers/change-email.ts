@@ -49,7 +49,8 @@ export function handleChangeEmail() {
 
       if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
-          displayToast("Email updated successfully.", "success");
+          displayToast(UpdateCredentialsRes.EMAIL_UPDATED, "success");
+
           setTimeout(() => {
             navigateTo("/security");
           }, redirectDelay);
@@ -68,7 +69,7 @@ export function handleChangeEmail() {
         displayToast(errorMsg, "error");
         emailInput.focus();
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
       emailInput.focus();
     } finally {

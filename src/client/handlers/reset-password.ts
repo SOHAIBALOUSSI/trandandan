@@ -77,7 +77,7 @@ export function handleUpdatePassword() {
             noProgressBar: true,
           });
           setTimeout(() => {
-            navigateTo("/salon");
+            navigateTo("/signin");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -88,7 +88,7 @@ export function handleUpdatePassword() {
           displayToast(errorMsg, "error", { noProgressBar: true });
         }, feedbackDelay);
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(UpdatePasswordRes.INTERNAL_SERVER_ERROR, "error", {
         noProgressBar: true,
       });

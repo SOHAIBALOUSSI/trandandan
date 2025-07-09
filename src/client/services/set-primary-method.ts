@@ -1,4 +1,4 @@
-import { Primary2FaMethodRes } from "@/utils/response-messages";
+import { Chage2FaStateRes } from "@/utils/response-messages";
 import { displayToast } from "@/utils/display-toast";
 
 export async function setPrimaryMethod(
@@ -14,11 +14,11 @@ export async function setPrimaryMethod(
     });
     const data = await res.json();
     displayToast(
-      Primary2FaMethodRes[data.code] || "Primary method updated",
+      Chage2FaStateRes[data.code] || "Primary method updated",
       res.ok ? "success" : "error"
     );
     if (onUpdate) onUpdate();
-  } catch (error) {
+  } catch (err) {
     displayToast("Set primary method error", "error");
   }
 }

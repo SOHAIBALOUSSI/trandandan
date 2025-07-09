@@ -1,4 +1,4 @@
-import { Setup2FaRes, Verify2FaSetupRes } from "@/utils/response-messages";
+import { Setup2FaRes, Verify2FaRes } from "@/utils/response-messages";
 import { displayToast } from "@/utils/display-toast";
 
 export function verify2FASetup(
@@ -19,11 +19,11 @@ export function verify2FASetup(
       if (status === 200) {
         if (onSuccess) onSuccess();
       } else {
-        displayToast(Verify2FaSetupRes[data.code], "error");
+        displayToast(Verify2FaRes[data.code], "error");
       }
     })
     .catch((error) => {
-      displayToast(Verify2FaSetupRes.INTERNAL_SERVER_ERROR, "error");
+      displayToast(Verify2FaRes.INTERNAL_SERVER_ERROR, "error");
     });
 }
 

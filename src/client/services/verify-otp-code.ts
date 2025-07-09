@@ -72,7 +72,7 @@ export function verifyOtpCode() {
           otpInputs[0].focus();
         }, feedbackDelay);
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(VerifyCodeRes.INTERNAL_SERVER_ERROR, "error", {
         noProgressBar: true,
       });

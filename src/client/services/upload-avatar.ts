@@ -51,7 +51,7 @@ export function uploadAvatar(props: { user: UserProfile }) {
       } else {
         console.error("Failed to upload avatar:", data);
       }
-    } catch (error) {
+    } catch (err) {
       console.error("Error uploading avatar:", error);
     } finally {
       fileInput!.value = "";

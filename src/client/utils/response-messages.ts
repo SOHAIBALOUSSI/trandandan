@@ -58,7 +58,8 @@ export const UpdatePasswordRes: Record<string, string> = {
   UNAUTHORIZED:
     "You need to log in first. The court isn’t open to unregistered rackets.",
   TOKEN_REQUIRED: "A reset token is required to update your password.",
-  USER_LOGGED_IN: "Your password is updated successfully!",
+  USER_LOGGED_IN:
+    "Your password has been refreshed. Step back onto the court with confidence.",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish the rally with verification.",
   INTERNAL_SERVER_ERROR:
@@ -78,55 +79,28 @@ export const Setup2FaRes: Record<string, string> = {
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
-export const Verify2FaSetupRes: Record<string, string> = {
+export const Verify2FaRes: Record<string, string> = {
   TWOFA_NOT_SET:
     "Two-factor authentication isn’t set up yet. Prepare your defense first.",
   TWOFA_ALREADY_ENABLED:
     "Two-factor authentication is already active on this racket.",
+  TWOFA_NOT_ENABLED: "2FA isn’t active yet. Step onto the setup court first.",
   UNAUTHORIZED: "Unauthorized. Only logged-in champs can verify 2FA.",
   OTP_REQUIRED: "OTP required. Enter your code to proceed.",
   OTP_INVALID: "Invalid OTP. That rally didn’t land — try again.",
   TWOFA_ENABLED:
     "Two-factor authentication successfully enabled. You’ve upgraded your game!",
-  INTERNAL_SERVER_ERROR:
-    "The club’s lights are out at the moment. Try again shortly.",
-};
-
-export const Verify2FaLoginRes: Record<string, string> = {
-  TWOFA_NOT_SET:
-    "Two-factor authentication isn’t set up yet. Prepare your defense first.",
-  TWOFA_NOT_ENABLED: "2FA isn’t active yet. Step onto the setup court first.",
-  UNAUTHORIZED: "Unauthorized. Only logged-in champs can verify 2FA.",
-  OTP_REQUIRED: "OTP required. Enter your code to proceed.",
-  OTP_INVALID: "Invalid OTP. That rally didn’t land — try again.",
   USER_LOGGED_IN: "Welcome back, champ! You’re cleared for the court.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
-export const Disable2FaRes: Record<string, string> = {
+export const Chage2FaStateRes: Record<string, string> = {
   UNAUTHORIZED: "Access denied. You must be logged in to disable 2FA.",
   METHODS_NOT_ENABLED:
     "No 2FA methods are active. You’ll need to set one up before disabling.",
   METHOD_DISABLED: "This 2FA method is now disabled. You can play without it.",
-  INTERNAL_SERVER_ERROR:
-    "The club’s lights are out at the moment. Try again shortly.",
-};
-
-export const Enable2FaRes: Record<string, string> = {
-  UNAUTHORIZED: "Access denied. Log in to enable two-factor authentication.",
-  METHODS_NOT_ENABLED:
-    "No available 2FA methods found. Please set one up first to enable it.",
   METHOD_ENABLED: "You're all set — this two-factor method is now active.",
-  INTERNAL_SERVER_ERROR:
-    "The club’s lights are out at the moment. Try again shortly.",
-};
-
-export const Primary2FaMethodRes: Record<string, string> = {
-  UNAUTHORIZED:
-    "Hold up! You must be logged in to manage your primary 2FA method.",
-  METHODS_NOT_ENABLED:
-    "You don’t have any 2FA methods set up. Get one going first.",
   PRIMARY_METHOD_UPDATED:
     "All set! Your primary 2FA method has been successfully updated.",
   INTERNAL_SERVER_ERROR:
@@ -153,6 +127,10 @@ export const UpdateCredentialsRes: Record<string, string> = {
     "This email is already linked to another account. Please use a different email.",
   UNAUTHORIZED:
     "Unauthorized. You need to be logged in to update your credentials.",
+  PASSWORD_UPDATED:
+    "Your password has been successfully updated. You've leveled up your security. Please sign in again to rejoin the court.",
+  EMAIL_UPDATED:
+    "Your email has been updated. The club knows how to reach you now.",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish your warm-up with verification.",
   INTERNAL_SERVER_ERROR:
@@ -172,8 +150,12 @@ export const VerifyUpdateCredentialsRes: Record<string, string> = {
     "Unauthorized. You need to be logged in to update your credentials.",
   OTP_REQUIRED:
     "OTP required. Please enter the code sent to your authenticator app or email.",
-  OTP_INVALID: "Invalid OTP. Please check the code and try again.",
-  CREDENTIALS_UPDATED: "Your credentials have been successfully updated.",
+  OTP_INVALID:
+    "That code doesn’t match our playbook. Double-check and try again.",
+  PASSWORD_UPDATED:
+    "Your password has been successfully updated. You've leveled up your security. Please sign in again to rejoin the court.",
+  EMAIL_UPDATED:
+    "Your email has been updated. The club knows how to reach you now.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };

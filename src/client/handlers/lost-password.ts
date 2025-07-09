@@ -71,7 +71,7 @@ export function handleLostPassword() {
           displayToast(errorMsg, "error", { noProgressBar: true });
         }, feedbackDelay);
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(LostPasswordRes.INTERNAL_SERVER_ERROR, "error", {
         noProgressBar: true,
       });

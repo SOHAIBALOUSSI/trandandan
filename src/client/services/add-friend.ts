@@ -24,7 +24,7 @@ export function addFriend(id: number) {
         const msg = "Error sending friend request";
         console.log(msg);
       }
-    } catch (error) {
+    } catch (err) {
       console.log(error);
     }
   });

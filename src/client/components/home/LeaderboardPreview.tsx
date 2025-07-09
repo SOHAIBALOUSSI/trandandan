@@ -1,6 +1,6 @@
 import { fontSizes } from "@/styles/fontSizes";
-import FemaleAvatar from "@/assets/default-female-avatar.png";
-import MaleAvatar from "@/assets/default-male-avatar.png";
+import FemaleAvatar from "@/assets/female.png";
+import MaleAvatar from "@/assets/male.png";
 import { UserProfile } from "types/types";
 import { UserRank } from "types/types";
 import { styles } from "@/styles/styles";

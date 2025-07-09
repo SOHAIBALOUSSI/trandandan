@@ -33,9 +33,7 @@ export function deleteAccount() {
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(DeleteAccountRes.USER_DATA_DELETED, "success", {
-            noProgressBar: true,
-          });
+          displayToast(DeleteAccountRes.USER_DATA_DELETED, "success");
 
           setTimeout(() => {
             navigateTo("/welcome");
@@ -49,7 +47,7 @@ export function deleteAccount() {
           displayToast(errorMsg, "error");
         }, feedbackDelay);
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(DeleteAccountRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {

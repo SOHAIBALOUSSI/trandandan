@@ -70,9 +70,7 @@ export function handleSignIn() {
         sessionStorage.setItem("2faMode", result.data?.twoFaType);
 
         setTimeout(() => {
-          displayToast(LoginRes.TWOFA_REQUIRED, "warning", {
-            noProgressBar: true,
-          });
+          displayToast(LoginRes.TWOFA_REQUIRED, "warning");
 
           setTimeout(() => {
             navigateTo("/verify_login");

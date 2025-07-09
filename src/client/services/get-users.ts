@@ -1,6 +1,6 @@
 import { UserProfile } from "types/types";
-import MaleAvatar from "@/assets/default-male-avatar.png";
-import FemaleAvatar from "@/assets/default-female-avatar.png";
+import MaleAvatar from "@/assets/male.png";
+import FemaleAvatar from "@/assets/female.png";
 import { styles } from "@/styles/styles";
 
 async function getAllUsers() {
@@ -38,7 +38,7 @@ function sendFriendRequest(id: number) {
 }
 
 export async function hydrateAllMembers(currentUser: UserProfile) {
-  const list = document.getElementById("all-users-list") as HTMLUListElement;
+  const list = document.getElementById("all-members-list") as HTMLUListElement;
   if (!list) return;
 
   const users = await getAllUsers();

@@ -1,6 +1,7 @@
 import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdateCredentialsRes } from "@/utils/response-messages";
+import { clearCurrentUser } from "@/utils/user-store";
 
 export function handleChangePassword() {
   const form = document.getElementById(
@@ -40,11 +41,12 @@ export function handleChangePassword() {
       return;
     }
     if (newPassword !== confirmPassword) {
-      confirmPasswordInput.focus();
       displayToast(
         "New password and confirmation do not match. Please try again.",
         "error"
       );
+      confirmPasswordInput.value = "";
+      confirmPasswordInput.focus();
       return;
     }
 
@@ -70,10 +72,11 @@ export function handleChangePassword() {
 
       if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
-          displayToast("password updated successfully", "success");
+          displayToast(UpdateCredentialsRes.PASSWORD_UPDATED, "success");
 
           setTimeout(() => {
-            navigateTo("/security");
+            navigateTo("/signin");
+            clearCurrentUser();
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
