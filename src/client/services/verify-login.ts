@@ -49,6 +49,7 @@ export function verifyLogin(mode: string | null) {
       const result = await response.json();
 
       if (response.ok) {
+        sessionStorage.removeItem("2faMode");
         setTimeout(() => {
           displayToast(Verify2FaRes.USER_LOGGED_IN, "success", {
             noProgressBar: true,

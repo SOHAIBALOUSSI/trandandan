@@ -44,6 +44,8 @@ export function handleVerifyCredentials() {
       const result = await response.json();
 
       if (response.ok) {
+        sessionStorage.removeItem("2faModeUpdate");
+		sessionStorage.removeItem("passwordUpdated");
         setTimeout(() => {
           isPassword
             ? displayToast(
