@@ -235,8 +235,10 @@ function TwoFaMode(type: "app" | "email") {
         id={`${type}-verify-section`}
         className="hidden w-full mt-4 flex flex-col items-center"
       >
-        <div className="w-full max-w-md bg-pong-dark-custom/80 border border-pong-accent/30 rounded-2xl shadow-lg px-6 py-6 flex flex-col items-center">
-          <span className="font-bold text-pong-accent text-lg mb-2 flex items-center gap-2">
+        <div className={styles.darkForm}>
+          <span
+            className={`font-bold text-pong-accent ${fontSizes.smallTextFontSize} mb-2 flex items-center gap-2`}
+          >
             <i className="fa-solid fa-key"></i>
             Verify {isApp ? "Authenticator App" : "Email OTP"}
           </span>
@@ -244,23 +246,28 @@ function TwoFaMode(type: "app" | "email") {
             Enter the 6-digit code{" "}
             {isApp ? "from your app" : "sent to your email"} to complete setup.
           </span>
-          {isApp && (
+          {isApp ? (
             <img
               id="app-qr"
               alt="QR Code"
               className="hidden mx-auto mb-4 w-40 h-40 rounded-lg shadow"
             />
+          ) : (
+            <br className="hidden" />
           )}
           <input
             id={`${type}-otp`}
             type="text"
             maxLength={6}
-            className="w-full p-3 border-2 border-pong-accent/40 rounded-md text-black placeholder:text-black/60 font-bold bg-white/80 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all mb-3 text-center tracking-widest text-lg"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={styles.inputFieldDark}
             placeholder="Enter 6-digit code"
           />
+
           <button
             id={`${type}-verify-btn`}
-            className="w-full bg-pong-accent hover:bg-pong-dark-accent text-white py-2 rounded-md font-semibold shadow transition-all"
+            className={`${styles.darkSubmitBtn} w-full`}
           >
             <i className="fa-solid fa-check mr-2"></i>
             Verify

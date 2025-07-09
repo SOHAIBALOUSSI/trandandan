@@ -4,6 +4,4 @@
 - change the UpdatePasswordRes.UNAUTHORIZED msg
 - Test update password and see if the tokens are set or no
 - When user changes his password from settings redirect to /signin and show a message (signn in aganin)
-- Test 2fa TWOFA_ALREADY_PENDING 
-- 'TWOFA_ALREADY_PENDING', { qrCode: qrCodeUrl }
-- test email pending state
+- add credentialType in 206 (/update-credentials) [email | pass]

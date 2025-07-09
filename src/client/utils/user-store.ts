@@ -7,7 +7,6 @@ let currentUser: UserProfile | null = null;
 export function setCurrentUser(apiResponse: any) {
   if (apiResponse && apiResponse.data && apiResponse.data.profile) {
     currentUser = apiResponse.data.profile;
-    console.log(currentUser?.avatar_url);
     if (currentUser && currentUser.avatar_url === "") {
       currentUser.avatar_url = (
         currentUser.gender === "M" ? MaleAvatar : FemaleAvatar

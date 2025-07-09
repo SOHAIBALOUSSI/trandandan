@@ -19,12 +19,20 @@ export function SignInForm() {
         placeholder="member ID or email"
         autofocus={true}
       />
-      <InputField
-        type="password"
-        name="password"
-        id="password"
-        placeholder="Secret Code"
-      />
+      <div className="relative w-full">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Secret Code"
+          autoComplete="off"
+          className={styles.inputFieldOne}
+        />
+        <i
+          className="text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-4 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+          id="show-pass"
+        ></i>
+      </div>
 
       <div className="flex justify-between items-center w-full text-sm text-pong-primary/70 mt-[-0.5rem]">
         <label className="flex items-center gap-2">

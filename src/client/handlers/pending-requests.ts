@@ -16,7 +16,6 @@ export async function listPendingRequests() {
     );
     return requesterIds;
   } catch (err) {
-    console.log(error);
     return [];
   }
 }

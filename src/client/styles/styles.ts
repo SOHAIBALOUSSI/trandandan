@@ -120,7 +120,7 @@ export const styles = {
   // === End Buttons styles ===
 
   // === Start Input Field styles ===
-  InputFieldOne: `
+  inputFieldOne: `
   	normal-case placeholder:capitalize
 	input-field
 	w-full px-5 py-3.5
@@ -135,6 +135,14 @@ export const styles = {
 	focus:bg-white/40
 	transition-all duration-300
 	backdrop-blur-md
+  `,
+  inputFieldDark: `
+ 	w-full text-center tracking-widest font-semibold text-pong-dark-bg 
+    bg-gradient-to-br from-white/80 to-white/60 placeholder:text-pong-dark-bg/40 
+    rounded-xl border border-pong-accent/30 shadow-inner 
+    focus:outline-none focus:ring-2 focus:ring-pong-accent focus:border-transparent 
+    transition-all duration-200 ease-in-out px-4 py-3 mb-4 
+    ${fontSizes.inputFontSize}
   `,
   selectField: `
   	capitalize
@@ -189,6 +197,15 @@ export const styles = {
 	underline underline-offset-2 
 	hover:text-pong-secondary hover:underline-offset-4 
 	transition-all duration-300
+  `,
+  darkForm: `
+  	w-full max-w-md 
+	bg-pong-dark-custom/80 
+	border border-pong-accent/30 
+	rounded-2xl 
+	shadow-lg 
+	px-8 py-10 
+	flex flex-col items-center
   `,
   // === End Form styles ===
 
@@ -285,6 +302,7 @@ export const styles = {
 	rounded-2xl 
 	shadow-lg
   `,
+
   // === End Custom Cards styles ===
 
   //   === Start Custom List styles ===
