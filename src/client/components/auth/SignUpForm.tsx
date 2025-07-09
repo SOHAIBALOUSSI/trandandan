@@ -4,9 +4,17 @@ import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { SubmitBtn } from "../common/SubmitBtn";
 import { handleSignUp } from "@/handlers/signup";
+import { showPasswordToggle } from "@/utils/show-password";
 
 export function SignUpForm() {
+  const showPasswordIconId = "signup-show-pass";
+  const passwordId = "password";
+  const showConfirmPasswordIconId = "signup-show-confirm-pass";
+  const confirmPasswordId = "confirm-password";
+
   setTimeout(() => {
+    showPasswordToggle(showPasswordIconId, passwordId);
+    showPasswordToggle(showConfirmPasswordIconId, confirmPasswordId);
     handleSignUp();
   }, 0);
 
@@ -41,18 +49,34 @@ export function SignUpForm() {
           <i className="fa-solid fa-chevron-down text-sm"></i>
         </div>
       </div>
-      <InputField
-        type="password"
-        name="password"
-        id="password"
-        placeholder="forge your secret key"
-      />
-      <InputField
-        type="password"
-        name="confirm-password"
-        id="confirm-password"
-        placeholder="confirm your secret key"
-      />
+      <div className="relative w-full">
+        <input
+          type="password"
+          name="password"
+          id={passwordId}
+          placeholder="secret code"
+          autoComplete="off"
+          className={styles.InputFieldOne}
+        />
+        <i
+          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-4 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+          id={showPasswordIconId}
+        ></i>
+      </div>
+      <div className="relative w-full">
+        <input
+          type="password"
+          name="password"
+          id={confirmPasswordId}
+          placeholder="secret code"
+          autoComplete="off"
+          className={styles.InputFieldOne}
+        />
+        <i
+          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-4 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+          id={showConfirmPasswordIconId}
+        ></i>
+      </div>
 
       <SubmitBtn
         btnIcon="fa-champagne-glasses"

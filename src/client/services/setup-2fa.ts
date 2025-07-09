@@ -65,7 +65,10 @@ export function setup2FA(mode: "app" | "email") {
       response.json().then((data) => ({ status: response.status, data }))
     )
     .then(({ status, data }) => {
-      if (status === 200) {
+      if (
+        status === 200 ||
+        (status === 400 && data.code === "TWOFA_ALREADY_PENDING")
+      ) {
         verifySection.classList.remove("hidden");
         if (isAppMode && qrImg && data.data?.qrCode) {
           qrImg.src = data.data.qrCode;

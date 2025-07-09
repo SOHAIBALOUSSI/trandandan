@@ -21,7 +21,7 @@ export function ChangeEmail() {
       <a
         href="change_email"
         data-link
-        className="inline-block mt-4 w-fit px-4 py-2 text-sm font-semibold text-white bg-pong-accent rounded-md shadow hover:bg-pong-dark-accent transition"
+        className={styles.darkPrimaryBtn}
       >
         Update Email
       </a>

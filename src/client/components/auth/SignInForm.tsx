@@ -4,9 +4,14 @@ import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { handleSignIn } from "@/handlers/signin";
+import { showPasswordToggle } from "@/utils/show-password";
 
 export function SignInForm() {
+  const showPasswordIconId = "signin-show-pass";
+  const passwordId = "password";
+
   setTimeout(() => {
+    showPasswordToggle(showPasswordIconId, passwordId);
     handleSignIn();
   }, 0);
 
@@ -23,14 +28,14 @@ export function SignInForm() {
         <input
           type="password"
           name="password"
-          id="password"
-          placeholder="Secret Code"
+          id={passwordId}
+          placeholder="secret code"
           autoComplete="off"
-          className={styles.inputFieldOne}
+          className={styles.InputFieldOne}
         />
         <i
-          className="text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-4 cursor-pointer text-pong-primary hover:text-pong-accent transition"
-          id="show-pass"
+          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-4 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+          id={showPasswordIconId}
         ></i>
       </div>
 

@@ -2,21 +2,7 @@ import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { LoginRes } from "@/utils/response-messages";
 
-function showPasswordToggle() {
-  const showPass = document.getElementById("show-pass") as HTMLElement;
-  const passwordInput = document.getElementById("password") as HTMLInputElement;
-  if (!showPass || !passwordInput) return;
-
-  showPass.addEventListener("click", () => {
-    passwordInput.type =
-      passwordInput.type === "password" ? "text" : "password";
-    showPass.classList.toggle("fa-eye");
-  });
-}
-
 export function handleSignIn() {
-  showPasswordToggle();
-
   const signInForm = document.getElementById("signin-form") as HTMLFormElement;
   const loginInput = document.getElementById("login") as HTMLInputElement;
   const passwordInput = document.getElementById("password") as HTMLInputElement;

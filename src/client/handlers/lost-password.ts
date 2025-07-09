@@ -6,7 +6,17 @@ export function handleLostPassword() {
   const otpForm = document.getElementById(
     "lost-pass-otp-form"
   ) as HTMLFormElement;
-  if (!form || !otpForm) return;
+  const emailInput = document.getElementById(
+    "reset-pass-email"
+  ) as HTMLInputElement;
+  if (!form || !otpForm || !emailInput) return;
+
+  const savedEmail = localStorage.getItem("emailInput");
+  if (savedEmail) emailInput.value = savedEmail;
+
+  emailInput.addEventListener("input", () => {
+    localStorage.setItem("emailInput", emailInput.value);
+  });
 
   form.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
@@ -14,10 +24,8 @@ export function handleLostPassword() {
     const submitBtn = form.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = form.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
-    const emailInput =
-      form.querySelector<HTMLInputElement>("#reset-pass-email");
 
-    if (!submitBtn || !spinner || !btnLabel || !emailInput) return;
+    if (!submitBtn || !spinner || !btnLabel) return;
 
     const btnLabelText = btnLabel.textContent;
     const feedbackDelay = 900;
@@ -53,6 +61,8 @@ export function handleLostPassword() {
       const result = await response.json();
 
       if (response.ok) {
+        localStorage.removeItem("emailInput");
+
         setTimeout(() => {
           displayToast(LostPasswordRes.CODE_SENT, "success", {
             noProgressBar: true,

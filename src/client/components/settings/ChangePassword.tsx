@@ -18,11 +18,7 @@ export function ChangePassword() {
         Choose something strong and unique — a true champion’s defense.
       </p>
 
-      <a
-        href="change_password"
-        data-link
-        className="inline-block mt-4 w-fit px-4 py-2 text-sm font-semibold text-white bg-pong-accent rounded-md shadow hover:bg-pong-dark-accent transition"
-      >
+      <a href="change_password" data-link className={styles.darkPrimaryBtn}>
         Update Password
       </a>
 
