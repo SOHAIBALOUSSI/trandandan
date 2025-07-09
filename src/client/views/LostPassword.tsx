@@ -35,7 +35,7 @@ export function ResetPassword() {
             type="text"
             name="email"
             id="reset-pass-email"
-            placeholder="your racket’s registered email"
+            placeholder="your registered email"
             autofocus={true}
           />
           <SubmitBtn btnIcon="fa-envelope" btnLabel="send me the code" />

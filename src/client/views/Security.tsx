@@ -35,10 +35,9 @@ export function Security() {
             subtitle="Manage your credentials and protect your club profile."
           />
 
-          <TwoFa />
-
           {isNotRemoteUser ? (
             <div className="flex flex-col gap-6">
+              <TwoFa />
               <ChangePassword />
               <ChangeEmail />
             </div>
@@ -46,8 +45,9 @@ export function Security() {
             <div className={styles.cardOneStyle}>
               <p className="text-white/80 text-sm sm:text-base leading-relaxed">
                 <i className="fa-solid fa-circle-exclamation text-pong-warning mr-2"></i>
-                As a remote player, password and email settings are managed
-                externally. For security reasons, these fields are locked.
+                As a remote player, password, email, and 2FA settings are
+                managed externally. For security reasons, these fields are
+                locked.
               </p>
             </div>
           )}

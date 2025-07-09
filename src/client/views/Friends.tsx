@@ -1,7 +1,7 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
-import { hydrateAllMembers } from "@/services/get-users";
+import { hydrateAllMembers } from "@/handlers/hydrate-all-members";
 import { hydrateFriends } from "@/services/get-friends";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { getCurrentUser } from "@/utils/user-store";
@@ -40,7 +40,7 @@ export function Friends() {
             subtitle="Welcome to your club's heart — connect with friends, discover new players, and grow your circle."
           />
 
-          <div className="flex flex-col xl:flex-row gap-8 w-full">
+          <div className="flex flex-col gap-8 w-full max-w-5xl">
             <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
               <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
                 <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>

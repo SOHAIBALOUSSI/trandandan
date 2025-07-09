@@ -213,7 +213,7 @@ export const styles = {
   titleDark: `
 	tracking-tight leading-tight
 	font-bold
-	${fontSizes.titleFontSize}
+	text-4xl md:text-5xl lg:text-6xl xl:text-7xl
   `,
   titleSpanDark: `
 	font-playfair 
@@ -223,12 +223,12 @@ export const styles = {
   `,
   subtitleDark: `
 	font-semibold 
-	${fontSizes.subtitleFontSize}
+	text-xl md:text-2xl lg:text-3xl xl:text-4xl
   `,
   subtitleParagraphDark: `
 	text-pong-primary/80 
 	leading-relaxed
-	${fontSizes.bodyFontSize}
+	text-base md:text-lg lg:text-xl xl:text-2xl
   `,
   // === End Title Dark styles ===
 

@@ -9,6 +9,7 @@ export function Notifications() {
   setTimeout(() => {
     handlePendingRequests();
   }, 0);
+
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
