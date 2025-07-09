@@ -16,7 +16,7 @@ export function InputField(props: {
         placeholder={props.placeholder}
         autoFocus={props.autofocus ?? false}
         autoComplete="off"
-        className={styles.inputFieldOne}
+        className={styles.InputFieldOne}
       />
     </div>
   );

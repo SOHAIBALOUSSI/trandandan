@@ -120,7 +120,7 @@ export const styles = {
   // === End Buttons styles ===
 
   // === Start Input Field styles ===
-  inputFieldOne: `
+  InputFieldOne: `
   	normal-case placeholder:capitalize
 	input-field
 	w-full px-5 py-3.5

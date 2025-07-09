@@ -5,7 +5,22 @@ import { UserRegister } from "types/types";
 
 export function handleSignUp() {
   const signupForm = document.getElementById("signup-form") as HTMLFormElement;
-  if (!signupForm) return;
+  const usernameInput = document.getElementById("username") as HTMLInputElement;
+  const emailInput = document.getElementById("email") as HTMLInputElement;
+
+  if (!signupForm || !usernameInput || !emailInput) return;
+
+  const savedUsername = localStorage.getItem("usernameInput");
+  const savedEmail = localStorage.getItem("emailInput");
+  if (savedUsername) usernameInput.value = savedUsername;
+  if (savedEmail) emailInput.value = savedEmail;
+
+  usernameInput.addEventListener("input", () => {
+    localStorage.setItem("usernameInput", usernameInput.value);
+  });
+  emailInput.addEventListener("input", () => {
+    localStorage.setItem("emailInput", emailInput.value);
+  });
 
   signupForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
@@ -14,9 +29,6 @@ export function handleSignUp() {
       signupForm.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = signupForm.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = signupForm.querySelector<HTMLSpanElement>("#btn-label");
-    const usernameInput =
-      signupForm.querySelector<HTMLInputElement>("#username");
-    const emailInput = signupForm.querySelector<HTMLInputElement>("#email");
     const genderInput = signupForm.querySelector<HTMLSelectElement>("#gender");
     const passwordInput =
       signupForm.querySelector<HTMLInputElement>("#password");
@@ -27,8 +39,6 @@ export function handleSignUp() {
       !submitBtn ||
       !spinner ||
       !btnLabel ||
-      !usernameInput ||
-      !emailInput ||
       !genderInput ||
       !passwordInput ||
       !confirmPasswordInput
@@ -108,6 +118,9 @@ export function handleSignUp() {
       const result = await response.json();
 
       if (response.ok) {
+        localStorage.removeItem("usernameInput");
+        localStorage.removeItem("emailInput");
+
         setTimeout(() => {
           displayToast(RegisterRes.USER_REGISTERED, "success", {
             noProgressBar: true,
