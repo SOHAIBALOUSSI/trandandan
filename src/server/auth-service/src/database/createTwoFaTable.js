@@ -12,6 +12,7 @@ export async function createTwoFaTable(db){
             otp_exp INTEGER NULL,
             secret TEXT DEFAULT NULL,
             temp_secret TEXT DEFAULT NULL,
+            qrcode_url TEXT DEFAULT NULL,
             user_id INTEGER NOT NULL,
             FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
             )`

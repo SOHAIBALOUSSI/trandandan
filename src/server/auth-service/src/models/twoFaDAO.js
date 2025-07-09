@@ -1,6 +1,6 @@
-export async function storeTempSecret(db, secret, id) {
-    const result = await db.run('INSERT into twofa (type, temp_secret, user_id) VALUES (?, ?, ?)',
-        ['app', secret, id]
+export async function storeTempSecret(db, secret, qrCodeUrl, id) {
+    const result = await db.run('INSERT into twofa (type, temp_secret, qrcode_url, user_id) VALUES (?, ?, ?, ?)',
+        ['app', secret, qrCodeUrl, id]
     );
 
     console.log("TwoFa: inserted tempSecret in row: ", result.lastID);
@@ -61,7 +61,7 @@ export async function clearOtpCode(db, id, type) {
 export async function updateUser2FA(db, id, type) {
     const result = await db.run(`UPDATE twofa SET
         enabled = TRUE,
-        is_verified = TRUE,
+        is_verified = TRUE
         WHERE user_id = ? AND type = ?`,
         [id, type]
     );
