@@ -23,6 +23,7 @@ import { RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
 import { setCurrentUser } from "@/utils/user-store";
+import { startNotificationListener } from "@/handlers/notifications";
 
 // Routes and their corresponding components
 const routes: Record<string, () => HTMLElement> = {

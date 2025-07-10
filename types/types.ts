@@ -40,3 +40,9 @@ export type TwoFAMethod = {
   enabled: 1 | 0;
   is_primary: 1 | 0;
 };
+
+export type FriendNotification = {
+  recipient_id: number;
+  sender_id: number;
+  type: string;
+};

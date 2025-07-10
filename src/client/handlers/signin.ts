@@ -1,6 +1,7 @@
 import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { LoginRes } from "@/utils/response-messages";
+import { startNotificationListener } from "./notifications";
 
 export function handleSignIn() {
   const signInForm = document.getElementById("signin-form") as HTMLFormElement;
@@ -63,6 +64,8 @@ export function handleSignIn() {
 
       if (response.ok && result.statusCode === 200) {
         localStorage.removeItem("loginInput");
+
+        startNotificationListener();
 
         setTimeout(() => {
           displayToast(LoginRes.USER_LOGGED_IN, "success", {

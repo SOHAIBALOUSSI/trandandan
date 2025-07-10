@@ -2,6 +2,3 @@
 - activity (wins / losses / join tournament)
 - there will be 4 icons for ranking (top 5 - top 10 - top 20 - normal )
 - change the UpdatePasswordRes.UNAUTHORIZED msg
-- Test update password and see if the tokens are set or no
-- When user changes his password from settings redirect to /signin and show a message (signn in aganin)
-- add credentialType in 206 (/update-credentials) [email | pass]

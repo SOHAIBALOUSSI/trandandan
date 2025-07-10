@@ -1,6 +1,7 @@
 import { clearCurrentUser } from "@/utils/user-store";
 import { router } from "@/router";
 import { displayToast } from "@/utils/display-toast";
+import { stopNotificationListener } from "./notifications";
 
 export async function handleLogout(): Promise<void> {
   try {
@@ -16,6 +17,7 @@ export async function handleLogout(): Promise<void> {
   } finally {
     clearCurrentUser();
     history.replaceState(null, "", "/welcome");
+    stopNotificationListener();
     await router();
   }
 }
