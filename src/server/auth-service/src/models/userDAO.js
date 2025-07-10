@@ -107,3 +107,9 @@ export async function updateUsernameById(db, username, id) {
     );
     console.log('Update username for userId: ', id);
 }
+
+export async function deleteOAuthIdentitybyUID(db, id) {
+    await db.run('DELETE FROM oauth-identity WHERE user_id = ?', 
+        [id]
+    );
+}

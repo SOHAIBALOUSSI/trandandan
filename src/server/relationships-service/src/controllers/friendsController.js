@@ -18,13 +18,15 @@ import { createResponse } from '../utils/utils.js';
           if (requesterId === addresseeId)
             return reply.code(400).send(createResponse(400, 'ADDRESSEE_INVALID'));
     
-          await addFriendRequest(this.db, requesterId, addresseeId);
+          let exists = await addFriendRequest(this.db, requesterId, addresseeId);
+          if (exists)
+            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_ALREADY_SENT'));
 
           this.rabbit.produceMessage(
             { 
               type: 'FRIEND_REQUEST_SENT', 
-              from: requesterId, 
-              to: addresseeId 
+              sender_id: requesterId, 
+              recipient_id: addresseeId 
             },
             'notifications.friend_request.sent'
           );
@@ -44,13 +46,15 @@ import { createResponse } from '../utils/utils.js';
           if (!requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
   
-          await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'accepted');
+          let isValid = await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'accepted');
+          if (!isValid)
+            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
 
           this.rabbit.produceMessage(
             { 
               type: 'FRIEND_REQUEST_ACCEPTED', 
-              from: addresseeId, 
-              to: requesterId 
+              sender_id: addresseeId, 
+              recipient_id: requesterId 
             },
             'notifications.friend_request.accepted'
           );
@@ -70,13 +74,14 @@ import { createResponse } from '../utils/utils.js';
           if (!requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
   
-          await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'rejected');
-  
+          let isValid = await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'rejected');
+          if (!isValid)
+            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
           this.rabbit.produceMessage(
             { 
               type: 'FRIEND_REQUEST_REJECTED', 
-              from: addresseeId,
-              to: requesterId 
+              sender_id: addresseeId,
+              recipient_id: requesterId 
             },
             'notifications.friend_request.rejected'
           );
@@ -96,12 +101,14 @@ import { createResponse } from '../utils/utils.js';
       if (!friendId)
         return reply.code(400).send(createResponse(400, 'FRIEND_REQUIRED'));
 
-      await deleteFriend(this.db, userId, friendId);
+      let isDeleted = await deleteFriend(this.db, userId, friendId);
+      if (!isDeleted)
+        return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
 
       this.rabbit.produceMessage(
         { 
           type: 'FRIEND_REMOVED', 
-          to: userId, 
+          recipient_id: userId, 
           data: { exFriendId: friendId } 
         },
         'notifications.friend.removed'

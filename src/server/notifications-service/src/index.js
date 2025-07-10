@@ -78,7 +78,7 @@ rabbit.consumeMessages(async (notification) =>{
   }
   else {
     console.log('RabbitMQ: notification received: ', notification);
-    const recipient = notification.to;
+    const recipient = notification.recipient_id;
     console.log('RabbitMQ: recipient: ', recipient);
     if (recipient) {
       const notificationId = await addNotification(db, notification);

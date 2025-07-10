@@ -8,7 +8,7 @@ export async function addFriendRequest(db, requesterId, addresseeId) {
     );
 
     if (existing) {
-        throw new Error('Friend request already exists or users are already friends.');
+        return true;
     }
 
     const result = await db.run(
@@ -16,12 +16,12 @@ export async function addFriendRequest(db, requesterId, addresseeId) {
         [requesterId, addresseeId]
     );
 
-    return result.lastID;
+    return false;
 }
 
 export async function updateFriendRequestStatus(db, requesterId, addresseeId, status) {
     if (!['accepted', 'rejected'].includes(status)) {
-        throw new Error('Invalid status');
+        false;
     }
 
     const result = await db.run(
@@ -30,10 +30,10 @@ export async function updateFriendRequestStatus(db, requesterId, addresseeId, st
     );
 
     if (result.changes === 0) {
-        throw new Error('No pending friend request found.');
+        false;
     }
 
-    return result.changes;
+    return true;
 }
 
 export async function deleteFriend(db, userId, friendId) {
@@ -45,10 +45,10 @@ export async function deleteFriend(db, userId, friendId) {
     );
 
     if (result.changes === 0) {
-        throw new Error('Friendship not found.');
+        false
     }
 
-    return result.changes;
+    return true;
 }
 
 export async function getFriendsByUserId(db, userId) {

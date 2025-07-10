@@ -11,8 +11,8 @@ The `notifications-service` is responsible for sending notifications to authenti
 ```yaml
 {
     type: TYPE_OF_NOTIFICATION,
-    from: senderId, 
-    to: recipientId,
+    sender_id: senderId, 
+    recipient_id: recipientId,
     data: {
         ... 
     }
@@ -40,7 +40,7 @@ The `notifications-service` is responsible for sending notifications to authenti
 
 ## Friends notifications
 
-There are 4 types of friends notifications, 3 of them have the same message schema that consist of `type`, `from` and `to` :
+There are 4 types of friends notifications, 3 of them have the same message schema that consist of `type`, `sender_id` and `recipient_id` :
 - `FRIEND_REQUEST_SENT` 
 - `FRIEND_REQUEST_ACCEPTED`
 - `FRIEND_REQUEST_REJECTED` 
@@ -50,7 +50,7 @@ except for `FRIEND_REMOVED` :
 ```yaml
 {
     type: FRIEND_REMOVED,
-    to: recipientId,
+    recipient_id: recipientId,
     data: {
         exFriendId: exfriendId
     }

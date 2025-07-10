@@ -6,7 +6,8 @@ import {
     findUserByEmail,
     updateUser,  
     updateEmailById,
-    deleteUser
+    deleteUser,
+    deleteOAuthIdentitybyUID
 } from '../models/userDAO.js';
 import { 
     findToken,
@@ -425,6 +426,7 @@ export async function deleteUserDataHandler(request, reply) {
         }
         
         await deleteUser(this.db, user.id);
+        await deleteOAuthIdentitybyUID(this.db, user.id);
         clearAuthCookies(reply);
 
         return reply.code(200).send(createResponse(200, 'USER_DATA_DELETED'));
