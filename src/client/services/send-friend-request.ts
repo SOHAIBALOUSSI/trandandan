@@ -14,20 +14,13 @@ export function sendFriendRequest(id: number) {
         displayToast(
           FriendRequestRes[data?.code] ||
             "Error sending friend request. Please try again.",
-          "error",
-          {
-            noProgressBar: true,
-          }
+          "error"
         );
       } else {
-        displayToast(FriendRequestRes.FRIEND_REQUEST_SENT, "success", {
-          noProgressBar: true,
-        });
+        displayToast(FriendRequestRes.FRIEND_REQUEST_SENT, "success");
       }
     })
     .catch(() => {
-      displayToast(FriendRequestRes.INTERNAL_SERVER_ERROR, "error", {
-        noProgressBar: true,
-      });
+      displayToast(FriendRequestRes.INTERNAL_SERVER_ERROR, "error");
     });
 }

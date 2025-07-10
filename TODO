@@ -1,4 +1,13 @@
-- add show password option
-- activity (wins / losses / join tournament)
 - there will be 4 icons for ranking (top 5 - top 10 - top 20 - normal )
-- change the UpdatePasswordRes.UNAUTHORIZED msg
+
+Tier		Range			Icon (FontAwesome)	Color Theme	Label 	Text
+Legend		Top 5			fa-crown			text-yellow-400		🏆 Club Champion
+Elite		Top 10			fa-trophy			text-orange-400		🥇 Elite Contender
+Veteran		Top 20			fa-medal			text-purple-400		🎖️ Veteran Player
+Challenger	Below Top 20	fa-user-shield		text-pong-secondary	🎯 Challenger
+
+- show password option in all passwords input
+- toast for all type of notifications
+- fix avatar update
+- show a timer when dealing with otp code
+- update email in profile

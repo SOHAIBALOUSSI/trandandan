@@ -7,10 +7,10 @@ import { handleSignUp } from "@/handlers/signup";
 import { showPasswordToggle } from "@/utils/show-password";
 
 export function SignUpForm() {
-  const showPasswordIconId = "signup-show-pass";
   const passwordId = "password";
-  const showConfirmPasswordIconId = "signup-show-confirm-pass";
+  const showPasswordIconId = "signup-show-pass";
   const confirmPasswordId = "confirm-password";
+  const showConfirmPasswordIconId = "signup-show-confirm-pass";
 
   setTimeout(() => {
     showPasswordToggle(showPasswordIconId, passwordId);
@@ -45,7 +45,7 @@ export function SignUpForm() {
             lady
           </option>
         </select>
-        <div className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2 text-pong-primary/60">
+        <div className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2">
           <i className="fa-solid fa-chevron-down text-sm"></i>
         </div>
       </div>
@@ -59,7 +59,7 @@ export function SignUpForm() {
           className={styles.InputFieldOne}
         />
         <i
-          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-4 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+          className="fa-solid fa-eye fa-eye-slash show-pass text-sm absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
           id={showPasswordIconId}
         ></i>
       </div>
@@ -73,7 +73,7 @@ export function SignUpForm() {
           className={styles.InputFieldOne}
         />
         <i
-          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-4 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
           id={showConfirmPasswordIconId}
         ></i>
       </div>

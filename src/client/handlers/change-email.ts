@@ -4,7 +4,15 @@ import { UpdateCredentialsRes } from "@/utils/response-messages";
 
 export function handleChangeEmail() {
   const form = document.getElementById("change-email-form") as HTMLFormElement;
-  if (!form) return;
+  const changeEmailInput = document.getElementById("email") as HTMLInputElement;
+  if (!form || !changeEmailInput) return;
+
+  const savedEmail = localStorage.getItem("changedemailInput");
+  if (savedEmail) changeEmailInput.value = savedEmail;
+
+  changeEmailInput.addEventListener("input", () => {
+    localStorage.setItem("changedemailInput", changeEmailInput.value);
+  });
 
   form.addEventListener("submit", async (e: Event) => {
     e.preventDefault();

@@ -53,6 +53,10 @@ export const theme = {
         "0%": { opacity: 1 },
         "50%": { opacity: 0.7 },
       },
+      glow: {
+        "0%": { boxShadow: "0 0 10px #facc15" },
+        "50%": { boxShadow: "0 0 20px #facc15" },
+      },
     },
     animation: {
       fadeInUp: "fadeInUp 0.8s ease-out",
@@ -60,6 +64,7 @@ export const theme = {
       backgroundPan: "backgroundPan 20s linear infinite",
       myFloat: "myFloat 3s ease-in-out infinite",
       myPulse: "myPulse 1.3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      glow: "glow 2s infinite ease-in-out",
     },
   },
 };

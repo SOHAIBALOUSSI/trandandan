@@ -29,9 +29,7 @@ export function verifyOtpCode() {
       .join("");
 
     if (otpCode.length !== 6) {
-      displayToast("Please enter a valid 6-digit code.", "error", {
-        noProgressBar: true,
-      });
+      displayToast("Please enter a valid 6-digit code.", "error");
       return;
     }
 
@@ -45,16 +43,14 @@ export function verifyOtpCode() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otpCode: otpCode }),
+        body: JSON.stringify({ otpCode }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(VerifyCodeRes.CODE_VERIFIED, "success", {
-            noProgressBar: true,
-          });
+          displayToast(VerifyCodeRes.CODE_VERIFIED, "success");
 
           setTimeout(() => {
             navigateTo("/password_update");
@@ -65,7 +61,7 @@ export function verifyOtpCode() {
           const errorMsg =
             VerifyCodeRes[result?.code] ||
             "Error during OTP verification. Please try again.";
-          displayToast(errorMsg, "error", { noProgressBar: true });
+          displayToast(errorMsg, "error");
           otpInputs.forEach((input) => {
             input.value = "";
           });
@@ -73,9 +69,7 @@ export function verifyOtpCode() {
         }, feedbackDelay);
       }
     } catch (err) {
-      displayToast(VerifyCodeRes.INTERNAL_SERVER_ERROR, "error", {
-        noProgressBar: true,
-      });
+      displayToast(VerifyCodeRes.INTERNAL_SERVER_ERROR, "error");
       otpInputs.forEach((input) => {
         input.value = "";
       });

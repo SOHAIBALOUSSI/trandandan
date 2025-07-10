@@ -34,7 +34,7 @@ export function SignInForm() {
           className={styles.InputFieldOne}
         />
         <i
-          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-4 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
           id={showPasswordIconId}
         ></i>
       </div>

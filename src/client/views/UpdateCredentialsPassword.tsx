@@ -2,9 +2,20 @@ import { handleChangePassword } from "@/handlers/change-password";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { NavBar } from "@/components/layout/NavBar";
+import { showPasswordToggle } from "@/utils/show-password";
 
 export function UpdateCredentialsPassword() {
+  const currentPasswordId = "old-password";
+  const newPasswordId = "new-password";
+  const confirmNewPasswordId = "confirm-new-password";
+  const showPasswordIconId = "show-password-icon";
+  const showNewPasswordIconId = "show-new-password-icon";
+  const showConfirmPasswordIconId = "show-confirm-password-icon";
+
   setTimeout(() => {
+    showPasswordToggle(showPasswordIconId, currentPasswordId);
+    showPasswordToggle(showNewPasswordIconId, newPasswordId);
+    showPasswordToggle(showConfirmPasswordIconId, confirmNewPasswordId);
     handleChangePassword();
   }, 0);
 
@@ -14,7 +25,7 @@ export function UpdateCredentialsPassword() {
       <main className={styles.pageContent}>
         <div className={styles.darkForm}>
           <h2
-            className={`${fontSizes.smallTitleFontSize} font-bold text-pong-accent mb-2`}
+            className={`${fontSizes.titleFontSize} text-center font-bold text-pong-accent mb-4`}
           >
             Update Your Password
           </h2>
@@ -27,32 +38,50 @@ export function UpdateCredentialsPassword() {
 
           <form
             id="change-password-form"
-            className="w-full flex flex-col gap-4"
+            className="w-full flex flex-col gap-6"
           >
-            <input
-              type="password"
-              name="old-password"
-              id="old-password"
-              className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
-              placeholder="Current password"
-              autoComplete="off"
-            />
-            <input
-              type="password"
-              name="new-password"
-              id="new-password"
-              className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
-              placeholder="New password"
-              autoComplete="off"
-            />
-            <input
-              type="password"
-              name="confirm-new-password"
-              id="confirm-new-password"
-              className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
-              placeholder="Confirm new password"
-              autoComplete="off"
-            />
+            <div className="relative w-ful">
+              <input
+                type="password"
+                name="old-password"
+                id={currentPasswordId}
+                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
+                placeholder="Current password"
+                autoComplete="off"
+              />
+              <i
+                className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-dark-primary/60 hover:text-pong-dark-accent transition"
+                id={showPasswordIconId}
+              ></i>
+            </div>
+            <div className="relative w-full">
+              <input
+                type="password"
+                name="new-password"
+                id={newPasswordId}
+                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
+                placeholder="New password"
+                autoComplete="off"
+              />
+              <i
+                className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-dark-primary/60 hover:text-pong-dark-accent transition"
+                id={showNewPasswordIconId}
+              ></i>
+            </div>
+            <div className="relative w-full">
+              <input
+                type="password"
+                name="confirm-new-password"
+                id={confirmNewPasswordId}
+                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
+                placeholder="Confirm new password"
+                autoComplete="off"
+              />
+              <i
+                className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-dark-primary/60 hover:text-pong-dark-accent transition"
+                id={showConfirmPasswordIconId}
+              ></i>
+            </div>
             <button
               type="submit"
               className={styles.darkSubmitBtn}

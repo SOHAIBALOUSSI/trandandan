@@ -6,6 +6,7 @@ export function handleUpdatePassword() {
   const form = document.getElementById(
     "update-password-form"
   ) as HTMLFormElement;
+
   if (!form) return;
 
   form.addEventListener("submit", async (e: Event) => {
@@ -45,9 +46,7 @@ export function handleUpdatePassword() {
       return;
     }
     if (password !== confirmPassword) {
-      displayToast(UpdatePasswordRes.UNMATCHED_PASSWORDS, "error", {
-        noProgressBar: true,
-      });
+      displayToast(UpdatePasswordRes.UNMATCHED_PASSWORDS, "error");
       confirmPasswordInput.value = "";
       passwordInput.focus();
       return;
@@ -63,19 +62,14 @@ export function handleUpdatePassword() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          password: password,
-          confirmPassword: confirmPassword,
-        }),
+        body: JSON.stringify({ password, confirmPassword }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(UpdatePasswordRes.USER_LOGGED_IN, "success", {
-            noProgressBar: true,
-          });
+          displayToast(UpdatePasswordRes.USER_LOGGED_IN, "success");
           setTimeout(() => {
             navigateTo("/signin");
           }, redirectDelay);
@@ -85,13 +79,11 @@ export function handleUpdatePassword() {
           const errorMsg =
             UpdatePasswordRes[result?.code] ||
             "Error during password update. Please try again.";
-          displayToast(errorMsg, "error", { noProgressBar: true });
+          displayToast(errorMsg, "error");
         }, feedbackDelay);
       }
     } catch (err) {
-      displayToast(UpdatePasswordRes.INTERNAL_SERVER_ERROR, "error", {
-        noProgressBar: true,
-      });
+      displayToast(UpdatePasswordRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

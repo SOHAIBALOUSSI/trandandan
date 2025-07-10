@@ -1,7 +1,6 @@
 export function displayToast(
   message: string,
-  type: "success" | "error" | "warning",
-  options?: { noProgressBar?: boolean }
+  type: "success" | "error" | "warning"
 ) {
   const existingToast = document.getElementById("global-toast");
   if (existingToast) existingToast.remove();
@@ -32,9 +31,7 @@ export function displayToast(
       : type === "error"
       ? "fa-circle-xmark"
       : "fa-triangle-exclamation"
-  } text-xl`;
-  icon.style.marginBottom = "0.25rem";
-  icon.style.color = "#ffffff";
+  } text-xl mb-[0.25rem] text-white`;
 
   const msg = document.createElement("span");
   msg.className =
@@ -44,24 +41,21 @@ export function displayToast(
   toast.appendChild(icon);
   toast.appendChild(msg);
 
-  const duration = type === "success" ? 2200 : 3200;
+  const duration = type === "success" ? 2200 : 2600;
 
-  if (!options?.noProgressBar) {
-    const progress = document.createElement("div");
-    progress.className =
-      "h-1 w-full bg-white/20 rounded-b-xl mt-1 overflow-hidden";
-    const bar = document.createElement("div");
-    bar.className =
-      "h-full bg-white transition-[width] ease-linear duration-1000";
-    bar.style.width = "100%";
-    bar.style.transition = `width ${duration}ms linear`;
-    progress.appendChild(bar);
-    toast.appendChild(progress);
+  const progress = document.createElement("div");
+  progress.className =
+    "h-1 w-full bg-white/20 rounded-b-xl mt-1 overflow-hidden";
+  const bar = document.createElement("div");
+  bar.className =
+    "h-full bg-white transition-[width] ease-linear duration-1000 w-full";
+  bar.style.transition = `width ${duration}ms linear`;
+  progress.appendChild(bar);
+  toast.appendChild(progress);
 
-    setTimeout(() => {
-      bar.style.width = "0%";
-    }, 20);
-  }
+  setTimeout(() => {
+    bar.style.width = "0%";
+  }, 20);
 
   document.body.appendChild(toast);
 

@@ -199,7 +199,7 @@ export const styles = {
 	transition-all duration-300
   `,
   darkForm: `
-  	w-full max-w-md 
+  	w-full max-w-lg 
 	bg-pong-dark-custom/80 
 	border border-pong-accent/30 
 	rounded-2xl 
@@ -302,7 +302,18 @@ export const styles = {
 	rounded-2xl 
 	shadow-lg
   `,
-
+  badgeStyle: `
+	inline-flex items-center 
+	gap-2 px-4 py-1.5 
+	rounded-full 
+	shadow-md 
+	bg-black/40 
+	backdrop-blur 
+	text-white font-semibold
+	text-sm 
+	border border-white/10 
+	animate-glow
+  `,
   // === End Custom Cards styles ===
 
   //   === Start Custom List styles ===

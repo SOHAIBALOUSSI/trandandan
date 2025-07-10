@@ -46,3 +46,16 @@ export type FriendNotification = {
   sender_id: number;
   type: string;
 };
+
+export type MessageSent = {
+  type: "MESSAGE_SENT";
+  sender_id: number;
+  recipient_id: number;
+  message_id: number;
+  content: string;
+};
+
+export type MessageRead = {
+  type: "MESSAGE_READ";
+  message_id: number;
+};

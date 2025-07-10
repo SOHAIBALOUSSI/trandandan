@@ -77,8 +77,7 @@ export function handleSignUp() {
       emailInput.focus();
       displayToast(
         "That doesn’t look like a valid email. Check the format and try again.",
-        "error",
-        { noProgressBar: true }
+        "error"
       );
       return;
     }
@@ -97,9 +96,7 @@ export function handleSignUp() {
     if (password !== confirmPassword) {
       confirmPasswordInput.focus();
       confirmPasswordInput.value = "";
-      displayToast(RegisterRes.UNMATCHED_PASSWORDS, "error", {
-        noProgressBar: true,
-      });
+      displayToast(RegisterRes.UNMATCHED_PASSWORDS, "error");
       return;
     }
 
@@ -122,9 +119,7 @@ export function handleSignUp() {
         localStorage.removeItem("emailInput");
 
         setTimeout(() => {
-          displayToast(RegisterRes.USER_REGISTERED, "success", {
-            noProgressBar: true,
-          });
+          displayToast(RegisterRes.USER_REGISTERED, "success");
           setTimeout(() => {
             navigateTo("/signin");
           }, redirectDelay);
@@ -134,13 +129,11 @@ export function handleSignUp() {
           const errorMsg =
             RegisterRes[result?.code] ||
             "Error during registration. Please try again.";
-          displayToast(errorMsg, "error", { noProgressBar: true });
+          displayToast(errorMsg, "error");
         }, feedbackDelay);
       }
     } catch (err) {
-      displayToast(RegisterRes.INTERNAL_SERVER_ERROR, "error", {
-        noProgressBar: true,
-      });
+      displayToast(RegisterRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

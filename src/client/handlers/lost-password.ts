@@ -6,16 +6,16 @@ export function handleLostPassword() {
   const otpForm = document.getElementById(
     "lost-pass-otp-form"
   ) as HTMLFormElement;
-  const emailInput = document.getElementById(
+  const otpEmailInput = document.getElementById(
     "reset-pass-email"
   ) as HTMLInputElement;
-  if (!form || !otpForm || !emailInput) return;
+  if (!form || !otpForm || !otpEmailInput) return;
 
-  const savedEmail = localStorage.getItem("emailInput");
-  if (savedEmail) emailInput.value = savedEmail;
+  const savedEmail = localStorage.getItem("otpEmailInput");
+  if (savedEmail) otpEmailInput.value = savedEmail;
 
-  emailInput.addEventListener("input", () => {
-    localStorage.setItem("emailInput", emailInput.value);
+  otpEmailInput.addEventListener("input", () => {
+    localStorage.setItem("otpEmailInput", otpEmailInput.value);
   });
 
   form.addEventListener("submit", async (e: Event) => {
@@ -30,18 +30,17 @@ export function handleLostPassword() {
     const btnLabelText = btnLabel.textContent;
     const feedbackDelay = 900;
 
-    const email = emailInput.value.trim();
+    const email = otpEmailInput.value.trim();
     if (!email) {
-      emailInput.focus();
+      otpEmailInput.focus();
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      emailInput.focus();
+      otpEmailInput.focus();
       displayToast(
         "That doesn’t look like a valid email. Check the format and try again.",
-        "error",
-        { noProgressBar: true }
+        "error"
       );
       return;
     }
@@ -55,19 +54,17 @@ export function handleLostPassword() {
       const response = await fetch("/auth/lost-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email }),
+        body: JSON.stringify({ email }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        localStorage.removeItem("emailInput");
+        localStorage.removeItem("otpEmailInput");
 
         setTimeout(() => {
-          displayToast(LostPasswordRes.CODE_SENT, "success", {
-            noProgressBar: true,
-          });
-          emailInput.value = "";
+          displayToast(LostPasswordRes.CODE_SENT, "success");
+          otpEmailInput.value = "";
           form.classList.add("hidden");
           otpForm.classList.remove("hidden");
           otpForm.classList.add("flex");
@@ -78,13 +75,11 @@ export function handleLostPassword() {
           const errorMsg =
             LostPasswordRes[result?.code] ||
             "Error during lost password request. Please try again.";
-          displayToast(errorMsg, "error", { noProgressBar: true });
+          displayToast(errorMsg, "error");
         }, feedbackDelay);
       }
     } catch (err) {
-      displayToast(LostPasswordRes.INTERNAL_SERVER_ERROR, "error", {
-        noProgressBar: true,
-      });
+      displayToast(LostPasswordRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

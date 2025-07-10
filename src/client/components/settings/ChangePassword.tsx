@@ -18,8 +18,12 @@ export function ChangePassword() {
         Choose something strong and unique — a true champion’s defense.
       </p>
 
-      <a href="change_password" data-link className={styles.darkPrimaryBtn}>
-        Update Password
+      <a
+        href="change_password"
+        data-link
+        className={styles.darkPrimaryBtn + "md:w-fit"}
+      >
+        Proceed to Update
       </a>
 
       <p className="text-pong-warning text-xs md:text-sm italic mt-3">

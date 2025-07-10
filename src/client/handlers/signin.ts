@@ -6,9 +6,8 @@ import { startNotificationListener } from "./notifications";
 export function handleSignIn() {
   const signInForm = document.getElementById("signin-form") as HTMLFormElement;
   const loginInput = document.getElementById("login") as HTMLInputElement;
-  const passwordInput = document.getElementById("password") as HTMLInputElement;
 
-  if (!loginInput || !passwordInput || !signInForm) return;
+  if (!loginInput || !signInForm) return;
 
   const savedLogin = localStorage.getItem("loginInput");
   if (savedLogin) loginInput.value = savedLogin;
@@ -24,8 +23,10 @@ export function handleSignIn() {
       signInForm.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = signInForm.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = signInForm.querySelector<HTMLSpanElement>("#btn-label");
+    const passwordInput =
+      signInForm.querySelector<HTMLInputElement>("#password");
 
-    if (!submitBtn || !spinner || !btnLabel) return;
+    if (!submitBtn || !spinner || !btnLabel || !passwordInput) return;
 
     const btnLabelText = btnLabel.textContent;
     const feedbackDelay = 900;
@@ -68,9 +69,7 @@ export function handleSignIn() {
         startNotificationListener();
 
         setTimeout(() => {
-          displayToast(LoginRes.USER_LOGGED_IN, "success", {
-            noProgressBar: true,
-          });
+          displayToast(LoginRes.USER_LOGGED_IN, "success");
 
           setTimeout(() => {
             navigateTo("/salon");
@@ -92,13 +91,11 @@ export function handleSignIn() {
         setTimeout(() => {
           const errorMsg =
             LoginRes[result?.code] || "Error during login. Please try again.";
-          displayToast(errorMsg, "error", { noProgressBar: true });
+          displayToast(errorMsg, "error");
         }, feedbackDelay);
       }
     } catch (err) {
-      displayToast(LoginRes.INTERNAL_SERVER_ERROR, "error", {
-        noProgressBar: true,
-      });
+      displayToast(LoginRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         submitBtn.disabled = false;

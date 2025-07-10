@@ -56,7 +56,7 @@ export const UpdatePasswordRes: Record<string, string> = {
   UNMATCHED_PASSWORDS:
     "Your new passwords don’t match. Adjust your swing and re-enter.",
   UNAUTHORIZED:
-    "You need to log in first. The court isn’t open to unregistered rackets.",
+    "You need a valid password reset link or code to update your password.",
   TOKEN_REQUIRED: "A reset token is required to update your password.",
   USER_LOGGED_IN:
     "Your password has been refreshed. Step back onto the court with confidence.",
@@ -95,10 +95,10 @@ export const Verify2FaRes: Record<string, string> = {
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
-export const Chage2FaStateRes: Record<string, string> = {
+export const Change2FaStateRes: Record<string, string> = {
   UNAUTHORIZED: "Access denied. You must be logged in to disable 2FA.",
-  METHODS_NOT_ENABLED:
-    "No 2FA methods are active. You’ll need to set one up before disabling.",
+  METHOD_NOT_ENABLED:
+    "This method is currently disabled. Please enable it first.",
   METHOD_DISABLED: "This 2FA method is now disabled. You can play without it.",
   METHOD_ENABLED: "You're all set — this two-factor method is now active.",
   PRIMARY_METHOD_UPDATED:

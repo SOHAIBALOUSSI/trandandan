@@ -1,13 +1,20 @@
 import { handleUpdatePassword } from "@/handlers/reset-password";
 import { Footer } from "@/components/layout/Footer";
 import { styles } from "@/styles/styles";
-import { InputField } from "@/components/common/InputField";
 import { Overlay } from "@/components/layout/Overlay";
 import { SubmitBtn } from "@/components/common/SubmitBtn";
 import { fontSizes } from "@/styles/fontSizes";
+import { showPasswordToggle } from "@/utils/show-password";
 
 export function UpdatePassword() {
+  const passwordId = "new-password";
+  const showPasswordIconId = "update-show-pass";
+  const confirmPasswordId = "confirm-new-password";
+  const showConfirmPasswordIconId = "update-show-confirm-pass";
+
   setTimeout(() => {
+    showPasswordToggle(showPasswordIconId, passwordId);
+    showPasswordToggle(showConfirmPasswordIconId, confirmPasswordId);
     handleUpdatePassword();
   }, 0);
 
@@ -25,19 +32,34 @@ export function UpdatePassword() {
         </div>
 
         <form id="update-password-form" className={styles.secForm}>
-          <InputField
-            type="password"
-            name="newPassword"
-            id="new-password"
-            placeholder="forge your new key"
-            autofocus={true}
-          />
-          <InputField
-            type="password"
-            name="newPasswordConfirm"
-            id="confirm-new-password"
-            placeholder="confirm the forged key"
-          />
+          <div className="relative w-full">
+            <input
+              type="password"
+              name="password"
+              id={passwordId}
+              placeholder="secret code"
+              autoComplete="off"
+              className={styles.InputFieldOne}
+            />
+            <i
+              className="fa-solid fa-eye fa-eye-slash show-pass text-sm absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+              id={showPasswordIconId}
+            ></i>
+          </div>
+          <div className="relative w-full">
+            <input
+              type="password"
+              name="password"
+              id={confirmPasswordId}
+              placeholder="secret code"
+              autoComplete="off"
+              className={styles.InputFieldOne}
+            />
+            <i
+              className="fa-solid fa-eye fa-eye-slash show-pass text-sm absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+              id={showConfirmPasswordIconId}
+            ></i>
+          </div>
           <SubmitBtn btnIcon="fa-lock" btnLabel="lock it in" />
         </form>
 

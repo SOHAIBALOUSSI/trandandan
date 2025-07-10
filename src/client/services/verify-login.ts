@@ -28,9 +28,7 @@ export function verifyLogin(mode: string | null) {
       .join("");
 
     if (otpCode.length !== 6) {
-      displayToast("Please enter a valid 6-digit code.", "error", {
-        noProgressBar: true,
-      });
+      displayToast("Please enter a valid 6-digit code.", "error");
       return;
     }
 
@@ -44,7 +42,7 @@ export function verifyLogin(mode: string | null) {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otpCode: otpCode }),
+        body: JSON.stringify({ otpCode }),
       });
 
       const result = await response.json();
@@ -55,9 +53,7 @@ export function verifyLogin(mode: string | null) {
         startNotificationListener();
 
         setTimeout(() => {
-          displayToast(Verify2FaRes.USER_LOGGED_IN, "success", {
-            noProgressBar: true,
-          });
+          displayToast(Verify2FaRes.USER_LOGGED_IN, "success");
 
           setTimeout(() => {
             navigateTo("/salon");
@@ -68,7 +64,7 @@ export function verifyLogin(mode: string | null) {
           const errorMsg =
             Verify2FaRes[result?.code] ||
             "Error during 2fa verification. Please try again.";
-          displayToast(errorMsg, "error", { noProgressBar: true });
+          displayToast(errorMsg, "error");
           otpInputs.forEach((input) => {
             input.value = "";
           });
@@ -76,9 +72,7 @@ export function verifyLogin(mode: string | null) {
         }, feedbackDelay);
       }
     } catch (err) {
-      displayToast(Verify2FaRes.INTERNAL_SERVER_ERROR, "error", {
-        noProgressBar: true,
-      });
+      displayToast(Verify2FaRes.INTERNAL_SERVER_ERROR, "error");
       otpInputs.forEach((input) => {
         input.value = "";
       });
