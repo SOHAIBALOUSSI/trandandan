@@ -98,7 +98,17 @@ wss.on('connection', async (ws, request) => {
                 const isBlocked = await redis.sIsMember(`blocker:${ws.userId}`, `${recipient}`)
                 if (recipient === payload.sender_id || recipient === ws.userId || isBlocked) 
                     return ;
+
                 const messageId = await addMessage(db, payload);
+
+                payload.message_id = messageId;
+
+                rabbit.produceMessage({
+                    type: 'MESSAGE_RECEIVED',
+                    sender_id: payload.from,
+                    data: { content: payload.content }
+                }, 'notifications.message.received');
+
                 const connections = users.get(recipient);
                 if (connections) {
                     for (const conn of connections) {
@@ -111,8 +121,8 @@ wss.on('connection', async (ws, request) => {
         }
         else if (payload.type === 'MESSAGE_READ') {
             console.log('WebSocket: payload received: ', payload);
-            if (payload.id) {
-                const msg = await getMessageById(db, payload.id)
+            if (payload.message_id) {
+                const msg = await getMessageById(db, payload.message_id)
                 if (!msg) 
                     return ;
                 await markAsRead(db, msg.id);

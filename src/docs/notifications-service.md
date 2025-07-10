@@ -48,4 +48,15 @@ except for `FRIEND_REMOVED` :
 }
 ```
 
+## chat notifications
+there is only one type of message notifications which is the following :
 
+```yaml
+{
+    type: MESSAGE_RECEIVED,
+    recipient_id: recipientId,
+    data : {
+        content : actualMessage
+    }
+}
+```
