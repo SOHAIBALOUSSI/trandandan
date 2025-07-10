@@ -10,11 +10,19 @@ export function getAuthCookies(request) {
     };
 }
 
-export function verifyToken(ws, request) {
+export async function verifyToken(ws, request, redis) {
     try {
         let cookie = getAuthCookies(request);
         
         const payload = jwt.verify(cookie.accessToken, process.env.AJWT_SECRET_KEY);
+
+        const idExist = await redis.sIsMember('userIds', `${payload.id}`);
+        console.log('idExist value: ', idExist);
+        if (!idExist) {
+            ws.close(3000, 'Unauthorized');
+            return ;
+        }
+        
         ws.userId = payload.id;
         ws.isAuthenticated = true;
         console.log(`WebSocket: User ${ws.userId} authenticated`);

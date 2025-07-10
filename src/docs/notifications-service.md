@@ -4,7 +4,7 @@
 The `notifications-service` is responsible for sending notifications to authenticated users via websocket.
 
 ## How does it work
-- This service is utilizing `RabbitMQ` to create a single queue with a purpose of receiving messages from other services.
+- This service is utilizing `RabbitMQ` to create a single queue bound to `microservices-exchange` with a routing key of `notifications.#` with a purpose of receiving messages from other services.
 - a `RabbitMQClient` class is used across all notification-sending services and placed under the libs folder.
 - A message received from a service is a notification following the schema down below :
 
@@ -21,15 +21,6 @@ The `notifications-service` is responsible for sending notifications to authenti
 
 - The `data` property is used for special cases (might discard it later).
 - A user is verified and authenticated after connecting, if not valid the connection is closed immediately.
-- To Authenticate a user the first message from the client should follow the schema down below : (for development only, will use cookies in production)
-
-```yaml
-{
-    type: AUTHENTICATION,
-    token: ACCESS_TOKEN
-}
-```
-
 - After authentication a user is mapped to all his current connections `Map(id, Set())`.
 - If there are some stored unread/undelivered notifications for the current connect user, they're all sent right after authentication.
 - Whenever a message(notification) is consumed by my rabbitMQClient these steps follow:

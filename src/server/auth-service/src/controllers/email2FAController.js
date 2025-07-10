@@ -96,7 +96,7 @@ export async function verify2FALogin(request, reply) {
         
         await clearOtpCode(this.db, user.id, twoFa.type);
 
-        const accessToken = this.jwt.signAT({ id: userId });
+        const accessToken = await this.jwt.signAT({ id: userId });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;
         if (tokenExist) {

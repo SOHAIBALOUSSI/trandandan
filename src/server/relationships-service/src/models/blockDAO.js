@@ -32,3 +32,8 @@ export async function removeBlock(db, blockerId, blockedId) {
         ]
     );
 }
+
+export async function getBlockList(db, id) {
+    console.log('Fetching block list...');
+    return await db.all('SELECT * FROM block WHERE blocker_id = ?', [id]);
+}

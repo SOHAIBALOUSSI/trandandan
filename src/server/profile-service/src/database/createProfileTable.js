@@ -13,6 +13,9 @@ export async function createProfileTable(db){
             solde INTEGER DEFAULT 5,
             level INTEGER DEFAULT 0,
             rank INTEGER DEFAULT 0,
+            matches_played DEFAULT 0,
+            matches_won DEFAULT 0,
+            matches_lost DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`

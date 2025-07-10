@@ -5,7 +5,16 @@ import RabbitMQClient from './libs/rabbitMQ.js';
 import { WebSocketServer, WebSocket } from 'ws';
 import { verifyToken } from './middleware/authMiddleware.js';
 import dotenv from 'dotenv';
-import { addMessage, deleteMessages, getAllMessages, getMessageById, markAsDelivered, markAsRead } from './database/chatMessagesDAO.js';
+import { 
+    addMessage, 
+    deleteMessages, 
+    getAllMessages, 
+    getMessageById, 
+    markAsDelivered, 
+    markAsRead 
+} from './database/chatMessagesDAO.js';
+import { createClient } from 'redis';
+
 
 dotenv.config();
 let db;
@@ -25,6 +34,22 @@ let db;
   }
 })();
 
+let redis;
+
+(async() => {
+  try {
+    redis = await createClient({
+      url: 'redis://redis:6379'
+    })
+    .on("error", (err) => console.log("Redis Client Error", err))
+    .connect();
+    console.log('Redis is connected...', redis);
+  } catch (error) {
+    console.error('Failed to connect redis-server:', error);
+    process.exit(1);
+  }
+})();
+
 const users = new Map();
 
 const wss = new WebSocketServer({ port: 3004 });
@@ -37,7 +62,7 @@ wss.on('connection', async (ws, request) => {
     console.log('WebSocket: Client connected.');
     ws.isAuthenticated = false;
     ws.userId = null;
-    verifyToken(ws, request);
+    await verifyToken(ws, request, redis);
     if (ws.userId) {
         if (!users.has(ws.userId))
             users.set(ws.userId, new Set());
@@ -55,55 +80,47 @@ wss.on('connection', async (ws, request) => {
 
 
     ws.on('message', async (message) => {
+        if (!ws.isAuthenticated) {
+            ws.close(3000, 'Unauthorized');
+            return ;
+        }
         const payload = JSON.parse(message);
         if (payload.type === 'MESSAGE_SENT') {
-            if (ws.isAuthenticated) {
-                console.log('WebSocket: payload received: ', payload);
-                const recipient = payload.recipient_id;
-                console.log('WebSocket: recipient: ', recipient);
-                if (recipient) {
-                    if (recipient === ws.userId) {
-                        ws.close(1008, 'Malformed payload');
-                        return ;   
-                    }
-                    const messageId = await addMessage(db, payload);
-                    const connections = users.get(recipient);
-                    if (connections) {
-                        for (const conn of connections) {
-                            if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
-                                conn.send(JSON.stringify(payload));
-                        }
-                        await markAsDelivered(db, messageId);
-                    }
-                }
-            } else {
-                ws.close(3000, 'Unauthorized');
+            console.log('WebSocket: payload received: ', payload);
+            const recipient = payload.recipient_id;
+            console.log('WebSocket: recipient: ', recipient);
+            
+            const idExist = await redis.sIsMember('userIds', `${recipient}`);
+            console.log('idExist value: ', idExist);
+            if (!idExist)
                 return ;
+            if (recipient) {
+                const isBlocked = await redis.sIsMember(`blocker:${ws.userId}`, `${recipient}`)
+                if (recipient === payload.sender_id || recipient === ws.userId || isBlocked) 
+                    return ;
+                const messageId = await addMessage(db, payload);
+                const connections = users.get(recipient);
+                if (connections) {
+                    for (const conn of connections) {
+                        if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
+                            conn.send(JSON.stringify(payload));
+                    }
+                    await markAsDelivered(db, messageId);
+                }
             }
         }
         else if (payload.type === 'MESSAGE_READ') {
-            if (ws.isAuthenticated) {
-                console.log('WebSocket: payload received: ', payload);
-                if (payload.id) {
-                    const msg = await getMessageById(db, payload.id)
-                    if (!msg) {
-                        ws.close(1008, 'Malformed payload');
-                        return ;
-                    }
-                    await markAsRead(db, msg.id);
-                } else {
-                    ws.close(1008, 'Malformed payload');
+            console.log('WebSocket: payload received: ', payload);
+            if (payload.id) {
+                const msg = await getMessageById(db, payload.id)
+                if (!msg) 
                     return ;
-                }
-            } else {
-                ws.close(3000, 'Unauthorized');
+                await markAsRead(db, msg.id);
+            } else 
                 return ;
-            }
         }
-        else {
-            ws.close(1008, 'Malformed payload');
+        else
             return ;
-        }
     })
 
     ws.on('error', (error) => {
@@ -112,7 +129,7 @@ wss.on('connection', async (ws, request) => {
 
     ws.on('close', () => {
         console.log('WebSocket: Client disconnected.');
-        if (ws.userId && users.has(ws.userId)) {
+        if (ws.isAuthenticated && users.has(ws.userId)) {
             users.get(ws.userId).delete(ws);
             if (users.get(ws.userId).size === 0) 
                 users.delete(ws.userId);
@@ -131,6 +148,11 @@ wss.on('error', (error) => {
 rabbit.consumeMessages(async (request) => {
     if (request.type === 'DELETE') {
         const userId = request.userId;
+
+        const idExist = await redis.sIsMember('userIds', `${userId}`);
+        console.log('idExist value: ', idExist);
+        if (!idExist)
+            return ;
         await deleteMessages(db, userId);
         users.get(userId).forEach((ws) => {
             ws.close(1010, 'Mandatory exit');

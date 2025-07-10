@@ -12,8 +12,11 @@ The `profile-service` is responsible for managing user profile data. It handles 
 | Method | Path          | Description                           | Authentication Required  | Body required                         |
 | :----: | ------------  | ------------------------------------- | :----------------------: | :-----------------------------------: |
 | POST   | `/register`   | Register a new user profile           | Yes                      | { username, email}                    |
-| PATCH  | `/:id`        | Update a user profile                 | Yes                      | { username/avatar_url/solde/level/rank } (one or many)|
-| GET    | `/:id`        | Retrieve a user profile by id         | Yes                      | (none)                                |
+| PATCH  | `/user/:id`   | Update a user profile                 | Yes                      | { username/avatar_url/solde/level/rank } (one or many)|
+| GET    | `/user/:id`   | Retrieve a user profile by id         | Yes                      | (none)                                |
+| POST   | `/upload`     | Updates a user's avatar               | Yes                      | image as formData                     |
+| GET   | `/avatar/:fileName`| Fetches a user's avatar           | Yes                      | (none)                     |
+| GET   | `/all`         | Fetches all users                     | Yes                      | (none)                     |
 
 ---
 
@@ -32,7 +35,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 
 ## Response Codes
 
-- `/:id` (GET)
+- `/user/:id` (GET)
 ```yaml
 
   403: UNAUTHORIZED,
@@ -42,7 +45,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 
 ```
 
-- `/:id` (PATCH)
+- `/user/:id` (PATCH)
 ```yaml
 
   403: UNAUTHORIZED,
@@ -56,6 +59,26 @@ The `profile-service` is responsible for managing user profile data. It handles 
   500: INTERNAL_SERVER_ERROR
 
 ```
+
+- `/upload` 
+```yaml
+  401: UNAUTHORIZED,
+  400: FILE_REQUIRED,
+  200: AVATAR_UPLOADED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
+- `/avatar/:fileName` 
+```yaml
+  401: UNAUTHORIZED,
+  400: FILE_NAME_REQUIRED
+  404: FILE_NOT_FOUND
+  200: AVATAR_UPLOADED,
+  500: INTERNAL_SERVER_ERROR
+
+```
+
 ---
 
 ## Schemas
