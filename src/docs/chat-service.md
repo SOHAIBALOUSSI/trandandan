@@ -12,6 +12,7 @@ A real-time WebSocket-based `chat-service` for user-to-user messaging. Built wit
   "type": "MESSAGE_SENT",
   "sender_id": "123",
   "recipient_id": "456",
+  "message_id" : "789",
   "content": "Hey there!"
 }
 ```
@@ -19,6 +20,7 @@ A real-time WebSocket-based `chat-service` for user-to-user messaging. Built wit
 - Checks Redis to confirm recipient exists.
 - Ensures sender hasn’t blocked recipient.
 - Stores message in SQLite.
+- Sends message using RabbitMQ to notifications service.
 - Sends message in real-time if recipient is online.
 - Marks message as delivered in DB.
 
@@ -27,7 +29,7 @@ A real-time WebSocket-based `chat-service` for user-to-user messaging. Built wit
 ```yaml
 {
   "type": "MESSAGE_READ",
-  "id": "message_id"
+  "message_id": "message_id"
 }
 ```
 
