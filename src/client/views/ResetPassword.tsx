@@ -41,10 +41,7 @@ export function UpdatePassword() {
               autoComplete="off"
               className={styles.InputFieldOne}
             />
-            <i
-              className="fa-solid fa-eye fa-eye-slash show-pass text-sm absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
-              id={showPasswordIconId}
-            ></i>
+            <i className={styles.showPassIcon} id={showPasswordIconId}></i>
           </div>
           <div className="relative w-full">
             <input
@@ -56,7 +53,7 @@ export function UpdatePassword() {
               className={styles.InputFieldOne}
             />
             <i
-              className="fa-solid fa-eye fa-eye-slash show-pass text-sm absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+              className={styles.showPassIcon}
               id={showConfirmPasswordIconId}
             ></i>
           </div>

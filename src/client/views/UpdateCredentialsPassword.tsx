@@ -49,10 +49,7 @@ export function UpdateCredentialsPassword() {
                 placeholder="Current password"
                 autoComplete="off"
               />
-              <i
-                className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-dark-primary/60 hover:text-pong-dark-accent transition"
-                id={showPasswordIconId}
-              ></i>
+              <i className={styles.showPassIcon} id={showPasswordIconId}></i>
             </div>
             <div className="relative w-full">
               <input
@@ -63,10 +60,7 @@ export function UpdateCredentialsPassword() {
                 placeholder="New password"
                 autoComplete="off"
               />
-              <i
-                className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-dark-primary/60 hover:text-pong-dark-accent transition"
-                id={showNewPasswordIconId}
-              ></i>
+              <i className={styles.showPassIcon} id={showNewPasswordIconId}></i>
             </div>
             <div className="relative w-full">
               <input
@@ -78,7 +72,7 @@ export function UpdateCredentialsPassword() {
                 autoComplete="off"
               />
               <i
-                className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-dark-primary/60 hover:text-pong-dark-accent transition"
+                className={styles.showPassIcon}
                 id={showConfirmPasswordIconId}
               ></i>
             </div>

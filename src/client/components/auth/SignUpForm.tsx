@@ -45,7 +45,7 @@ export function SignUpForm() {
             lady
           </option>
         </select>
-        <div className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2">
+        <div className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2 text-pong-highlight">
           <i className="fa-solid fa-chevron-down text-sm"></i>
         </div>
       </div>
@@ -58,10 +58,7 @@ export function SignUpForm() {
           autoComplete="off"
           className={styles.InputFieldOne}
         />
-        <i
-          className="fa-solid fa-eye fa-eye-slash show-pass text-sm absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
-          id={showPasswordIconId}
-        ></i>
+        <i className={styles.showPassIcon} id={showPasswordIconId}></i>
       </div>
       <div className="relative w-full">
         <input
@@ -73,7 +70,7 @@ export function SignUpForm() {
           className={styles.InputFieldOne}
         />
         <i
-          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
+          className={styles.showPassIcon}
           id={showConfirmPasswordIconId}
         ></i>
       </div>

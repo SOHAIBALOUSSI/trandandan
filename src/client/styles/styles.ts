@@ -116,7 +116,6 @@ export const styles = {
 	transition-all duration-300 ease-in-out
 	disabled:opacity-50 disabled:cursor-not-allowed
   `,
-
   // === End Buttons styles ===
 
   // === Start Input Field styles ===
@@ -171,6 +170,15 @@ export const styles = {
   	transition-all duration-300 ease-out focus:scale-105
   	focus:outline-none focus:ring-2 focus:ring-pong-accent/70 focus:border-pong-accent
   	focus:shadow-lg
+  `,
+  showPassIcon: `
+	fa-solid fa-eye fa-eye-slash 
+	show-pass text-sm 
+	absolute top-1/2 right-3
+	transform -translate-y-1/2 
+	cursor-pointer 
+	text-pong-highlight hover:text-pong-primary 
+	transition
   `,
   // === End Input Field styles ===
 

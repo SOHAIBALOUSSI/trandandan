@@ -33,10 +33,7 @@ export function SignInForm() {
           autoComplete="off"
           className={styles.InputFieldOne}
         />
-        <i
-          className="show-pass text-sm fa-solid fa-eye fa-eye-slash absolute top-1/2 transform -translate-y-1/2 right-3 cursor-pointer text-pong-primary hover:text-pong-accent transition"
-          id={showPasswordIconId}
-        ></i>
+        <i className={styles.showPassIcon} id={showPasswordIconId}></i>
       </div>
 
       <div className="flex justify-between items-center w-full text-sm text-pong-primary/70 mt-[-0.5rem]">
