@@ -2,11 +2,10 @@ import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { hydrateAllMembers } from "@/handlers/hydrate-all-members";
-import { hydrateFriends } from "@/services/get-friends";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { getCurrentUser } from "@/utils/user-store";
+import { hydrateFriends } from "@/handlers/hydrate-friends";
 import { Loader } from "@/components/common/Loader";
-import { fontSizes } from "@/styles/fontSizes";
 import { FriendsList } from "@/components/friends/FriendsList";
 import { AllMembersList } from "@/components/friends/AllMembersList";
 

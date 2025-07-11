@@ -3,8 +3,13 @@ import { TopBar } from "@/components/layout/TopBar";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
+import { BlockedList } from "@/components/settings/BlockedList";
+import { hydrateBlocked } from "@/handlers/hydrate-blocked";
 
 export function Blocked() {
+  setTimeout(() => {
+    hydrateBlocked();
+  }, 0);
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
@@ -24,13 +29,7 @@ export function Blocked() {
             <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
               You won’t hear from these players in chat or matches.
             </p>
-
-            <ul
-              id="muted-list"
-              className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`}
-            >
-              <li className="text-white text-center">Loading...</li>
-            </ul>
+            <BlockedList />
           </div>
         </main>
       </div>

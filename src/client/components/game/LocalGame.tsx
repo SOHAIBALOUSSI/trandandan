@@ -1,53 +1,57 @@
 import { navigateTo } from "@/utils/navigate-to-link";
 
 export function LocalGame() {
+  // Responsive and dynamic sizing
+  const vw = Math.max(
+    document.documentElement.clientWidth || 0,
+    window.innerWidth || 0
+  );
+  const vh = Math.max(
+    document.documentElement.clientHeight || 0,
+    window.innerHeight || 0
+  );
+  const canvasWidth = Math.min(1000, vw * 0.95);
+  const canvasHeight = Math.min(600, vh * 0.7);
+
   // Create a container element for the game
   const container = document.createElement("div");
   container.className =
-    "w-full h-[100vh] overflow-hidden bg-game-bg font-orbitron relative";
+    "w-full min-h-screen flex flex-col items-center justify-start bg-gradient-to-br from-pong-dark-bg via-pong-dark-secondary to-pong-dark-primary font-orbitron relative overflow-hidden";
 
-  // Add your game HTML structure
   container.innerHTML = `
-    <h1 class="text-center text-[100px] text-amber-50 top-20">
-      <span class="text-ping-yellow">PING</span> PONG
+    <button id="exit" class="absolute top-6 left-6 z-30 text-3xl text-pong-dark-secondary hover:text-pong-accent transition-colors p-2 rounded-full bg-black/30 shadow-lg focus:outline-none" title="Exit Game">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+
+    <h1 class="text-center text-[8vw] md:text-[100px] text-amber-50 mt-12 mb-4 drop-shadow-lg">
+      <span class="text-pong-dark-secondary">PING</span> PONG
     </h1>
-    <div class="flex items-center justify-center flex-col h-230">
-      <div class="score flex justify-center gap-60 w-full">
-        <h1 id="leftPlayerScoreLocal" class="text-amber-50 text-8xl">0</h1>
-        <h1 id="rightPlayerScoreLocal" class="text-amber-50 text-8xl">0</h1>
+    <div class="flex items-center justify-center flex-col w-full" style="min-height:${
+      canvasHeight + 100
+    }px;">
+      <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4">
+        <h1 id="leftPlayerScoreLocal" class="text-amber-50 text-5xl md:text-8xl">0</h1>
+        <h1 id="rightPlayerScoreLocal" class="text-amber-50 text-5xl md:text-8xl">0</h1>
       </div>
-      <canvas class="z-10 border-2 border-white rounded-4xl" id="canvas" width="1000" height="600"></canvas>
+      <div class="flex justify-center w-full">
+        <canvas class="z-10 border-2 border-white rounded-4xl shadow-xl bg-black/70"
+          id="canvas"
+          width="${canvasWidth}"
+          height="${canvasHeight}">
+        </canvas>
+      </div>
     </div>
-    <div class="absolute w-10 h-10 bg-red-500 opacity-10 animate-square top-0 left-0"></div>
-    <div class="absolute w-10 h-10 bg-blue-500 opacity-10 animate-square top-[45px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-green-500 opacity-10 animate-square top-[800px] left-[322px]"></div>
-    <div class="absolute w-10 h-10 bg-yellow-500 opacity-10 animate-square top-[550px] left-[800px]"></div>
-    <div class="absolute w-10 h-10 bg-purple-500 opacity-10 animate-square top-[90px] left-[1800px]"></div>
-    <div class="absolute w-10 h-10 bg-pink-500 opacity-10 animate-square top-[250px] left-[1656px]"></div>
-    <div class="absolute w-10 h-10 bg-teal-500 opacity-10 animate-square top-[750px] left-[1100px]"></div>
-    <div class="absolute w-10 h-10 bg-orange-500 opacity-10 animate-square top-[580px] left-[100px]"></div>
-    <div class="absolute w-10 h-10 bg-indigo-500 opacity-10 animate-square top-[475px] left-[1580px]"></div>
-    <div class="absolute w-10 h-10 bg-lime-500 opacity-10 animate-square top-[250px] left-[40px]"></div>
-    <div class="absolute w-10 h-10 bg-cyan-500 opacity-10 animate-square top-[390px] left-[1800px]"></div>
-    <div class="absolute w-10 h-10 bg-amber-500 opacity-10 animate-square top-[760px] left-[770px]"></div>
-    <div class="absolute w-10 h-10 bg-rose-500 opacity-10 animate-square top-[200px] left-[250px]"></div>
-    <div class="absolute w-10 h-10 bg-fuchsia-500 opacity-10 animate-square top-[890px] left-[1450px]"></div>
-    <div class="absolute w-10 h-10 bg-emerald-500 opacity-10 animate-square top-[250px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-violet-500 opacity-10 animate-square top-[15px] left-[1400px]"></div>
-    <div class="absolute w-10 h-10 bg-sky-500 opacity-10 animate-square top-[240px] left-[1500px]"></div>
-    <div class="absolute w-10 h-10 bg-amber-600 opacity-10 animate-square top-[100px] left-[320px]"></div>
-    <div class="absolute w-10 h-10 bg-pink-600 opacity-10 animate-square top-[750px] left-[1700px]"></div>
-    <div class="absolute w-10 h-10 bg-teal-600 opacity-10 animate-square top-[50px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-indigo-600 opacity-10 animate-square top-[190px] left-[450px]"></div>
-    <div id="gameTab" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
-      <div class="flex flex-col items-center justify-center h-full px-20 py-4">
-        <h1 class="text-5xl font-bold text-ping-yellow">GAME OVER</h1>
+	
+
+    <div id="gameTab"
+      class="h-80 w-11/12 max-w-lg bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 hidden z-20 shadow-2xl">
+      <div class="flex flex-col items-center justify-center h-full px-6 py-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-pong-dark-secondary mb-2">GAME OVER</h1>
         <h1 id="result" class="text-2xl mt-2 text-amber-50">WON</h1>
-        <button id="restart" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
+        <button id="restart" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-3 px-8 mt-5 rounded-2xl glow-animation text-lg md:text-xl shadow">
+          PLAY AGAIN
+        </button>
       </div>
-    </div>
-    <div id="exitTab" class="h-80 w-150 bg-game-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
-      <button id="exit" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
     </div>
   `;
 
@@ -107,6 +111,20 @@ export function LocalGame() {
 
     flow.animate();
   }
+
+  // Optionally, handle window resize for responsiveness
+  window.addEventListener("resize", () => {
+    const newVw = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+    const newVh = Math.max(
+      document.documentElement.clientHeight || 0,
+      window.innerHeight || 0
+    );
+    canvas.width = Math.min(1000, newVw * 0.95);
+    canvas.height = Math.min(600, newVh * 0.7);
+  });
 
   // Start the game when the container is added to DOM
   init();
@@ -371,4 +389,29 @@ interface Particle {
   alpha: number;
   velocityX: number;
   velocityY: number;
+}
+
+// below canvas div
+{
+  /* <div class="absolute w-10 h-10 bg-red-500 opacity-10 animate-square top-0 left-0"></div>
+<div class="absolute w-10 h-10 bg-blue-500 opacity-10 animate-square top-[45px] left-[500px]"></div>
+<div class="absolute w-10 h-10 bg-green-500 opacity-10 animate-square top-[800px] left-[322px]"></div>
+<div class="absolute w-10 h-10 bg-yellow-500 opacity-10 animate-square top-[550px] left-[800px]"></div>
+<div class="absolute w-10 h-10 bg-purple-500 opacity-10 animate-square top-[90px] left="[1800px]"></div>
+<div class="absolute w-10 h-10 bg-pink-500 opacity-10 animate-square top-[250px] left="[1656px]"></div>
+<div class="absolute w-10 h-10 bg-teal-500 opacity-10 animate-square top-[750px] left="[1100px]"></div>
+<div class="absolute w-10 h-10 bg-orange-500 opacity-10 animate-square top-[580px] left="[100px]"></div>
+<div class="absolute w-10 h-10 bg-indigo-500 opacity-10 animate-square top-[475px] left="[1580px]"></div>
+<div class="absolute w-10 h-10 bg-lime-500 opacity-10 animate-square top-[250px] left="[40px]"></div>
+<div class="absolute w-10 h-10 bg-cyan-500 opacity-10 animate-square top-[390px] left="[1800px]"></div>
+<div class="absolute w-10 h-10 bg-amber-500 opacity-10 animate-square top-[760px] left="[770px]"></div>
+<div class="absolute w-10 h-10 bg-rose-500 opacity-10 animate-square top-[200px] left="[250px]"></div>
+<div class="absolute w-10 h-10 bg-fuchsia-500 opacity-10 animate-square top-[890px] left="[1450px]"></div>
+<div class="absolute w-10 h-10 bg-emerald-500 opacity-10 animate-square top-[250px] left="[500px]"></div>
+<div class="absolute w-10 h-10 bg-violet-500 opacity-10 animate-square top="[15px] left="[1400px]"></div>
+<div class="absolute w-10 h-10 bg-sky-500 opacity-10 animate-square top="[240px] left="[1500px]"></div>
+<div class="absolute w-10 h-10 bg-amber-600 opacity-10 animate-square top="[100px] left="[320px]"></div>
+<div class="absolute w-10 h-10 bg-pink-600 opacity-10 animate-square top="[750px] left="[1700px]"></div>
+<div class="absolute w-10 h-10 bg-teal-600 opacity-10 animate-square top="[50px] left="[500px]"></div>
+<div class="absolute w-10 h-10 bg-indigo-600 opacity-10 animate-square top="[190px] left="[450px]"></div> */
 }

@@ -6,14 +6,14 @@ export function RemoteGame() {
   // Create a container element for the game
   const container = document.createElement("div");
   container.className =
-    "w-full h-[100vh] overflow-hidden bg-game-bg font-orbitron relative";
+    "w-full h-[100vh] overflow-hidden bg-pong-dark-bg font-orbitron relative";
 
   // Add your game HTML structure
   container.innerHTML = `
     <h1 class="text-center text-[100px] text-amber-50 top-20">
-      <span class="text-ping-yellow">PING</span> PONG
+      <span class="text-pong-dark-secondary">PING</span> PONG
     </h1>
-    <h3 class="text-center text-ping-yellow" id="playerSide">YOU ARE LEFT PLAYER</h3>
+    <h3 class="text-center text-pong-dark-secondary" id="playerSide">YOU ARE LEFT PLAYER</h3>
     <div class="flex items-center justify-center flex-col h-230">
       <div class="score flex justify-center gap-60 w-full">
         <h1 id="leftPlayerScoreRemote" class="text-amber-50 text-8xl">0</h1>
@@ -43,21 +43,21 @@ export function RemoteGame() {
     <div class="absolute w-10 h-10 bg-pink-600 opacity-10 animate-square top-[750px] left-[1700px]"></div>
     <div class="absolute w-10 h-10 bg-teal-600 opacity-10 animate-square top-[50px] left-[500px]"></div>
     <div class="absolute w-10 h-10 bg-indigo-600 opacity-10 animate-square top-[190px] left-[450px]"></div>
-    <div id="gameTab" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+    <div id="gameTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
-        <h1 class="text-5xl font-bold text-ping-yellow">GAME OVER</h1>
+        <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
         <h1 id="result" class="text-2xl mt-2 text-amber-50">WON</h1>
-        <button id="restartButton" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
+        <button id="restartButton" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
         </div>
         </div>
-        <div id="disconnected" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+        <div id="disconnected" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
           <div class="flex flex-col items-center justify-center h-full px-20 py-4">
-            <h1 class="text-5xl font-bold text-ping-yellow">GAME OVER</h1>
+            <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
             <h1 class="text-2xl mt-2 text-amber-50"> DISCONNECTED</h1>
           </div>
         </div>
-        <div id="exitTab" class="h-80 w-150 bg-game-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
-          <button id="exit" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
+        <div id="exitTab" class="h-80 w-150 bg-pong-dark-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
+          <button id="exit" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
         </div>
   `;
 
