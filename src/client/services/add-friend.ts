@@ -25,7 +25,7 @@ export function addFriend(id: number) {
         console.log(msg);
       }
     } catch (err) {
-      console.log(error);
+      console.log(err);
     }
   });
 }

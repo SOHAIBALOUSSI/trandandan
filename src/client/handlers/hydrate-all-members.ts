@@ -1,6 +1,4 @@
 import { UserProfile } from "types/types";
-import MaleAvatar from "@/assets/male.png";
-import FemaleAvatar from "@/assets/female.png";
 import { styles } from "@/styles/styles";
 import { getAllUsers } from "@/services/get-users";
 import { sendFriendRequest } from "@/services/send-friend-request";

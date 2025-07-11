@@ -4,12 +4,12 @@ export function Tournaments() {
   // Create container element
   const container = document.createElement("div");
   container.className =
-    "w-full h-[100vh] overflow-hidden bg-game-bg font-orbitron relative";
+    "w-full h-[100vh] overflow-hidden bg-pong-dark-bg font-orbitron relative";
 
   // Add HTML structure
   container.innerHTML = `
     <h1 class="text-center text-[100px] text-amber-50 top-20">
-      <span class="text-ping-yellow">PING</span> PONG
+      <span class="text-pong-dark-secondary">PING</span> PONG
     </h1>
     <div class="flex items-center justify-center flex-col h-230">
       <div class="score flex justify-center gap-60 w-full">
@@ -40,47 +40,47 @@ export function Tournaments() {
     <div class="absolute w-10 h-10 bg-pink-600 opacity-10 animate-square top-[750px] left-[1700px]"></div>
     <div class="absolute w-10 h-10 bg-teal-600 opacity-10 animate-square top-[50px] left-[500px]"></div>
     <div class="absolute w-10 h-10 bg-indigo-600 opacity-10 animate-square top-[190px] left-[450px]"></div>
-    <div id="gameTab" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+    <div id="gameTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 id="result" class="text-2xl mt-2 text-amber-50"></h1>
         <h1 id="currentMatch" class="text-2xl mt-2 text-amber-50"></h1>
-        <h1 id="prevMatch" class="text-ping-yellow"></h1>
-        <h1 id="nextMatch" class="text-ping-yellow"></h1>
-        <button id="restart" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation hidden">PLAY</button>
-        <button id="start" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY</button>
+        <h1 id="prevMatch" class="text-pong-dark-secondary"></h1>
+        <h1 id="nextMatch" class="text-pong-dark-secondary"></h1>
+        <button id="restart" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation hidden">PLAY</button>
+        <button id="start" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY</button>
       </div>
     </div>
     <!-- Result tab -->
-    <div id="resultTab" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+    <div id="resultTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 id="resultStat" class="text-2xl mt-2 text-amber-50"></h1>
-        <button id="restartTournoi" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
+        <button id="restartTournoi" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
       </div>
     </div>
     <!-- Tournament tab -->
-    <div id="tourTab" class="h-80 w-150 bg-game-bg border-2 border-ping-yellow rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] z-20">
+    <div id="tourTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] z-20">
       <div id="selectTab" class="flex flex-col items-center justify-center h-full px-20 py-4">
-        <h1 class="text-2xl text-ping-yellow">SELECT THE NUMBER OF PLAYERS</h1>
+        <h1 class="text-2xl text-pong-dark-secondary">SELECT THE NUMBER OF PLAYERS</h1>
         <div id="tournPlayerNumber" class="flex items-center justify-center gap-20">
-          <button id="eight_players" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">8</button>
-          <button id="four_Players" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">4</button>
+          <button id="eight_players" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">8</button>
+          <button id="four_Players" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">4</button>
         </div>
       </div>
       <div id="inputPlayers" class="h-full hidden">
         <div class="flex flex-col items-center justify-center mt-20 px-20 py-4">
-          <h1 class="text-2xl text-ping-yellow">ENTER THE PLAYER'S USERNAME</h1>
+          <h1 class="text-2xl text-pong-dark-secondary">ENTER THE PLAYER'S USERNAME</h1>
           <div class="flex items-center justify-center gap-20">
             <div>
               <label for="playerId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">PLAYER ID</label>
-              <input type="text" id="playerIdField" class="bg-game-bg border border-ping-yellow text-amber-50 text-sm rounded-lg focus:ring-ping-yellow focus:border-ping-yellow block w-full p-2.5 placeholder-amber-50" maxlength="15" pattern="[A-Za-z0-9]+" title="Only alphanumeric characters are allowed and up to 15 characters" required />
+              <input type="text" id="playerIdField" class="bg-pong-dark-bg border border-pong-dark-secondary text-amber-50 text-sm rounded-lg focus:ring-pong-dark-secondary focus:border-pong-dark-secondary block w-full p-2.5 placeholder-amber-50" maxlength="15" pattern="[A-Za-z0-9]+" title="Only alphanumeric characters are allowed and up to 15 characters" required />
             </div>
-            <button id="addPlayerBtn" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-5 mt-5 rounded-2xl glow-animation">ADD PLAYER</button>
+            <button id="addPlayerBtn" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-5 mt-5 rounded-2xl glow-animation">ADD PLAYER</button>
           </div>
         </div>
       </div>
     </div>
-    <div id="exitTab" class="h-80 w-150 bg-game-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
-      <button id="exit" class="cursor-pointer bg-ping-yellow text-game-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
+    <div id="exitTab" class="h-80 w-150 bg-pong-dark-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
+      <button id="exit" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
     </div>
   `;
 

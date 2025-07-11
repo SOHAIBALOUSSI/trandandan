@@ -1,11 +1,11 @@
 export function updateUsername(
   userId: number,
-  newUsername: string
+  username: string
 ): Promise<Response> {
   return fetch(`/profile/user/${userId}`, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: newUsername }),
+    body: JSON.stringify({ username }),
   });
 }
