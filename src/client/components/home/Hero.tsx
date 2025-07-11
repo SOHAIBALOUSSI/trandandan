@@ -37,7 +37,7 @@ export function Hero(props: { user: UserProfile }) {
           >
             “Every champion was once a contender who refused to give up.”
           </p>
-          <a href="my_chamber" className={styles.darkPrimaryBtn} data-link>
+          <a href="/my_profile" className={styles.darkPrimaryBtn} data-link>
             View Profile
           </a>
         </div>

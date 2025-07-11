@@ -211,3 +211,11 @@ export const FriendRejectRes: Record<string, string> = {
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
+
+export const FriendRemoveRes: Record<string, string> = {
+  FRIEND_REQUIRED: "Friend is required to remove a friend.",
+  FRIEND_INVALID: "Invalid friend. Please check the user ID.",
+  FRIEND_REMOVED: "Friend removed successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};

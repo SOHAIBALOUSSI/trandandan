@@ -23,9 +23,10 @@ import { RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
 import { setCurrentUser } from "@/utils/user-store";
+import { MemberProfile } from "@/views/MemberProfile";
 
 // Routes and their corresponding components
-const routes: Record<string, () => HTMLElement> = {
+const routes: Record<string, (id?: number) => HTMLElement> = {
   welcome: Welcome,
   signin: Signin,
   signup: Signup,
@@ -37,12 +38,11 @@ const routes: Record<string, () => HTMLElement> = {
   chamber: Dashboard,
   lounge: Chat,
   members: Friends,
-  profile: Profile,
   exit: Logout,
   duel: LocalGame,
   remote: RemoteGame,
   tournament: Tournaments,
-  my_chamber: Profile,
+  my_profile: Profile,
   security: Security,
   change_password: UpdateCredentialsPassword,
   change_email: UpdateCredentialsEmail,
@@ -78,12 +78,21 @@ export async function router(): Promise<void> {
   const app = document.getElementById("app") as HTMLDivElement;
   if (!app) return;
 
-  const path = location.pathname.slice(1) || "welcome";
+  let path = location.pathname.slice(1) || "welcome";
+  let memberId: number | undefined;
+
+  // Detect /members/:id
+  const profileMatch = path.match(/^members\/(\d+)$/);
+  if (profileMatch) {
+    console.log(`Detected member profile route`);
+    memberId = Number(profileMatch[1]);
+    path = "member-profile";
+  }
+
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
 
   let authed = false;
-
   if (!isPublic) {
     authed = await isAuthenticated();
     if (!authed) {
@@ -94,7 +103,7 @@ export async function router(): Promise<void> {
   }
 
   // Handle unknown routes
-  if (!render) {
+  if (!render && path !== "member-profile") {
     isPublic
       ? history.replaceState(null, "", "/welcome")
       : history.replaceState(null, "", "/salon");
@@ -108,7 +117,12 @@ export async function router(): Promise<void> {
   }
 
   // Render the current route's component
-  app.appendChild(render());
+  if (path === "member-profile" && memberId) {
+    console.log(`Rendering member profile for ID: ${memberId}`);
+    app.appendChild(MemberProfile(memberId));
+  } else {
+    app.appendChild(render());
+  }
 
   // Activate nav link
   document

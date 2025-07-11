@@ -3,12 +3,14 @@ import { styles } from "@/styles/styles";
 import { getAllUsers } from "@/services/get-users";
 import { sendFriendRequest } from "@/services/send-friend-request";
 import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAllFriends } from "@/services/get-friends";
 
 export async function hydrateAllMembers(currentUser: UserProfile) {
   const list = document.getElementById("all-members-list") as HTMLUListElement;
   if (!list) return;
 
   const users = await getAllUsers();
+  const friends = await getAllFriends();
 
   if (!users.length || users.length === 1) {
     list.innerHTML = `<li class="text-white text-center mt-4">No members found.</li>`;
@@ -18,9 +20,10 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
   list.innerHTML = "";
 
   users.forEach((user: UserProfile) => {
-    if (user.id !== currentUser.id) {
+    if (user.id !== currentUser.id && !friends.includes(user.id)) {
       const li = document.createElement("li");
-      li.className = "flex items-center justify-between gap-4 p-3 rounded-md";
+      li.className =
+        "flex items-center justify-between gap-4 py-2 border-b border-white/10";
 
       const avatar = document.createElement("img");
       avatar.src = getAvatarUrl(user);
@@ -42,13 +45,24 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
         sendFriendRequest(user.id);
       };
 
+      const link = document.createElement("a");
+      link.href = `members/${user.id}`;
+      link.setAttribute("data-link", "true");
+      link.className = styles.darkPrimaryBtn;
+      link.textContent = "View Profile";
+
       const left = document.createElement("div");
-      left.className = "flex items-center space-x-4";
+      left.className = "flex items-center gap-4";
       left.appendChild(avatar);
       left.appendChild(name);
 
+      const right = document.createElement("div");
+      right.className = "flex items-center gap-4";
+      right.appendChild(btn);
+      right.appendChild(link);
+
       li.appendChild(left);
-      li.appendChild(btn);
+      li.appendChild(right);
       list.appendChild(li);
     }
   });
