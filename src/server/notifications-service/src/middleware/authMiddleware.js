@@ -4,7 +4,7 @@ import { parse } from 'cookie'
 export function getAuthCookies(request) {
     const authCookies = request.headers.cookie || '';
     const cookies = parse(authCookies);
-    if (!cookies.accessToken || !cookies.refreshToken)
+    if (!cookies || !cookies.accessToken || !cookies.refreshToken)
         return null;
     return {
         accessToken: cookies.accessToken,
