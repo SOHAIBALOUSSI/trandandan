@@ -109,7 +109,7 @@ export async function updateUsernameById(db, username, id) {
 }
 
 export async function deleteOAuthIdentitybyUID(db, id) {
-    await db.run('DELETE FROM oauth-identity WHERE user_id = ?', 
+    await db.run('DELETE FROM oauth_identity WHERE user_id = ?', 
         [id]
     );
 }

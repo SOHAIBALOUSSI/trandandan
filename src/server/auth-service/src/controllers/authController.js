@@ -404,6 +404,7 @@ export async function verifyUpdateCredentialsHandler(request, reply) {
                 return reply.code(400).send(createResponse(400, 'EMAIL_EXISTS'));
             this.rabbit.produceMessage({
                 type: 'UPDATE',
+                userId: user.id,
                 email: pending_credentials.new_email
             }, 'profile.email.updated');
             await updateEmailById(this.db, pending_credentials.new_email, user.id);
