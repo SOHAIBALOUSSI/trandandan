@@ -81,7 +81,7 @@ export function MemberCard(props: { user: UserProfile }) {
       });
     }
 
-    uploadAvatar({ user });
+    uploadAvatar();
   }, 0);
 
   return (
