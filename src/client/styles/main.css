@@ -309,3 +309,24 @@ a {
 .animate-square:nth-child(21) {
   animation-delay: 10s;
 }
+
+/* in your global CSS or <style> tag */
+
+/* Game Light Theme */
+[data-theme="light"] {
+  background: linear-gradient(to bottom right, #f9f9f9, #e3e3e3);
+  color: #1a1a1a;
+}
+[data-theme="light"] h1,
+[data-theme="light"] button,
+[data-theme="light"] canvas,
+[data-theme="light"] .score h1 {
+  color: #1a1a1a !important;
+  background-color: #fff !important;
+}
+
+/* Game Dark Theme */
+[data-theme="dark"] {
+  background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a);
+  color: #fff;
+}
