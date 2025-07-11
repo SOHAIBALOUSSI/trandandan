@@ -6,8 +6,6 @@ Elite		Top 10			fa-trophy			text-orange-400		🥇 Elite Contender
 Veteran		Top 20			fa-medal			text-purple-400		🎖️ Veteran Player
 Challenger	Below Top 20	fa-user-shield		text-pong-secondary	🎯 Challenger
 
-- show password option in all passwords input
 - toast for all type of notifications
-- fix avatar update
 - show a timer when dealing with otp code
 - update email in profile

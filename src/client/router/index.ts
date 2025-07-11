@@ -47,7 +47,7 @@ const routes: Record<string, () => HTMLElement> = {
   change_password: UpdateCredentialsPassword,
   change_email: UpdateCredentialsEmail,
   verification: VerifyUpdateCredentials,
-  blocked: Blocked,
+  muted_players: Blocked,
   wipe_account: DeleteAccount,
   notifs: Notifications,
   checkout: Logout,

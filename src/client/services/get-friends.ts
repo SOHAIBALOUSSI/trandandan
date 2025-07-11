@@ -42,11 +42,6 @@ export async function hydrateFriends() {
     li.className = "flex items-center justify-between gap-4 py-2";
 
     const avatar = document.createElement("img");
-    avatar.src = user.avatar_url
-      ? user.avatar_url
-      : user.gender === "M"
-      ? MaleAvatar
-      : FemaleAvatar;
     avatar.alt = `${user.username}'s avatar`;
     avatar.className =
       "w-10 h-10 rounded-full object-cover border border-pong-accent/30 bg-gray-700";

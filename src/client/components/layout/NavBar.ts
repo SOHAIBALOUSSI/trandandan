@@ -118,7 +118,7 @@ export function NavBar() {
   // Settings items
   const settingsItems = [
     { label: "Access Keys", path: "/security", icon: "fa-lock" },
-    { label: "Muted Players", path: "/blocked", icon: "fa-user-slash" },
+    { label: "Muted Players", path: "/muted_players", icon: "fa-user-slash" },
     { label: "Wipe Account", path: "/wipe_account", icon: "fa-trash" },
   ];
 

@@ -4,6 +4,7 @@ import FemaleAvatar from "@/assets/female.png";
 import { styles } from "@/styles/styles";
 import { getAllUsers } from "@/services/get-users";
 import { sendFriendRequest } from "@/services/send-friend-request";
+import { getAvatarUrl } from "@/utils/get-avatar";
 
 export async function hydrateAllMembers(currentUser: UserProfile) {
   const list = document.getElementById("all-members-list") as HTMLUListElement;
@@ -24,11 +25,7 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
       li.className = "flex items-center justify-between gap-4 p-3 rounded-md";
 
       const avatar = document.createElement("img");
-      avatar.src = user.avatar_url
-        ? user.avatar_url
-        : user.gender === "M"
-        ? (user.avatar_url = MaleAvatar)
-        : FemaleAvatar;
+      avatar.src = getAvatarUrl(user);
       avatar.alt = `${user.username}'s avatar`;
       avatar.className =
         "w-10 h-10 rounded-full object-cover border border-pong-accent/30 bg-gray-700";
