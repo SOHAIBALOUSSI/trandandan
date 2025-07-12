@@ -33,12 +33,12 @@ export function Profile() {
             subtitle="Review your identity, matches, and achievements."
           />
 
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 w-full">
+          <div className="grid grid-cols-1 gap-8 w-full">
             <div className="order-1 flex flex-col items-center space-y-6 gap-4">
-              <MemberCard user={user} />
+              <MemberCard user={user} showUpdateOptions={true} />
             </div>
 
-            <div className="order-2 space-y-6 flex flex-col items-center gap-4">
+            <div className="order-2 space-y-6 flex flex-col items-center gap-4 w-full max-w-5xl mx-auto">
               <RecentMatches />
               <BadgesAndTrophies />
             </div>

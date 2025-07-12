@@ -4,9 +4,15 @@ import { displayToast } from "@/utils/display-toast";
 import { UpdateUserProfileRes } from "@/utils/response-messages";
 import { uploadAvatar } from "@/services/upload-avatar";
 
-export function MemberCard(props: { user: UserProfile }) {
-  const { user } = props;
+interface MemberCardProps {
+  user: UserProfile;
+  showUpdateOptions?: boolean;
+}
 
+export function MemberCard({
+  user,
+  showUpdateOptions = false,
+}: MemberCardProps) {
   const joined = user.created_at
     ? new Date(user.created_at).toLocaleDateString("en-GB", {
         year: "numeric",
@@ -16,72 +22,74 @@ export function MemberCard(props: { user: UserProfile }) {
     : null;
 
   setTimeout(() => {
-    const updateBtn = document.getElementById("update-username-btn");
-    const usernameEl = document.getElementById("member-username");
+    if (showUpdateOptions) {
+      const updateBtn = document.getElementById("update-username-btn");
+      const usernameEl = document.getElementById("member-username");
 
-    if (updateBtn && usernameEl) {
-      updateBtn.addEventListener("click", () => {
-        usernameEl.setAttribute("contenteditable", "true");
-        usernameEl.focus();
+      if (updateBtn && usernameEl) {
+        updateBtn.addEventListener("click", () => {
+          usernameEl.setAttribute("contenteditable", "true");
+          usernameEl.focus();
 
-        const save = () => {
-          const newUsername = usernameEl.textContent?.trim();
+          const save = () => {
+            const newUsername = usernameEl.textContent?.trim();
 
-          if (!newUsername) {
-            displayToast("Username cannot be empty.", "error");
-            usernameEl.removeAttribute("contenteditable");
-            usernameEl.textContent = user.username;
-            return;
-          }
-
-          if (newUsername !== user.username) {
-            updateUsername(user.id, newUsername)
-              .then((res) =>
-                res.json().then((data) => ({ status: res.status, data }))
-              )
-              .then(({ status, data }) => {
-                if (status === 200) {
-                  displayToast("Username updated successfully!", "success");
-                } else {
-                  const msg =
-                    UpdateUserProfileRes[data.code] ||
-                    "Failed to update username.";
-                  displayToast(msg, "error");
-                  usernameEl.textContent = user.username;
-                }
-              })
-              .catch(() => {
-                displayToast(
-                  UpdateUserProfileRes.INTERNAL_SERVER_ERROR,
-                  "error"
-                );
-                usernameEl.textContent = user.username;
-              })
-              .finally(() => {
-                usernameEl.removeAttribute("contenteditable");
-              });
-          } else {
-            displayToast("No changes made.", "warning");
-            usernameEl.removeAttribute("contenteditable");
-          }
-        };
-
-        usernameEl.addEventListener("blur", save, { once: true });
-
-        usernameEl.addEventListener(
-          "keydown",
-          (e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              usernameEl.blur();
+            if (!newUsername) {
+              displayToast("Username cannot be empty.", "error");
+              usernameEl.removeAttribute("contenteditable");
+              usernameEl.textContent = user.username;
+              return;
             }
-          },
-          { once: true }
-        );
-      });
-    }
 
-    uploadAvatar();
+            if (newUsername !== user.username) {
+              updateUsername(user.id, newUsername)
+                .then((res) =>
+                  res.json().then((data) => ({ status: res.status, data }))
+                )
+                .then(({ status, data }) => {
+                  if (status === 200) {
+                    displayToast("Username updated successfully!", "success");
+                  } else {
+                    const msg =
+                      UpdateUserProfileRes[data.code] ||
+                      "Failed to update username.";
+                    displayToast(msg, "error");
+                    usernameEl.textContent = user.username;
+                  }
+                })
+                .catch(() => {
+                  displayToast(
+                    UpdateUserProfileRes.INTERNAL_SERVER_ERROR,
+                    "error"
+                  );
+                  usernameEl.textContent = user.username;
+                })
+                .finally(() => {
+                  usernameEl.removeAttribute("contenteditable");
+                });
+            } else {
+              displayToast("No changes made.", "warning");
+              usernameEl.removeAttribute("contenteditable");
+            }
+          };
+
+          usernameEl.addEventListener("blur", save, { once: true });
+
+          usernameEl.addEventListener(
+            "keydown",
+            (e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                usernameEl.blur();
+              }
+            },
+            { once: true }
+          );
+        });
+      }
+
+      uploadAvatar();
+    }
   }, 0);
 
   return (
@@ -99,16 +107,20 @@ export function MemberCard(props: { user: UserProfile }) {
               className="w-full h-full rounded-full object-cover"
               id="member-avatar"
             />
-            <button
-              id="upload-avatar-btn"
-              className="absolute -bottom-1 -right-1 bg-pong-dark-accent hover:bg-pong-accent text-white rounded-full p-2 shadow-md transition-all duration-200 group"
-              aria-label="Edit Avatar"
-            >
-              <i className="fa-solid fa-pen text-xs"></i>
-              <span className="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
-                Change Avatar
-              </span>
-            </button>
+            {showUpdateOptions ? (
+              <button
+                id="upload-avatar-btn"
+                className="absolute -bottom-1 -right-1 bg-pong-dark-accent hover:bg-pong-accent text-white rounded-full p-2 shadow-md transition-all duration-200 group"
+                aria-label="Edit Avatar"
+              >
+                <i className="fa-solid fa-pen text-xs"></i>
+                <span className="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
+                  Change Avatar
+                </span>
+              </button>
+            ) : (
+              <br className="hidden" />
+            )}
           </div>
         </div>
 
@@ -124,22 +136,26 @@ export function MemberCard(props: { user: UserProfile }) {
               >
                 {user.username}
               </span>
-              <button
-                id="update-username-btn"
-                className="text-pong-dark-primary hover:text-pong-accent p-2 rounded-full transition group"
-                aria-label="Edit Username"
-              >
-                <i className="fa-solid fa-pen text-sm"></i>
-                <span className="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
-                  Edit Username
-                </span>
-              </button>
+              {showUpdateOptions ? (
+                <button
+                  id="update-username-btn"
+                  className="text-pong-dark-primary hover:text-pong-accent p-2 rounded-full transition group"
+                  aria-label="Edit Username"
+                >
+                  <i className="fa-solid fa-pen text-sm"></i>
+                  <span className="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
+                    Edit Username
+                  </span>
+                </button>
+              ) : (
+                <br className="hidden" />
+              )}
             </div>
           </div>
 
           <div>
             <span className="block uppercase text-pong-secondary tracking-widest mb-1 text-xs md:text-sm">
-              Email
+              contact address
             </span>
             <span className="block font-medium text-pong-dark-primary/80 border-b border-pong-dark-highlight pb-1 break-all text-lg md:text-xl normal-case">
               {user.email}

@@ -9,3 +9,4 @@ Challenger	Below Top 20	fa-user-shield		text-pong-secondary	🎯 Challenger
 - toast for all type of notifications
 - show a timer when dealing with otp code
 - option to not show update in member card 
+- give names to ranking (ie: 1 - gold / 2 - bronze ...)

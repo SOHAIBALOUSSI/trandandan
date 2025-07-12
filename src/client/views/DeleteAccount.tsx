@@ -32,7 +32,7 @@ export function DeleteAccount() {
               halls of the lounge.
             </p>
             <p
-              className={`text-pong-dark-primary/80 ${fontSizes.smallTextFontSize}`}
+              className={`text-pong-dark-secondary/80 ${fontSizes.smallTextFontSize}`}
             >
               Leave a parting message, if you wish—something for your fellow
               champions to remember.

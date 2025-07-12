@@ -66,10 +66,7 @@ const publicRoutes: string[] = [
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
-  if (profile) {
-    setCurrentUser(profile);
-    return true;
-  }
+  if (profile) return true;
   return false;
 }
 

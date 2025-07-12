@@ -21,6 +21,8 @@ export const RegisterRes: Record<string, string> = {
   PASSWORD_POLICY:
     "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
   USER_EXISTS: "This racket is already in the club. Try signing in instead.",
+  FST_ERR_VALIDATION:
+    "Your credentials need a bit more polish. Check your input and try again.",
   USER_REGISTERED: "Welcome aboard! Sign in to unlock your club experience.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
@@ -166,6 +168,8 @@ export const UpdateUserProfileRes: Record<string, string> = {
   PROFILE_NOT_FOUND: "Profile not found. Please check your request.",
   USERNAME_EXISTS: "This username is already taken. Please choose another one.",
   MISSING_FIELDS: "All fields are required. Please fill them in.",
+  FST_ERR_VALIDATION:
+    "Your credentials need a bit more polish. Check your input and try again.",
   ZERO_CHANGES: "No changes detected. Please modify at least one field.",
   PROFILE_UPDATED: "Your profile has been successfully updated.",
   INTERNAL_SERVER_ERROR:
@@ -191,6 +195,7 @@ export const GetUserAvatarRes: Record<string, string> = {
 export const FriendRequestRes: Record<string, string> = {
   ADDRESSEE_REQUIRED: "Addressee is required to send a friend request.",
   ADDRESSEE_INVALID: "Invalid addressee. Please check the user ID.",
+  FRIEND_REQUEST_ALREADY_SENT: "Friend request already sent to this user.",
   FRIEND_REQUEST_SENT: "Friend request sent successfully.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
