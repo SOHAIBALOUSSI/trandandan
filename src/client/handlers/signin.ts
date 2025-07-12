@@ -2,6 +2,7 @@ import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { LoginRes } from "@/utils/response-messages";
 import { startNotificationListener } from "./notifications";
+import { startChatListener } from "./chat";
 
 export function handleSignIn() {
   const signInForm = document.getElementById("signin-form") as HTMLFormElement;
@@ -67,6 +68,7 @@ export function handleSignIn() {
         localStorage.removeItem("loginInput");
 
         startNotificationListener();
+        startChatListener();
 
         setTimeout(() => {
           displayToast(LoginRes.USER_LOGGED_IN, "success");

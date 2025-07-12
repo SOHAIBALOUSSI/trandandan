@@ -570,7 +570,7 @@ class FlowField {
         );
       }
     } catch (err) {
-      console.error("Error parsing game state:", error);
+      console.error("Error parsing game state:", err);
       this.deps.disconnectedResult.style.display = "block";
     }
   }

@@ -28,6 +28,14 @@ export function TopBar() {
       badge.classList.add("text-black", "bg-pong-dark-primary");
       badge.classList.remove("text-white", "bg-pong-accent");
     }
+
+    const notifContainer = document.getElementById("notif-container");
+    const btn = document.getElementById("bell-btn") as HTMLButtonElement;
+    if (!notifContainer || !btn) return;
+
+    btn.addEventListener("click", () => {
+      notifContainer.classList.toggle("hidden");
+    });
   }, 0);
 
   return (
@@ -40,15 +48,24 @@ export function TopBar() {
       />
 
       <div className="flex items-center gap-8">
-        <button className="relative text-xl text-pong-dark-primary hover:text-pong-dark-accent">
-          <a href="/notifs" data-link>
+        <button
+          id="bell-btn"
+          className="relative text-xl text-pong-dark-primary hover:text-pong-dark-accent"
+        >
+          {/* <a href="/notifs" data-link> */}
             <i className="fa-regular fa-bell"></i>
             <span
               id="notif-badge"
               className="absolute -top-1 -right-2 bg-pong-dark-primary text-black text-xs rounded-full px-2 py-0.5"
             ></span>
-          </a>
-        </button> 
+          {/* </a> */}
+          <div
+            id="notif-container"
+            className="absolute bg-pong-dark-primary text-black w-[450px] hidden right-0 shadow-lg rounded-lg p-4 mt-2"
+          >
+            <h3 className="font-semibold mb-2">Notifications</h3>
+          </div>
+        </button>
         <button className="text-xl text-pong-dark-primary hover:text-pong-dark-accent">
           <a href="/my_profile" data-link>
             <i className="fa-regular fa-user"></i>

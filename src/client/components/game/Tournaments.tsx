@@ -498,7 +498,7 @@ class FlowFieldLocal {
         this.setInitialStat();
       }
     } catch (err) {
-      console.error("Error updating game state:", error);
+      console.error("Error updating game state:", err);
     }
   }
 

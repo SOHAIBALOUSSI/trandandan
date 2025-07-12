@@ -41,6 +41,44 @@ export function startNotificationListener() {
         unseenCount++;
         updateCounter();
       }
+
+      //  i will add notification to the UI based on type
+      switch (type) {
+        case "FRIEND_REQUEST_SENT":
+          displayToast(
+            `New friend request from ${notif.sender_id}.`,
+            "warning"
+          );
+          break;
+        case "FRIEND_REQUEST_ACCEPTED":
+          displayToast(
+            `Your friend request to ${notif.recipient_id} was accepted.`,
+            "success"
+          );
+          break;
+        case "FRIEND_REQUEST_REJECTED":
+          displayToast(
+            `Your friend request to ${notif.recipient_id} was declined.`,
+            "warning"
+          );
+          break;
+        case "FRIEND_REMOVED":
+          displayToast(
+            `${notif.exFriendId} has removed you from their friends list.`,
+            "error"
+          );
+          break;
+        case "MESSAGE_RECEIVED":
+          displayToast("You have a new message!", "warning");
+          break;
+        default:
+          //   Remove this later
+          displayToast(
+            `Unknown notification type: ${type}. Please check the system.`,
+            "error"
+          );
+          break;
+      }
     } catch (error) {
       displayToast(
         "The club’s lights are out at the moment. Try again shortly.",

@@ -59,20 +59,20 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  # chat:
-  #   container_name: chat-service
-  #   build: src/server/chat-service
-  #   image: chat-service
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - trandenden-net
-  #   ports:
-  #     - "3004:3004"
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
+  chat:
+    container_name: chat-service
+    build: src/server/chat-service
+    image: chat-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - trandenden-net
+    ports:
+      - "3004:3004"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   redis:
     container_name: redis
