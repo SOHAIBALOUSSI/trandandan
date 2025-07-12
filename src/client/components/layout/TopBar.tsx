@@ -52,13 +52,13 @@ export function TopBar() {
           id="bell-btn"
           className="relative text-xl text-pong-dark-primary hover:text-pong-dark-accent"
         >
-          {/* <a href="/notifs" data-link> */}
+          <a href="/notifs" data-link>
             <i className="fa-regular fa-bell"></i>
             <span
               id="notif-badge"
               className="absolute -top-1 -right-2 bg-pong-dark-primary text-black text-xs rounded-full px-2 py-0.5"
             ></span>
-          {/* </a> */}
+          </a>
           <div
             id="notif-container"
             className="absolute bg-pong-dark-primary text-black w-[450px] hidden right-0 shadow-lg rounded-lg p-4 mt-2"

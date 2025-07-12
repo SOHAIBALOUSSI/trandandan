@@ -1,10 +1,13 @@
-import { ChatMessage } from "types/types";
+import { MessageSent } from "types/types";
 import { displayToast } from "@/utils/display-toast";
 
 let ws: WebSocket | null = null;
+let onMessageCallback: ((msg: MessageSent) => void) | null = null;
 
-export function startChatListener() {
+export function startChatListener(onMessage: (msg: MessageSent) => void) {
   if (ws && ws.readyState === WebSocket.OPEN) return;
+
+  onMessageCallback = onMessage;
 
   ws = new WebSocket("ws://localhost:3004");
 
@@ -13,12 +16,9 @@ export function startChatListener() {
   };
 
   ws.onmessage = (event: MessageEvent) => {
-    const chatDiv = document.getElementById("chat-messages") as HTMLDivElement;
-    if (!chatDiv) return;
-
     try {
-      const message: ChatMessage = JSON.parse(event.data);
-      console.log("Received chat message:", message);
+      const message: MessageSent = JSON.parse(event.data);
+      if (onMessageCallback) onMessageCallback(message);
     } catch (error) {
       displayToast(
         "The club’s lights are out at the moment. Try again shortly.",
@@ -38,4 +38,17 @@ export function startChatListener() {
     console.log("Chat Websocket connection closed.");
     ws = null;
   };
+}
+
+export function sendChatMessage(msg: Omit<MessageSent, "message_id">) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(
+      JSON.stringify({
+        ...msg,
+        type: "MESSAGE_SENT",
+      })
+    );
+  } else {
+    displayToast("Chat connection not established.", "error");
+  }
 }

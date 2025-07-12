@@ -40,6 +40,10 @@ export async function hydrateFriends() {
     left.appendChild(avatar);
     left.appendChild(name);
 
+
+	const right = document.createElement("div");
+	right.className = "flex items-center gap-4";
+
     const unfriendBtn = document.createElement("button");
     unfriendBtn.className = styles.darkPrimaryBtn;
     unfriendBtn.textContent = "Unfriend";
@@ -50,8 +54,17 @@ export async function hydrateFriends() {
       await removeFriend(user.id);
     };
 
+    const link = document.createElement("a");
+    link.href = `lounge/${user.id}`;
+    link.setAttribute("data-link", "true");
+    link.className = styles.darkPrimaryBtn;
+    link.textContent = "Chat";
+
+	right.appendChild(unfriendBtn);
+	right.appendChild(link);
+
     li.appendChild(left);
-    li.appendChild(unfriendBtn);
+    li.appendChild(right);
     list.appendChild(li);
   }
 }

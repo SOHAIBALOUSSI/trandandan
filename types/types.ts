@@ -68,15 +68,15 @@ export type Notification =
       actualMessage: string;
     };
 
-export type ChatMessage =
-  | {
-      type: "MESSAGE_SENT";
-      sender_id: number;
-      recipient_id: number;
-      message_id: number;
-      content: string;
-    }
-  | {
-      type: "MESSAGE_READ";
-      message_id: number;
-    };
+export type MessageSent = {
+  type: "MESSAGE_SENT";
+  sender_id: number;
+  recipient_id: number;
+  message_id: number;
+  content: string;
+};
+
+export type MessageRead = {
+  type: "MESSAGE_READ";
+  message_id: number;
+};

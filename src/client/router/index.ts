@@ -9,7 +9,9 @@ import { Game } from "@/views/Game";
 import { Dashboard } from "@/views/Dashboard";
 import { Friends } from "@/views/Friends";
 import { Chat } from "@/views/Chat";
+import { Lounge } from "@/views/Lounge";
 import { Profile } from "@/views/Profile";
+import { MemberProfile } from "@/views/MemberProfile";
 import { Security } from "@/views/Security";
 import { Blocked } from "@/views/Blocked";
 import { DeleteAccount } from "@/views/DeleteAccount";
@@ -22,8 +24,6 @@ import { LocalGame } from "@/components/game/LocalGame";
 import { RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
-import { setCurrentUser } from "@/utils/user-store";
-import { MemberProfile } from "@/views/MemberProfile";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
@@ -36,7 +36,7 @@ const routes: Record<string, (id?: number) => HTMLElement> = {
   salon: Home,
   arena: Game,
   chamber: Dashboard,
-  lounge: Chat,
+  lounge: Lounge,
   members: Friends,
   exit: Logout,
   duel: LocalGame,
@@ -76,12 +76,19 @@ export async function router(): Promise<void> {
   if (!app) return;
 
   let path = location.pathname.slice(1) || "welcome";
+  let chatFriendId: number | undefined;
   let memberId: number | undefined;
+
+  // Detect /chat/:id
+  const chatMatch = path.match(/^lounge\/(\d+)$/);
+  if (chatMatch) {
+    chatFriendId = Number(chatMatch[1]);
+    path = "chat-friend";
+  }
 
   // Detect /members/:id
   const profileMatch = path.match(/^members\/(\d+)$/);
   if (profileMatch) {
-    console.log(`Detected member profile route`);
     memberId = Number(profileMatch[1]);
     path = "member-profile";
   }
@@ -100,7 +107,7 @@ export async function router(): Promise<void> {
   }
 
   // Handle unknown routes
-  if (!render && path !== "member-profile") {
+  if (!render && path !== "member-profile" && path !== "chat-friend") {
     isPublic
       ? history.replaceState(null, "", "/welcome")
       : history.replaceState(null, "", "/salon");
@@ -114,8 +121,10 @@ export async function router(): Promise<void> {
   }
 
   // Render the current route's component
-  if (path === "member-profile" && memberId) {
-    console.log(`Rendering member profile for ID: ${memberId}`);
+  if (path === "chat-friend" && chatFriendId) {
+    const chatView = await Chat(chatFriendId);
+    app.appendChild(chatView);
+  } else if (path === "member-profile" && memberId) {
     app.appendChild(MemberProfile(memberId));
   } else {
     app.appendChild(render());
