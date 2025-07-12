@@ -4,22 +4,29 @@ import { displayToast } from "@/utils/display-toast";
 import { UpdateUserProfileRes } from "@/utils/response-messages";
 import { uploadAvatar } from "@/services/upload-avatar";
 
-interface MemberCardProps {
-  user: UserProfile;
-  showUpdateOptions?: boolean;
+function getUserRank(rank: number): string {
+  if (rank <= 5) {
+    return "Club Champion";
+  } else if (rank <= 10) {
+    return "Elite Contender";
+  } else if (rank <= 20) {
+    return "Veteran Player";
+  } else {
+    return "Challenger";
+  }
 }
 
-export function MemberCard({
-  user,
-  showUpdateOptions = false,
-}: MemberCardProps) {
-  const joined = user.created_at
-    ? new Date(user.created_at).toLocaleDateString("en-GB", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      })
-    : null;
+export function MemberCard(props: {
+  user: UserProfile;
+  showUpdateOptions: boolean;
+}) {
+  const { user, showUpdateOptions } = props;
+
+  const joined = new Date(user.created_at).toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   setTimeout(() => {
     if (showUpdateOptions) {
@@ -129,7 +136,7 @@ export function MemberCard({
             <span className="block uppercase text-pong-secondary tracking-widest mb-1 text-xs md:text-sm">
               Username
             </span>
-            <div className="flex items-center justify-between group border-b-2 border-pong-accent/40 pb-1">
+            <div className="flex items-center justify-between group border-b border-pong-dark-highlight pb-1">
               <span
                 id="member-username"
                 className="font-bold text-pong-dark-primary break-words normal-case text-lg md:text-xl w-full"
@@ -176,10 +183,10 @@ export function MemberCard({
               Sold: {user.solde}
             </span>
             <span className="bg-pong-highlight/20 text-pong-highlight px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              Grade: {user.level}
+              Level: {user.level}
             </span>
             <span className="bg-yellow-400/20 text-yellow-300 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              Rank: {user.rank}
+              {getUserRank(user.rank)}
             </span>
           </div>
         </div>

@@ -203,17 +203,6 @@ a {
 }
 /* End Game Mode Design */
 
-/* Mobile First Approach */
-@media (min-width: 576px) {
-}
-@media (min-width: 768px) {
-}
-@media (min-width: 992px) {
-}
-@media (min-width: 1200px) {
-  /* Extra large screens */
-}
-
 /* Start Game Design */
 @keyframes glowPulse {
   0%,
@@ -309,7 +298,6 @@ a {
 .animate-square:nth-child(21) {
   animation-delay: 10s;
 }
-
 /* in your global CSS or <style> tag */
 
 /* Game Light Theme */

@@ -29,7 +29,7 @@ export function MemberProfile(id: number) {
     const main = document.createElement("main");
     main.className = styles.pageContent;
 
-    main.appendChild(MemberCard({ user }));
+    main.appendChild(MemberCard({ user, showUpdateOptions: false }));
 
     const actions = document.createElement("div");
     actions.className = "flex flex-wrap gap-3 mt-8 justify-center";

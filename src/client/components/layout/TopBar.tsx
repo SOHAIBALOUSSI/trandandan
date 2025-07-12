@@ -48,7 +48,7 @@ export function TopBar() {
               className="absolute -top-1 -right-2 bg-pong-dark-primary text-black text-xs rounded-full px-2 py-0.5"
             ></span>
           </a>
-        </button>
+        </button> 
         <button className="text-xl text-pong-dark-primary hover:text-pong-dark-accent">
           <a href="/my_profile" data-link>
             <i className="fa-regular fa-user"></i>

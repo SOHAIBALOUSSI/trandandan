@@ -41,11 +41,32 @@ export type TwoFAMethod = {
   is_primary: 1 | 0;
 };
 
-export type FriendNotification = {
-  recipient_id: number;
-  sender_id: number;
-  type: string;
-};
+export type Notification =
+  | {
+      type: "FRIEND_REQUEST_SENT";
+      recipient_id: number;
+      sender_id: number;
+    }
+  | {
+      type: "FRIEND_REQUEST_ACCEPTED";
+      recipient_id: number;
+      sender_id: number;
+    }
+  | {
+      type: "FRIEND_REQUEST_REJECTED";
+      recipient_id: number;
+      sender_id: number;
+    }
+  | {
+      type: "FRIEND_REMOVED";
+      recipient_id: number;
+      exFriendId: number;
+    }
+  | {
+      type: "MESSAGE_RECEIVED";
+      recipient_id: number;
+      actualMessage: string;
+    };
 
 export type MessageSent = {
   type: "MESSAGE_SENT";

@@ -1,5 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
-import { FriendNotification } from "types/types";
+import { Notification } from "types/types";
 
 let ws: WebSocket | null = null;
 let unseenCount = 0;
@@ -13,7 +13,6 @@ function saveSeen() {
 }
 
 function updateCounter() {
-  console.log(unseenCount);
   window.dispatchEvent(
     new CustomEvent("notification-count", { detail: unseenCount })
   );
@@ -22,26 +21,19 @@ function updateCounter() {
 export function startNotificationListener() {
   if (ws && ws.readyState === WebSocket.OPEN) return;
 
-  console.log("Starting notification listener...");
-
   ws = new WebSocket("ws://localhost:3003");
 
   ws.onopen = () => {
-    console.log("WebSocket connection established.");
+    console.log("Notification Websocket connection established.");
   };
 
   ws.onmessage = (event: MessageEvent) => {
     try {
-      const notif: FriendNotification = JSON.parse(event.data);
+      const notif: Notification = JSON.parse(event.data);
 
-      console.log("Received notification:", notif);
+      const { type, recipient_id } = notif;
 
-      const { type, sender_id, recipient_id } = notif;
-      if (!type || !sender_id || !recipient_id) {
-        throw new Error("Invalid notification structure");
-      }
-
-      const notifId = `${type}-${sender_id}-${recipient_id}`;
+      const notifId = `${type}-${recipient_id}-${new Date().getTime()}`;
 
       if (!seenIds.has(notifId)) {
         seenIds.add(notifId);
@@ -50,16 +42,15 @@ export function startNotificationListener() {
         updateCounter();
       }
     } catch (error) {
-      console.error("Error processing WebSocket message:", error);
-      displayToast?.(
-        "An error occurred while processing notifications.",
+      displayToast(
+        "The club’s lights are out at the moment. Try again shortly.",
         "error"
       );
     }
   };
 
   ws.onclose = () => {
-    console.warn("WebSocket connection closed.");
+    console.warn("Notification WebSocket connection closed.");
     ws = null;
 
     setTimeout(() => {
@@ -69,8 +60,11 @@ export function startNotificationListener() {
   };
 
   ws.onerror = (error) => {
-    console.error("WebSocket error:", error);
-    displayToast?.("WebSocket connection error.", "error");
+    console.error("Notification WebSocket error:", error);
+    displayToast(
+      "The club’s lights are out at the moment. Try again shortly.",
+      "error"
+    );
   };
 }
 
@@ -79,7 +73,7 @@ export function stopNotificationListener() {
     ws.close();
     ws = null;
   }
-  console.log("WebSocket connection stopped.");
+  console.log("Notification WebSocket connection stopped.");
 }
 
 export function clearNotificationCounter() {
