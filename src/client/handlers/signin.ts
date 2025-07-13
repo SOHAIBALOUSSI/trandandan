@@ -68,6 +68,7 @@ export function handleSignIn() {
         localStorage.removeItem("loginInput");
 
         startNotificationListener();
+        // startChatListener();
 
         setTimeout(() => {
           displayToast(LoginRes.USER_LOGGED_IN, "success");

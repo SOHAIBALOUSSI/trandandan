@@ -2,9 +2,7 @@ export async function blockFriend(id: number): Promise<boolean> {
   try {
     const res = await fetch(`/block/${id}`, {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ blockedId: id }),
+      credentials: "include"
     });
 
     const data = await res.json();

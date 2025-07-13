@@ -164,7 +164,7 @@ rabbit.consumeMessages(async (request) => {
         if (!idExist)
             return ;
         await deleteMessages(db, userId);
-        users.get(userId).forEach((ws) => {
+        users.get(userId)?.forEach((ws) => {
             ws.close(1010, 'Mandatory exit');
         });
     }
