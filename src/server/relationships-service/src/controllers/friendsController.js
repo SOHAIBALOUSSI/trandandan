@@ -3,7 +3,8 @@ import {
     updateFriendRequestStatus,
     deleteFriend,
     getFriendsByUserId,
-    getPendingRequestsByUserId
+    getPendingRequestsByUserId,
+    deleteFriendships
   } from '../models/friendshipDAO.js';
 import { createResponse } from '../utils/utils.js';
   
@@ -24,7 +25,7 @@ import { createResponse } from '../utils/utils.js';
 
           this.rabbit.produceMessage(
             { 
-              type: 'FRIEND_REQUEST_SENT', 
+              type: 'FRIEND_REQUEST_SENT',
               sender_id: requesterId, 
               recipient_id: addresseeId 
             },
@@ -79,18 +80,9 @@ import { createResponse } from '../utils/utils.js';
           if (requesterId === addresseeId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_INVALID'));
           
-          let isValid = await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'rejected');
+          let isValid = await deleteFriendships(this.db, addresseeId);
           if (!isValid)
             return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
-          
-          this.rabbit.produceMessage(
-            { 
-              type: 'FRIEND_REQUEST_REJECTED', 
-              sender_id: addresseeId,
-              recipient_id: requesterId 
-            },
-            'notifications.friend_request.rejected'
-          );
 
           return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_REJECTED'));
       } catch (error) {

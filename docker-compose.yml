@@ -94,6 +94,9 @@ services:
       - trandenden-net
     ports:
       - "5000:5000"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   rabbitmq:
     container_name: rabbitmq

@@ -21,7 +21,7 @@ export async function setup2FAApp(request, reply) {
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         const secret = speakeasy.generateSecret({
-            name: `trandenden (${user.username})`,
+            name: `BHV Club (${user.username})`,
             length: 32
         });
         const otpauthUrl = secret.otpauth_url;

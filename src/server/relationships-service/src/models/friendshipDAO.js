@@ -21,7 +21,7 @@ export async function addFriendRequest(db, requesterId, addresseeId) {
 
 export async function updateFriendRequestStatus(db, requesterId, addresseeId, status) {
     if (!['accepted', 'rejected'].includes(status)) {
-        false;
+        return false;
     }
 
     const result = await db.run(
@@ -30,7 +30,7 @@ export async function updateFriendRequestStatus(db, requesterId, addresseeId, st
     );
 
     if (result.changes === 0) {
-        false;
+        return false;
     }
 
     return true;
@@ -45,7 +45,7 @@ export async function deleteFriend(db, userId, friendId) {
     );
 
     if (result.changes === 0) {
-        false
+        return false
     }
 
     return true;
