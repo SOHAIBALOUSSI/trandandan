@@ -46,7 +46,7 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
       };
 
       const link = document.createElement("a");
-      link.href = `/members/${user.id}`;
+      link.href = `members/${user.id}`;
       link.setAttribute("data-link", "true");
       link.className = styles.darkPrimaryBtn;
       link.textContent = "View Profile";

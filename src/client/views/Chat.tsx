@@ -95,7 +95,6 @@ export async function Chat(friendId: number) {
   }
 
   startChatListener((msg: MessageSent) => {
-    console.log("start");
     if (
       (msg.sender_id === currentUser.id && msg.recipient_id === friend.id) ||
       (msg.sender_id === friend.id && msg.recipient_id === currentUser.id)

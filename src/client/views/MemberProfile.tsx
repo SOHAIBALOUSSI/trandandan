@@ -3,6 +3,7 @@ import { TopBar } from "@/components/layout/TopBar";
 import { MemberCard } from "@/components/profile/MemberCard";
 import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
+import { navigateTo } from "@/utils/navigate-to-link";
 
 export function MemberProfile(id: number) {
   const container = document.createElement("section");
@@ -76,9 +77,7 @@ export function MemberProfile(id: number) {
       const inviteBtn = document.getElementById("invite-btn");
 
       if (chatBtn) {
-        chatBtn.addEventListener("click", () => {
-          alert(`Open chat with ${user.username}`);
-        });
+        navigateTo(`/chat/${user.id}`);
       }
       if (blockBtn) {
         blockBtn.addEventListener("click", () => {

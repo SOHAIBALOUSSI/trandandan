@@ -4,7 +4,7 @@ import { displayToast } from "@/utils/display-toast";
 let ws: WebSocket | null = null;
 
 export function startChatListener(onMessage: (msg: MessageSent) => void) {
-  if (ws && ws.readyState === WebSocket.OPEN) return;
+//   if (ws && ws.readyState === WebSocket.OPEN) return;
 
   ws = new WebSocket("ws://localhost:3004");
 
