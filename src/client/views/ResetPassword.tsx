@@ -64,7 +64,7 @@ export function UpdatePassword() {
           className={`${fontSizes.buttonFontSize} w-full my-4 font-medium text-pong-primary/80`}
         >
           remembered your paddle?{" "}
-          <a href="signin" className={styles.customFormLink} data-link>
+          <a href="/signin" className={styles.customFormLink} data-link>
             return to the club entrance
           </a>
         </p>

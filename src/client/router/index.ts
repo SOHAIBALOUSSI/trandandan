@@ -24,6 +24,8 @@ import { LocalGame } from "@/components/game/LocalGame";
 import { RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
+import { startChatListener } from "@/handlers/chat";
+import { startNotificationListener } from "@/handlers/notifications";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
@@ -70,6 +72,8 @@ async function isAuthenticated(): Promise<boolean> {
   return false;
 }
 
+let wsStarted = false;
+
 // Router function to handle navigation and rendering
 export async function router(): Promise<void> {
   const app = document.getElementById("app") as HTMLDivElement;
@@ -99,6 +103,12 @@ export async function router(): Promise<void> {
   let authed = false;
   if (!isPublic) {
     authed = await isAuthenticated();
+    if (authed) {
+      if (!wsStarted) {
+        // startNotificationListener();
+        wsStarted = true;
+      }
+    }
     if (!authed) {
       history.replaceState(null, "", "/signin");
       await router();

@@ -64,6 +64,7 @@ export function TopBar() {
             className="absolute bg-pong-dark-primary text-black w-[450px] hidden right-0 shadow-lg rounded-lg p-4 mt-2"
           >
             <h3 className="font-semibold mb-2">Notifications</h3>
+            <ul id="notif-list" className="list-none p-0 m-0"></ul>
           </div>
         </button>
         <button className="text-xl text-pong-dark-primary hover:text-pong-dark-accent">

@@ -19,7 +19,7 @@ export function ChangeEmail() {
       </p>
 
       <a
-        href="change_email"
+        href="/change_email"
         data-link
         className={styles.darkPrimaryBtn + "md:w-fit"}
       >

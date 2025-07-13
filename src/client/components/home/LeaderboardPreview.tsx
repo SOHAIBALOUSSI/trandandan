@@ -55,7 +55,7 @@ export function LeaderboardPreview(props: { user: UserProfile }) {
           </span>
         </div>
 
-        <a href="chamber" className={styles.darkPrimaryBtn} data-link>
+        <a href="/chamber" className={styles.darkPrimaryBtn} data-link>
           View Full Rankings
         </a>
       </div>

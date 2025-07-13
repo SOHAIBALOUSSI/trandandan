@@ -7,22 +7,39 @@ import { startChatListener, sendChatMessage } from "@/handlers/chat";
 import { getCurrentUser } from "@/utils/user-store";
 import { MessageSent } from "types/types";
 import { getUserById } from "@/services/get-user-by-id";
+import { Loader } from "@/components/common/Loader";
+import { ChatBlock } from "@/components/chat/ChatBlock";
 
 export async function Chat(friendId: number) {
   const friend = await getUserById(friendId);
   if (!friend) {
-    const div = document.createElement("div");
-    div.className = "text-center text-white";
-    div.textContent = "Unable to load chat. Please try again later.";
-    return div;
+    const section = document.createElement("section");
+    section.className = styles.pageLayoutDark;
+    section.innerHTML = `
+	  ${NavBar().outerHTML}
+	  <div class="w-full relative">
+	    ${TopBar().outerHTML}
+	    ${
+        Loader({ text: "Unable to load chat. Please try again later." })
+          .outerHTML
+      }
+	  </div>
+	`;
+    return section;
   }
 
   const currentUser = getCurrentUser();
   if (!currentUser) {
-    const div = document.createElement("div");
-    div.className = "text-center text-white";
-    div.textContent = "Please log in to access the chat.";
-    return div;
+    const section = document.createElement("section");
+    section.className = styles.pageLayoutDark;
+    section.innerHTML = `
+	  ${NavBar().outerHTML}
+	  <div class="w-full relative">
+	    ${TopBar().outerHTML}
+	    ${Loader({ text: "Preparing your club profile..." }).outerHTML}
+	  </div>
+	`;
+    return section;
   }
 
   const messages: MessageSent[] = [];
@@ -34,46 +51,8 @@ export async function Chat(friendId: number) {
     ${NavBar().outerHTML}
     <div class="w-full relative">
       ${TopBar().outerHTML}
-      <main class="${styles.pageContent}">
-        ${
-          SecondaryHeader({
-            title: "Lounge Conversations",
-            subtitle: "Chat with fellow club champions",
-          }).outerHTML
-        }
-        <div class="relative flex flex-col gap-6 w-full max-w-3xl bg-pong-dark-custom md:p-10 h-[60vh] md:h-[70vh] bg-pong-dark-bg/90 backdrop-blur-lg border border-pong-secondary/30 rounded-xl shadow-inner p-4">
-          <div class="sticky top-0 z-10 flex items-center gap-4 bg-white/10 backdrop-blur-md p-4 rounded-md border border-white/10 shadow-md">
-            <img src="${friend.avatar_url}" alt="Friend avatar"
-              class="w-12 h-12 rounded-full object-cover border-2 border-pong-accent shadow" />
-            <div>
-              <h3 class="text-lg font-bold text-pong-accent">${
-                friend.username
-              }</h3>
-              <div class="flex gap-2 mt-1">
-                <span class="bg-pong-highlight/20 text-pong-highlight px-3 py-1 rounded-full text-xs font-semibold">${
-                  friend.level
-                }</span>
-                <span class="bg-yellow-400/20 text-yellow-300 px-3 py-1 rounded-full text-xs font-semibold">${
-                  friend.rank
-                }</span>
-              </div>
-            </div>
-            <div class="justify-self-end flex-1 text-right">
-              <button class="${styles.darkPrimaryBtn}">
-                <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-              </button>
-            </div>
-          </div>
-          <div class="flex-1 overflow-y-auto space-y-6 pr-1 scroll-smooth" id="chat-messages"></div>
-          <form class="flex items-center gap-2 mt-4 px-2 ${
-            fontSizes.smallTextFontSize
-          }" id="chat-input-form">
-            <input type="text" placeholder="Type your message..." class="flex-1 rounded-lg px-4 py-2 bg-white/10 text-white focus:outline-none placeholder:text-white/50 caret-pong-accent" id="chat-input" />
-            <button type="submit" class="bg-pong-accent hover:bg-pong-dark-accent text-white font-bold px-5 py-2 rounded-lg transition capitalize">
-              <i class="fa-solid fa-paper-plane"></i>
-            </button>
-          </form>
-        </div>
+      <main class="px-0 md:px-16 pt-16 md:pt-24 md:pb-12 h-[100vh] md:h-[calc(100vh-2rem)] overflow-y-auto flex flex-col items-center gap-6">
+        ${ChatBlock(friend).outerHTML}
       </main>
     </div>
   `;
@@ -91,17 +70,23 @@ export async function Chat(friendId: number) {
     messages.forEach((msg) => {
       const isMe = msg.sender_id === currentUser?.id;
       const msgDiv = document.createElement("div");
-      msgDiv.className = `flex flex-col items-${isMe ? "end" : "start"}`;
+      msgDiv.className = `flex flex-col ${isMe ? "items-end" : "items-start"}`;
       msgDiv.innerHTML = `
         <span class="${
-          isMe ? "bg-pong-secondary/90" : "bg-pong-dark-secondary/90"
-        } text-black px-4 py-2 rounded-lg shadow-sm max-w-[70%]">${
+          isMe ? "bg-pong-dark-primary" : "bg-[#BFBEAE]"
+        } text-black px-4 py-2 rounded-lg shadow-sm max-w-[70%] normal-case placeholder:capitalize">${
         msg.content
       }</span>
-        <span class="text-xs text-pong-highlight ${
+        <span class="normal-case text-xs text-pong-highlight ${
           isMe ? "mr-2" : "ml-2"
         } mt-1">
-          ${isMe ? "You" : friend?.username} • #${msg.message_id ?? ""} 
+          ${isMe ? "You" : friend?.username} • ${new Date().toLocaleTimeString(
+        "en-US",
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      )} 
         </span>
       `;
       chatMessages.appendChild(msgDiv);
@@ -110,10 +95,10 @@ export async function Chat(friendId: number) {
   }
 
   startChatListener((msg: MessageSent) => {
+    console.log("start");
     if (
-      msg.type === "MESSAGE_SENT" &&
-      ((msg.sender_id === currentUser?.id && msg.recipient_id === friend.id) ||
-        (msg.sender_id === friend.id && msg.recipient_id === currentUser?.id))
+      (msg.sender_id === currentUser.id && msg.recipient_id === friend.id) ||
+      (msg.sender_id === friend.id && msg.recipient_id === currentUser.id)
     ) {
       messages.push(msg);
       renderMessages();
@@ -126,7 +111,7 @@ export async function Chat(friendId: number) {
     if (!content) return;
     sendChatMessage({
       type: "MESSAGE_SENT",
-      sender_id: currentUser?.id,
+      sender_id: currentUser.id,
       recipient_id: friend.id,
       content,
     } as any);

@@ -16,7 +16,7 @@ export function Home() {
         <NavBar />
         <div className="w-full relative">
           <TopBar />
-          <Loader />
+          <Loader text="Preparing your club profile..." />
         </div>
       </section>
     );

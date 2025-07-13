@@ -132,7 +132,7 @@ services:
       - profile
       - friends
       - notifications
-      # - chat
+      - chat
       - redis
       - rabbitmq
       - game

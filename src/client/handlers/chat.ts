@@ -2,12 +2,9 @@ import { MessageSent } from "types/types";
 import { displayToast } from "@/utils/display-toast";
 
 let ws: WebSocket | null = null;
-let onMessageCallback: ((msg: MessageSent) => void) | null = null;
 
 export function startChatListener(onMessage: (msg: MessageSent) => void) {
   if (ws && ws.readyState === WebSocket.OPEN) return;
-
-  onMessageCallback = onMessage;
 
   ws = new WebSocket("ws://localhost:3004");
 
@@ -18,7 +15,7 @@ export function startChatListener(onMessage: (msg: MessageSent) => void) {
   ws.onmessage = (event: MessageEvent) => {
     try {
       const message: MessageSent = JSON.parse(event.data);
-      if (onMessageCallback) onMessageCallback(message);
+      if (onMessage) onMessage(message);
     } catch (error) {
       displayToast(
         "The club’s lights are out at the moment. Try again shortly.",
@@ -40,12 +37,19 @@ export function startChatListener(onMessage: (msg: MessageSent) => void) {
   };
 }
 
-export function sendChatMessage(msg: Omit<MessageSent, "message_id">) {
+export function stopChatListener() {
+  if (ws) {
+    ws.close();
+    ws = null;
+    console.log("Stopping chat Websocket connection.");
+  }
+}
+
+export function sendChatMessage(msg: MessageSent) {
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send(
       JSON.stringify({
         ...msg,
-        type: "MESSAGE_SENT",
       })
     );
   } else {

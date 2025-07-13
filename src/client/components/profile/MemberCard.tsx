@@ -3,18 +3,7 @@ import { updateUsername } from "@/services/update-username";
 import { displayToast } from "@/utils/display-toast";
 import { UpdateUserProfileRes } from "@/utils/response-messages";
 import { uploadAvatar } from "@/services/upload-avatar";
-
-function getUserRank(rank: number): string {
-  if (rank <= 5) {
-    return "Club Champion";
-  } else if (rank <= 10) {
-    return "Elite Contender";
-  } else if (rank <= 20) {
-    return "Veteran Player";
-  } else {
-    return "Challenger";
-  }
-}
+import { getUserRank } from "@/utils/get-user-rank";
 
 export function MemberCard(props: {
   user: UserProfile;
@@ -22,7 +11,7 @@ export function MemberCard(props: {
 }) {
   const { user, showUpdateOptions } = props;
 
-  const joined = new Date(user.created_at).toLocaleDateString("en-GB", {
+  const joined = new Date(user.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",

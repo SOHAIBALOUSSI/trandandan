@@ -46,7 +46,7 @@ export function SignInForm() {
           keep me signed in
         </label>
         <a
-          href="password_reset"
+          href="/password_reset"
           className="underline underline-offset-1 hover:text-pong-accent hover:underline-offset-2 transition-all duration-300"
           data-link
         >

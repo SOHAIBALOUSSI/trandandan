@@ -19,7 +19,7 @@ export function ChangePassword() {
       </p>
 
       <a
-        href="change_password"
+        href="/change_password"
         data-link
         className={styles.darkPrimaryBtn + "md:w-fit"}
       >

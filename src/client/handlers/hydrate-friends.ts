@@ -55,7 +55,7 @@ export async function hydrateFriends() {
     };
 
     const link = document.createElement("a");
-    link.href = `lounge/${user.id}`;
+    link.href = `/lounge/${user.id}`;
     link.setAttribute("data-link", "true");
     link.className = styles.darkPrimaryBtn;
     link.textContent = "Chat";

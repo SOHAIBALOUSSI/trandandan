@@ -1,6 +1,7 @@
 import { fontSizes } from "@/styles/fontSizes";
 import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";
+import { RankBadge } from "@/components/common/RankBadge";
 
 export function Hero(props: { user: UserProfile }) {
   const { user } = props;
@@ -31,6 +32,7 @@ export function Hero(props: { user: UserProfile }) {
           >
             Ranked #{user.rank} in BHV Club • Level {user.level}
           </p>
+          <RankBadge rank={user.rank} />
           <hr className="my-4 border-pong-accent/20" />
           <p
             className={`text-pong-dark-primary/80 italic ${fontSizes.smallTextFontSize} mb-3`}

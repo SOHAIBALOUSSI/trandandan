@@ -110,8 +110,8 @@ export function stopNotificationListener() {
   if (ws) {
     ws.close();
     ws = null;
+    console.log("Notification WebSocket connection stopped.");
   }
-  console.log("Notification WebSocket connection stopped.");
 }
 
 export function clearNotificationCounter() {
