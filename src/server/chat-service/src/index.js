@@ -95,7 +95,9 @@ wss.on('connection', async (ws, request) => {
             if (!idExist)
                 return ;
             if (recipient) {
-                const isBlocked = await redis.sIsMember(`blocker:${ws.userId}`, `${recipient}`)
+                let isBlocked = await redis.sIsMember(`blocker:${ws.userId}`, `${recipient}`)
+                if (!isBlocked)
+                    isBlocked = await redis.sIsMember(`blocker${recipient}`, `${ws.userId}`)
                 if (recipient === payload.sender_id || recipient === ws.userId || isBlocked) 
                     return ;
 

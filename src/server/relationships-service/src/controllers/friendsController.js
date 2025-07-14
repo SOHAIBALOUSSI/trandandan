@@ -18,6 +18,12 @@ import { createResponse } from '../utils/utils.js';
   
           if (requesterId === addresseeId)
             return reply.code(400).send(createResponse(400, 'ADDRESSEE_INVALID'));
+
+          let blockExist = await this.redis.sIsMember(`blocker:${requesterId}`, `${addresseeId}`);
+          if (!blockExist)
+              blockExist = await this.redis.sIsMember(`blocker:${addresseeId}`, `${requesterId}`);
+          if (blockExist)
+              return reply.code(400).send(createResponse(400, 'BLOCK_EXISTS'));
     
           let exists = await addFriendRequest(this.db, requesterId, addresseeId);
           if (exists)
