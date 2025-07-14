@@ -58,14 +58,15 @@ export type Notification =
       sender_id: number;
     }
   | {
-      type: "FRIEND_REMOVED";
-      recipient_id: number;
-      exFriendId: number;
-    }
-  | {
       type: "MESSAGE_RECEIVED";
       recipient_id: number;
       actualMessage: string;
+    }
+  | {
+      type: "INVITE_SENT";
+      roomId: number;
+      senderId: number;
+      receiverId: number;
     };
 
 export type MessageSent = {
