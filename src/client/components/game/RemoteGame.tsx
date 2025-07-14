@@ -470,10 +470,10 @@ class FlowField {
   }
   public updateUser(currentUser: UserProfile): void {
     const payload = {
-      // matches_won: currentUser.matches_won,
-      // matches_lost: currentUser.matches_lost,
-      // matches_played: currentUser.matches_played,
-      // level: currentUser.level,
+      matches_won: currentUser.matches_won,
+      matches_lost: currentUser.matches_lost,
+      matches_played: currentUser.matches_played,
+      level: currentUser.level,
       sold: currentUser.solde,
     }; 
     fetch(`/profile/user/${currentUser.userId}`, {
@@ -520,6 +520,7 @@ class FlowField {
         this.deps.gameTabe.style.display = "block";
 
         if (this.gameState.playerId === 1 && flag_one === true) {
+          currentUser!.solde += 5;
           flag_one = false;
           if (currentUser) {
             if (this.gameState.gameEndResult === "Won") {
@@ -538,6 +539,7 @@ class FlowField {
         }
 
         if (this.gameState.playerId === 2 && flag_two === true) {
+          currentUser!.solde += 5;
           flag_two = false;
           if (currentUser) {
             if (this.gameState.gameEndResult === "Won") {
