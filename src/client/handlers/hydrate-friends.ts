@@ -46,7 +46,7 @@ export async function hydrateFriends() {
 
     const unfriendBtn = document.createElement("button");
     unfriendBtn.className = styles.darkPrimaryBtn;
-    unfriendBtn.textContent = "Unfriend";
+    unfriendBtn.textContent = "End Fellowship";
     unfriendBtn.onclick = async () => {
       unfriendBtn.disabled = true;
       unfriendBtn.textContent = "Unfriending...";

@@ -3,6 +3,12 @@ import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";
 import { RankBadge } from "@/components/common/RankBadge";
 
+function getWelcomeTitle(user: UserProfile): string {
+  if (user.gender === "M") return `Mr.`;
+  if (user.gender === "F") return `Ms.`;
+  return `Champ`;
+}
+
 export function Hero(props: { user: UserProfile }) {
   const { user } = props;
 
@@ -21,7 +27,7 @@ export function Hero(props: { user: UserProfile }) {
           <h2
             className={`${fontSizes.titleFontSize} font-bold text-pong-dark-primary mb-3`}
           >
-            Welcome back,{" "}
+            Welcome back, {getWelcomeTitle(user)}{" "}
             <span className="text-pong-dark-accent normal-case">
               {user.username}
             </span>

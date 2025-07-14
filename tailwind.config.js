@@ -51,8 +51,10 @@ export const theme = {
         "50%": { opacity: 0.7 },
       },
       glow: {
-        "0%": { boxShadow: "0 0 10px #facc15" },
-        "50%": { boxShadow: "0 0 20px #facc15" },
+        "0%": { boxShadow: "0 0 1px #facc15" },
+        "33%": { boxShadow: "0 0 4px #facc15" },
+        "66%": { boxShadow: "0 0 6px #facc15" },
+        "100%": { boxShadow: "0 0 1px #facc15" },
       },
     },
     animation: {

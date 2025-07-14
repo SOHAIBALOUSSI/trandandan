@@ -315,7 +315,7 @@ export const styles = {
 	gap-2 px-4 py-1.5 
 	rounded-full 
 	shadow-md 
-	bg-black/40 
+	bg-pong-custom
 	backdrop-blur 
 	text-white font-semibold
 	text-sm 

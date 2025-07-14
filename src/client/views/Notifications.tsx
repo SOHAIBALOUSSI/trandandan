@@ -37,22 +37,7 @@ export function Notifications() {
           <div>
             <p>UserX sent you a message.</p>
           </div>
-          <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
-              <span className="inline-block w-1.5 h-8 bg-pong-highlight rounded-sm"></span>
-              Rival Requests
-            </h2>
-            <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
-              Your fellow members are looking to connect — will you rally back?
-            </p>
 
-            <ul
-              id="pending-requests-list"
-              className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`}
-            >
-              <li className="text-white text-center">Loading...</li>
-            </ul>
-          </div>
           <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
             <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
               <span className="inline-block w-1.5 h-8 bg-pong-highlight rounded-sm"></span>
@@ -63,7 +48,7 @@ export function Notifications() {
               honor.
             </p>
             <ul
-              id="pending-requests-list"
+              id="match-challenges-list"
               className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`}
             >
               <li className="text-white text-center">Loading...</li>

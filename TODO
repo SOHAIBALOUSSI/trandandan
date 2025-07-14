@@ -3,3 +3,4 @@
 - switch to use https and wss
 - if the player online show the toast if not dont show
 - check unblock (INTERNAL_SERVER_ERROR)
+- add the title in welcome (if Male - Mr if Female Mme if Remote Student or something)
