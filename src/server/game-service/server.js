@@ -62,6 +62,12 @@ fastify.register(async function name(req, reply) {
     return getRoomId(req, reply, fastify);
   });
 });
+import getUserHistory from "./routes/getUserHistory.js";
+fastify.register(async function name(fastify) {
+  fastify.get("/user-history", async (req, reply) => {
+    return getUserHistory(req, reply);
+  });
+});
 fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);

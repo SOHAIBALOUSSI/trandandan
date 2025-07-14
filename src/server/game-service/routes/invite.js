@@ -26,7 +26,7 @@ const invitePlayer = async (req, reply, fastify) => {
           sentAt: new Date().toISOString()
         }
       };
-      // console.log(message);
+      console.log(message);
       await rabbitMQ.produceMessage(message, 'game.invite');
       return reply.code(200).send({ message: "Invite notification queued" });
     } catch (error) {

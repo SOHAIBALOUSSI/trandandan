@@ -81,9 +81,6 @@ export function RemoteGame() {
   const exit = container.querySelector("#exit") as HTMLElement;
   const playerSide = container.querySelector("#playerSide") as HTMLElement;
 
-  exit.addEventListener("click", () => {
-    navigateTo("/arena");
-  });
   // Utility functions
   const userInfo = getCurrentUser();
 
@@ -124,8 +121,11 @@ export function RemoteGame() {
     socket = new WebSocket(
       `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.userId}&roomId=${roomdIdentif}`
     );
+    exit.addEventListener("click", () => {
+      socket.close();
+      navigateTo("/arena");
+    });
     let keys: Record<string, boolean> = {};
-
     window.addEventListener("keydown", (key: KeyboardEvent) => {
       keys[key.key] = true;
     });
