@@ -94,6 +94,8 @@ services:
       - trandenden-net
     ports:
       - "5000:5000"
+    volumes:
+      - ./src/server/game-service/db/.gameData.db:/app/db/.gameData.db
 
   rabbitmq:
     container_name: rabbitmq
