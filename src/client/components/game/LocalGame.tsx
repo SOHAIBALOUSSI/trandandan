@@ -153,6 +153,8 @@ class FlowFieldLocal {
   private canvasWidth: number;
   private canvasHeight: number;
   private particles: Particle[] = [];
+  private ballPulse: number = 0;
+
   private domElements: {
     rightPlayerScoreLocal: HTMLElement;
     leftPlayerScoreLocal: HTMLElement;
@@ -212,30 +214,30 @@ class FlowFieldLocal {
     }
   }
 
-  private updateParticles(): void {
-    this.particles.forEach((particle, index) => {
-      // Update particle position
-      particle.x += particle.velocityX;
-      particle.y += particle.velocityY;
+//   private updateParticles(): void {
+//     this.particles.forEach((particle, index) => {
+//       // Update particle position
+//       particle.x += particle.velocityX;
+//       particle.y += particle.velocityY;
 
-      // Reduce particle transparency
-      particle.alpha -= 0.02;
+//       // Reduce particle transparency
+//       particle.alpha -= 0.02;
 
-      // Remove particle if it becomes fully transparent
-      if (particle.alpha <= 0) {
-        this.particles.splice(index, 1);
-      }
-    });
-  }
+//       // Remove particle if it becomes fully transparent
+//       if (particle.alpha <= 0) {
+//         this.particles.splice(index, 1);
+//       }
+//     });
+//   }
 
-  private drawParticles(): void {
-    this.particles.forEach((particle) => {
-      this.ctx.beginPath();
-      this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-      this.ctx.fillStyle = particle.color.replace("1)", `${particle.alpha})`); // Update alpha
-      this.ctx.fill();
-    });
-  }
+//   private drawParticles(): void {
+//     this.particles.forEach((particle) => {
+//       this.ctx.beginPath();
+//       this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+//       this.ctx.fillStyle = particle.color.replace("1)", `${particle.alpha})`); // Update alpha
+//       this.ctx.fill();
+//     });
+//   }
 
   private draw(): void {
     // console.log("ballX: ",this.gameState.ballX)
@@ -267,7 +269,9 @@ class FlowFieldLocal {
     );
 
     // Ball
-    this.ctx.fillStyle = "#fff";
+    const isDark =
+      document.getElementById("game-screen")?.dataset.theme === "dark";
+    this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(
       this.gameState.ballX,
@@ -276,15 +280,27 @@ class FlowFieldLocal {
       0,
       Math.PI * 2
     );
+    this.ctx.shadowColor = isDark ? "#FFD700" : "#00B894";
+    this.ctx.shadowBlur = 24;
+    this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
     this.ctx.fill();
+    this.ctx.lineWidth = 3;
+    this.ctx.strokeStyle = isDark ? "#fff" : "#23272f";
     this.ctx.stroke();
-
-    // Generate particles at the ball's position
-    // this.ballParticle(this.gameState.ballX, this.gameState.ballY);
-
-    // Update and draw particles
-    this.updateParticles();
-    this.drawParticles();
+    this.ctx.restore();
+    this.ballPulse += 0.08;
+    this.ctx.globalAlpha = 0.25 + 0.15 * Math.sin(this.ballPulse);
+    this.ctx.beginPath();
+    this.ctx.arc(
+      this.gameState.ballX,
+      this.gameState.ballY,
+      13 + 10 + 5 * Math.abs(Math.sin(this.ballPulse)),
+      0,
+      Math.PI * 2
+    );
+    this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
+    this.ctx.fill();
+    this.ctx.globalAlpha = 1;
   }
 
   private keysFunction(): void {

@@ -31,9 +31,11 @@ export function startNotificationListener() {
     try {
       const notif: Notification = JSON.parse(event.data);
 
-      const { type, recipient_id } = notif;
+	  console.log("Received notification:", notif);
 
-      const notifId = `${type}-${recipient_id}-${new Date().getTime()}`;
+      const notifId = `${notif.type}-${
+        notif.recipient_id
+      }-${new Date().getTime()}`;
 
       if (!seenIds.has(notifId)) {
         seenIds.add(notifId);
@@ -43,7 +45,7 @@ export function startNotificationListener() {
       }
 
       //  i will add notification to the UI based on type
-      switch (type) {
+      switch (notif.type) {
         case "FRIEND_REQUEST_SENT":
           displayToast(
             `New friend request from ${notif.sender_id}.`,
@@ -62,21 +64,16 @@ export function startNotificationListener() {
             "warning"
           );
           break;
-        case "FRIEND_REMOVED":
+        case "INVITE_SENT":
           displayToast(
-            `${notif.exFriendId} has removed you from their friends list.`,
-            "error"
+            `You have been invited to a room by ${notif.sender_id}.`,
+            "warning"
           );
           break;
         case "MESSAGE_RECEIVED":
           displayToast("You have a new message!", "warning");
           break;
         default:
-          //   Remove this later
-          displayToast(
-            `Unknown notification type: ${type}. Please check the system.`,
-            "error"
-          );
           break;
       }
     } catch (error) {

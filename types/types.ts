@@ -60,10 +60,13 @@ export type Notification =
   | {
       type: "MESSAGE_RECEIVED";
       recipient_id: number;
+	  sender_id?: number;
       actualMessage: string;
     }
   | {
       type: "INVITE_SENT";
+	  recipient_id?: number;
+	  sender_id?: number;
       roomId: number;
       senderId: number;
       receiverId: number;
