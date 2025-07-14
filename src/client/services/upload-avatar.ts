@@ -1,10 +1,9 @@
-import { UserProfile } from "types/types";
+import { displayToast } from "@/utils/display-toast";
+import { UploadAvatarRes } from "@/utils/response-messages";
 
-function getAvatarUrl(fileName: string): string {
-  return `/profile/avatar/${fileName}`;
-}
+const BACKEND_URL = "http://localhost:3001";
 
-export function uploadAvatar(props: { user: UserProfile }) {
+export function uploadAvatar() {
   const btn = document.getElementById("upload-avatar-btn") as HTMLButtonElement;
   const avatar = document.getElementById("member-avatar") as HTMLImageElement;
   if (!btn || !avatar) return;
@@ -41,18 +40,19 @@ export function uploadAvatar(props: { user: UserProfile }) {
       });
 
       const data = await res.json();
-
       if (res.ok && data?.data?.avatar_url) {
         const fileName = data.data.avatar_url;
-        const avatarUrl = getAvatarUrl(fileName);
-
+        const avatarUrl = `${BACKEND_URL}/profile/avatar/${fileName}`;
         avatar.src = avatarUrl;
-        props.user.avatar_url = fileName;
+        displayToast(UploadAvatarRes.AVATAR_UPLOADED, "success");
       } else {
-        console.error("Failed to upload avatar:", data);
+        displayToast(
+          UploadAvatarRes[data.code] || "Failed to upload avatar",
+          "error"
+        );
       }
-    } catch (error) {
-      console.error("Error uploading avatar:", error);
+    } catch (err) {
+      displayToast(UploadAvatarRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       fileInput!.value = "";
     }

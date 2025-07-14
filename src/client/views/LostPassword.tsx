@@ -35,7 +35,7 @@ export function ResetPassword() {
             type="text"
             name="email"
             id="reset-pass-email"
-            placeholder="your racket’s registered email"
+            placeholder="your registered email"
             autofocus={true}
           />
           <SubmitBtn btnIcon="fa-envelope" btnLabel="send me the code" />
@@ -56,7 +56,7 @@ export function ResetPassword() {
           className={`${fontSizes.buttonFontSize} w-full my-4 font-medium text-pong-primary/80`}
         >
           remembered your paddle?{" "}
-          <a href="signin" className={styles.customFormLink} data-link>
+          <a href="/signin" className={styles.customFormLink} data-link>
             return to the club entrance
           </a>
         </p>

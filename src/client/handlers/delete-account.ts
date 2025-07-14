@@ -1,29 +1,27 @@
-import { styles } from "@/styles/styles";
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { DeleteAccountRes } from "@/utils/response-messages";
 
 export function deleteAccount() {
-  const form = document.getElementById(
-    "delete-account-form"
-  ) as HTMLFormElement;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+  if (!submitBtn) return;
 
-  form?.addEventListener("submit", async (e: Event) => {
+  submitBtn.addEventListener("click", async (e: Event) => {
     e.preventDefault();
 
-    const submitBtn = document.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = document.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = document.querySelector<HTMLSpanElement>("#btn-label");
 
-    if (!submitBtn || !spinner || !btnLabel) return;
+    if (!spinner || !btnLabel) return;
 
     const btnLabelText = btnLabel.textContent;
+    const feedbackDelay = 900;
+    const redirectDelay = 1500;
 
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
     btnLabel.textContent = "deleting...";
-
-    const startTime = Date.now();
 
     try {
       const response = await fetch("/auth/delete", {
@@ -33,27 +31,23 @@ export function deleteAccount() {
 
       const result = await response.json();
 
-      const elapsed = Date.now() - startTime;
-      const waitTime = Math.max(0, 1200 - elapsed);
-
       if (response.ok) {
         setTimeout(() => {
           displayToast(DeleteAccountRes.USER_DATA_DELETED, "success");
 
           setTimeout(() => {
-            history.pushState(null, "", "/");
-            window.dispatchEvent(new PopStateEvent("popstate"));
-          }, 1500);
-        }, waitTime);
+            navigateTo("/welcome");
+          }, redirectDelay);
+        }, feedbackDelay);
       } else {
         setTimeout(() => {
           const errorMsg =
             DeleteAccountRes[result?.code] ||
             "Error during delete. Please try again.";
           displayToast(errorMsg, "error");
-        }, waitTime);
+        }, feedbackDelay);
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(DeleteAccountRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
@@ -61,7 +55,7 @@ export function deleteAccount() {
         submitBtn.removeAttribute("aria-busy");
         spinner.classList.add("hidden");
         btnLabel.textContent = btnLabelText;
-      }, 1300);
+      }, feedbackDelay + 300);
     }
   });
 }

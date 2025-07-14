@@ -4,13 +4,22 @@ import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { SubmitBtn } from "../common/SubmitBtn";
 import { handleSignUp } from "@/handlers/signup";
+import { showPasswordToggle } from "@/utils/show-password";
 
 export function SignUpForm() {
+  const passwordId = "password";
+  const showPasswordIconId = "signup-show-pass";
+  const confirmPasswordId = "confirm-password";
+  const showConfirmPasswordIconId = "signup-show-confirm-pass";
+
   setTimeout(() => {
+    showPasswordToggle(showPasswordIconId, passwordId);
+    showPasswordToggle(showConfirmPasswordIconId, confirmPasswordId);
     handleSignUp();
   }, 0);
+
   return (
-    <form id="signup-form" className={`${styles.mainForm} animate-fadeInUp`}>
+    <form id="signup-form" className={styles.mainForm}>
       <InputField
         type="text"
         name="username"
@@ -36,22 +45,35 @@ export function SignUpForm() {
             lady
           </option>
         </select>
-        <div className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2 text-pong-primary/60">
+        <div className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2 text-pong-highlight">
           <i className="fa-solid fa-chevron-down text-sm"></i>
         </div>
       </div>
-      <InputField
-        type="password"
-        name="password"
-        id="password"
-        placeholder="forge your secret key"
-      />
-      <InputField
-        type="password"
-        name="confirm-password"
-        id="confirm-password"
-        placeholder="confirm your secret key"
-      />
+      <div className="relative w-full">
+        <input
+          type="password"
+          name="password"
+          id={passwordId}
+          placeholder="secret code"
+          autoComplete="off"
+          className={styles.InputFieldOne}
+        />
+        <i className={styles.showPassIcon} id={showPasswordIconId}></i>
+      </div>
+      <div className="relative w-full">
+        <input
+          type="password"
+          name="password"
+          id={confirmPasswordId}
+          placeholder="secret code"
+          autoComplete="off"
+          className={styles.InputFieldOne}
+        />
+        <i
+          className={styles.showPassIcon}
+          id={showConfirmPasswordIconId}
+        ></i>
+      </div>
 
       <SubmitBtn
         btnIcon="fa-champagne-glasses"

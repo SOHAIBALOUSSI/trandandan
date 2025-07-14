@@ -1,9 +1,18 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdateCredentialsRes } from "@/utils/response-messages";
 
 export function handleChangeEmail() {
   const form = document.getElementById("change-email-form") as HTMLFormElement;
-  if (!form) return;
+  const changeEmailInput = document.getElementById("email") as HTMLInputElement;
+  if (!form || !changeEmailInput) return;
+
+  const savedEmail = localStorage.getItem("changedemailInput");
+  if (savedEmail) changeEmailInput.value = savedEmail;
+
+  changeEmailInput.addEventListener("input", () => {
+    localStorage.setItem("changedemailInput", changeEmailInput.value);
+  });
 
   form.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
@@ -41,17 +50,17 @@ export function handleChangeEmail() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email }),
       });
 
       const result = await response.json();
 
       if (response.ok && result.statusCode === 200) {
         setTimeout(() => {
-          displayToast("Email updated successfully.", "success");
+          displayToast(UpdateCredentialsRes.EMAIL_UPDATED, "success");
+
           setTimeout(() => {
-            history.pushState(null, "", "/security");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/security");
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
@@ -59,8 +68,7 @@ export function handleChangeEmail() {
         setTimeout(() => {
           displayToast(UpdateCredentialsRes.TWOFA_REQUIRED, "warning");
           setTimeout(() => {
-            history.pushState(null, "", "/verification");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/verification");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -69,12 +77,14 @@ export function handleChangeEmail() {
         displayToast(errorMsg, "error");
         emailInput.focus();
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
       emailInput.focus();
     } finally {
-      btn.disabled = false;
-      btn.removeAttribute("aria-busy");
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.removeAttribute("aria-busy");
+      }, feedbackDelay + 300);
     }
   });
 }

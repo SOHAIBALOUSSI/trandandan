@@ -8,7 +8,7 @@ export function ChangeEmail() {
         className={`flex items-center gap-2 text-white ${fontSizes.smallTitleFontSize}`}
       >
         <span className="text-pong-accent">📧</span>
-        <span className="font-bold">Update Your Contact Address</span>
+        <span className="font-bold">change Your Contact Address</span>
       </h2>
 
       <p
@@ -19,11 +19,11 @@ export function ChangeEmail() {
       </p>
 
       <a
-        href="change_email"
+        href="/change_email"
         data-link
-        className="inline-block mt-4 w-fit px-4 py-2 text-sm font-semibold text-white bg-pong-accent rounded-md shadow hover:bg-pong-dark-accent transition"
+        className={styles.darkPrimaryBtn + "md:w-fit"}
       >
-        Update Email
+        Proceed to Update
       </a>
 
       <p className="text-pong-warning text-xs md:text-sm italic mt-3">

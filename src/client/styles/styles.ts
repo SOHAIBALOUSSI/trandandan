@@ -116,7 +116,6 @@ export const styles = {
 	transition-all duration-300 ease-in-out
 	disabled:opacity-50 disabled:cursor-not-allowed
   `,
-
   // === End Buttons styles ===
 
   // === Start Input Field styles ===
@@ -135,6 +134,14 @@ export const styles = {
 	focus:bg-white/40
 	transition-all duration-300
 	backdrop-blur-md
+  `,
+  inputFieldDark: `
+ 	w-full text-center tracking-widest font-semibold text-pong-dark-bg 
+    bg-gradient-to-br from-white/80 to-white/60 placeholder:text-pong-dark-bg/40 
+    rounded-xl border border-pong-accent/30 shadow-inner 
+    focus:outline-none focus:ring-2 focus:ring-pong-accent focus:border-transparent 
+    transition-all duration-200 ease-in-out px-4 py-3 mb-4 
+    ${fontSizes.inputFontSize}
   `,
   selectField: `
   	capitalize
@@ -164,6 +171,15 @@ export const styles = {
   	focus:outline-none focus:ring-2 focus:ring-pong-accent/70 focus:border-pong-accent
   	focus:shadow-lg
   `,
+  showPassIcon: `
+	fa-solid fa-eye fa-eye-slash 
+	show-pass text-sm 
+	absolute top-1/2 right-3
+	transform -translate-y-1/2 
+	cursor-pointer 
+	text-pong-highlight hover:text-pong-primary 
+	transition
+  `,
   // === End Input Field styles ===
 
   // === Start Form styles ===
@@ -174,6 +190,7 @@ export const styles = {
   	backdrop-blur-sm border border-pong-accent/20
   	flex flex-col items-center gap-6
   	px-8 py-12
+	animate-fadeInUp
   `,
   secForm: `
   	w-full max-w-md mx-auto
@@ -189,13 +206,22 @@ export const styles = {
 	hover:text-pong-secondary hover:underline-offset-4 
 	transition-all duration-300
   `,
+  darkForm: `
+  	w-full max-w-lg 
+	bg-pong-dark-custom/80 
+	border border-pong-accent/30 
+	rounded-2xl 
+	shadow-lg 
+	px-8 py-10 
+	flex flex-col items-center
+  `,
   // === End Form styles ===
 
   // === Start Title Dark styles ===
   titleDark: `
 	tracking-tight leading-tight
 	font-bold
-	${fontSizes.titleFontSize}
+	text-4xl md:text-5xl lg:text-6xl xl:text-7xl
   `,
   titleSpanDark: `
 	font-playfair 
@@ -205,12 +231,12 @@ export const styles = {
   `,
   subtitleDark: `
 	font-semibold 
-	${fontSizes.subtitleFontSize}
+	text-xl md:text-2xl lg:text-3xl xl:text-4xl
   `,
   subtitleParagraphDark: `
 	text-pong-primary/80 
 	leading-relaxed
-	${fontSizes.bodyFontSize}
+	text-base md:text-lg lg:text-xl xl:text-2xl
   `,
   // === End Title Dark styles ===
 
@@ -283,6 +309,18 @@ export const styles = {
 	p-8 md:p-10 
 	rounded-2xl 
 	shadow-lg
+  `,
+  badgeStyle: `
+	inline-flex items-center 
+	gap-2 px-4 py-1.5 
+	rounded-full 
+	shadow-md 
+	bg-pong-custom
+	backdrop-blur 
+	text-white font-semibold
+	text-sm 
+	border border-white/10 
+	animate-glow
   `,
   // === End Custom Cards styles ===
 

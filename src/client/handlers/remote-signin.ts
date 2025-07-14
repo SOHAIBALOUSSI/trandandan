@@ -1,3 +1,5 @@
+import { startNotificationListener } from "./notifications";
+
 export function handleGoogleSignin() {
   const btn = document.getElementById("google-signin-btn");
 

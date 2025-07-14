@@ -1,58 +1,90 @@
 import { handleChangePassword } from "@/handlers/change-password";
 import { styles } from "@/styles/styles";
+import { fontSizes } from "@/styles/fontSizes";
+import { NavBar } from "@/components/layout/NavBar";
+import { showPasswordToggle } from "@/utils/show-password";
 
 export function UpdateCredentialsPassword() {
+  const currentPasswordId = "old-password";
+  const newPasswordId = "new-password";
+  const confirmNewPasswordId = "confirm-new-password";
+  const showPasswordIconId = "show-password-icon";
+  const showNewPasswordIconId = "show-new-password-icon";
+  const showConfirmPasswordIconId = "show-confirm-password-icon";
+
   setTimeout(() => {
+    showPasswordToggle(showPasswordIconId, currentPasswordId);
+    showPasswordToggle(showNewPasswordIconId, newPasswordId);
+    showPasswordToggle(showConfirmPasswordIconId, confirmNewPasswordId);
     handleChangePassword();
   }, 0);
 
   return (
     <section className={styles.pageLayoutDark}>
+      <NavBar />
       <main className={styles.pageContent}>
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <div className="w-full max-w-md bg-pong-dark-custom/80 border border-pong-accent/30 rounded-2xl shadow-lg px-8 py-10 flex flex-col items-center">
-            <h2 className="text-2xl font-bold text-pong-accent mb-2">
-              Update Your Password
-            </h2>
-            <p className="text-pong-secondary/80 text-sm mb-6 text-center">
-              For your security, please enter your current password and choose a
-              new one. Make sure your new password is strong and unique.
-            </p>
-            <form id="change-password-form" className="w-full flex flex-col gap-4">
+        <div className={styles.darkForm}>
+          <h2
+            className={`${fontSizes.titleFontSize} text-center font-bold text-pong-accent mb-4`}
+          >
+            Update Your Password
+          </h2>
+          <p
+            className={`${fontSizes.smallTextFontSize} text-pong-secondary/80 text-center mb-6`}
+          >
+            For your security, please enter your current password and choose a
+            new one. Make sure your new password is strong and unique.
+          </p>
+
+          <form
+            id="change-password-form"
+            className="w-full flex flex-col gap-6"
+          >
+            <div className="relative w-ful">
               <input
                 type="password"
                 name="old-password"
-                id="old-password"
-                className="w-full bg-gray-700/80 text-white p-4 rounded-md border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
+                id={currentPasswordId}
+                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
                 placeholder="Current password"
                 autoComplete="off"
               />
+              <i className={styles.showPassIcon} id={showPasswordIconId}></i>
+            </div>
+            <div className="relative w-full">
               <input
                 type="password"
                 name="new-password"
-                id="new-password"
-                className="w-full bg-gray-700/80 text-white p-4 rounded-md border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
+                id={newPasswordId}
+                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
                 placeholder="New password"
                 autoComplete="off"
               />
+              <i className={styles.showPassIcon} id={showNewPasswordIconId}></i>
+            </div>
+            <div className="relative w-full">
               <input
                 type="password"
                 name="confirm-new-password"
-                id="confirm-new-password"
-                className="w-full bg-gray-700/80 text-white p-4 rounded-md border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
+                id={confirmNewPasswordId}
+                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
                 placeholder="Confirm new password"
                 autoComplete="off"
               />
-              <button
-                type="submit"
-                className="bg-pong-accent hover:bg-pong-dark-accent text-white font-semibold p-3 rounded-md mt-2 shadow transition-all"
-                id="submit-btn"
-              >
-                <i className="fa-solid fa-key mr-2"></i>
-                Update Password
-              </button>
-            </form>
-          </div>
+              <i
+                className={styles.showPassIcon}
+                id={showConfirmPasswordIconId}
+              ></i>
+            </div>
+            <button
+              type="submit"
+              className={styles.darkSubmitBtn}
+              id="submit-btn"
+            >
+              <i className="fa-solid fa-key mr-2"></i>
+              Update Password
+            </button>
+          </form>
         </div>
       </main>
     </section>

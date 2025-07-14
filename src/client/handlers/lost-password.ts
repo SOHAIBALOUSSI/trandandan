@@ -3,7 +3,20 @@ import { LostPasswordRes } from "@/utils/response-messages";
 
 export function handleLostPassword() {
   const form = document.getElementById("lost-password-form") as HTMLFormElement;
-  if (!form) return;
+  const otpForm = document.getElementById(
+    "lost-pass-otp-form"
+  ) as HTMLFormElement;
+  const otpEmailInput = document.getElementById(
+    "reset-pass-email"
+  ) as HTMLInputElement;
+  if (!form || !otpForm || !otpEmailInput) return;
+
+  const savedEmail = localStorage.getItem("otpEmailInput");
+  if (savedEmail) otpEmailInput.value = savedEmail;
+
+  otpEmailInput.addEventListener("input", () => {
+    localStorage.setItem("otpEmailInput", otpEmailInput.value);
+  });
 
   form.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
@@ -11,33 +24,27 @@ export function handleLostPassword() {
     const submitBtn = form.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = form.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
-    const emailInput =
-      form.querySelector<HTMLInputElement>("#reset-pass-email");
 
-    if (!submitBtn || !spinner || !btnLabel || !emailInput) return;
+    if (!submitBtn || !spinner || !btnLabel) return;
 
     const btnLabelText = btnLabel.textContent;
     const feedbackDelay = 900;
 
-    const otpForm = document.getElementById(
-      "lost-pass-otp-form"
-    ) as HTMLFormElement;
-    if (!otpForm) return;
-
-    const email = emailInput.value.trim();
+    const email = otpEmailInput.value.trim();
     if (!email) {
-      emailInput.focus();
+      otpEmailInput.focus();
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      emailInput.focus();
+      otpEmailInput.focus();
       displayToast(
         "That doesn’t look like a valid email. Check the format and try again.",
         "error"
       );
       return;
     }
+
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
     spinner.classList.remove("hidden");
@@ -47,17 +54,17 @@ export function handleLostPassword() {
       const response = await fetch("/auth/lost-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email }),
+        body: JSON.stringify({ email }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
+        localStorage.removeItem("otpEmailInput");
+
         setTimeout(() => {
-          displayToast(LostPasswordRes.CODE_SENT, "success", {
-            noProgressBar: true,
-          });
-          emailInput.value = "";
+          displayToast(LostPasswordRes.CODE_SENT, "success");
+          otpEmailInput.value = "";
           form.classList.add("hidden");
           otpForm.classList.remove("hidden");
           otpForm.classList.add("flex");
@@ -71,7 +78,7 @@ export function handleLostPassword() {
           displayToast(errorMsg, "error");
         }, feedbackDelay);
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(LostPasswordRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {

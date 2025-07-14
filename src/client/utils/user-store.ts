@@ -1,16 +1,13 @@
 import { UserProfile } from "types/types";
-import MaleAvatar from "@/assets/default-male-avatar.png";
-import FemaleAvatar from "@/assets/default-female-avatar.png";
+import { getAvatarUrl } from "./get-avatar";
 
 let currentUser: UserProfile | null = null;
 
 export function setCurrentUser(apiResponse: any) {
   if (apiResponse && apiResponse.data && apiResponse.data.profile) {
     currentUser = apiResponse.data.profile;
-    if (currentUser && currentUser.avatar_url === "") {
-      currentUser.avatar_url = (
-        currentUser.gender === "M" ? MaleAvatar : FemaleAvatar
-      ) as string;
+    if (currentUser) {
+      currentUser.avatar_url = getAvatarUrl(currentUser);
     }
   }
 }

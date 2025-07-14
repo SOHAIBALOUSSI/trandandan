@@ -4,14 +4,19 @@ import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { handleSignIn } from "@/handlers/signin";
+import { showPasswordToggle } from "@/utils/show-password";
 
 export function SignInForm() {
+  const showPasswordIconId = "signin-show-pass";
+  const passwordId = "password";
+
   setTimeout(() => {
+    showPasswordToggle(showPasswordIconId, passwordId);
     handleSignIn();
   }, 0);
 
   return (
-    <form id="signin-form" className={`${styles.mainForm} animate-fadeInUp`}>
+    <form id="signin-form" className={styles.mainForm}>
       <InputField
         type="text"
         name="login"
@@ -19,12 +24,17 @@ export function SignInForm() {
         placeholder="member ID or email"
         autofocus={true}
       />
-      <InputField
-        type="password"
-        name="password"
-        id="password"
-        placeholder="Secret Code"
-      />
+      <div className="relative w-full">
+        <input
+          type="password"
+          name="password"
+          id={passwordId}
+          placeholder="secret code"
+          autoComplete="off"
+          className={styles.InputFieldOne}
+        />
+        <i className={styles.showPassIcon} id={showPasswordIconId}></i>
+      </div>
 
       <div className="flex justify-between items-center w-full text-sm text-pong-primary/70 mt-[-0.5rem]">
         <label className="flex items-center gap-2">
@@ -36,7 +46,7 @@ export function SignInForm() {
           keep me signed in
         </label>
         <a
-          href="password_reset"
+          href="/password_reset"
           className="underline underline-offset-1 hover:text-pong-accent hover:underline-offset-2 transition-all duration-300"
           data-link
         >

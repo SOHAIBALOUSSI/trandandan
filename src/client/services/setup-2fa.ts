@@ -1,4 +1,4 @@
-import { Setup2FaRes, Verify2FaSetupRes } from "@/utils/response-messages";
+import { Setup2FaRes, Verify2FaRes } from "@/utils/response-messages";
 import { displayToast } from "@/utils/display-toast";
 
 export function verify2FASetup(
@@ -19,11 +19,11 @@ export function verify2FASetup(
       if (status === 200) {
         if (onSuccess) onSuccess();
       } else {
-        displayToast(Verify2FaSetupRes[data.code], "error");
+        displayToast(Verify2FaRes[data.code], "error");
       }
     })
     .catch((error) => {
-      displayToast(Verify2FaSetupRes.INTERNAL_SERVER_ERROR, "error");
+      displayToast(Verify2FaRes.INTERNAL_SERVER_ERROR, "error");
     });
 }
 
@@ -33,6 +33,7 @@ export function setup2FA(mode: "app" | "email") {
   const otpInputId = `${mode}-otp`;
   const verifyBtnId = `${mode}-verify-btn`;
   const qrImgId = "app-qr";
+
   const setupBtn = document.getElementById(
     `${mode}-setup-btn`
   ) as HTMLButtonElement;
@@ -49,7 +50,7 @@ export function setup2FA(mode: "app" | "email") {
     `${mode}-primary-label`
   ) as HTMLElement;
 
-  const verifySection = document.getElementById(verifySectionId);
+  const verifySection = document.getElementById(verifySectionId) as HTMLElement;
   const otpInput = document.getElementById(otpInputId) as HTMLInputElement;
   const verifyBtn = document.getElementById(verifyBtnId) as HTMLButtonElement;
   const qrImg = document.getElementById(qrImgId) as HTMLImageElement;
@@ -64,7 +65,10 @@ export function setup2FA(mode: "app" | "email") {
       response.json().then((data) => ({ status: response.status, data }))
     )
     .then(({ status, data }) => {
-      if (status === 200) {
+      if (
+        status === 200 ||
+        (status === 400 && data.code === "TWOFA_ALREADY_PENDING")
+      ) {
         verifySection.classList.remove("hidden");
         if (isAppMode && qrImg && data.data?.qrCode) {
           qrImg.src = data.data.qrCode;

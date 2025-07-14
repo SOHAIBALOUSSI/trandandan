@@ -1,9 +1,21 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { LoginRes } from "@/utils/response-messages";
+import { startNotificationListener } from "./notifications";
+import { startChatListener } from "./chat";
 
 export function handleSignIn() {
   const signInForm = document.getElementById("signin-form") as HTMLFormElement;
-  if (!signInForm) return;
+  const loginInput = document.getElementById("login") as HTMLInputElement;
+
+  if (!loginInput || !signInForm) return;
+
+  const savedLogin = localStorage.getItem("loginInput");
+  if (savedLogin) loginInput.value = savedLogin;
+
+  loginInput.addEventListener("input", () => {
+    localStorage.setItem("loginInput", loginInput.value);
+  });
 
   signInForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
@@ -12,34 +24,31 @@ export function handleSignIn() {
       signInForm.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = signInForm.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = signInForm.querySelector<HTMLSpanElement>("#btn-label");
-    const loginInput = signInForm.querySelector<HTMLInputElement>("#login");
     const passwordInput =
       signInForm.querySelector<HTMLInputElement>("#password");
 
-    if (!submitBtn || !spinner || !btnLabel || !loginInput || !passwordInput)
-      return;
+    if (!submitBtn || !spinner || !btnLabel || !passwordInput) return;
 
     const btnLabelText = btnLabel.textContent;
     const feedbackDelay = 900;
     const redirectDelay = 1500;
 
-    const formData = new FormData(signInForm);
-    const login = formData.get("login") as string;
-    const password = formData.get("password") as string;
+    const login = loginInput.value.trim();
+    const password = passwordInput.value.trim();
 
-    if (!login.trim()) {
+    if (!login) {
       loginInput.focus();
       return;
     }
-    if (!password.trim()) {
+    if (!password) {
       passwordInput.focus();
       return;
     }
 
-    const isEmail: boolean = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(login);
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(login);
     const payload = isEmail
-      ? { email: login.trim(), password }
-      : { username: login.trim(), password };
+      ? { email: login, password }
+      : { username: login, password };
 
     submitBtn.disabled = true;
     submitBtn.setAttribute("aria-busy", "true");
@@ -56,25 +65,28 @@ export function handleSignIn() {
       const result = await response.json();
 
       if (response.ok && result.statusCode === 200) {
+        localStorage.removeItem("loginInput");
+
+        startNotificationListener();
+        // startChatListener();
+
         setTimeout(() => {
-          displayToast(LoginRes.USER_LOGGED_IN, "success", {
-            noProgressBar: true,
-          });
+          displayToast(LoginRes.USER_LOGGED_IN, "success");
+
           setTimeout(() => {
-            history.pushState(null, "", "/salon");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/salon");
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
+        localStorage.removeItem("loginInput");
+
         sessionStorage.setItem("2faMode", result.data?.twoFaType);
 
         setTimeout(() => {
-          displayToast(LoginRes.TWOFA_REQUIRED, "warning", {
-            noProgressBar: true,
-          });
+          displayToast(LoginRes.TWOFA_REQUIRED, "warning");
+
           setTimeout(() => {
-            history.pushState(null, "", "/verify_login");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/verify_login");
           }, redirectDelay);
         }, feedbackDelay);
       } else {

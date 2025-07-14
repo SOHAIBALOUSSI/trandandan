@@ -1,4 +1,5 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { VerifyCodeRes } from "@/utils/response-messages";
 
 export function verifyOtpCode() {
@@ -42,19 +43,17 @@ export function verifyOtpCode() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otpCode: otpCode }),
+        body: JSON.stringify({ otpCode }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(VerifyCodeRes.CODE_VERIFIED, "success", {
-            noProgressBar: true,
-          });
+          displayToast(VerifyCodeRes.CODE_VERIFIED, "success");
+
           setTimeout(() => {
-            history.pushState(null, "", "/password_update");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/password_update");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -69,7 +68,7 @@ export function verifyOtpCode() {
           otpInputs[0].focus();
         }, feedbackDelay);
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(VerifyCodeRes.INTERNAL_SERVER_ERROR, "error");
       otpInputs.forEach((input) => {
         input.value = "";

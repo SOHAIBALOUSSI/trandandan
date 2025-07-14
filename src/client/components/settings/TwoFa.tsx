@@ -5,8 +5,7 @@ import { enable2FA } from "@/services/enable-2fa";
 import { disable2FA } from "@/services/disable-2fa";
 import { check2FA } from "@/services/check-2fa";
 import { fontSizes } from "@/styles/fontSizes";
-
-type TwoFAMethod = { type: "app" | "email"; enabled: 1 | 0; is_primary: 1 | 0 };
+import { TwoFAMethod } from "types/types";
 
 function update2FAUI(methods: TwoFAMethod[]) {
   ["app", "email"].forEach((type) => {
@@ -16,7 +15,6 @@ function update2FAUI(methods: TwoFAMethod[]) {
     const statusLabel = document.getElementById(`${type}-status-label`);
     const primaryLabel = document.getElementById(`${type}-primary-label`);
     const dotsMenuBtn = document.getElementById(`${type}-dots-menu-btn`);
-    const method = methods.find((m) => m.type === type);
 
     if (
       !setupBtn ||
@@ -28,6 +26,7 @@ function update2FAUI(methods: TwoFAMethod[]) {
     )
       return;
 
+    const method = methods.find((m) => m.type === type);
     if (!method) {
       // Method not set up : show only Setup
       setupBtn.classList.remove("hidden");
@@ -49,20 +48,20 @@ function update2FAUI(methods: TwoFAMethod[]) {
     if (method.enabled) {
       statusLabel.textContent = "Enabled";
       statusLabel.className =
-        "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700";
+        "mb-2 ml-2 md:mb-0 px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700";
       toggleEnableBtn.textContent = "Disable";
       if (method.is_primary) {
         primaryLabel.classList.remove("hidden");
         primaryLabel.textContent = "Primary";
         primaryLabel.className =
-          "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700";
+          "mb-2 ml-2 md:mb-0 px-2 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700";
       } else {
         primaryLabel.classList.add("hidden");
       }
     } else {
       statusLabel.textContent = "Disabled";
       statusLabel.className =
-        "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700";
+        "mb-2 ml-2 md:mb-0 px-2 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700";
       toggleEnableBtn.textContent = "Enable";
       primaryLabel.classList.add("hidden");
     }
@@ -149,11 +148,12 @@ function attach2FAListeners(type: "app" | "email") {
 
 function TwoFaMode(type: "app" | "email") {
   const isApp = type === "app";
+
   setTimeout(() => attach2FAListeners(type), 0);
 
   return (
     <div className="relative">
-      <div className="absolute top-4 right-4 z-20">
+      <div className="absolute top-4 right-3 z-20">
         <div className="relative">
           <button
             id={`${type}-dots-menu-btn`}
@@ -189,19 +189,21 @@ function TwoFaMode(type: "app" | "email") {
       </div>
 
       <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 border border-pong-accent/30 rounded-2xl px-6 py-6 bg-gradient-to-br from-pong-dark-custom/40 to-pong-accent/5 shadow-lg">
-        <div className="flex items-center gap-4 text-white w-full md:w-auto">
-          <div className="flex items-center justify-center w-6 h-6 md:w-12 md:h-12 px-2 rounded-full bg-pong-accent/20 shadow-inner">
+        <div className="flex items-start gap-4 text-white w-full md:w-auto">
+          <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 px-2 rounded-full bg-pong-accent/20 shadow-inner">
             <i
               className={`fa-solid ${
                 isApp ? "fa-shield-halved" : "fa-envelope-circle-check"
-              } ${fontSizes.bodyFontSize} ${
+              } ${
                 isApp ? "text-pong-accent" : "text-pong-secondary"
-              }`}
+              } text-lg md:text-xl`}
             />
           </div>
           <div className="flex flex-col">
             <div className="flex flex-col md:flex-row md:items-center md:gap-x-2">
-              <span className="font-bold text-lg md:text-xl tracking-wide">
+              <span
+                className={`font-bold ${fontSizes.bodyFontSize} tracking-wide`}
+              >
                 {isApp ? "Authenticator App" : "Email OTP"}
               </span>
               <div className="flex gap-2 mt-2 md:mt-0">
@@ -215,7 +217,9 @@ function TwoFaMode(type: "app" | "email") {
                 ></span>
               </div>
             </div>
-            <span className="block text-pong-secondary/80 text-xs md:text-sm mt-1">
+            <span
+              className={`block text-pong-secondary/80 ${fontSizes.smallTextFontSize} md:mt-3`}
+            >
               {isApp
                 ? "Use an authenticator app for maximum security."
                 : "Receive one-time codes by email for easy access."}
@@ -223,45 +227,52 @@ function TwoFaMode(type: "app" | "email") {
           </div>
         </div>
         <div className="flex gap-2 items-center mt-4 md:mt-0">
-          <button
-            id={`${type}-setup-btn`}
-            className="bg-pong-accent hover:bg-pong-dark-accent text-white font-semibold px-5 py-2 rounded-lg shadow transition-all duration-150 text-sm md:text-base"
-          >
+          <button id={`${type}-setup-btn`} className={styles.darkPrimaryBtn}>
             <i className="fa-solid fa-plus mr-2"></i>
             Setup
           </button>
         </div>
       </div>
+
       <div
         id={`${type}-verify-section`}
         className="hidden w-full mt-4 flex flex-col items-center"
       >
-        <div className="w-full max-w-md bg-pong-dark-custom/80 border border-pong-accent/30 rounded-2xl shadow-lg px-6 py-6 flex flex-col items-center">
-          <span className="font-bold text-pong-accent text-lg mb-2 flex items-center gap-2">
+        <div className={styles.darkForm}>
+          <span
+            className={`font-bold text-pong-accent ${fontSizes.bodyFontSize} mb-2 flex items-center gap-2`}
+          >
             <i className="fa-solid fa-key"></i>
             Verify {isApp ? "Authenticator App" : "Email OTP"}
           </span>
-          <span className="text-pong-secondary/80 text-xs mb-4 text-center">
+          <span
+            className={`text-pong-secondary/80 ${fontSizes.smallTextFontSize} mb-4 text-center`}
+          >
             Enter the 6-digit code{" "}
             {isApp ? "from your app" : "sent to your email"} to complete setup.
           </span>
-          {isApp && (
+          {isApp ? (
             <img
               id="app-qr"
               alt="QR Code"
               className="hidden mx-auto mb-4 w-40 h-40 rounded-lg shadow"
             />
+          ) : (
+            <br className="hidden" />
           )}
           <input
             id={`${type}-otp`}
             type="text"
             maxLength={6}
-            className="w-full p-3 border-2 border-pong-accent/40 rounded-md text-black placeholder:text-black/60 font-bold bg-white/80 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all mb-3 text-center tracking-widest text-lg"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={styles.inputFieldDark}
             placeholder="Enter 6-digit code"
           />
+
           <button
             id={`${type}-verify-btn`}
-            className="w-full bg-pong-accent hover:bg-pong-dark-accent text-white py-2 rounded-md font-semibold shadow transition-all"
+            className={`${styles.darkSubmitBtn} w-full`}
           >
             <i className="fa-solid fa-check mr-2"></i>
             Verify

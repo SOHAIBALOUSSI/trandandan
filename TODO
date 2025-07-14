@@ -1,10 +1,6 @@
-- add show password option
-- customize css styles for required attribute
-- calcul the rank of the player (backend)
-- add (matches / wins / losses) in profile
-- activity (wins / losses / goodbye / join tournament)
-- add join date in member card
-- member card editable (an icon in the top right)
-- when the user click it highlight username for editing and also profile avatar
-- there will be 4 icons for ranking (top 5 - top 10 - top 20 - normal )
-- 'TWOFA_ALREADY_PENDING', { qrCode: qrCodeUrl }
+- toast for all type of notifications
+- show a timer when dealing with otp code
+- switch to use https and wss
+- if the player online show the toast if not dont show
+- check unblock (INTERNAL_SERVER_ERROR)
+- add the title in welcome (if Male - Mr if Female Mme if Remote Student or something)

@@ -19,11 +19,11 @@ export function ChangePassword() {
       </p>
 
       <a
-        href="change_password"
+        href="/change_password"
         data-link
-        className="inline-block mt-4 w-fit px-4 py-2 text-sm font-semibold text-white bg-pong-accent rounded-md shadow hover:bg-pong-dark-accent transition"
+        className={styles.darkPrimaryBtn + "md:w-fit"}
       >
-        Update Password
+        Proceed to Update
       </a>
 
       <p className="text-pong-warning text-xs md:text-sm italic mt-3">

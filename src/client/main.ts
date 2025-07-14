@@ -2,9 +2,9 @@ import "./styles/all.min.css";
 import "./styles/normalize.css";
 import "./styles/main.css";
 import { router } from "./router";
+import { startNotificationListener } from "./handlers/notifications";
 
-// Setup SPA link interception
-export function setupSPA(): void {
+function setupSPA(): void {
   document.addEventListener("click", async (e: Event) => {
     const target = e.target as HTMLElement;
     const link = target.closest("[data-link]") as HTMLAnchorElement | null;
@@ -22,7 +22,6 @@ export function setupSPA(): void {
 
 // Main SPA router logic
 setupSPA();
+
 window.addEventListener("load", router);
 window.addEventListener("popstate", router);
-
-// document.getElementById("app")?.appendChild(<Settings />);

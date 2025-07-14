@@ -21,7 +21,7 @@ export default defineConfig({
       "/2fa": "http://auth:3000",
       "/profile": "http://profile:3001",
       "/friends": "http://friends:3002",
-      "/block": "http://block:3002",
+      "/block": "http://friends:3002",
       "/notifications": "http://notifications:3003",
       "/chat": "http://chat:3004",
     },

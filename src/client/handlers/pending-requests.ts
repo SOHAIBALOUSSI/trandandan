@@ -1,6 +1,9 @@
 import { acceptFriend } from "@/services/accept-friend";
 import { rejectFriend } from "@/services/reject-friend";
+import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
+import MaleAvatar from "@/assets/male.png";
+import FemaleAvatar from "@/assets/female.png";
 
 export async function listPendingRequests() {
   try {
@@ -15,8 +18,7 @@ export async function listPendingRequests() {
       (r: { requester_id: number }) => r.requester_id
     );
     return requesterIds;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
     return [];
   }
 }
@@ -38,18 +40,31 @@ export async function handlePendingRequests() {
   }
 
   for (const requester_id of pending) {
-    // const user = await getUserById(requester_id);
-    const username = "username"; // replace later with user.username
+    const user = await getUserById(requester_id);
+    if (!user) return;
+
+    const username = user.username;
 
     const li = document.createElement("li");
     li.className =
       "flex items-center justify-between gap-4 py-2 border-b border-white/10";
+
+    const avatar = document.createElement("img");
+    avatar.src = user.avatar_url
+      ? user.avatar_url
+      : user.gender === "M"
+      ? MaleAvatar
+      : FemaleAvatar;
+    avatar.alt = `${user.username}'s avatar`;
+    avatar.className =
+      "w-10 h-10 rounded-full object-cover border border-pong-accent/30 bg-gray-700";
 
     const left = document.createElement("div");
     left.className = "flex items-center space-x-4";
     const name = document.createElement("span");
     name.className = "text-white font-semibold text-base";
     name.textContent = username;
+    left.appendChild(avatar);
     left.appendChild(name);
 
     const buttons = document.createElement("div");
