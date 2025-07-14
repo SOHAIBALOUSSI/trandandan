@@ -4,7 +4,6 @@ export function initGameThemeToggle() {
 
   if (!toggleBtn || !container) return;
 
-  // Set initial icon based on theme
   const setIcon = () => {
     const isDark = container.dataset.theme === "dark";
     toggleBtn.innerHTML = isDark
@@ -14,16 +13,13 @@ export function initGameThemeToggle() {
 
   setIcon();
 
-  // Remove previous listener if any
   toggleBtn.onclick = null;
 
   toggleBtn.addEventListener("click", () => {
-    console.log("clicked");
     const isDark = container.dataset.theme === "dark";
     container.dataset.theme = isDark ? "light" : "dark";
     setIcon();
 
-    // Optionally, update canvas background for light theme
     const canvas = container.querySelector("canvas");
     if (canvas) {
       (canvas as HTMLCanvasElement).style.background =
@@ -33,4 +29,3 @@ export function initGameThemeToggle() {
     }
   });
 }
-	

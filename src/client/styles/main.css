@@ -300,21 +300,26 @@ a {
 }
 /* in your global CSS or <style> tag */
 
-/* Game Light Theme */
-[data-theme="light"] {
-  background: linear-gradient(to bottom right, #f9f9f9, #e3e3e3);
-  color: #1a1a1a;
+/* Game Styles */
+#game-screen[data-theme="dark"] {
+  background: linear-gradient(135deg, theme('colors.pong-sport-bg'), theme('colors.pong-sport-surface'));
+  color: theme('colors.pong-sport-accent');
 }
-[data-theme="light"] h1,
-[data-theme="light"] button,
-[data-theme="light"] canvas,
-[data-theme="light"] .score h1 {
-  color: #1a1a1a !important;
-  background-color: #fff !important;
+#game-screen[data-theme="light"] {
+  background: linear-gradient(135deg, theme('colors.pong-sport-light'), #fff 100%);
+  color: theme('colors.pong-sport-primary');
 }
-
-/* Game Dark Theme */
-[data-theme="dark"] {
-  background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a);
-  color: #fff;
+#game-screen[data-theme="light"] .score {
+  color: theme('colors.pong-sport-primary');
+}
+#game-screen[data-theme="dark"] .score {
+  color: theme('colors.pong-sport-accent');
+}
+#game-screen[data-theme="light"] canvas {
+  background: #fff !important;
+  border-color: theme('colors.pong-sport-primary');
+}
+#game-screen[data-theme="dark"] canvas {
+  background: theme('colors.pong-sport-bg') !important;
+  border-color: theme('colors.pong-sport-accent');
 }

@@ -25,27 +25,27 @@ export function LocalGame() {
   container.dataset.theme = "dark";
 
   container.innerHTML = `
-  <button id="exit" class="absolute top-5 left-5 z-30 text-2xl md:text-3xl text-white hover:text-[#d1b300] transition p-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md shadow-md" title="Leave Match">
+  <button id="exit" class="absolute top-5 left-5 z-30 text-2xl md:text-3xl text-pong-sport-accent hover:text-pong-sport-primary transition p-2 rounded-full bg-pong-sport-surface/70 hover:bg-pong-sport-surface/90 backdrop-blur-md shadow-md" title="Leave Match">
     <i class="fa-solid fa-arrow-left"></i>
   </button>
-  <button id="game-theme-toggle" class="absolute top-6 right-6 z-30 text-xl bg-black/40 hover:bg-black/60 text-white p-2 rounded-full backdrop-blur transition" title="Toggle Game Theme">
-  	<i class="fa-solid fa-circle-half-stroke"></i>
+  <button id="game-theme-toggle" class="absolute top-6 right-6 z-30 text-xl game-control-btn bg-pong-sport-surface text-pong-sport-accent hover:bg-pong-sport-accent hover:text-pong-sport-surface transition" title="Toggle Game Theme">
+    <i class="fa-solid fa-circle-half-stroke"></i>
   </button>
 
   <h1 class="text-center text-[8vw] md:text-[80px] font-extrabold tracking-wide mt-14 mb-4 drop-shadow-xl">
-    <span class="text-[#d1b300]">BHV</span> PONG
+    <span class="text-pong-sport-accent">BHV</span> <span class="text-pong-sport-primary">PONG</span>
   </h1>
 
   <div class="flex items-center justify-center flex-col w-full" style="min-height:${
     canvasHeight + 100
   }px;">
     <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4">
-      <h2 id="leftPlayerScoreLocal" class="text-5xl md:text-7xl font-semibold">0</h2>
-      <h2 id="rightPlayerScoreLocal" class="text-5xl md:text-7xl font-semibold">0</h2>
+      <h2 id="leftPlayerScoreLocal" class="text-5xl md:text-7xl font-semibold text-pong-sport-accent">0</h2>
+      <h2 id="rightPlayerScoreLocal" class="text-5xl md:text-7xl font-semibold text-pong-sport-primary">0</h2>
     </div>
 
     <div class="flex justify-center w-full">
-      <canvas class="z-10 border-2 border-[#d1b300] rounded-md shadow-[0_0_20px_rgba(255,255,255,0.2)] bg-black/80 backdrop-blur-sm"
+      <canvas class="z-10 border-2 border-pong-sport-accent rounded-md shadow-[0_0_20px_rgba(0,184,148,0.2)] bg-pong-sport-bg/90 backdrop-blur-sm transition-all duration-300"
         id="canvas"
         width="${canvasWidth}"
         height="${canvasHeight}">
@@ -54,16 +54,12 @@ export function LocalGame() {
   </div>
 
   <div id="gameTab"
-    class="h-80 w-11/12 max-w-lg bg-[#161616] border border-[#333] rounded-2xl absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 hidden z-20 shadow-2xl backdrop-blur-md">
-    
-    <div class="flex flex-col items-center justify-center h-full px-6 py-4">
-      <h2 class="text-3xl md:text-4xl font-bold text-[#d1b300] mb-2 tracking-tight">Match Finished</h2>
-      <p id="result" class="text-xl mt-1 text-[#fefefe] font-medium">Victory</p>
-      
-      <button id="restart" class="mt-6 bg-[#d1b300] hover:bg-[#bfa100] text-black font-bold py-3 px-8 rounded-xl text-lg md:text-xl transition-all shadow-md tracking-wide">
+    class="game-modal h-80 w-11/12 max-w-lg absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 hidden z-20 shadow-2xl backdrop-blur-md flex flex-col items-center justify-center px-6 py-4 bg-pong-sport-surface text-pong-sport-accent">
+      <h2 class="text-3xl md:text-4xl font-bold text-pong-sport-accent mb-2 tracking-tight">Match Finished</h2>
+      <p id="result" class="text-xl mt-1 text-pong-sport-primary font-medium">Victory</p>
+      <button id="restart" class="mt-6 game-control-btn bg-pong-sport-accent hover:bg-pong-sport-primary text-pong-sport-dark font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide">
         Rematch
       </button>
-    </div>
   </div>
 `;
 
@@ -84,6 +80,7 @@ export function LocalGame() {
   exit.addEventListener("click", () => {
     navigateTo("/arena");
   });
+
   // Game state and logic
   let socketLocal: WebSocket;
   let keys: { [key: string]: boolean } = {};
@@ -245,7 +242,7 @@ class FlowFieldLocal {
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
     // Left paddle
-    this.ctx.fillStyle = "#E0A458";
+    this.ctx.fillStyle = "#003049";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
     this.ctx.strokeRect(
       10,
@@ -255,7 +252,7 @@ class FlowFieldLocal {
     );
 
     // Right paddle
-    this.ctx.fillStyle = "#E0A458";
+    this.ctx.fillStyle = "#003049";
     this.ctx.fillRect(
       980,
       this.gameState.paddelRightY,
@@ -270,7 +267,7 @@ class FlowFieldLocal {
     );
 
     // Ball
-    this.ctx.fillStyle = "#C44536";
+    this.ctx.fillStyle = "#fff";
     this.ctx.beginPath();
     this.ctx.arc(
       this.gameState.ballX,
@@ -283,7 +280,7 @@ class FlowFieldLocal {
     this.ctx.stroke();
 
     // Generate particles at the ball's position
-    this.ballParticle(this.gameState.ballX, this.gameState.ballY);
+    // this.ballParticle(this.gameState.ballX, this.gameState.ballY);
 
     // Update and draw particles
     this.updateParticles();
@@ -357,11 +354,13 @@ class FlowFieldLocal {
       this.gameState.leftPlayerScore.toString();
 
     if (this.gameState.rightPlayerScore === 5) {
-      this.domElements.result.innerText = "RIGHT PLAYER WON";
+      this.domElements.result.innerText =
+        "Right Side Triumphs! A well-earned victory.";
       this.setInitialStat();
     }
     if (this.gameState.leftPlayerScore === 5) {
-      this.domElements.result.innerText = "LEFT PLAYER WON";
+      this.domElements.result.innerText =
+        "Left Side Prevails! The rally ends in glory.";
       this.setInitialStat();
     }
   }
@@ -409,7 +408,7 @@ interface Particle {
 {
   /* <div class="absolute w-10 h-10 bg-red-500 opacity-10 animate-square top-0 left-0"></div>
 <div class="absolute w-10 h-10 bg-blue-500 opacity-10 animate-square top-[45px] left-[500px]"></div>
-<div class="absolute w-10 h-10 bg-green-500 opacity-10 animate-square top-[800px] left="[322px]"></div>
+<div class="absolute w-10 h-10 bg-green-500 opacity-10 animate-square top="[800px] left="[322px]"></div>
 <div class="absolute w-10 h-10 bg-yellow-500 opacity-10 animate-square top="[550px] left="[800px]"></div>
 <div class="absolute w-10 h-10 bg-purple-500 opacity-10 animate-square top="[90px] left="[1800px]"></div>
 <div class="absolute w-10 h-10 bg-pink-500 opacity-10 animate-square top="[250px] left="[1656px]"></div>
