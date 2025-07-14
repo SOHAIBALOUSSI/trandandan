@@ -1,8 +1,8 @@
 export async function addNotification(db, notification) {
     const result = await db.run('INSERT INTO notifications (recipient_id, sender_id, type) VALUES (?, ?, ?)',
         [
-            notification.to,
-            notification.from,
+            notification.recipient_id,
+            notification.sender_id,
             notification.type
         ]
     );

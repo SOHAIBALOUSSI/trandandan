@@ -21,6 +21,8 @@ export const RegisterRes: Record<string, string> = {
   PASSWORD_POLICY:
     "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
   USER_EXISTS: "This racket is already in the club. Try signing in instead.",
+  FST_ERR_VALIDATION:
+    "Your credentials need a bit more polish. Check your input and try again.",
   USER_REGISTERED: "Welcome aboard! Sign in to unlock your club experience.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
@@ -45,7 +47,7 @@ export const VerifyCodeRes: Record<string, string> = {
   OTP_INVALID:
     "That code doesn’t match our playbook. Double-check and try again.",
   CODE_VERIFIED:
-    "OTP verified successfully. Redirecting you to update your password...",
+    "OTP verified successfully. Redirecting you to update your password",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
@@ -56,9 +58,10 @@ export const UpdatePasswordRes: Record<string, string> = {
   UNMATCHED_PASSWORDS:
     "Your new passwords don’t match. Adjust your swing and re-enter.",
   UNAUTHORIZED:
-    "You need to log in first. The court isn’t open to unregistered rackets.",
+    "You need a valid password reset link or code to update your password.",
   TOKEN_REQUIRED: "A reset token is required to update your password.",
-  USER_LOGGED_IN: "Your password is updated successfully!",
+  USER_LOGGED_IN:
+    "Your password has been refreshed. Step back onto the court with confidence.",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish the rally with verification.",
   INTERNAL_SERVER_ERROR:
@@ -78,55 +81,28 @@ export const Setup2FaRes: Record<string, string> = {
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
-export const Verify2FaSetupRes: Record<string, string> = {
+export const Verify2FaRes: Record<string, string> = {
   TWOFA_NOT_SET:
     "Two-factor authentication isn’t set up yet. Prepare your defense first.",
   TWOFA_ALREADY_ENABLED:
     "Two-factor authentication is already active on this racket.",
+  TWOFA_NOT_ENABLED: "2FA isn’t active yet. Step onto the setup court first.",
   UNAUTHORIZED: "Unauthorized. Only logged-in champs can verify 2FA.",
   OTP_REQUIRED: "OTP required. Enter your code to proceed.",
   OTP_INVALID: "Invalid OTP. That rally didn’t land — try again.",
   TWOFA_ENABLED:
     "Two-factor authentication successfully enabled. You’ve upgraded your game!",
-  INTERNAL_SERVER_ERROR:
-    "The club’s lights are out at the moment. Try again shortly.",
-};
-
-export const Verify2FaLoginRes: Record<string, string> = {
-  TWOFA_NOT_SET:
-    "Two-factor authentication isn’t set up yet. Prepare your defense first.",
-  TWOFA_NOT_ENABLED: "2FA isn’t active yet. Step onto the setup court first.",
-  UNAUTHORIZED: "Unauthorized. Only logged-in champs can verify 2FA.",
-  OTP_REQUIRED: "OTP required. Enter your code to proceed.",
-  OTP_INVALID: "Invalid OTP. That rally didn’t land — try again.",
   USER_LOGGED_IN: "Welcome back, champ! You’re cleared for the court.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
-export const Disable2FaRes: Record<string, string> = {
+export const Change2FaStateRes: Record<string, string> = {
   UNAUTHORIZED: "Access denied. You must be logged in to disable 2FA.",
-  METHODS_NOT_ENABLED:
-    "No 2FA methods are active. You’ll need to set one up before disabling.",
+  METHOD_NOT_ENABLED:
+    "This method is currently disabled. Please enable it first.",
   METHOD_DISABLED: "This 2FA method is now disabled. You can play without it.",
-  INTERNAL_SERVER_ERROR:
-    "The club’s lights are out at the moment. Try again shortly.",
-};
-
-export const Enable2FaRes: Record<string, string> = {
-  UNAUTHORIZED: "Access denied. Log in to enable two-factor authentication.",
-  METHODS_NOT_ENABLED:
-    "No available 2FA methods found. Please set one up first to enable it.",
   METHOD_ENABLED: "You're all set — this two-factor method is now active.",
-  INTERNAL_SERVER_ERROR:
-    "The club’s lights are out at the moment. Try again shortly.",
-};
-
-export const Primary2FaMethodRes: Record<string, string> = {
-  UNAUTHORIZED:
-    "Hold up! You must be logged in to manage your primary 2FA method.",
-  METHODS_NOT_ENABLED:
-    "You don’t have any 2FA methods set up. Get one going first.",
   PRIMARY_METHOD_UPDATED:
     "All set! Your primary 2FA method has been successfully updated.",
   INTERNAL_SERVER_ERROR:
@@ -153,7 +129,10 @@ export const UpdateCredentialsRes: Record<string, string> = {
     "This email is already linked to another account. Please use a different email.",
   UNAUTHORIZED:
     "Unauthorized. You need to be logged in to update your credentials.",
-  CREDENTIALS_UPDATED: "Your credentials have been successfully updated.",
+  PASSWORD_UPDATED:
+    "Your password has been successfully updated. You've leveled up your security. Please sign in again to rejoin the court.",
+  EMAIL_UPDATED:
+    "Your email has been updated. The club knows how to reach you now.",
   TWOFA_REQUIRED:
     "Two-factor authentication required. Let’s finish your warm-up with verification.",
   INTERNAL_SERVER_ERROR:
@@ -173,8 +152,12 @@ export const VerifyUpdateCredentialsRes: Record<string, string> = {
     "Unauthorized. You need to be logged in to update your credentials.",
   OTP_REQUIRED:
     "OTP required. Please enter the code sent to your authenticator app or email.",
-  OTP_INVALID: "Invalid OTP. Please check the code and try again.",
-  CREDENTIALS_UPDATED: "Your credentials have been successfully updated.",
+  OTP_INVALID:
+    "That code doesn’t match our playbook. Double-check and try again.",
+  PASSWORD_UPDATED:
+    "Your password has been successfully updated. You've leveled up your security. Please sign in again to rejoin the court.",
+  EMAIL_UPDATED:
+    "Your email has been updated. The club knows how to reach you now.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
@@ -185,6 +168,8 @@ export const UpdateUserProfileRes: Record<string, string> = {
   PROFILE_NOT_FOUND: "Profile not found. Please check your request.",
   USERNAME_EXISTS: "This username is already taken. Please choose another one.",
   MISSING_FIELDS: "All fields are required. Please fill them in.",
+  FST_ERR_VALIDATION:
+    "Your credentials need a bit more polish. Check your input and try again.",
   ZERO_CHANGES: "No changes detected. Please modify at least one field.",
   PROFILE_UPDATED: "Your profile has been successfully updated.",
   INTERNAL_SERVER_ERROR:
@@ -210,6 +195,7 @@ export const GetUserAvatarRes: Record<string, string> = {
 export const FriendRequestRes: Record<string, string> = {
   ADDRESSEE_REQUIRED: "Addressee is required to send a friend request.",
   ADDRESSEE_INVALID: "Invalid addressee. Please check the user ID.",
+  FRIEND_REQUEST_ALREADY_SENT: "Friend request already sent to this user.",
   FRIEND_REQUEST_SENT: "Friend request sent successfully.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
@@ -227,6 +213,32 @@ export const FriendRejectRes: Record<string, string> = {
   REQUESTER_REQUIRED: "Requester is required to accept a friend request.",
   REQUESTER_INVALID: "Invalid requester. Please check the user ID.",
   FRIEND_REQUEST_REJECTED: "Friend request rejected successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const FriendRemoveRes: Record<string, string> = {
+  FRIEND_REQUIRED: "Friend is required to remove a friend.",
+  FRIEND_INVALID: "Invalid friend. Please check the user ID.",
+  FRIEND_REMOVED: "Friend removed successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const FriendBlockRes: Record<string, string> = {
+  BLOCKED_REQUIRED: "Friend is required to block a friend.",
+  BLOCKED_INVALID: "Invalid friend. Please check the user ID.",
+  BLOCKED_EXISTS: "You have already blocked this friend.",
+  BLOCK_SUCCESS: "Friend blocked successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const FriendUnblockRes: Record<string, string> = {
+  BLOCKED_REQUIRED: "Friend is required to unblock a friend.",
+  BLOCKED_INVALID: "Invalid friend. Please check the user ID.",
+  BLOCKED_NOT_FOUND: "You have not blocked this friend.",
+  UNBLOCK_SUCCESS: "Friend unblocked successfully.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };

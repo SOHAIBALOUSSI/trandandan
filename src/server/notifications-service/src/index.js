@@ -98,7 +98,7 @@ rabbit.consumeMessages(async (notification) =>{
   }
   else {
     console.log('RabbitMQ: notification received: ', notification);
-    const recipient = notification.to;
+    const recipient = notification.recipient_id;
     const idExist = await redis.sIsMember('userIds', `${recipient}`);
     console.log('idExist value: ', idExist);
     if (!idExist) 

@@ -1,12 +1,15 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
-import { hydrateAllMembers } from "@/services/get-users";
-import { hydrateFriends } from "@/services/get-friends";
+import { hydrateAllMembers } from "@/handlers/hydrate-all-members";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { getCurrentUser } from "@/utils/user-store";
+import { hydrateFriends } from "@/handlers/hydrate-friends";
 import { Loader } from "@/components/common/Loader";
-import { fontSizes } from "@/styles/fontSizes";
+import { FriendsList } from "@/components/friends/FriendsList";
+import { AllMembersList } from "@/components/friends/AllMembersList";
+import { PendingRequestsList } from "@/components/friends/PendingRequestsList";
+import { handlePendingRequests } from "@/handlers/pending-requests";
 
 export function Friends() {
   const user = getCurrentUser();
@@ -16,7 +19,7 @@ export function Friends() {
         <NavBar />
         <div className="w-full relative">
           <TopBar />
-          <Loader />
+          <Loader text="Preparing your club profile..." />
         </div>
       </section>
     );
@@ -25,6 +28,7 @@ export function Friends() {
   setTimeout(() => {
     hydrateFriends();
     hydrateAllMembers(user);
+    handlePendingRequests();
   }, 0);
 
   return (
@@ -37,37 +41,60 @@ export function Friends() {
             title="Meet the Members"
             subtitle="Welcome to your club's heart — connect with friends, discover new players, and grow your circle."
           />
-
-          <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
-              <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
-              Friends List
-            </h2>
-            <p className="text-sm text-white/60 -mt-6 mb-6 pl-6">
-              Your current club friends
-            </p>
-            <ul
-              id="friend-list"
-              className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`}
-            >
-              <li className="text-white text-center">Loading...</li>
+          <div className="flex flex-col gap-8 w-full max-w-5xl">
+            <ul className="flex justify-center gap-8 ">
+              <li
+                id="friends"
+                className="text-base font-semibold w-64 text-center bg-pong-dark-accent hover:bg-pong-secondary transition rounded-md shadow-md text-white px-6 py-2 cursor-pointer"
+              >
+                Friends
+              </li>
+              <li
+                id="all-members"
+                className="text-base font-semibold w-64 text-center bg-pong-dark-accent hover:bg-pong-secondary transition rounded-md shadow-md text-white px-6 py-2 cursor-pointer"
+              >
+                All Members
+              </li>
+              <li
+                id="pending-requests"
+                className="text-base font-semibold w-64 text-center bg-pong-dark-accent hover:bg-pong-secondary transition rounded-md shadow-md text-white px-6 py-2 cursor-pointer"
+              >
+                Pending Requests
+              </li>
             </ul>
-          </div>
+            <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
+              <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+                <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
+                Friends List
+              </h2>
+              <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
+                Your current club friends
+              </p>
+              <FriendsList />
+            </div>
 
-          <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
-              <span className="inline-block w-1.5 h-8 bg-pong-highlight rounded-sm"></span>
-              All Members
-            </h2>
-            <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
-              Browse and connect with other BHC members
-            </p>
-            <ul
-              id="all-users-list"
-              className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`}
-            >
-              <li className="text-white text-center">Loading...</li>
-            </ul>
+            <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
+              <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+                <span className="inline-block w-1.5 h-8 bg-pong-highlight rounded-sm"></span>
+                Rival Requests
+              </h2>
+              <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
+                Your fellow members are looking to connect — will you rally
+                back?
+              </p>
+              <PendingRequestsList />
+            </div>
+
+            <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
+              <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+                <span className="inline-block w-1.5 h-8 bg-pong-highlight rounded-sm"></span>
+                All Members
+              </h2>
+              <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
+                Browse and connect with other BHC members
+              </p>
+              <AllMembersList />
+            </div>
           </div>
         </main>
       </div>

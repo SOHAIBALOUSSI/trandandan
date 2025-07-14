@@ -1,10 +1,12 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdatePasswordRes } from "@/utils/response-messages";
 
 export function handleUpdatePassword() {
   const form = document.getElementById(
     "update-password-form"
   ) as HTMLFormElement;
+
   if (!form) return;
 
   form.addEventListener("submit", async (e: Event) => {
@@ -60,34 +62,27 @@ export function handleUpdatePassword() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          password: password,
-          confirmPassword: confirmPassword,
-        }),
+        body: JSON.stringify({ password, confirmPassword }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
         setTimeout(() => {
-          displayToast(UpdatePasswordRes.USER_LOGGED_IN, "success", {
-            noProgressBar: true,
-          });
+          displayToast(UpdatePasswordRes.USER_LOGGED_IN, "success");
           setTimeout(() => {
-            history.pushState(null, "", "/salon");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            navigateTo("/signin");
           }, redirectDelay);
         }, feedbackDelay);
       } else {
         setTimeout(() => {
-          console.log(result);
           const errorMsg =
             UpdatePasswordRes[result?.code] ||
             "Error during password update. Please try again.";
           displayToast(errorMsg, "error");
         }, feedbackDelay);
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(UpdatePasswordRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {

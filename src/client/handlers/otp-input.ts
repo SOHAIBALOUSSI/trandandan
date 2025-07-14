@@ -1,5 +1,6 @@
 export function handleOtpInput(id: string) {
   const inputs = document.querySelectorAll<HTMLInputElement>(`#${id} input`);
+  if (!inputs) return;
 
   inputs.forEach((input, index) => {
     input.addEventListener("input", () => {

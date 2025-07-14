@@ -1,6 +1,6 @@
-export async function storeTempSecret(db, secret, id) {
-    const result = await db.run('INSERT into twofa (type, temp_secret, user_id) VALUES (?, ?, ?)',
-        ['app', secret, id]
+export async function storeTempSecret(db, secret, qrCodeUrl, id) {
+    const result = await db.run('INSERT into twofa (type, temp_secret, qrcode_url, user_id) VALUES (?, ?, ?, ?)',
+        ['app', secret, qrCodeUrl, id]
     );
 
     console.log("TwoFa: inserted tempSecret in row: ", result.lastID);
@@ -60,7 +60,8 @@ export async function clearOtpCode(db, id, type) {
 
 export async function updateUser2FA(db, id, type) {
     const result = await db.run(`UPDATE twofa SET
-        enabled = TRUE
+        enabled = TRUE,
+        is_verified = TRUE
         WHERE user_id = ? AND type = ?`,
         [id, type]
     );
@@ -96,9 +97,9 @@ export async function findPrimaryTwoFaByUid(db, id) {
     );
 }
 
-export async function getAllTwoFaMethodsByUid(db, id) {
-    console.log('Fetching all twoFa methods by UID');
-    return await db.all('SELECT enabled, is_primary, type FROM twofa WHERE user_id = ?',
+export async function getVerifiedTwoFaMethodsByUid(db, id) {
+    console.log('Fetching all verified twoFa methods by UID');
+    return await db.all('SELECT enabled, is_primary, type FROM twofa WHERE user_id = ? AND is_verified = TRUE',
         [id]
     );
 }

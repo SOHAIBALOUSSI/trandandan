@@ -1,8 +1,8 @@
-import { Primary2FaMethodRes } from "@/utils/response-messages";
+import { Change2FaStateRes } from "@/utils/response-messages";
 import { displayToast } from "@/utils/display-toast";
 
 export async function setPrimaryMethod(
-  mode: "app" | "email",
+  method: "app" | "email",
   onUpdate?: () => void
 ) {
   try {
@@ -10,15 +10,23 @@ export async function setPrimaryMethod(
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ method: mode }),
+      body: JSON.stringify({ method }),
     });
     const data = await res.json();
+    console.log(data.code);
+    if (!res.ok) {
+      displayToast(
+        Change2FaStateRes[data.code] || "Error setting primary method",
+        "error"
+      );
+      return;
+    }
     displayToast(
-      Primary2FaMethodRes[data.code] || "Primary method updated",
+      Change2FaStateRes[data.code] || "Primary method updated",
       res.ok ? "success" : "error"
     );
     if (onUpdate) onUpdate();
-  } catch (error) {
+  } catch (err) {
     displayToast("Set primary method error", "error");
   }
 }

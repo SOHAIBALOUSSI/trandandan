@@ -1,5 +1,7 @@
 import { displayToast } from "@/utils/display-toast";
+import { navigateTo } from "@/utils/navigate-to-link";
 import { VerifyUpdateCredentialsRes } from "@/utils/response-messages";
+import { clearCurrentUser } from "@/utils/user-store";
 
 export function handleVerifyCredentials() {
   const verifyForm = document.getElementById(
@@ -10,6 +12,8 @@ export function handleVerifyCredentials() {
   verifyForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
+    const isPassword = sessionStorage.getItem("passwordUpdated") === "true";
+
     const btn = verifyForm.querySelector<HTMLButtonElement>("#submit-btn");
     const codeInput = verifyForm.querySelector<HTMLInputElement>("#otp");
 
@@ -17,7 +21,8 @@ export function handleVerifyCredentials() {
 
     const code = codeInput.value.trim();
 
-    if (!code) {
+    if (!code || code.length != 6) {
+      displayToast("Please enter a valid 6-digit code.", "error");
       codeInput.focus();
       return;
     }
@@ -39,14 +44,27 @@ export function handleVerifyCredentials() {
       const result = await response.json();
 
       if (response.ok) {
+        sessionStorage.removeItem("2faModeUpdate");
+		sessionStorage.removeItem("passwordUpdated");
         setTimeout(() => {
-          displayToast(
-            VerifyUpdateCredentialsRes.CREDENTIALS_UPDATED,
-            "success"
-          );
+          isPassword
+            ? displayToast(
+                VerifyUpdateCredentialsRes.PASSWORD_UPDATED,
+                "success"
+              )
+            : displayToast(VerifyUpdateCredentialsRes.EMAIL_UPDATED, "success");
+
           setTimeout(() => {
-            history.pushState(null, "", "/security");
-            window.dispatchEvent(new PopStateEvent("popstate"));
+            isPassword ? navigateTo("/signin") : navigateTo("/security");
+            if (isPassword) {
+              fetch("/auth/logout", {
+                method: "POST",
+                credentials: "include",
+              }).then(() => {
+                clearCurrentUser();
+              });
+              sessionStorage.removeItem("passwordUpdated");
+            }
           }, redirectDelay);
         }, feedbackDelay);
       } else {
@@ -62,7 +80,7 @@ export function handleVerifyCredentials() {
       setTimeout(() => {
         btn.disabled = false;
         btn.removeAttribute("aria-busy");
-      }, feedbackDelay);
+      }, feedbackDelay + 300);
     }
   });
 }

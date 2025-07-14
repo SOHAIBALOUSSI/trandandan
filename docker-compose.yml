@@ -59,20 +59,20 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  # chat:
-  #   container_name: chat-service
-  #   build: src/server/chat-service
-  #   image: chat-service
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - trandenden-net
-  #   ports:
-  #     - "3004:3004"
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
+  chat:
+    container_name: chat-service
+    build: src/server/chat-service
+    image: chat-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - trandenden-net
+    ports:
+      - "3004:3004"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   redis:
     container_name: redis
@@ -96,6 +96,9 @@ services:
       - "5000:5000"
     volumes:
       - ./src/server/game-service/db/.gameData.db:/app/db/.gameData.db
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   rabbitmq:
     container_name: rabbitmq
@@ -131,7 +134,7 @@ services:
       - profile
       - friends
       - notifications
-      # - chat
+      - chat
       - redis
       - rabbitmq
       - game

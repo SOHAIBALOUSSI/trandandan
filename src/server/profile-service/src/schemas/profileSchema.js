@@ -38,9 +38,12 @@ export const updateProfileSchema = {
         avatar_url :avatarUrlValidation,
         solde: integerValidation,
         rank: integerValidation,
-        level: integerValidation
+        level: integerValidation,
+		matches_played: integerValidation,
+		matches_won: integerValidation,
+		matches_lost: integerValidation
     },
     minProperties: 1,
-    maxProperties: 6,
+    maxProperties: 9,
     additionalProperties: false
 }

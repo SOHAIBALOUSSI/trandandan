@@ -9,24 +9,26 @@ import { Game } from "@/views/Game";
 import { Dashboard } from "@/views/Dashboard";
 import { Friends } from "@/views/Friends";
 import { Chat } from "@/views/Chat";
+import { Lounge } from "@/views/Lounge";
 import { Profile } from "@/views/Profile";
+import { MemberProfile } from "@/views/MemberProfile";
 import { Security } from "@/views/Security";
 import { Blocked } from "@/views/Blocked";
 import { DeleteAccount } from "@/views/DeleteAccount";
 import { Logout } from "@/views/Logout";
-import { LocalGame } from "@/components/game/local";
-import { RemoteGame } from "@/components/game/remote";
-import { Tournaments } from "@/components/game/tournaments";
-
 import { UpdateCredentialsPassword } from "@/views/UpdateCredentialsPassword";
 import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
 import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentials";
-import { getUserProfile } from "@/services/get-user-profile";
-import { setCurrentUser } from "@/utils/user-store";
 import { Notifications } from "@/views/Notifications";
+import { LocalGame } from "@/components/game/LocalGame";
+import { RemoteGame } from "@/components/game/RemoteGame";
+import { Tournaments } from "@/components/game/Tournaments";
+import { getUserProfile } from "@/services/get-user-profile";
+import { startChatListener } from "@/handlers/chat";
+import { startNotificationListener } from "@/handlers/notifications";
 
-// Define the routes and their corresponding components
-const routes: Record<string, () => HTMLElement> = {
+// Routes and their corresponding components
+const routes: Record<string, (id?: number) => HTMLElement> = {
   welcome: Welcome,
   signin: Signin,
   signup: Signup,
@@ -36,9 +38,8 @@ const routes: Record<string, () => HTMLElement> = {
   salon: Home,
   arena: Game,
   chamber: Dashboard,
-  lounge: Chat,
+  lounge: Lounge,
   members: Friends,
-  profile: Profile,
   exit: Logout,
   duel: LocalGame,
   remote: RemoteGame,
@@ -48,7 +49,7 @@ const routes: Record<string, () => HTMLElement> = {
   change_password: UpdateCredentialsPassword,
   change_email: UpdateCredentialsEmail,
   verification: VerifyUpdateCredentials,
-  blocked: Blocked,
+  muted_players: Blocked,
   wipe_account: DeleteAccount,
   notifs: Notifications,
   checkout: Logout,
@@ -67,26 +68,47 @@ const publicRoutes: string[] = [
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
-  if (profile) {
-    setCurrentUser(profile);
-    return true;
-  }
+  if (profile) return true;
   return false;
 }
+
+let wsStarted = false;
 
 // Router function to handle navigation and rendering
 export async function router(): Promise<void> {
   const app = document.getElementById("app") as HTMLDivElement;
   if (!app) return;
 
-  const path = location.pathname.slice(1) || "welcome";
+  let path = location.pathname.slice(1) || "welcome";
+  let chatFriendId: number | undefined;
+  let memberId: number | undefined;
+
+  // Detect /chat/:id
+  const chatMatch = path.match(/^lounge\/(\d+)$/);
+  if (chatMatch) {
+    chatFriendId = Number(chatMatch[1]);
+    path = "chat-friend";
+  }
+
+  // Detect /members/:id
+  const profileMatch = path.match(/^members\/(\d+)$/);
+  if (profileMatch) {
+    memberId = Number(profileMatch[1]);
+    path = "member-profile";
+  }
+
   const isPublic = publicRoutes.includes(path);
   const render = routes[path];
 
   let authed = false;
-
   if (!isPublic) {
     authed = await isAuthenticated();
+    // if (authed) {
+    //   if (!wsStarted) {
+    //     startNotificationListener();
+    //     wsStarted = true;
+    //   }
+    // }
     if (!authed) {
       history.replaceState(null, "", "/signin");
       await router();
@@ -94,18 +116,8 @@ export async function router(): Promise<void> {
     }
   }
 
-  if (isPublic) {
-    if (!authed) {
-      authed = await isAuthenticated();
-    } else {
-      history.replaceState(null, "", "/salon");
-      await router();
-      return;
-    }
-  }
-
   // Handle unknown routes
-  if (!render) {
+  if (!render && path !== "member-profile" && path !== "chat-friend") {
     isPublic
       ? history.replaceState(null, "", "/welcome")
       : history.replaceState(null, "", "/salon");
@@ -119,7 +131,14 @@ export async function router(): Promise<void> {
   }
 
   // Render the current route's component
-  app.appendChild(render());
+  if (path === "chat-friend" && chatFriendId) {
+    const chatView = await Chat(chatFriendId);
+    app.appendChild(chatView);
+  } else if (path === "member-profile" && memberId) {
+    app.appendChild(MemberProfile(memberId));
+  } else {
+    app.appendChild(render());
+  }
 
   // Activate nav link
   document

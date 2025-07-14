@@ -1,6 +1,6 @@
 import { fontSizes } from "@/styles/fontSizes";
 
-export function Loader() {
+export function Loader(props: { text: string }) {
   return (
     <main className="h-[100vh] flex items-center justify-center bg-gradient-to-br from-black via-[#111] to-[#0d0d0d]">
       <div className="flex flex-col items-center space-y-4">
@@ -8,7 +8,7 @@ export function Loader() {
         <p
           className={`text-white ${fontSizes.bodyFontSize} font-semibold animate-pulse`}
         >
-          Preparing your club profile...
+          {props.text}
         </p>
       </div>
     </main>

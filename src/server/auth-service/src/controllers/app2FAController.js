@@ -21,7 +21,7 @@ export async function setup2FAApp(request, reply) {
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
         
         const secret = speakeasy.generateSecret({
-            name: `trandenden (${user.username})`,
+            name: `BHV Club (${user.username})`,
             length: 32
         });
         const otpauthUrl = secret.otpauth_url;
@@ -29,11 +29,11 @@ export async function setup2FAApp(request, reply) {
 
         const twoFa = await findTwoFaByUidAndType(this.db, user.id, 'app');
         if (!twoFa)
-            await storeTempSecret(this.db, secret.base32, userId);
+            await storeTempSecret(this.db, secret.base32, qrCodeUrl, userId);
         else
         {
             if (twoFa.temp_secret)
-                return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_PENDING', { qrCode: qrCodeUrl }));
+                return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_PENDING', { qrCode: twoFa.qrcode_url }));
             if (twoFa.enabled && twoFa.type === 'app')
                 return reply.code(400).send(createResponse(400, 'TWOFA_ALREADY_ENABLED'));
             await updateTempSecret(this.db, secret.base32, user.id);

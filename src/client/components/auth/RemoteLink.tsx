@@ -1,8 +1,5 @@
 import { styles } from "@/styles/styles";
-import {
-  handleGoogleSignin,
-  handle42Signin,
-} from "@/handlers/remote-signin";
+import { handleGoogleSignin, handle42Signin } from "@/handlers/remote-signin";
 
 export function RemoteLink() {
   setTimeout(() => {

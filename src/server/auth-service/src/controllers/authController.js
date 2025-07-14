@@ -7,7 +7,8 @@ import {
     findUserByEmail,
     updateUser,  
     updateEmailById,
-    deleteUser
+    deleteUser,
+    deleteOAuthIdentitybyUID
 } from '../models/userDAO.js';
 import { 
     findToken,
@@ -304,6 +305,7 @@ export async function updateCredentialsHandler(request, reply) {
         if (!user)
             return reply.code(401).send(createResponse(401, 'UNAUTHORIZED'));
 
+        let toUpdate = "";
         
         let hashedPassword = null;
         if (newPassword || confirmNewPassword || oldPassword) {
@@ -317,6 +319,7 @@ export async function updateCredentialsHandler(request, reply) {
             if (!validatePassword(newPassword))
                 return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
             hashedPassword = await hash(newPassword, 10);
+            toUpdate = "password";
         }
 
 
@@ -335,6 +338,7 @@ export async function updateCredentialsHandler(request, reply) {
         }
 
         if (email) {
+            toUpdate = "email";
             const emailExist = await findUserByEmail(this.db, email);
             if (emailExist)
                 return reply.code(400).send(createResponse(400, 'EMAIL_EXISTS'));
@@ -349,7 +353,7 @@ export async function updateCredentialsHandler(request, reply) {
         if (hashedPassword)
             await updateUser(this.db, user.id, hashedPassword);
 
-        return reply.code(200).send(createResponse(200, 'CREDENTIALS_UPDATED'));
+        return reply.code(200).send(createResponse(200, 'CREDENTIALS_UPDATED', { type: toUpdate }));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -392,22 +396,26 @@ export async function verifyUpdateCredentialsHandler(request, reply) {
         }
         await clearOtpCode(this.db, user.id, twoFa.type);
 
+        let toUpdate = "";
         if (pending_credentials.new_email) {
+            toUpdate = "email";
             const emailExist = await findUserByEmail(this.db, pending_credentials.new_email);
             if (emailExist)
                 return reply.code(400).send(createResponse(400, 'EMAIL_EXISTS'));
             this.rabbit.produceMessage({
                 type: 'UPDATE',
+                userId: user.id,
                 email: pending_credentials.new_email
             }, 'profile.email.updated');
             await updateEmailById(this.db, pending_credentials.new_email, user.id);
-        }
-        if (pending_credentials.new_password)
+        } else if (pending_credentials.new_password) {
+            toUpdate = "password";
             await updateUser(this.db, user.id, pending_credentials.new_password);
+        }
 
         await deletePendingCredentials(this.db, user.id);
         
-        return reply.code(200).send(createResponse(200, 'CREDENTIALS_UPDATED'));
+        return reply.code(200).send(createResponse(200, 'CREDENTIALS_UPDATED', { type: toUpdate }));
     } catch (error) {
         console.log(error); 
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));        
@@ -430,6 +438,7 @@ export async function deleteUserDataHandler(request, reply) {
         }
         
         await deleteUser(this.db, user.id);
+        await deleteOAuthIdentitybyUID(this.db, user.id);
         clearAuthCookies(reply);
 
         return reply.code(200).send(createResponse(200, 'USER_DATA_DELETED'));

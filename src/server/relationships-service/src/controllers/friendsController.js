@@ -3,7 +3,8 @@ import {
     updateFriendRequestStatus,
     deleteFriend,
     getFriendsByUserId,
-    getPendingRequestsByUserId
+    getPendingRequestsByUserId,
+    deleteFriendships
   } from '../models/friendshipDAO.js';
 import { createResponse } from '../utils/utils.js';
   
@@ -17,14 +18,22 @@ import { createResponse } from '../utils/utils.js';
   
           if (requesterId === addresseeId)
             return reply.code(400).send(createResponse(400, 'ADDRESSEE_INVALID'));
-          
-          await addFriendRequest(this.db, requesterId, addresseeId);
+
+          let blockExist = await this.redis.sIsMember(`blocker:${requesterId}`, `${addresseeId}`);
+          if (!blockExist)
+              blockExist = await this.redis.sIsMember(`blocker:${addresseeId}`, `${requesterId}`);
+          if (blockExist)
+              return reply.code(400).send(createResponse(400, 'BLOCK_EXISTS'));
+    
+          let exists = await addFriendRequest(this.db, requesterId, addresseeId);
+          if (exists)
+            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_ALREADY_SENT'));
 
           this.rabbit.produceMessage(
             { 
-              type: 'FRIEND_REQUEST_SENT', 
-              from: requesterId, 
-              to: addresseeId 
+              type: 'FRIEND_REQUEST_SENT',
+              sender_id: requesterId, 
+              recipient_id: addresseeId 
             },
             'notifications.friend_request.sent'
           );
@@ -43,17 +52,18 @@ import { createResponse } from '../utils/utils.js';
   
           if (!requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
-  
           if (requesterId === addresseeId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_INVALID'));
-
-          await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'accepted');
+          
+          let isValid = await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'accepted');
+          if (!isValid)
+            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
 
           this.rabbit.produceMessage(
             { 
               type: 'FRIEND_REQUEST_ACCEPTED', 
-              from: addresseeId, 
-              to: requesterId 
+              sender_id: addresseeId, 
+              recipient_id: requesterId 
             },
             'notifications.friend_request.accepted'
           );
@@ -72,20 +82,13 @@ import { createResponse } from '../utils/utils.js';
   
           if (!requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
-          
-            if (requesterId === addresseeId)
-              return reply.code(400).send(createResponse(400, 'REQUESTER_INVALID'));
-
-          await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'rejected');
   
-          this.rabbit.produceMessage(
-            { 
-              type: 'FRIEND_REQUEST_REJECTED', 
-              from: addresseeId,
-              to: requesterId 
-            },
-            'notifications.friend_request.rejected'
-          );
+          if (requesterId === addresseeId)
+            return reply.code(400).send(createResponse(400, 'REQUESTER_INVALID'));
+          
+          let isValid = await deleteFriendships(this.db, addresseeId);
+          if (!isValid)
+            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
 
           return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_REJECTED'));
       } catch (error) {
@@ -104,13 +107,15 @@ import { createResponse } from '../utils/utils.js';
 
       if (userId === friendId)
         return reply.code(400).send(createResponse(400, 'FRIEND_INVALID'));
-
-      await deleteFriend(this.db, userId, friendId);
+      
+      let isDeleted = await deleteFriend(this.db, userId, friendId);
+      if (!isDeleted)
+        return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
 
       this.rabbit.produceMessage(
         { 
           type: 'FRIEND_REMOVED', 
-          to: userId, 
+          recipient_id: userId, 
           data: { exFriendId: friendId } 
         },
         'notifications.friend.removed'

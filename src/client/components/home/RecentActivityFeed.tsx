@@ -65,34 +65,6 @@ function TournamentActivity({
   );
 }
 
-function DeleteAccountActivity({
-  user,
-  message,
-}: {
-  user: string;
-  message: string | undefined;
-}) {
-  return (
-    <li className={styles.listStyle}>
-      <i className="fas fa-flag text-pong-warning mt-1"></i>
-      <div>
-        <span className="text-pong-dark-secondary font-semibold">{user}</span>{" "}
-        <span className="text-pong-dark-primary">
-          has signed off from the club
-        </span>
-        {message ? (
-          <span className="text-pong-dark-primary/80"> — “{message}”</span>
-        ) : (
-          <span className="text-pong-dark-primary/80">
-            {" "}
-            and left without a final word
-          </span>
-        )}
-      </div>
-    </li>
-  );
-}
-
 function renderActivity(activity: Activity) {
   switch (activity.type) {
     case "win":
@@ -110,13 +82,6 @@ function renderActivity(activity: Activity) {
           tournament={activity.tournament}
         />
       );
-    case "delete":
-      return (
-        <DeleteAccountActivity
-          user={activity.user}
-          message={activity.message}
-        />
-      );
     default:
       return null;
   }
@@ -127,18 +92,9 @@ export function RecentActivityFeed() {
     { type: "win", user: "m3ayzo", targetUser: "tesla" },
     { type: "loss", user: "tesla", targetUser: "m3ayzo" },
     { type: "tournament", user: "adil", tournament: "tournoi lhalawa" },
-    {
-      type: "delete",
-      user: "oussama",
-      message: "Thanks for the good times, I'm heading out now",
-    },
-    { type: "win", user: "dexter", targetUser: "messi" },
-    { type: "loss", user: "messi", targetUser: "dexter" },
+    { type: "win", user: "ronaldo", targetUser: "messi" },
+    { type: "loss", user: "messi", targetUser: "ronaldo" },
     { type: "tournament", user: "lamine lamal", tournament: "tournoi ramadan" },
-    {
-      type: "delete",
-      user: "hassan",
-    },
   ];
 
   return (
