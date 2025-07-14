@@ -474,7 +474,7 @@ class FlowField {
       matches_lost: currentUser.matches_lost,
       matches_played: currentUser.matches_played,
       level: currentUser.level,
-      sold: currentUser.solde,
+      solde: currentUser.solde,
     }; 
     fetch(`/profile/user/${currentUser.userId}`, {
       method: "PATCH",
@@ -520,12 +520,13 @@ class FlowField {
         this.deps.gameTabe.style.display = "block";
 
         if (this.gameState.playerId === 1 && flag_one === true) {
-          currentUser!.solde += 5;
           flag_one = false;
           if (currentUser) {
             if (this.gameState.gameEndResult === "Won") {
+              currentUser.solde += 5;
               currentUser.matches_won += 1;
             } else if (this.gameState.gameEndResult === "Lost") {
+              currentUser.solde -= 5;
               currentUser.matches_lost += 1;
             }
             currentUser.matches_played += 1;
@@ -539,21 +540,19 @@ class FlowField {
         }
 
         if (this.gameState.playerId === 2 && flag_two === true) {
-          currentUser!.solde += 5;
           flag_two = false;
           if (currentUser) {
-            if (this.gameState.gameEndResult === "Won") {
-              currentUser.matches_won += 1;
-            } else if (this.gameState.gameEndResult === "Lost") {
-              currentUser.matches_lost += 1;
-            }
-            currentUser.matches_played += 1;
             currentUser.level += this.gameState.rightPlayerScore;
             if (this.gameState.gameEndResult === "Won") {
+              currentUser.solde += 5;
+              currentUser.matches_won += 1;
               currentUser.level += 10;
             } else if (this.gameState.gameEndResult === "Lost") {
+              currentUser.solde -= 5;
+              currentUser.matches_lost += 1;
               if (currentUser.level > 5) currentUser.level -= 5;
             }
+            currentUser.matches_played += 1;
           }
         }
         const playerData: PlayerData = {
