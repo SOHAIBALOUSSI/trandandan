@@ -224,3 +224,21 @@ export const FriendRemoveRes: Record<string, string> = {
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
+
+export const FriendBlockRes: Record<string, string> = {
+  BLOCKED_REQUIRED: "Friend is required to block a friend.",
+  BLOCKED_INVALID: "Invalid friend. Please check the user ID.",
+  BLOCKED_EXISTS: "You have already blocked this friend.",
+  BLOCK_SUCCESS: "Friend blocked successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};
+
+export const FriendUnblockRes: Record<string, string> = {
+  BLOCKED_REQUIRED: "Friend is required to unblock a friend.",
+  BLOCKED_INVALID: "Invalid friend. Please check the user ID.",
+  BLOCKED_NOT_FOUND: "You have not blocked this friend.",
+  UNBLOCK_SUCCESS: "Friend unblocked successfully.",
+  INTERNAL_SERVER_ERROR:
+    "The club’s lights are out at the moment. Try again shortly.",
+};

@@ -4,6 +4,8 @@ import { MemberCard } from "@/components/profile/MemberCard";
 import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { removeFriend } from "@/services/remove-friend";
+import { blockFriend } from "@/services/block-friend";
 
 export function MemberProfile(id: number) {
   const container = document.createElement("section");
@@ -77,16 +79,18 @@ export function MemberProfile(id: number) {
       const inviteBtn = document.getElementById("invite-btn");
 
       if (chatBtn) {
-        navigateTo(`/chat/${user.id}`);
+        chatBtn.addEventListener("click", () => {
+          navigateTo(`/lounge/${user.id}`);
+        });
       }
       if (blockBtn) {
-        blockBtn.addEventListener("click", () => {
-          alert(`Blocked ${user.username}`);
+        blockBtn.addEventListener("click", async () => {
+          await blockFriend(user.id);
         });
       }
       if (unfriendBtn) {
-        unfriendBtn.addEventListener("click", () => {
-          alert(`Unfriended ${user.username}`);
+        unfriendBtn.addEventListener("click", async () => {
+          await removeFriend(user.id);
         });
       }
       if (inviteBtn) {

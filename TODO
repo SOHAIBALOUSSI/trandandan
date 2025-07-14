@@ -2,3 +2,4 @@
 - show a timer when dealing with otp code
 - switch to use https and wss
 - if the player online show the toast if not dont show
+- check unblock (INTERNAL_SERVER_ERROR)

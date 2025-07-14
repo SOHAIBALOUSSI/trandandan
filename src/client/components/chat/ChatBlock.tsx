@@ -19,7 +19,7 @@ export function ChatBlock(friend: UserProfile) {
         </a>
         <div className="flex flex-col justify-center">
           <h3 className="w-fit text-base md:text-xl font-semibold text-pong-dark-accent tracking-wide normal-case cursor-pointer">
-            <a href={`/members/${friend.id}`} data-link>
+            <a href={`members/${friend.id}`} data-link>
               {friend.username}
             </a>
           </h3>

@@ -103,12 +103,12 @@ export async function router(): Promise<void> {
   let authed = false;
   if (!isPublic) {
     authed = await isAuthenticated();
-    if (authed) {
-      if (!wsStarted) {
-        // startNotificationListener();
-        wsStarted = true;
-      }
-    }
+    // if (authed) {
+    //   if (!wsStarted) {
+    //     startNotificationListener();
+    //     wsStarted = true;
+    //   }
+    // }
     if (!authed) {
       history.replaceState(null, "", "/signin");
       await router();

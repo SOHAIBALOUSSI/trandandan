@@ -1,21 +1,27 @@
-export async function blockFriend(id: number): Promise<boolean> {
-  try {
-    const res = await fetch(`/block/${id}`, {
-      method: "POST",
-      credentials: "include"
-    });
+import { displayToast } from "@/utils/display-toast";
+import { hydrateFriends } from "@/handlers/hydrate-friends";
+import { FriendBlockRes } from "@/utils/response-messages";
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Friend block failed:", res.statusText);
+export async function blockFriend(id: number): Promise<void> {
+  fetch(`/block/${id}`, {
+    method: "POST",
+    credentials: "include",
+  })
+    .then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        displayToast(
+          FriendBlockRes[data.code] ||
+            "Failed to block friend. Please try again.",
+          "error"
+        );
+      } else {
+        displayToast(FriendBlockRes.BLOCK_SUCCESS, "success");
+        await hydrateFriends();
+      }
+    })
+    .catch(() => {
+      displayToast(FriendBlockRes.INTERNAL_SERVER_ERROR, "error");
       return false;
-    }
-
-    console.log("Friend blocked:", data?.code);
-    return true;
-  } catch (err) {
-    console.error("Error blocking friend:", err);
-    return false;
-  }
+    });
 }

@@ -1,5 +1,6 @@
 import { getBlockedUsers } from "@/services/get-blocked";
 import { getUserById } from "@/services/get-user-by-id";
+import { unblockFriend } from "@/services/unblock-friend";
 import { getAvatarUrl } from "@/utils/get-avatar";
 
 export async function hydrateBlocked() {
@@ -41,6 +42,15 @@ export async function hydrateBlocked() {
     btn.className =
       "px-4 py-1.5 text-sm font-semibold rounded-md bg-pong-error hover:bg-red-700 text-white transition";
     btn.textContent = "Unmute";
+    btn.onclick = async () => {
+      btn.disabled = true;
+      btn.textContent = "Unmuting...";
+      btn.style.backgroundColor = "#4a5568"; // Dark gray to indicate loading
+      await unblockFriend(user.id);
+      btn.textContent = "Unmuted";
+      btn.disabled = false;
+      btn.style.backgroundColor = "";
+    };
 
     li.appendChild(left);
     li.appendChild(btn);
