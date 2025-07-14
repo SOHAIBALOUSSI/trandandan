@@ -19,12 +19,9 @@ const invitePlayer = async (req, reply, fastify) => {
     try {
       const message = {
         type: "INVITE_SENT",
-        data: {
-          roomId,
-          senderId,
-          receiverId,
-          sentAt: new Date().toISOString()
-        }
+        senderId,
+        receiverId,
+        roomId,
       };
       console.log(message);
       await rabbitMQ.produceMessage(message, 'game.invite');

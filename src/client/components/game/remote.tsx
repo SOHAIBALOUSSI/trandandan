@@ -469,21 +469,28 @@ class FlowField {
     };
   }
   public updateUser(currentUser: UserProfile): void {
-    fetch(`/profile/${currentUser.userId}`, {
+    const payload = {
+      // matches_won: currentUser.matches_won,
+      // matches_lost: currentUser.matches_lost,
+      // matches_played: currentUser.matches_played,
+      // level: currentUser.level,
+      sold: currentUser.solde,
+    }; 
+    fetch(`/profile/user/${currentUser.userId}`, {
       method: "PATCH",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(currentUser),
+      body: JSON.stringify(payload), 
     })
       .then((response) => response.json())
       .then((data) => {
         console.log("User updated successfully:", data);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error("Error updating user:", error);
-      });
+      }
+      );
   }
   public updateGameState(data: string): void {
     try {

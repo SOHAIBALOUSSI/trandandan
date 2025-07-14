@@ -12,7 +12,8 @@ const db = new sqlite3.Database(
 );
 
 async function getUserHistory(req, reply) {
-  const userId = 1;
+  //
+  const userId = req.body.userId;
 
   if (!userId) {
     return reply.status(400).send({ error: "User ID is required" });
