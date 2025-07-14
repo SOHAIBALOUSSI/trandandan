@@ -21,13 +21,6 @@ export async function blockHandler(request, reply) {
         
         await addBlock(this.db, userId, blockedId);
         await deleteFriend(this.db, userId, blockedId);
-        
-        this.rabbit.produceMessage(
-        {
-            type: 'FRIEND_REMOVED',
-            to: userId, 
-            data: { exFriendId: blockedId } 
-        }, 'notifications.friend.removed' );
 
         await this.redis.sAdd(`blocker:${userId}`, `${blockedId}`);
         await this.redis.sAdd(`blocker:${blockedId}`, `${userId}`);

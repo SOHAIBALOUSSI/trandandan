@@ -112,15 +112,6 @@ import { createResponse } from '../utils/utils.js';
       if (!isDeleted)
         return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
 
-      this.rabbit.produceMessage(
-        { 
-          type: 'FRIEND_REMOVED', 
-          recipient_id: userId, 
-          data: { exFriendId: friendId } 
-        },
-        'notifications.friend.removed'
-      );
-
       return reply.code(200).send(createResponse(200, 'FRIEND_REMOVED'));
     } catch (error) {
       console.log(error);
