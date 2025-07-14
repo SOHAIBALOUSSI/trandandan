@@ -1,4 +1,6 @@
 import { navigateTo } from "@/utils/navigate-to-link";
+import { getCurrentUser } from "@/utils/user-store";
+import { UserProfile } from "types/types";
 
 export function LocalGame() {
   // Create a container element for the game
@@ -316,21 +318,44 @@ class FlowFieldLocal {
       };
     });
   }
+  public updateProfile(currentUser: UserProfile): void {
+    const payload = {
 
+      solde: currentUser.solde,
+    };
+    fetch(`/profile/user/${currentUser.userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("User updated successfully:", data);
+      })
+      .catch((error) => {
+        console.error("Error updating user:", error);
+      });
+  }
   public updateGameState(data: string): void {
     this.gameState = JSON.parse(data);
     this.domElements.rightPlayerScoreLocal.textContent =
       this.gameState.rightPlayerScore.toString();
     this.domElements.leftPlayerScoreLocal.textContent =
       this.gameState.leftPlayerScore.toString();
-
+    const currentProfile = getCurrentUser();
     if (this.gameState.rightPlayerScore === 5) {
       this.domElements.result.innerText = "RIGHT PLAYER WON";
+      currentProfile!.solde += 5;
       this.setInitialStat();
+      this.updateProfile(currentProfile!);
     }
     if (this.gameState.leftPlayerScore === 5) {
       this.domElements.result.innerText = "LEFT PLAYER WON";
+      currentProfile!.solde += 5;
       this.setInitialStat();
+      this.updateProfile(currentProfile!);
     }
   }
 
