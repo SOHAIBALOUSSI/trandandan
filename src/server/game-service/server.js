@@ -36,7 +36,7 @@ fastify.register(async function (fastify) {
 });
 
 // route to store the game stats
-import { savePlayerData } from "./routes/storePlayerData.js";
+import savePlayerData  from "./routes/storePlayerData.js";
 fastify.register(async function name(fastify) {
   fastify.post("/storePlayerData", (req, reply) => {
     savePlayerData(req, reply);
@@ -68,13 +68,24 @@ fastify.register(async function name(fastify) {
     return getUserHistory(req, reply);
   });
 });
-import getData  from "./routes/storePlayerData.js";
+import getData  from "./routes/gethistroy.js";
 fastify.register(async function name(fastify) {
   fastify.get("/getData", async (req, reply) => {
     return getData(req, reply);
   });
 });
-
+import getLastMatchByUser from "./routes/getLastMatch.js";
+fastify.register(async function name(fastify) {
+  fastify.get("/last-match/:userName", async (req, reply) => {
+    return getLastMatchByUser(req, reply);
+  });
+});
+import getCount from "./routes/getCount.js";
+fastify.register(async function name(fastify) {
+  fastify.get("/user-stats/:userName", async (req, reply) => {
+    return getCount(req, reply);
+  });
+});
 fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);
