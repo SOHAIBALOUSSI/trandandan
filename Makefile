@@ -9,3 +9,6 @@ down:
 
 fclean:
 	@docker system prune -af
+
+re :
+	docker compose down -v && docker compose up --build

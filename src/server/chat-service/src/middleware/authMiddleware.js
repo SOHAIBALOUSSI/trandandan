@@ -15,8 +15,10 @@ export function getAuthCookies(request) {
 export async function verifyToken(ws, request, redis) {
     try {
         let cookie = getAuthCookies(request);
-        if (!cookie)
+        if (!cookie) {
             ws.close(3000, 'Unauthorized');
+            return ;
+        }
         
         const payload = jwt.verify(cookie.accessToken, process.env.AJWT_SECRET_KEY);
 

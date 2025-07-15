@@ -107,8 +107,7 @@ wss.on('connection', async (ws, request) => {
 
                 rabbit.produceMessage({
                     type: 'MESSAGE_RECEIVED',
-                    sender_id: payload.from,
-                    data: { content: payload.content }
+                    recipient_id: payload.recipient_id
                 }, 'notifications.message.received');
 
                 const connections = users.get(recipient);

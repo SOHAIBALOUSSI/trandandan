@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import sqlite3 from 'sqlite3';
 import dotenv from 'dotenv';
 import { open } from 'sqlite';
-import { addNotification, deleteNotifications, getAllNotifications, markAsDelivered } from "./database/notificationsDAO.js";
+import { addNotification, deleteNotifications, findNotification, getAllNotifications, markAsDelivered, markAsRead } from "./database/notificationsDAO.js";
 import { verifyToken } from "./middleware/authMiddleware.js";
 import { createClient } from 'redis';
 
@@ -69,6 +69,30 @@ wss.on('connection', async (ws, request) => {
     return ;
   }
 
+  ws.on('message', async(message) => {
+    if (!ws.isAuthenticated) {
+      ws.close(3000, 'Unauthorized');
+      return ;
+    }
+
+    const payload = JSON.parse(message);
+    if (payload.type === 'NOTIFICATION_READ') {
+      console.log('WebSocket: payload received: ', payload);
+      if (payload.id) {
+        const notificationId = payload.id;
+        const notification = await findNotification(db, notificationId);
+        if (!notification)
+          return ;
+        
+        const isRead = await markAsRead(db, notificationId);
+        if (!isRead)
+          return ;
+        console.log(`Notification with id ${notificationId} is marked read...`);
+      }
+    }
+
+  })
+
   ws.on('error', (error) => {
     console.error('WebSocket: Client error:', error);
   });
@@ -106,6 +130,7 @@ rabbit.consumeMessages(async (notification) =>{
     console.log('RabbitMQ: recipient: ', recipient);
     if (recipient) {
       const notificationId = await addNotification(db, notification);
+      notification.id = notificationId;
       const connections = users.get(recipient);
       if (connections) {
         const message = JSON.stringify(notification);

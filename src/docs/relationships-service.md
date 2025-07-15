@@ -23,9 +23,10 @@ The relationships-service handles all operations related to friend management, i
 
 | Method | Path         | Description                                                           | Authentication Required  | Body Required    |  
 | :----: | ------------ | --------------------------------------------------------------------- | :----------------------: | :--------------: |
-| POST   | `/:blockedId`| Blockes a user                                                        | Yes                      | { blockedId }    |
-| DELETE | `/:blockedId`| Unblock a user                                                        | Yes                      | { blockedId }    |
+| POST   | `/:blockedId`| Blockes a user                                                        | Yes                      | (none)    |
+| DELETE | `/:blockedId`| Unblock a user                                                        | Yes                      | (none)    |
 | GET    | `/list`      | Fetched block list of the current user                                | Yes                      | (none)           |
+| GET    | `/isBlocked/:blockedId`| Queries Redis to check if the current user has a block-relationship with `:blockedId`| Yes                      | (none)           |
 
 ---
 
@@ -60,14 +61,17 @@ The relationships-service handles all operations related to friend management, i
 ## Response Codes
 
 **Prefix: /friends**
+
 - `/request`
 ```yaml
 
   400: {
-    ADDRESSEE_REQUIRED,
+    ADDRESSEE_REQUIRED
     ADDRESSEE_INVALID
-  },
-  200: FRIEND_REQUEST_SENT,
+    FRIEND_REQUEST_ALREADY_SENT
+    BLOCK_EXISTS
+  }
+  200: FRIEND_REQUEST_SENT
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -76,10 +80,11 @@ The relationships-service handles all operations related to friend management, i
 ```yaml
 
   400: {
-    REQUESTER_REQUIRED,
-    REQUESTER_INVALID,
+    REQUESTER_REQUIRED
+    REQUESTER_INVALID
+    FRIEND_REQUEST_INVALID
   }
-  200: FRIEND_REQUEST_ACCEPTED,
+  200: FRIEND_REQUEST_ACCEPTED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -88,10 +93,11 @@ The relationships-service handles all operations related to friend management, i
 ```yaml
 
   400: {
-    REQUESTER_REQUIRED,
-    REQUESTER_INVALID,
+    REQUESTER_REQUIRED
+    REQUESTER_INVALID
+    FRIEND_REQUEST_INVALID
   }
-  200: FRIEND_REQUEST_REJECTED,
+  200: FRIEND_REQUEST_REJECTED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -100,10 +106,11 @@ The relationships-service handles all operations related to friend management, i
 ```yaml
 
   400: {
-    FRIEND_REQUIRED,
-    FRIEND_INVALID,
+    FRIEND_REQUIRED
+    FRIEND_INVALID
+    FRIEND_REQUEST_INVALID
   }
-  200: FRIEND_REMOVED,
+  200: FRIEND_REMOVED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -111,7 +118,7 @@ The relationships-service handles all operations related to friend management, i
 - `/` (GET)
 ```yaml
 
-  200: FRIENDS_LISTED,
+  200: FRIENDS_LISTED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -119,7 +126,7 @@ The relationships-service handles all operations related to friend management, i
 - `/requests`
 ```yaml
 
-  200: REQUESTS_LISTED,
+  200: REQUESTS_LISTED
   500: INTERNAL_SERVER_ERROR
 
 ```
@@ -154,6 +161,15 @@ The relationships-service handles all operations related to friend management, i
   500: INTERNAL_SERVER_ERROR
 ```
 
+- `/isBlocked:blockedId` (GET)
+```yaml
+  400: {
+    BLOCKED_REQUIRED
+    BLOCKED_INVALID
+  }
+  200: IS_BLOCKED
+  500: INTERNAL-SERVER-ERROR
+``` 
 ---
 
 ## Notes

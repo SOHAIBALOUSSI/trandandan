@@ -1,5 +1,5 @@
 import { verifyToken } from "../middleware/authMiddleware.js"
-import { blockHandler, unblockHandler, getListHandler } from '../controllers/blockController.js'
+import { blockHandler, unblockHandler, getListHandler, isBlockedHandler } from '../controllers/blockController.js'
 import { blockSchema } from "../schemas/blockSchema.js";
 
 async function blockRoutes(fastify) {
@@ -8,7 +8,7 @@ async function blockRoutes(fastify) {
             params: blockSchema
         },
         preHandler: verifyToken,
-        handler: blockHandler,
+        handler: blockHandler
     })
     
     fastify.delete('/:blockedId', {
@@ -16,12 +16,20 @@ async function blockRoutes(fastify) {
             params: blockSchema
         },
         preHandler: verifyToken,
-        handler: unblockHandler,
+        handler: unblockHandler
     })
 
     fastify.get('/list', {
         preHandler: verifyToken,
         handler: getListHandler
+    })
+
+    fastify.get('/isBlocked/:blockedId', {
+        schema: {
+            params: blockSchema
+        },
+        preHandler: verifyToken,
+        handler: isBlockedHandler,
     })
 }
 

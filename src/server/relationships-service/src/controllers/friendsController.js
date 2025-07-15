@@ -27,7 +27,7 @@ import { createResponse } from '../utils/utils.js';
     
           let exists = await addFriendRequest(this.db, requesterId, addresseeId);
           if (exists)
-            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_ALREADY_SENT'));
+            return reply.code(400).send(createResponse(400, 'FRIEND_REQUEST_ALREADY_SENT'));
 
           this.rabbit.produceMessage(
             { 
@@ -52,12 +52,15 @@ import { createResponse } from '../utils/utils.js';
   
           if (!requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
-          if (requesterId === addresseeId)
+
+          const idExist = await this.redis.sIsMember('userIds', `${requesterId}`);
+          console.log('idExist value: ', idExist);
+          if (!idExist || addresseeId === requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_INVALID'));
           
           let isValid = await updateFriendRequestStatus(this.db, requesterId, addresseeId, 'accepted');
           if (!isValid)
-            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
+            return reply.code(400).send(createResponse(400, 'FRIEND_REQUEST_INVALID'));
 
           this.rabbit.produceMessage(
             { 
@@ -82,13 +85,15 @@ import { createResponse } from '../utils/utils.js';
   
           if (!requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_REQUIRED'));
-  
-          if (requesterId === addresseeId)
+
+          const idExist = await this.redis.sIsMember('userIds', `${requesterId}`);
+          console.log('idExist value: ', idExist);
+          if (!idExist || addresseeId === requesterId)
             return reply.code(400).send(createResponse(400, 'REQUESTER_INVALID'));
           
           let isValid = await deleteFriendships(this.db, addresseeId);
           if (!isValid)
-            return reply.code(400).send(createResponse(200, 'FRIEND_REQUEST_INVALID'));
+            return reply.code(400).send(createResponse(400, 'FRIEND_REQUEST_INVALID'));
 
           return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_REJECTED'));
       } catch (error) {
@@ -105,7 +110,9 @@ import { createResponse } from '../utils/utils.js';
       if (!friendId)
         return reply.code(400).send(createResponse(400, 'FRIEND_REQUIRED'));
 
-      if (userId === friendId)
+      const idExist = await this.redis.sIsMember('userIds', `${friendId}`);
+      console.log('idExist value: ', idExist);
+      if (!idExist || userId === friendId)
         return reply.code(400).send(createResponse(400, 'FRIEND_INVALID'));
       
       let isDeleted = await deleteFriend(this.db, userId, friendId);
