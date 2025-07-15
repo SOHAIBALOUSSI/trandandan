@@ -26,7 +26,11 @@ export async function markAsDelivered(db, id) {
 }
 
 export async function getAllNotifications(db, recipientId) {
-    const result = await db.all(`SELECT sender_id, COUNT(sender_id) as notifications_count, MAX(created_at) as last_notification_at, type FROM notifications
+    const result = await db.all(`SELECT sender_id,
+        COUNT(id) as notifications_count,
+        MAX(created_at) as last_notification_at,
+        type,
+        json_group_array(id ORDER BY created_at) AS notification_ids FROM notifications
         WHERE recipient_id = ? AND (read = 0 OR delivered = 0)
         GROUP BY sender_id, type
         ORDER BY last_notification_at DESC`,

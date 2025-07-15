@@ -78,8 +78,8 @@ wss.on('connection', async (ws, request) => {
     const payload = JSON.parse(message);
     if (payload.type === 'NOTIFICATION_READ') {
       console.log('WebSocket: payload received: ', payload);
-      if (payload.id) {
-        const notificationId = payload.id;
+      if (payload.notification_id) {
+        const notificationId = payload.notification_id;
         const notification = await findNotification(db, notificationId);
         if (!notification)
           return ;
@@ -130,7 +130,8 @@ rabbit.consumeMessages(async (notification) =>{
     console.log('RabbitMQ: recipient: ', recipient);
     if (recipient) {
       const notificationId = await addNotification(db, notification);
-      notification.id = notificationId;
+      notification.notification_id = notificationId;
+      console.log('Notification before sending: ', notification);
       const connections = users.get(recipient);
       if (connections) {
         const message = JSON.stringify(notification);
