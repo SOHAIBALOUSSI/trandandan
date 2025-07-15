@@ -512,8 +512,6 @@ class FlowField {
         this.gameState.gameEndResult.length !== 0
       ) {
         const currentUser = getCurrentUser();
-        console.log("currentUser:", currentUser);
-        // const currentUser: UserProfile = this.normalizeUser(rawUser);
 
         this.gameState.endGame = true;
         this.deps.result.textContent = "You " + this.gameState.gameEndResult;
@@ -525,17 +523,14 @@ class FlowField {
             if (this.gameState.gameEndResult === "Won") {
               currentUser.solde += 5;
               currentUser.matches_won += 1;
+              currentUser.level += 5;
             } else if (this.gameState.gameEndResult === "Lost") {
               currentUser.solde -= 5;
               currentUser.matches_lost += 1;
+              if (currentUser.level > 5) currentUser.level -= 5;
             }
             currentUser.matches_played += 1;
             currentUser.level += this.gameState.leftPlayerScore;
-            if (this.gameState.gameEndResult === "Won") {
-              currentUser.level += 10;
-            } else if (this.gameState.gameEndResult === "Lost") {
-              if (currentUser.level > 5) currentUser.level -= 5;
-            }
           }
         }
 
@@ -546,7 +541,7 @@ class FlowField {
             if (this.gameState.gameEndResult === "Won") {
               currentUser.solde += 5;
               currentUser.matches_won += 1;
-              currentUser.level += 10;
+              currentUser.level += 5;
             } else if (this.gameState.gameEndResult === "Lost") {
               currentUser.solde -= 5;
               currentUser.matches_lost += 1;
@@ -572,6 +567,7 @@ class FlowField {
           else if (this.gameState.playerId === 2) this.updateUser(currentUser);
         }
         this.sendPlayerData(playerData);
+
         this.deps.restartButton.addEventListener(
           "click",
           this.handleRestart.bind(this)

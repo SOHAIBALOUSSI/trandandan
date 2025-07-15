@@ -28,7 +28,7 @@ export function ChatBlock(friend: UserProfile) {
               Level {friend.level}
             </span>
             <span className="bg-yellow-400/10 text-yellow-300 px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              {getUserRank(friend.rank)}
+              {getUserRank(friend.level)}
             </span>
           </div>
         </div>
