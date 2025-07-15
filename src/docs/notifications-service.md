@@ -11,40 +11,57 @@ The `notifications-service` is responsible for sending notifications to authenti
 ```yaml
 {
     type: TYPE_OF_NOTIFICATION,
-    sender_id: senderId, 
-    recipient_id: recipientId,
-    data: {
-        ... 
-    }
+    sender_id: 123, 
+    recipient_id: 456,
 }
 ```
 
-- The `data` property is used for special cases (might discard it later).
+- The `notification_id` property is added at the notifications-service level to manage read notifications properly by id.
+
 - A user is verified and authenticated after connecting, if not valid the connection is closed immediately.
 - After authentication a user is mapped to all his current connections `Map(id, Set())`.
 - If there are some stored unread/undelivered notifications for the current connect user, they're all sent right after authentication.
-- Whenever a message(notification) is consumed by my rabbitMQClient these steps follow:
-    - Extract recipient ID from message.
-    - Insert notification in database.
-    - If recipient is connected, send notification to all the recipient's connections and mark it as delivered.
 
+- Notifications are sent to the connected authenticated users following the schema below :
+
+```yaml
+{
+    type: TYPE_OF_NOTIFICATION,
+    sender_id: 123,
+    recipient_id: 456,
+    notification_id: 789
+}
+```
+
+- When a user is connected all related notifications are grouped together by sender_id and type of notification, and sent following the schema below : 
+
+```yaml
+{
+    type: TYPE_OF_NOTIFICATION,
+    sender_id: 123,
+    notifications_count: 11,
+    last_notfication_at: '2025-07-15 19:09:40',
+    notification_ids: [ 789, ... ]
+}
+```
+
+- To mark a notification as read a message is expected to be received following the next schema :
+
+```yaml
+{
+    type: NOTIFICATION_READ,
+    notification_ids: [ 789, ... ]
+}
+```
+
+- These are the types of notifications :
 
 ## Friends notifications
 
-There are 4 types of friends notifications, 3 of them have the same message schema that consist of `type`, `sender_id` and `recipient_id` :
 - `FRIEND_REQUEST_SENT` 
 - `FRIEND_REQUEST_ACCEPTED`
 
 
 ## chat notifications
-there is only one type of message notifications which is the following :
+- `MESSAGE_RECEIVED`
 
-```yaml
-{
-    type: MESSAGE_RECEIVED,
-    recipient_id: recipientId,
-    data : {
-        content : actualMessage
-    }
-}
-```
