@@ -68,6 +68,13 @@ fastify.register(async function name(fastify) {
     return getUserHistory(req, reply);
   });
 });
+import getData  from "./routes/storePlayerData.js";
+fastify.register(async function name(fastify) {
+  fastify.get("/getData", async (req, reply) => {
+    return getData(req, reply);
+  });
+});
+
 fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);
