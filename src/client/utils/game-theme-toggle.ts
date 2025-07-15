@@ -18,6 +18,7 @@ export function initGameThemeToggle() {
   toggleBtn.addEventListener("click", () => {
     const isDark = container.dataset.theme === "dark";
     container.dataset.theme = isDark ? "light" : "dark";
+	localStorage.setItem("gameTheme", container.dataset.theme);
     setIcon();
 
     const canvas = container.querySelector("canvas");
