@@ -21,10 +21,16 @@ export function MemberCard(props: {
     if (showUpdateOptions) {
       const updateBtn = document.getElementById("update-username-btn");
       const usernameEl = document.getElementById("member-username");
+      const saveBtn = document.getElementById("save-btn-user");
 
-      if (updateBtn && usernameEl) {
+      if (updateBtn && usernameEl && saveBtn) {
+        updateBtn.onclick = null;
         updateBtn.addEventListener("click", () => {
+          console.log("Update btn clicked");
           usernameEl.setAttribute("contenteditable", "true");
+          updateBtn.classList.add("hidden");
+          saveBtn.classList.remove("hidden");
+
           usernameEl.focus();
 
           const save = () => {
@@ -45,6 +51,8 @@ export function MemberCard(props: {
                 .then(({ status, data }) => {
                   if (status === 200) {
                     displayToast("Username updated successfully!", "success");
+                    saveBtn.classList.add("hidden");
+                    updateBtn.classList.remove("hidden");
                   } else {
                     const msg =
                       UpdateUserProfileRes[data.code] ||
@@ -69,7 +77,7 @@ export function MemberCard(props: {
             }
           };
 
-          usernameEl.addEventListener("blur", save, { once: true });
+          saveBtn.addEventListener("click", save, { once: true });
 
           usernameEl.addEventListener(
             "keydown",
@@ -94,7 +102,14 @@ export function MemberCard(props: {
         BHV Member Card
       </h2>
 
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full relative">
+        <button
+          id="save-btn-user"
+          className="hidden absolute bottom-2 right-2 bg-pong-success text-black rounded-md px-4 py-3 "
+        >
+          Save
+        </button>
+
         <div className="relative">
           <div className="w-24 h-24 md:w-28 md:h-28 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg relative">
             <img

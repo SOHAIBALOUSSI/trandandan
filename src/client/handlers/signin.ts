@@ -67,7 +67,7 @@ export function handleSignIn() {
       if (response.ok && result.statusCode === 200) {
         localStorage.removeItem("loginInput");
 
-        startNotificationListener();
+        // startNotificationListener();
         // startChatListener();
 
         setTimeout(() => {

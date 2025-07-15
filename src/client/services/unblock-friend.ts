@@ -13,11 +13,11 @@ export async function unblockFriend(id: number): Promise<void> {
       if (!res.ok) {
         displayToast(
           FriendUnblockRes[data.code] ||
-            "Failed to block friend. Please try again.",
+            "Failed to unblock friend. Please try again.",
           "error"
         );
       } else {
-        displayToast(FriendUnblockRes.BLOCK_SUCCESS, "success");
+        displayToast(FriendUnblockRes.UNBLOCK_SUCCESS, "success");
         await hydrateFriends();
       }
     })

@@ -79,7 +79,7 @@ export async function router(): Promise<void> {
   const app = document.getElementById("app") as HTMLDivElement;
   if (!app) return;
 
-  let path = location.pathname.slice(1) || "welcome";
+  let path = location.pathname.slice(1);
   let chatFriendId: number | undefined;
   let memberId: number | undefined;
 
@@ -103,14 +103,14 @@ export async function router(): Promise<void> {
   let authed = false;
   if (!isPublic) {
     authed = await isAuthenticated();
-    // if (authed) {
-    //   if (!wsStarted) {
-    //     startNotificationListener();
-    //     wsStarted = true;
-    //   }
-    // }
+    if (authed) {
+      if (!wsStarted) {
+        startNotificationListener();
+        wsStarted = true;
+      }
+    }
     if (!authed) {
-      history.replaceState(null, "", "/signin");
+      history.replaceState(null, "", "/welcome");
       await router();
       return;
     }

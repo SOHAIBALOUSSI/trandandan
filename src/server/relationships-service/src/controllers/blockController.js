@@ -21,13 +21,6 @@ export async function blockHandler(request, reply) {
         
         await addBlock(this.db, userId, blockedId);
         await deleteFriend(this.db, userId, blockedId);
-        
-        this.rabbit.produceMessage(
-        {
-            type: 'FRIEND_REMOVED',
-            to: userId, 
-            data: { exFriendId: blockedId } 
-        }, 'notifications.friend.removed' );
 
         await this.redis.sAdd(`blocker:${userId}`, `${blockedId}`);
         await this.redis.sAdd(`blocker:${blockedId}`, `${userId}`);
@@ -59,8 +52,8 @@ export async function unblockHandler(request, reply) {
 
         await removeBlock(this.db, userId, blockedId);
 
-        await this.sRem(`blocker:${userId}`, `${blockedId}`);
-        await this.sRem(`blocker:${blockedId}`, `${userId}`);
+        await this.redis.sRem(`blocker:${userId}`, `${blockedId}`);
+        await this.redis.sRem(`blocker:${blockedId}`, `${userId}`);
 
         return reply.code(200).send(createResponse(200, 'UNBLOCK_SUCCESS'));
     } catch (error) {
