@@ -105,7 +105,7 @@ export function MemberCard(props: {
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full relative">
         <button
           id="save-btn-user"
-          className="hidden absolute bottom-2 right-2 bg-pong-success text-black rounded-md px-4 py-3 "
+          className="hidden text-sm absolute bottom-0 right-0 bg-pong-success hover:bg-[#2BF075] text-black rounded-md px-4 py-2 animate-fadeInUp transition"
         >
           Save
         </button>
@@ -140,7 +140,7 @@ export function MemberCard(props: {
             <span className="block uppercase text-pong-secondary tracking-widest mb-1 text-xs md:text-sm">
               Username
             </span>
-            <div className="flex items-center justify-between group border-b-2 border-pong-dark-highlight pb-1">
+            <div className="flex items-center justify-between group border-b-2 border-pong-dark-highlight pb-2">
               <span
                 id="member-username"
                 className="font-bold text-pong-dark-primary break-words normal-case text-lg md:text-xl w-full"
@@ -150,7 +150,7 @@ export function MemberCard(props: {
               {showUpdateOptions ? (
                 <button
                   id="update-username-btn"
-                  className="text-pong-dark-primary hover:text-pong-accent p-2 rounded-full transition group"
+                  className="relative text-pong-dark-primary hover:text-pong-accent rounded-full transition group"
                   aria-label="Edit Username"
                 >
                   <i className="fa-solid fa-pen text-sm"></i>

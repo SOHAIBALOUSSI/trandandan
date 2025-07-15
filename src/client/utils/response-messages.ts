@@ -130,7 +130,7 @@ export const UpdateCredentialsRes: Record<string, string> = {
   UNAUTHORIZED:
     "Unauthorized. You need to be logged in to update your credentials.",
   PASSWORD_UPDATED:
-    "Your password has been successfully updated. You've leveled up your security. Please sign in again to rejoin the court.",
+    "Your password has been successfully updated. Please sign in to rejoin the court.",
   EMAIL_UPDATED:
     "Your email has been updated. The club knows how to reach you now.",
   TWOFA_REQUIRED:

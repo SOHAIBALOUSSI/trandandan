@@ -67,7 +67,6 @@ const publicRoutes: string[] = [
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
-  console.log("Profiled fetched:", profile);
   if (profile) return true;
   return false;
 }
@@ -107,6 +106,13 @@ export async function router(): Promise<void> {
     }
     if (!authed) {
       history.replaceState(null, "", "/welcome");
+      await router();
+      return;
+    }
+  } else {
+    const profile = await getUserProfile();
+    if (profile) {
+      history.replaceState(null, "", "/salon");
       await router();
       return;
     }

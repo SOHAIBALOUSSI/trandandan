@@ -24,7 +24,7 @@ export async function hydrateTopThree() {
 
     const rankSpan = document.createElement("span");
     rankSpan.className =
-      "text-sm md:text-lg font-bold text-pong-dark-accent w-6 text-center";
+      "text-sm md:text-lg font-bold text-pong-dark-accent text-center mr-2";
     rankSpan.textContent = (i + 1).toString();
 
     const avatarImg = document.createElement("img");
@@ -33,7 +33,7 @@ export async function hydrateTopThree() {
     avatarImg.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
 
     const nameSpan = document.createElement("span");
-    nameSpan.className = "font-semibold text-pong-dark-primary";
+    nameSpan.className = "font-semibold text-pong-dark-primary normal-case";
     nameSpan.textContent = user.username;
 
     const levelSpan = document.createElement("span");

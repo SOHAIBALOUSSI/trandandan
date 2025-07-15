@@ -98,6 +98,7 @@ export const styles = {
 	text-center
   `,
   darkSubmitBtn: `
+	relative
 	px-6 py-3
 	${fontSizes.buttonFontSize}
 	font-semibold
@@ -105,6 +106,7 @@ export const styles = {
 	bg-pong-accent
 	rounded-xl
 	shadow-md
+	flex items-center justify-center
 	hover:bg-pong-dark-accent
 	hover:shadow-pong-accent/40
 	focus:outline-none
