@@ -60,8 +60,11 @@ wss.on('connection', async (ws, request) => {
     users.get(ws.userId).add(ws);
     const notifications = await getAllNotifications(db, ws.userId);
     if (notifications) {
-      for (const notification of notifications)
+      for (const notification of notifications) {
+        notification.notification_ids = JSON.parse(notification.notification_ids);
+        console.log("On connection notification: ", notification);
         ws.send(JSON.stringify(notification));  
+      }
     }
   }
   else {
@@ -78,20 +81,22 @@ wss.on('connection', async (ws, request) => {
     const payload = JSON.parse(message);
     if (payload.type === 'NOTIFICATION_READ') {
       console.log('WebSocket: payload received: ', payload);
-      if (payload.notification_id) {
-        const notificationId = payload.notification_id;
-        const notification = await findNotification(db, notificationId);
-        if (!notification)
-          return ;
-        
-        const isRead = await markAsRead(db, notificationId);
-        if (!isRead)
-          return ;
-        console.log(`Notification with id ${notificationId} is marked read...`);
+      if (payload.notification_ids) {
+        payload.notification_ids.forEach(async (notificationId) => {
+          const notification = await findNotification(db, notificationId);
+          if (!notification)
+            return ;
+          
+          const isRead = await markAsRead(db, notificationId);
+          if (!isRead)
+            return ;
+          console.log(`Notification with id ${notificationId} is marked read...`);
+        })
+        }
       }
     }
-
-  })
+    
+  )
 
   ws.on('error', (error) => {
     console.error('WebSocket: Client error:', error);

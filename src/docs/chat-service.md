@@ -10,9 +10,9 @@ A real-time WebSocket-based `chat-service` for user-to-user messaging. Built wit
 ```yaml
 {
   "type": "MESSAGE_SENT",
-  "sender_id": "123",
-  "recipient_id": "456",
-  "message_id" : "789",
+  "sender_id": 123,
+  "recipient_id": 456,
+  "message_id" : 789,
   "content": "Hey there!"
 }
 ```
@@ -29,7 +29,7 @@ A real-time WebSocket-based `chat-service` for user-to-user messaging. Built wit
 ```yaml
 {
   "type": "MESSAGE_READ",
-  "message_id": "message_id"
+  "message_id": 11
 }
 ```
 
