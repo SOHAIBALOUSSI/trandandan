@@ -324,7 +324,7 @@ export const styles = {
   `,
   // === End Custom Cards styles ===
 
-  //   === Start Custom List styles ===
+  // === Start Custom List styles ===
   listStyle: `
   	flex items-start gap-3 
 	hover:bg-pong-dark-highlight/10 
@@ -332,4 +332,54 @@ export const styles = {
 	rounded-md 
 	transition-all
   `,
+  // === End Custom List styles ===
+
+  // === Start Game styles ===
+  gameContainer: `
+  	flex flex-col items-center justify-center
+  	w-full min-h-screen
+  	overflow-hidden
+  	relative
+	transition-all duration-300 ease-in-out
+  `,
+  gameExitBtn: `
+  	fixed top-5 left-5
+	text-2xl md:text-3xl
+  	p-2 rounded-full shadow-md
+  	backdrop-blur-md
+  	transition-all duration-300 ease-in-out
+  `,
+  gameThemeBtn: `
+  	fixed top-5 right-5
+	w-24
+	text-2xl md:text-3xl
+  	p-2 rounded-full shadow-md
+  	backdrop-blur-md
+  	transition-all duration-300 ease-in-out
+  `,
+  gameTitle: `
+  	font-orbitron
+  	text-[8vw] md:text-[80px]
+  	font-bold tracking-wide
+  	mt-14 mb-4
+  	animate-fadeInUp
+  `,
+  gameCanvas: `
+	border-2 
+	rounded-md 
+	shadow-[0_0_20px_rgba(255,215,0,0.3)] 
+	backdrop-blur-sm 
+	transition-all duration-300
+  `,
+  gameTab: `
+	h-fit w-11/12 
+	max-w-lg 
+	absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-20 
+	shadow-2xl backdrop-blur-md 
+	flex-col items-center justify-center 
+	px-6 py-12 
+	rounded-xl border 
+	text-center 
+  `,
+  // === End Game styles ===
 };

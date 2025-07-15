@@ -199,6 +199,7 @@ export function NavBar() {
   exitLi.className = "w-full";
   const exitLink = document.createElement("a");
   exitLink.href = "/checkout";
+  exitLink.setAttribute("data-link", "true");
   exitLink.className = styles.navLink;
   exitLink.innerHTML = `
     <i class="fa-solid fa-arrow-right-from-bracket text-xl md:text-2xl transition-transform duration-300 group-hover:scale-110"></i>

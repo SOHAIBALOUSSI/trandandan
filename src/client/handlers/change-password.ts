@@ -75,7 +75,7 @@ export function handleChangePassword() {
           displayToast(UpdateCredentialsRes.PASSWORD_UPDATED, "success");
 
           setTimeout(() => {
-            navigateTo("/signin");
+            navigateTo("/login");
             fetch("/auth/logout", {
               method: "POST",
               credentials: "include",

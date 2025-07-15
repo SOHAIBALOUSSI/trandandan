@@ -1,86 +1,96 @@
+import { styles } from "@/styles/styles";
+import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { navigateTo } from "@/utils/navigate-to-link";
 
 export function Tournaments() {
+  setTimeout(() => {
+    initGameThemeToggle();
+  }, 0);
+
+  const vw = Math.max(
+    document.documentElement.clientWidth || 0,
+    window.innerWidth || 0
+  );
+  const vh = Math.max(
+    document.documentElement.clientHeight || 0,
+    window.innerHeight || 0
+  );
+  const canvasWidth = Math.min(1000, vw * 0.95);
+  const canvasHeight = Math.min(600, vh * 0.7);
+
   // Create container element
   const container = document.createElement("div");
-  container.className =
-    "w-full h-[100vh] overflow-hidden bg-pong-dark-bg font-orbitron relative";
+  container.className = styles.gameContainer;
+  container.id = "game-screen";
+  container.dataset.theme = localStorage.getItem("gameTheme") || "dark";
 
   // Add HTML structure
   container.innerHTML = `
-    <h1 class="text-center text-[100px] text-amber-50 top-20">
-      <span class="text-pong-dark-secondary">PING</span> PONG
-    </h1>
-    <div class="flex items-center justify-center flex-col h-230">
-      <div class="score flex justify-center gap-60 w-full">
-        <h1 id="leftPlayerScoreLocal" class="text-amber-50 text-8xl">0</h1>
-        <h1 id="rightPlayerScoreLocal" class="text-amber-50 text-8xl">0</h1>
+  	<button id="exit" class="${styles.gameExitBtn}" title="Leave Lounge">
+      <i class="fa-solid fa-arrow-left"></i>
+  	</button>
+  	<button id="game-theme-toggle" class="${styles.gameThemeBtn}" title="Switch Mood">
+      <i class="fa-solid fa-circle-half-stroke"></i>
+  	</button>
+
+  	<h1 id="title" class="${styles.gameTitle}">
+      BHV <span class="text-pong-dark-accent font-orbitron">PONG</span>
+  	</h1>
+
+   	<div class="flex items-center justify-center flex-col w-full" style="min-height:${canvasHeight}px;">
+      <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4 transition-all duration-300">
+		<h2 id="leftPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</h2>
+		<h2 id="rightPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</h2>
+	  </div>
+
+      <div class="flex justify-center w-full pb-8">
+		<canvas class="${styles.gameCanvas}"
+        		id="canvas"
+        		width=${canvasWidth}
+        		height=${canvasHeight}>
+      	</canvas>
       </div>
-      <canvas class="bg-game-table z-10 border-4 border-white rounded-4xl" id="canvas" width="1000" height="600"></canvas>
+  	</div>
+ 
+    <div id="gameTab" class="${styles.gameTab} hidden game-tab">
+        <h2 id="result" class="text-2xl font-semibold"></h2>
+        <h2 id="currentMatch" class="text-2xl font-semibold"></h2>
+        <h2 id="prevMatch" class="font-semibold"></h2>
+        <h2 id="nextMatch" class="font-semibold"></h2>
+        <button id="restart" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300 hidden">play</button>
+        <button id="start" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">play</button>
     </div>
-    <!-- Decorative elements -->
-    <div class="absolute w-10 h-10 bg-red-500 opacity-10 animate-square top-0 left-0"></div>
-    <div class="absolute w-10 h-10 bg-blue-500 opacity-10 animate-square top-[45px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-green-500 opacity-10 animate-square top-[800px] left-[322px]"></div>
-    <div class="absolute w-10 h-10 bg-yellow-500 opacity-10 animate-square top-[550px] left-[800px]"></div>
-    <div class="absolute w-10 h-10 bg-purple-500 opacity-10 animate-square top-[90px] left-[1800px]"></div>
-    <div class="absolute w-10 h-10 bg-pink-500 opacity-10 animate-square top-[250px] left-[1656px]"></div>
-    <div class="absolute w-10 h-10 bg-teal-500 opacity-10 animate-square top-[750px] left-[1100px]"></div>
-    <div class="absolute w-10 h-10 bg-orange-500 opacity-10 animate-square top-[580px] left-[100px]"></div>
-    <div class="absolute w-10 h-10 bg-indigo-500 opacity-10 animate-square top-[475px] left-[1580px]"></div>
-    <div class="absolute w-10 h-10 bg-lime-500 opacity-10 animate-square top-[250px] left-[40px]"></div>
-    <div class="absolute w-10 h-10 bg-cyan-500 opacity-10 animate-square top-[390px] left-[1800px]"></div>
-    <div class="absolute w-10 h-10 bg-amber-500 opacity-10 animate-square top-[760px] left-[770px]"></div>
-    <div class="absolute w-10 h-10 bg-rose-500 opacity-10 animate-square top-[200px] left-[250px]"></div>
-    <div class="absolute w-10 h-10 bg-fuchsia-500 opacity-10 animate-square top-[890px] left-[1450px]"></div>
-    <div class="absolute w-10 h-10 bg-emerald-500 opacity-10 animate-square top-[250px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-violet-500 opacity-10 animate-square top-[15px] left-[1400px]"></div>
-    <div class="absolute w-10 h-10 bg-sky-500 opacity-10 animate-square top-[240px] left-[1500px]"></div>
-    <div class="absolute w-10 h-10 bg-amber-600 opacity-10 animate-square top-[100px] left-[320px]"></div>
-    <div class="absolute w-10 h-10 bg-pink-600 opacity-10 animate-square top-[750px] left-[1700px]"></div>
-    <div class="absolute w-10 h-10 bg-teal-600 opacity-10 animate-square top-[50px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-indigo-600 opacity-10 animate-square top-[190px] left-[450px]"></div>
-    <div id="gameTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
-      <div class="flex flex-col items-center justify-center h-full px-20 py-4">
-        <h1 id="result" class="text-2xl mt-2 text-amber-50"></h1>
-        <h1 id="currentMatch" class="text-2xl mt-2 text-amber-50"></h1>
-        <h1 id="prevMatch" class="text-pong-dark-secondary"></h1>
-        <h1 id="nextMatch" class="text-pong-dark-secondary"></h1>
-        <button id="restart" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation hidden">PLAY</button>
-        <button id="start" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY</button>
-      </div>
-    </div>
+
     <!-- Result tab -->
     <div id="resultTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
-        <h1 id="resultStat" class="text-2xl mt-2 text-amber-50"></h1>
-        <button id="restartTournoi" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
+        <h3 id="resultStat" class="text-2xl mt-2 text-amber-50"></h3>
+        <button id="restartTournoi" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">play again</button>
       </div>
     </div>
+
     <!-- Tournament tab -->
-    <div id="tourTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] z-20">
-      <div id="selectTab" class="flex flex-col items-center justify-center h-full px-20 py-4">
-        <h1 class="text-2xl text-pong-dark-secondary">SELECT THE NUMBER OF PLAYERS</h1>
+    <div id="tourTab" class="${styles.gameTab} game-tab">
+      <div id="selectTab" class="flex flex-col items-center justify-center h-full gap-2">
+        <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight">select the number of players</h2>
         <div id="tournPlayerNumber" class="flex items-center justify-center gap-20">
-          <button id="eight_players" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">8</button>
-          <button id="four_Players" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">4</button>
+          <button id="eight_players" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">8</button>
+          <button id="four_Players" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">4</button>
         </div>
       </div>
+
       <div id="inputPlayers" class="h-full hidden">
-        <div class="flex flex-col items-center justify-center mt-20 px-20 py-4">
-          <h1 class="text-2xl text-pong-dark-secondary">ENTER THE PLAYER'S USERNAME</h1>
-          <div class="flex items-center justify-center gap-20">
+        <div class="flex flex-col items-center justify-center">
+          <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Enter Player's username</h2>
+          <div class="flex items-end justify-center gap-6">
             <div>
-              <label for="playerId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">PLAYER ID</label>
-              <input type="text" id="playerIdField" class="bg-pong-dark-bg border border-pong-dark-secondary text-amber-50 text-sm rounded-lg focus:ring-pong-dark-secondary focus:border-pong-dark-secondary block w-full p-2.5 placeholder-amber-50" maxlength="15" pattern="[A-Za-z0-9]+" title="Only alphanumeric characters are allowed and up to 15 characters" required />
+              <label for="playerIdField" class="block text-sm font-medium text-left text-pong-sport-muted">username</label>
+              <input type="text" id="playerIdField" class="bg-pong-dark-bg border border-pong-dark-secondary text-amber-50 text-sm rounded-lg focus:ring-pong-dark-secondary focus:border-pong-dark-secondary block w-full p-3 placeholder-amber-50" maxlength="15" pattern="[A-Za-z0-9]+" title="Only alphanumeric characters are allowed and up to 15 characters" required />
             </div>
-            <button id="addPlayerBtn" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-5 mt-5 rounded-2xl glow-animation">ADD PLAYER</button>
+            <button id="addPlayerBtn" class="game-btn text-white font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">add player</button>
           </div>
         </div>
       </div>
-    </div>
-    <div id="exitTab" class="h-80 w-150 bg-pong-dark-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
-      <button id="exit" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
     </div>
   `;
 
@@ -161,13 +171,13 @@ export function Tournaments() {
     // Setup event listeners
     players4.addEventListener("click", () => {
       selectTab.style.display = "none";
-      inputPlayers.style.display = "block";
+      inputPlayers.style.display = "flex";
       numberOfPlayers = 4;
     });
 
     players8.addEventListener("click", () => {
       selectTab.style.display = "none";
-      inputPlayers.style.display = "block";
+      inputPlayers.style.display = "flex";
       numberOfPlayers = 8;
     });
 
@@ -186,7 +196,7 @@ export function Tournaments() {
       if (Players.length === numberOfPlayers) {
         inputPlayers.style.display = "none";
         tourTab.style.display = "none";
-        gameTab.style.display = "block";
+        gameTab.style.display = "flex";
         currentMatch.textContent = `${Players[0]} vs ${Players[1]}`;
         if (Players.length > 2) {
           nextMatch.textContent = `NEXT MATCH: ${Players[2]} vs ${Players[3]}`;
@@ -194,7 +204,7 @@ export function Tournaments() {
 
         start.addEventListener("click", () => {
           start.style.display = "none";
-          restart.style.display = "block";
+          restart.style.display = "flex";
           gameTab.style.display = "none";
           flow.animate();
         });
@@ -213,6 +223,20 @@ export function Tournaments() {
       console.error("[client] WebSocket error:", err);
     };
   }
+
+  window.addEventListener("resize", () => {
+    const newVw = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+    const newVh = Math.max(
+      document.documentElement.clientHeight || 0,
+      window.innerHeight || 0
+    );
+    canvas.width = Math.min(1000, newVw * 0.95);
+    canvas.height = Math.min(600, newVh * 0.7);
+  });
+
   // Start initialization
   init();
 
@@ -232,16 +256,6 @@ interface GameStateLocal {
   flagY: boolean;
   ballSpeed: number;
   count: number;
-}
-
-interface Particle {
-  x: number;
-  y: number;
-  radius: number;
-  color: string;
-  alpha: number;
-  velocityX: number;
-  velocityY: number;
 }
 
 interface FlowFieldDependencies {
@@ -270,8 +284,8 @@ class FlowFieldLocal {
   private gameState: GameStateLocal;
   private canvasWidth: number;
   private canvasHeight: number;
-  private particles: Particle[] = [];
   private deps: FlowFieldDependencies;
+  private ballPulse: number = 0;
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -300,46 +314,14 @@ class FlowFieldLocal {
     };
   }
 
-  private ballParticle(x: number, y: number): void {
-    for (let i = 0; i < 5; i++) {
-      this.particles.push({
-        x: x,
-        y: y,
-        radius: Math.random() * 2 + 1,
-        color: "#C44536",
-        alpha: 1,
-        velocityX: (Math.random() - 0.5) * 2,
-        velocityY: (Math.random() - 0.5) * 2,
-      });
-    }
-  }
-
-  private updateParticles(): void {
-    this.particles.forEach((particle, index) => {
-      particle.x += particle.velocityX;
-      particle.y += particle.velocityY;
-      particle.alpha -= 0.02;
-
-      if (particle.alpha <= 0) {
-        this.particles.splice(index, 1);
-      }
-    });
-  }
-
-  private drawParticles(): void {
-    this.particles.forEach((particle) => {
-      this.ctx.beginPath();
-      this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-      this.ctx.fillStyle = particle.color.replace("1)", `${particle.alpha})`);
-      this.ctx.fill();
-    });
-  }
-
   private draw(): void {
+    const isDark =
+      document.getElementById("game-screen")?.dataset.theme === "dark";
+
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
     // Left paddle
-    this.ctx.fillStyle = "#E0A458";
+    this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
     this.ctx.strokeRect(
       10,
@@ -349,6 +331,7 @@ class FlowFieldLocal {
     );
 
     // Right paddle
+    this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.fillRect(
       980,
       this.gameState.paddelRightY,
@@ -363,7 +346,7 @@ class FlowFieldLocal {
     );
 
     // Ball
-    this.ctx.fillStyle = "#C44536";
+    this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(
       this.gameState.ballX,
@@ -372,12 +355,27 @@ class FlowFieldLocal {
       0,
       Math.PI * 2
     );
+    this.ctx.shadowColor = isDark ? "#FFD700" : "#00B894";
+    this.ctx.shadowBlur = 24;
+    this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
     this.ctx.fill();
+    this.ctx.lineWidth = 3;
+    this.ctx.strokeStyle = isDark ? "#fff" : "#23272f";
     this.ctx.stroke();
-
-    this.ballParticle(this.gameState.ballX, this.gameState.ballY);
-    this.updateParticles();
-    this.drawParticles();
+    this.ctx.restore();
+    this.ballPulse += 0.08;
+    this.ctx.globalAlpha = 0.25 + 0.15 * Math.sin(this.ballPulse);
+    this.ctx.beginPath();
+    this.ctx.arc(
+      this.gameState.ballX,
+      this.gameState.ballY,
+      13 + 10 + 5 * Math.abs(Math.sin(this.ballPulse)),
+      0,
+      Math.PI * 2
+    );
+    this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
+    this.ctx.fill();
+    this.ctx.globalAlpha = 1;
   }
 
   private keysFunction(): void {
@@ -436,7 +434,7 @@ class FlowFieldLocal {
           window.location.reload();
         });
         this.deps.resultStat.textContent = `Tournament winner is: ${this.deps.Players[0]}`;
-        this.deps.resultTab.style.display = "block";
+        this.deps.resultTab.style.display = "flex";
       }
     }
 
@@ -452,7 +450,7 @@ class FlowFieldLocal {
     }
 
     this.resetGameState();
-    this.deps.gameTab.style.display = "block";
+    this.deps.gameTab.style.display = "flex";
     this.deps.socketLocal.close();
 
     this.deps.restart.addEventListener("click", () => {

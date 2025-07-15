@@ -71,7 +71,7 @@ export function handleUpdatePassword() {
         setTimeout(() => {
           displayToast(UpdatePasswordRes.USER_LOGGED_IN, "success");
           setTimeout(() => {
-            navigateTo("/signin");
+            navigateTo("/login");
           }, redirectDelay);
         }, feedbackDelay);
       } else {

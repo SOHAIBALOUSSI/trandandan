@@ -24,14 +24,13 @@ import { LocalGame } from "@/components/game/LocalGame";
 import { RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
-import { startChatListener } from "@/handlers/chat";
 import { startNotificationListener } from "@/handlers/notifications";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
   welcome: Welcome,
-  signin: Signin,
-  signup: Signup,
+  login: Signin,
+  register: Signup,
   password_reset: ResetPassword,
   password_update: UpdatePassword,
   verify_login: VerifyLogin,
@@ -58,8 +57,8 @@ const routes: Record<string, (id?: number) => HTMLElement> = {
 // Public pages that don't require authentication
 const publicRoutes: string[] = [
   "welcome",
-  "signin",
-  "signup",
+  "login",
+  "register",
   "password_reset",
   "password_update",
   "verify_login",
@@ -68,11 +67,10 @@ const publicRoutes: string[] = [
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
+  console.log("Profiled fetched:", profile);
   if (profile) return true;
   return false;
 }
-
-let wsStarted = false;
 
 // Router function to handle navigation and rendering
 export async function router(): Promise<void> {
@@ -80,14 +78,15 @@ export async function router(): Promise<void> {
   if (!app) return;
 
   let path = location.pathname.slice(1);
-  let chatFriendId: number | undefined;
+
+  let chatRoom: number | undefined;
   let memberId: number | undefined;
 
   // Detect /chat/:id
   const chatMatch = path.match(/^lounge\/(\d+)$/);
   if (chatMatch) {
-    chatFriendId = Number(chatMatch[1]);
-    path = "chat-friend";
+    chatRoom = Number(chatMatch[1]);
+    path = "chat-room";
   }
 
   // Detect /members/:id
@@ -104,10 +103,7 @@ export async function router(): Promise<void> {
   if (!isPublic) {
     authed = await isAuthenticated();
     if (authed) {
-      if (!wsStarted) {
-        startNotificationListener();
-        wsStarted = true;
-      }
+      startNotificationListener();
     }
     if (!authed) {
       history.replaceState(null, "", "/welcome");
@@ -117,7 +113,7 @@ export async function router(): Promise<void> {
   }
 
   // Handle unknown routes
-  if (!render && path !== "member-profile" && path !== "chat-friend") {
+  if (!render && path !== "member-profile" && path !== "chat-room") {
     isPublic
       ? history.replaceState(null, "", "/welcome")
       : history.replaceState(null, "", "/salon");
@@ -131,21 +127,12 @@ export async function router(): Promise<void> {
   }
 
   // Render the current route's component
-  if (path === "chat-friend" && chatFriendId) {
-    const chatView = await Chat(chatFriendId);
+  if (path === "chat-room" && chatRoom) {
+    const chatView = await Chat(chatRoom);
     app.appendChild(chatView);
   } else if (path === "member-profile" && memberId) {
     app.appendChild(MemberProfile(memberId));
   } else {
     app.appendChild(render());
-  }
-
-  // Activate nav link
-  document
-    .querySelectorAll(".nav-item")
-    .forEach((li) => li.classList.remove("active"));
-  const activeLink = document.querySelector(`.nav-item-link[href="/${path}"]`);
-  if (activeLink?.parentElement) {
-    activeLink.parentElement.classList.add("active");
   }
 }

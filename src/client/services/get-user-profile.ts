@@ -16,7 +16,7 @@ export async function getUserProfile() {
     const profile = await profileRes.json();
 
     setCurrentUser(profile);
-    console.log("Fetching user profile...");
+
     return profile;
   } catch (err) {
     console.error(err);

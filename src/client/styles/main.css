@@ -204,27 +204,13 @@ a {
 /* End Game Mode Design */
 
 /* Start Game Design */
-@keyframes glowPulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0px #e0a458;
-    background-color: #e0a458;
-  }
-  50% {
-    box-shadow: 0 0 20px 5px #e0a458;
-    background-color: #f5c472;
-  }
-}
-.glow-animation {
-  animation: glowPulse 2s ease-in-out infinite;
-}
 #game-screen[data-theme="dark"] {
   background: linear-gradient(
     135deg,
     theme("colors.pong-sport-bg"),
     theme("colors.pong-sport-surface")
   );
-  color: theme("colors.pong-sport-accent");
+  color: theme("colors.pong-sport-primary");
 }
 #game-screen[data-theme="light"] {
   background: linear-gradient(
@@ -232,7 +218,27 @@ a {
     theme("colors.pong-sport-bg-light"),
     theme("colors.pong-sport-surface-light")
   );
+  color: theme("colors.pong-sport-primary-light");
+}
+#game-screen[data-theme="dark"] #exit,
+#game-screen[data-theme="dark"] #game-theme-toggle {
+  color: theme("colors.pong-sport-accent");
+  background-color: theme("colors.pong-sport-surface");
+}
+#game-screen[data-theme="dark"] #exit:hover,
+#game-screen[data-theme="dark"] #game-theme-toggle:hover {
   color: theme("colors.pong-sport-primary");
+  background-color: theme("colors.pong-sport-bg");
+}
+#game-screen[data-theme="light"] #exit,
+#game-screen[data-theme="light"] #game-theme-toggle {
+  color: theme("colors.pong-sport-accent-light");
+  background-color: theme("colors.pong-sport-surface-light");
+}
+#game-screen[data-theme="light"] #exit:hover,
+#game-screen[data-theme="light"] #game-theme-toggle:hover {
+  color: theme("colors.pong-sport-primary-light");
+  background-color: theme("colors.pong-sport-bg-light");
 }
 #game-screen[data-theme="dark"] #title {
   color: theme("colors.pong-dark-primary");
@@ -240,44 +246,58 @@ a {
 #game-screen[data-theme="light"] #title {
   color: theme("colors.pong-primary");
 }
-#game-screen[data-theme="light"] .score {
-  color: theme("colors.pong-sport-primary-light");
-}
 #game-screen[data-theme="dark"] .score {
   color: theme("colors.pong-sport-primary");
 }
-#game-screen[data-theme="light"] canvas {
-  background: #fff !important;
-  border-color: theme("colors.pong-sport-primary");
+#game-screen[data-theme="light"] .score {
+  color: theme("colors.pong-sport-primary-light");
 }
 #game-screen[data-theme="dark"] canvas {
   background: theme("colors.pong-sport-bg") !important;
   border-color: theme("colors.pong-sport-accent");
 }
-#game-screen[data-theme="dark"] #gameTab {
-  background-color: theme("colors.pong-sport-surface");
-  color: theme("colors.pong-sport-primary");
-  border-color: theme("colors.pong-sport-accent");
-}
-#game-screen[data-theme="light"] #gameTab {
-  background-color: theme("colors.pong-sport-surface-light");
-  color: theme("colors.pong-sport-primary-light");
+#game-screen[data-theme="light"] canvas {
+  background: theme("colors.pong-sport-bg-light") !important;
   border-color: theme("colors.pong-sport-accent-light");
 }
-#game-screen[data-theme="dark"] #restart {
-  background-color: theme("colors.pong-sport-accent");
+#game-screen[data-theme="dark"] .game-tab {
+  background-color: theme("colors.pong-sport-surface");
+  color: theme("colors.pong-sport-primary");
+  border-color: theme("colors.pong-sport-primary");
+}
+#game-screen[data-theme="light"] .game-tab {
+  background-color: theme("colors.pong-sport-surface-light");
+  color: theme("colors.pong-sport-primary-light");
+  border-color: theme("colors.pong-sport-primary-light");
+}
+#game-screen[data-theme="dark"] #result {
+  color: theme("colors.pong-dark-primary");
+}
+#game-screen[data-theme="light"] #result {
   color: theme("colors.pong-primary");
 }
-#game-screen[data-theme="light"] #restart {
-  background-color: theme("colors.pong-sport-accent-light");
-  color: #fff;
+#game-screen[data-theme="dark"] .game-btn {
+  background-color: theme("colors.pong-dark-accent");
 }
-#game-screen[data-theme="dark"] #restart:hover {
-  background-color: theme("colors.pong-sport-accent-light");
-  color: #fff;
+#game-screen[data-theme="light"] .game-btn {
+  background-color: theme("colors.pong-accent");
 }
-#game-screen[data-theme="light"] #restart:hover {
-  background-color: theme("colors.pong-sport-accent");
+#game-screen[data-theme="dark"] .game-btn:hover {
+  background-color: theme("colors.pong-sport-primary");
+}
+#game-screen[data-theme="light"] .game-btn:hover {
+  background-color: theme("colors.pong-sport-primary-light");
+}
+#game-screen[data-theme="dark"] #startMessage {
+  background-color: theme("colors.pong-sport-surface/70");
+}
+#game-screen[data-theme="light"] #startMessage {
+  background-color: theme("colors.pong-sport-surface-light/70");
+}
+#game-screen[data-theme="dark"] h2 {
+  color: theme("colors.pong-dark-primary");
+}
+#game-screen[data-theme="light"] h2 {
   color: theme("colors.pong-primary");
 }
 /* End Game Design */

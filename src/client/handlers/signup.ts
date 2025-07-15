@@ -121,7 +121,7 @@ export function handleSignUp() {
         setTimeout(() => {
           displayToast(RegisterRes.USER_REGISTERED, "success");
           setTimeout(() => {
-            navigateTo("/signin");
+            navigateTo("/login");
           }, redirectDelay);
         }, feedbackDelay);
       } else {

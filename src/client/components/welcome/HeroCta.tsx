@@ -4,7 +4,7 @@ export function HeroCta() {
   return (
     <div className="flex flex-col items-center gap-2">
       <a
-        href="/signin"
+        href="login"
         className={`${styles.lightPrimaryBtn} animate-myPulse hover:animate-none`}
         data-link
       >

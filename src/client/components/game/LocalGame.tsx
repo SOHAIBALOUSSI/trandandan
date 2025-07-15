@@ -1,6 +1,7 @@
 import { navigateTo } from "@/utils/navigate-to-link";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { GameStateLocal } from "types/types";
+import { styles } from "@/styles/styles";
 
 export function LocalGame() {
   setTimeout(() => {
@@ -20,56 +21,54 @@ export function LocalGame() {
 
   // Create a container element for the game
   const container = document.createElement("div");
-  container.className =
-    "w-full min-h-screen relative overflow-hidden transition-all duration-300";
+  container.className = styles.gameContainer;
   container.id = "game-screen";
   container.dataset.theme = localStorage.getItem("gameTheme") || "dark";
 
   container.innerHTML = `
-  <button id="exit" class="absolute top-5 left-5 z-30 text-2xl md:text-3xl text-pong-sport-accent hover:text-pong-sport-primary transition p-2 rounded-full bg-pong-sport-surface/70 hover:bg-pong-sport-surface/90 backdrop-blur-md shadow-md" title="Leave Lounge">
-    <i class="fa-solid fa-arrow-left"></i>
-  </button>
-  <button id="game-theme-toggle" class="absolute top-5 right-5 z-30 text-2xl md:text-3xl text-pong-sport-accent hover:text-pong-sport-primary transition p-2 rounded-full bg-pong-sport-surface/70 hover:bg-pong-sport-surface/90 backdrop-blur-md shadow-md" title="Switch Mood">
-    <i class="fa-solid fa-circle-half-stroke"></i>
-  </button>
+  	<button id="exit" class="${styles.gameExitBtn}" title="Leave Lounge">
+      <i class="fa-solid fa-arrow-left"></i>
+  	</button>
+  	<button id="game-theme-toggle" class="${styles.gameThemeBtn}" title="Switch Mood">
+      <i class="fa-solid fa-circle-half-stroke"></i>
+  	</button>
 
-  <h1 id="title" class="font-orbitron text-center text-[8vw] md:text-[80px] font-extrabold tracking-wide mt-14 mb-4 drop-shadow-xl text-pong-sport-primary">
-    BHV <span class="text-pong-sport-accent font-orbitron">PONG</span>
-  </h1>
+  	<h1 id="title" class="${styles.gameTitle}">
+      BHV <span class="text-pong-dark-accent font-orbitron">PONG</span>
+  	</h1>
 
+   	<div class="flex items-center justify-center flex-col w-full" style="min-height:${canvasHeight}px;">
+      <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4 transition-all duration-300">
+		<span id="leftPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</span>
+		<span id="rightPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</span>
+	  </div>
 
-   <div class="flex items-center justify-center flex-col w-full" style="min-height:${canvasHeight}px;">
-    <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4">
-      <h2 id="leftPlayerScoreLocal" class="text-5xl md:text-7xl font-semibold font-orbitron text-pong-sport-light drop-shadow-md">0</h2>
-      <h2 id="rightPlayerScoreLocal" class="text-5xl md:text-7xl font-semibold font-orbitron text-pong-sport-light drop-shadow-md">0</h2>
+      <div class="flex justify-center w-full pb-8">
+		<canvas class="${styles.gameCanvas}"
+        		id="canvas"
+        		width=${canvasWidth}
+        		height=${canvasHeight}>
+      	</canvas>
+      </div>
+  	</div>
+
+    <div id="gameTab"
+    	class="game-tab ${styles.gameTab} hidden">
+    	  <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Match Complete</h2>
+      	  <p id="result" class="text-xl mt-1 font-medium">Right Side Dominates</p>
+      	  <button id="restart" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">
+        	Challenge Again
+      	  </button>
     </div>
-
-    <div class="flex justify-center w-full pb-8">
-      <canvas class="z-10 border-2 border-pong-sport-accent rounded-md shadow-[0_0_20px_rgba(255,215,0,0.3)] bg-pong-sport-bg/90 backdrop-blur-sm transition-all duration-300"
-        id="canvas"
-        width=${canvasWidth}
-        height=${canvasHeight}>
-      </canvas>
-    </div>
-  </div>
-
-  <div id="gameTab"
-    class="h-80 w-11/12 max-w-lg absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-20 shadow-2xl backdrop-blur-md hidden flex-col items-center justify-center px-6 py-4 rounded-xl border border-pong-sport-accent/30 bg-pong-sport-surface/90 text-center text-pong-sport-light">
-      <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-pong-sport-primary">Match Complete</h2>
-      <p id="result" class="text-xl mt-1 font-medium text-pong-sport-accent">Right Side Dominates</p>
-      <button id="restart" class="mt-6 bg-pong-sport-primary hover:bg-pong-sport-accent text-black font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">
-        Challenge Again
-      </button>
-  </div>
 `;
 
   const startMessage = document.createElement("div");
   startMessage.id = "startMessage";
   startMessage.className =
-    "absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50 text-center text-2xl md:text-3xl font-bold text-pong-sport-muted bg-pong-sport-surface/70 px-6 py-4 rounded-xl shadow-lg";
+    "backdrop-blur-md absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50 text-center text-2xl md:text-3xl font-bold text-pong-sport-muted px-6 py-4 rounded-xl shadow-lg";
   startMessage.innerHTML = `
-  <p>Press <span class="text-pong-sport-accent">F</span> to Serve</p>
-  <p class="text-sm text-pong-sport-light/80 mt-2 font-normal">Welcome to the BHV Lounge — let the rally begin.</p>
+  <p>Press <span class="text-pong-dark-accent">F</span> to Serve</p>
+  <p class="text-sm text-pong-sport-muted mt-2 font-normal">Welcome to the BHV Lounge — let the rally begin.</p>
 `;
   container.appendChild(startMessage);
 
@@ -143,8 +142,8 @@ export function LocalGame() {
     flow.animate();
   }
 
-  // Optionally, handle window resize for responsiveness
-  window.addEventListener("resize", () => {
+  window.addEventListener("resize", (e) => {
+	e.preventDefault();
     const newVw = Math.max(
       document.documentElement.clientWidth || 0,
       window.innerWidth || 0
@@ -237,7 +236,6 @@ class FlowFieldLocal {
     );
 
     // Right paddle
-    this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.fillRect(
       980,
       this.gameState.paddelRightY,
@@ -252,7 +250,6 @@ class FlowFieldLocal {
     );
 
     // Ball
-
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(

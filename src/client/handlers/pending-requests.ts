@@ -2,8 +2,8 @@ import { acceptFriend } from "@/services/accept-friend";
 import { rejectFriend } from "@/services/reject-friend";
 import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
-import MaleAvatar from "@/assets/male.png";
-import FemaleAvatar from "@/assets/female.png";
+import MaleAvatar from "@/assets/male-avatar.png";
+import FemaleAvatar from "@/assets/female-avatar.png";
 
 export async function listPendingRequests() {
   try {
