@@ -23,12 +23,10 @@ export async function addBlock(db, blockerId, blockedId) {
 
 export async function removeBlock(db, blockerId, blockedId) {
     console.log('Removing block relationship...');
-    await db.run('DELETE FROM block WHERE (blocker_id = ? AND blocked_id = ?) OR (blocker_id = ? AND blocked_id = ?)', 
+    await db.run('DELETE FROM block WHERE blocker_id = ? AND blocked_id = ?', 
         [
             blockerId,
-            blockedId,
-            blockedId,
-            blockerId
+            blockedId
         ]
     );
 }
