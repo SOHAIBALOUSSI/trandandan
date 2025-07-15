@@ -116,7 +116,6 @@ export function RemoteGame() {
   async function init() {
     const userName: string = userInfo?.username ?? "username";
     const roomdIdentif = await getRoomIdByUserId(userInfo?.id ?? 0);
-    console.log("roomdIdentif:", roomdIdentif);
 
     socket = new WebSocket(
       `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.userId}&roomId=${roomdIdentif}`
@@ -199,6 +198,11 @@ interface GameState {
   rightPlayerBallHit: number;
   startTime: number;
   endTime: number;
+  solde: number;
+  level: number;
+  matchPlayed: number;
+  matchWon: number;
+  matchLost: number;
 }
 
 interface PlayerData {
@@ -211,6 +215,11 @@ interface PlayerData {
   gameEndResult: string;
   leftPlayerBallHit: number;
   rightPlayerBallHit: number;
+  Solde: number;
+  level: number;
+  matchPlayed: number;
+  matchWon: number;
+  matchLost: number;
 }
 
 interface Particle {
@@ -277,6 +286,11 @@ class FlowField {
       rightPlayerBallHit: 0,
       startTime: Date.now(),
       endTime: 0,
+      solde: 5,
+      level: 0,
+      matchPlayed: 0,
+      matchWon: 0,
+      matchLost: 0,
     };
   }
 
@@ -417,6 +431,11 @@ class FlowField {
       rightPlayerBallHit: 0,
       startTime: Date.now(),
       endTime: 0,
+      solde: 5,
+      level: 0,
+      matchPlayed: 0,
+      matchWon: 0,
+      matchLost: 0,
     };
 
     // Reconnect the WebSocket if it is closed
@@ -470,27 +489,59 @@ class FlowField {
   }
   public updateUser(currentUser: UserProfile): void {
     const payload = {
-      matches_won: currentUser.matches_won,
-      matches_lost: currentUser.matches_lost,
-      matches_played: currentUser.matches_played,
       level: currentUser.level,
       solde: currentUser.solde,
-    }; 
+      matches_played: currentUser.matches_played,
+      matches_won: currentUser.matches_won,
+      matches_lost: currentUser.matches_lost,
+    };
     fetch(`/profile/user/${currentUser.userId}`, {
       method: "PATCH",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload), 
+      body: JSON.stringify(payload),
     })
       .then((response) => response.json())
       .then((data) => {
         console.log("User updated successfully:", data);
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Error updating user:", error);
+      });
+  }
+  public async getLastMatchId(): Promise<PlayerData> {
+    const response = await fetch(
+      `http://localhost:5000/last-match/${this.deps.userName}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-      );
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data as PlayerData;
+  }
+  public async getUserStats(): Promise<PlayerData[]> {
+    const response = await fetch(
+      `http://localhost:5000/user-stats/${this.deps.userName}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data as PlayerData[];
   }
   public updateGameState(data: string): void {
     try {
@@ -511,62 +562,117 @@ class FlowField {
         this.gameState.gameEndResult &&
         this.gameState.gameEndResult.length !== 0
       ) {
-        const currentUser = getCurrentUser();
-
         this.gameState.endGame = true;
         this.deps.result.textContent = "You " + this.gameState.gameEndResult;
         this.deps.gameTabe.style.display = "block";
-
-        if (this.gameState.playerId === 1 && flag_one === true) {
-          flag_one = false;
-          if (currentUser) {
-            if (this.gameState.gameEndResult === "Won") {
-              currentUser.solde += 5;
-              currentUser.matches_won += 1;
-              currentUser.level += 5;
-            } else if (this.gameState.gameEndResult === "Lost") {
-              currentUser.solde -= 5;
-              currentUser.matches_lost += 1;
-              if (currentUser.level > 5) currentUser.level -= 5;
+        (async () => {
+          const lastMatch = await this.getLastMatchId();
+          const userStat = await this.getUserStats();
+          if (!lastMatch || lastMatch.length === 0 || !userStat) {
+            console.warn(
+              "No previous match data found. Initializing defaults."
+            );
+            
+            const playerData: PlayerData = {
+              userName: this.deps.userName,
+              matchId: this.gameState.matchId,
+              playerId: this.gameState.playerId,
+              leftPlayerScore: this.gameState.leftPlayerScore,
+              rightPlayerScore: this.gameState.rightPlayerScore,
+              gameDuration: this.gameState.endTime,
+              gameEndResult: this.gameState.gameEndResult ?? "",
+              leftPlayerBallHit: this.gameState.leftPlayerBallHit,
+              rightPlayerBallHit: this.gameState.rightPlayerBallHit,
+              level: 5,
+              Solde: 5,
+              matchPlayed: 1,
+              matchWon: this.gameState.gameEndResult === "Won" ? 1 : 0,
+              matchLost: this.gameState.gameEndResult === "Lost" ? 1 : 0,
+            };
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+              currentUser.solde = 5;
+              currentUser.level = 5;
+              currentUser.matches_played = 1;
+              currentUser.matches_won = this.gameState.gameEndResult === "Won" ? 1 : 0;
+              currentUser.matches_lost = this.gameState.gameEndResult === "Lost" ? 1 : 0;
+              if (this.gameState.playerId === 1) this.updateUser(currentUser);
+              else if (this.gameState.playerId === 2)
+                this.updateUser(currentUser);
             }
-            currentUser.matches_played += 1;
-            currentUser.level += this.gameState.leftPlayerScore;
+            this.sendPlayerData(playerData);
+            return;
           }
-        }
-
-        if (this.gameState.playerId === 2 && flag_two === true) {
-          flag_two = false;
-          if (currentUser) {
-            currentUser.level += this.gameState.rightPlayerScore;
+          const last = lastMatch[0];
+          if (this.gameState.playerId === 1 && flag_one === true) {
+            flag_one = false;
+            this.gameState.matchPlayed = userStat.matches_played + 1;
+            this.gameState.level = last.level + this.gameState.rightPlayerScore;
             if (this.gameState.gameEndResult === "Won") {
-              currentUser.solde += 5;
-              currentUser.matches_won += 1;
-              currentUser.level += 5;
+              this.gameState.solde = Math.max(0, 5 + last.Solde);
+              this.gameState.level = Math.max(0, 5 + last.level);
+              this.gameState.matchLost = userStat.matches_lost;
+              this.gameState.matchWon = userStat.matches_won + 1;
             } else if (this.gameState.gameEndResult === "Lost") {
-              currentUser.solde -= 5;
-              currentUser.matches_lost += 1;
-              if (currentUser.level > 5) currentUser.level -= 5;
+              // Ensure solde and level never go negative
+              this.gameState.solde = Math.max(0, last.Solde - 5);
+              this.gameState.level = Math.max(0, last.level - 5);
+              this.gameState.matchLost = userStat.matches_lost + 1;
+              this.gameState.matchWon = userStat.matches_won;
             }
-            currentUser.matches_played += 1;
           }
-        }
-        const playerData: PlayerData = {
-          userName: this.deps.userName,
-          matchId: this.gameState.matchId,
-          playerId: this.gameState.playerId,
-          leftPlayerScore: this.gameState.leftPlayerScore,
-          rightPlayerScore: this.gameState.rightPlayerScore,
-          gameDuration: this.gameState.endTime,
-          gameEndResult: this.gameState.gameEndResult,
-          leftPlayerBallHit: this.gameState.leftPlayerBallHit,
-          rightPlayerBallHit: this.gameState.rightPlayerBallHit,
-        };
-        if (currentUser && flag_update === true) {
-          flag_update = false;
-          if (this.gameState.playerId === 1) this.updateUser(currentUser);
-          else if (this.gameState.playerId === 2) this.updateUser(currentUser);
-        }
-        this.sendPlayerData(playerData);
+
+          if (this.gameState.playerId === 2 && flag_two === true) {
+            flag_two = false;
+            this.gameState.matchPlayed = userStat.matches_played + 1;
+            this.gameState.level = last.level - this.gameState.leftPlayerScore;
+            if (this.gameState.gameEndResult === "Won") {
+              this.gameState.solde = Math.max(0, 5 + last.Solde);
+              this.gameState.level = Math.max(0, 5 + last.level);
+              this.gameState.matchWon = userStat.matches_won + 1;
+              this.gameState.matchLost = userStat.matches_lost;
+            } else if (this.gameState.gameEndResult === "Lost") {
+              // Ensure solde and level never go negative
+              this.gameState.solde = Math.max(0, last.Solde - 5);
+              this.gameState.level = Math.max(0, last.level - 5);
+              this.gameState.matchLost = userStat.matches_lost + 1;
+              this.gameState.matchWon = userStat.matches_won;
+            }
+          }
+          const playerData: PlayerData = {
+            userName: this.deps.userName,
+            matchId: this.gameState.matchId,
+            playerId: this.gameState.playerId,
+            leftPlayerScore: this.gameState.leftPlayerScore,
+            rightPlayerScore: this.gameState.rightPlayerScore,
+            gameDuration: this.gameState.endTime,
+            gameEndResult: this.gameState.gameEndResult ?? "",
+            leftPlayerBallHit: this.gameState.leftPlayerBallHit,
+            rightPlayerBallHit: this.gameState.rightPlayerBallHit,
+            level: this.gameState.level,
+            Solde: this.gameState.solde,
+            matchPlayed: this.gameState.matchPlayed,
+            matchWon: this.gameState.matchWon,
+            matchLost: this.gameState.matchLost,
+          };
+          this.sendPlayerData(playerData);
+          const currentUser = getCurrentUser();
+          
+          if (currentUser) {
+            currentUser.solde = this.gameState.solde;
+            currentUser.level = this.gameState.level;
+            currentUser.matches_played = this.gameState.matchPlayed;
+            currentUser.matches_won = this.gameState.matchWon;
+            currentUser.matches_lost = this.gameState.matchLost;
+            if (this.gameState.playerId === 1) this.updateUser(currentUser);
+            else if (this.gameState.playerId === 2)
+            {
+              console.log("Updating user for player 2");
+              console.log(currentUser);
+              this.updateUser(currentUser);
+            }
+          }
+        })();
 
         this.deps.restartButton.addEventListener(
           "click",

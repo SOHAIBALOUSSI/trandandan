@@ -10,24 +10,8 @@ const db = new sqlite3.Database(
     }
   }
 );
-export default function getData(req, reply) {
-  return new Promise((resolve, reject) => {
-    const query = "SELECT * FROM games ORDER BY id DESC LIMIT 10"; // Added ORDER BY
 
-    db.all(query, [], (err, rows) => {
-      if (err) {
-        console.error("Error fetching data:", err.message);
-        reply.status(500).send({ error: "Database error" });
-        return reject(err);
-      }
-      console.log(rows);
-      resolve(rows); // Now the route will return this
-    });
-  });
-}
-
-
-export function savePlayerData(req, reply) {
+export default function savePlayerData(req, reply) {
   try {
     const data = req.body;
 
@@ -44,6 +28,11 @@ export function savePlayerData(req, reply) {
         game_end_result VARCHAR(100) NOT NULL,
         left_player_ball_hit INTEGER NOT NULL,
         right_player_ball_hit INTEGER NOT NULL,
+        level INTEGER NOT NULL,
+        Solde INTEGER NOT NULL,
+        matchPlayed INTEGER NOT NULL,
+        matchWon INTEGER NOT NULL,
+        matchLost INTEGER NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(created_at, player_id)
       )
@@ -65,8 +54,13 @@ export function savePlayerData(req, reply) {
           game_duration,
           game_end_result,
           left_player_ball_hit,
-          right_player_ball_hit
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+          right_player_ball_hit,
+          level,
+          Solde,
+          matchPlayed,
+          matchWon,
+          matchLost
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?)
       `;
 
       db.run(
@@ -81,6 +75,11 @@ export function savePlayerData(req, reply) {
           data.gameEndResult,
           data.leftPlayerBallHit,
           data.rightPlayerBallHit,
+          data.level,
+          data.Solde,
+          data.matchPlayed,
+          data.matchWon,
+          data.matchLost
         ],
         function (err) {
           return reply
