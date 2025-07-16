@@ -1,8 +1,5 @@
-import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
-import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { styles } from "@/styles/styles";
-import { fontSizes } from "@/styles/fontSizes";
 import { startChatListener, sendChatMessage } from "@/handlers/chat";
 import { getCurrentUser } from "@/utils/user-store";
 import { MessageSent } from "types/types";
@@ -16,7 +13,6 @@ export async function Chat(friendId: number) {
     const section = document.createElement("section");
     section.className = styles.pageLayoutDark;
     section.innerHTML = `
-	  ${NavBar().outerHTML}
 	  <div class="w-full relative">
 	    ${TopBar().outerHTML}
 	    ${
@@ -33,7 +29,6 @@ export async function Chat(friendId: number) {
     const section = document.createElement("section");
     section.className = styles.pageLayoutDark;
     section.innerHTML = `
-	  ${NavBar().outerHTML}
 	  <div class="w-full relative">
 	    ${TopBar().outerHTML}
 	    ${Loader({ text: "Preparing your club profile..." }).outerHTML}
@@ -48,7 +43,6 @@ export async function Chat(friendId: number) {
   section.className = styles.pageLayoutDark;
 
   section.innerHTML = `
-    ${NavBar().outerHTML}
     <div class="w-full relative">
       ${TopBar().outerHTML}
       <main class="px-0 md:px-16 pt-16 md:pt-24 md:pb-12 h-[100vh] md:h-[calc(100vh-2rem)] overflow-y-auto flex flex-col items-center gap-6">

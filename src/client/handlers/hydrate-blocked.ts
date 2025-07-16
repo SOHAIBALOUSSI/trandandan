@@ -2,6 +2,7 @@ import { getBlockedUsers } from "@/services/get-blocked";
 import { getUserById } from "@/services/get-user-by-id";
 import { unblockFriend } from "@/services/unblock-friend";
 import { getAvatarUrl } from "@/utils/get-avatar";
+import { styles } from "@/styles/styles";
 
 export async function hydrateBlocked() {
   const list = document.getElementById("muted-list") as HTMLUListElement;
@@ -30,7 +31,7 @@ export async function hydrateBlocked() {
     avatar.className = "w-10 h-10 rounded-full";
 
     const name = document.createElement("span");
-    name.className = "text-white font-semibold normal-case";
+    name.className = "text-lg font-semibold text-white normal-case";
     name.textContent = user.username;
 
     const left = document.createElement("div");
@@ -38,22 +39,23 @@ export async function hydrateBlocked() {
     left.appendChild(avatar);
     left.appendChild(name);
 
-    const btn = document.createElement("button");
-    btn.className =
-      "px-4 py-1.5 text-sm font-semibold rounded-md bg-pong-error hover:bg-red-700 text-white transition";
-    btn.textContent = "Unmute";
-    btn.onclick = async () => {
-      btn.disabled = true;
-      btn.textContent = "Unmuting...";
-      btn.style.backgroundColor = "#4a5568"; // Dark gray to indicate loading
-      await unblockFriend(user.id);
-      btn.textContent = "Unmuted";
-      btn.disabled = false;
-      btn.style.backgroundColor = "";
+    const unmuteBtn = document.createElement("button");
+    unmuteBtn.className = styles.darkPrimaryBtn;
+    unmuteBtn.textContent = "Unmute";
+    unmuteBtn.onclick = async () => {
+      unmuteBtn.disabled = true;
+      unmuteBtn.textContent = "Unmuting...";
+      unmuteBtn.style.backgroundColor = "#4a5568";
+      const success = await unblockFriend(user.id);
+      console.log(success);
+      if (success) {
+        console.log("succes");
+        li.remove();
+      }
     };
 
     li.appendChild(left);
-    li.appendChild(btn);
+    li.appendChild(unmuteBtn);
     list.appendChild(li);
   }
 }

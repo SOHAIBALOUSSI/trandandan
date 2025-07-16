@@ -1,6 +1,5 @@
 import { UserProfile } from "types/types";
 import { getUserRank } from "@/utils/get-user-rank";
-import { navigateTo } from "@/utils/navigate-to-link";
 
 export function ChatBlock(friend: UserProfile) {
   return (

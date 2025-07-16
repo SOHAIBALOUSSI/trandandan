@@ -50,9 +50,7 @@ export function MemberCard(props: {
                 )
                 .then(({ status, data }) => {
                   if (status === 200) {
-                    displayToast("Username updated successfully!", "success");
-                    saveBtn.classList.add("hidden");
-                    updateBtn.classList.remove("hidden");
+                    displayToast("Display name updated — you're looking sharp!", "success");
                   } else {
                     const msg =
                       UpdateUserProfileRes[data.code] ||
@@ -70,10 +68,14 @@ export function MemberCard(props: {
                 })
                 .finally(() => {
                   usernameEl.removeAttribute("contenteditable");
+                  saveBtn.classList.add("hidden");
+                  updateBtn.classList.remove("hidden");
                 });
             } else {
               displayToast("No changes made.", "warning");
               usernameEl.removeAttribute("contenteditable");
+              saveBtn.classList.add("hidden");
+              updateBtn.classList.remove("hidden");
             }
           };
 

@@ -4,6 +4,7 @@ import { getAllUsers } from "@/services/get-users";
 import { sendFriendRequest } from "@/services/send-friend-request";
 import { getAvatarUrl } from "@/utils/get-avatar";
 import { getAllFriends } from "@/services/get-friends";
+import { navigateTo } from "@/utils/navigate-to-link";
 
 export async function hydrateAllMembers(currentUser: UserProfile) {
   const list = document.getElementById("all-members-list") as HTMLUListElement;
@@ -13,7 +14,7 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
   const friends = await getAllFriends();
 
   if (!users.length || users.length === 1) {
-    list.innerHTML = `<li class="text-white text-center mt-4">No members found.</li>`;
+    list.innerHTML = `<li class="text-white text-center">No members found.</li>`;
     return;
   }
 
@@ -28,41 +29,32 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
       const avatar = document.createElement("img");
       avatar.src = getAvatarUrl(user);
       avatar.alt = `${user.username}'s avatar`;
-      avatar.className =
-        "w-10 h-10 rounded-full object-cover border border-pong-accent/30 bg-gray-700";
+      avatar.className = "w-10 h-10 rounded-full";
 
       const name = document.createElement("span");
       name.className = "text-lg font-semibold text-white normal-case";
       name.textContent = user.username;
 
-      const btn = document.createElement("button");
-      btn.className = styles.darkPrimaryBtn;
-      btn.textContent = "Add Friend";
-      btn.onclick = () => {
-        btn.disabled = true;
-        btn.textContent = "Request Sent";
-        btn.style.backgroundColor = "#4a5568";
+      const left = document.createElement("div");
+      left.className = "flex items-center gap-4 cursor-pointer";
+      left.appendChild(avatar);
+      left.appendChild(name);
+      left.onclick = () => {
+        navigateTo(`/members/${user.id}`);
+      };
+
+      const addBtn = document.createElement("button");
+      addBtn.className = styles.darkPrimaryBtn;
+      addBtn.textContent = "Add Friend";
+      addBtn.onclick = () => {
+        addBtn.disabled = true;
+        addBtn.textContent = "Request Sent";
+        addBtn.style.backgroundColor = "#4a5568";
         sendFriendRequest(user.id);
       };
 
-      const link = document.createElement("a");
-      link.href = `members/${user.id}`;
-      link.setAttribute("data-link", "true");
-      link.className = styles.darkPrimaryBtn;
-      link.textContent = "View Profile";
-
-      const left = document.createElement("div");
-      left.className = "flex items-center gap-4";
-      left.appendChild(avatar);
-      left.appendChild(name);
-
-      const right = document.createElement("div");
-      right.className = "flex items-center gap-4";
-      right.appendChild(btn);
-      right.appendChild(link);
-
       li.appendChild(left);
-      li.appendChild(right);
+      li.appendChild(addBtn);
       list.appendChild(li);
     }
   });

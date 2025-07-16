@@ -29,6 +29,47 @@ export function Friends() {
     hydrateFriends();
     hydrateAllMembers(user);
     handlePendingRequests();
+
+    const tabs = {
+      friends: {
+        btn: document.getElementById("friends-item") as HTMLLIElement,
+        container: document.getElementById(
+          "friends-container"
+        ) as HTMLDivElement,
+      },
+      members: {
+        btn: document.getElementById("all-members-item") as HTMLLIElement,
+        container: document.getElementById(
+          "members-container"
+        ) as HTMLDivElement,
+      },
+      pending: {
+        btn: document.getElementById("pending-requests-item") as HTMLLIElement,
+        container: document.getElementById(
+          "pending-container"
+        ) as HTMLDivElement,
+      },
+    };
+
+    if (!tabs.friends.btn || !tabs.members.btn || !tabs.pending.btn) return;
+
+    const allTabs = Object.values(tabs);
+
+    function activateTab(tabKey: keyof typeof tabs) {
+      allTabs.forEach(({ btn, container }) => {
+        btn.className = styles.membersInactiveBtn;
+        container?.classList.add("hidden");
+      });
+
+      tabs[tabKey].btn.className = styles.membersActiveBtn;
+      tabs[tabKey].container?.classList.remove("hidden");
+    }
+
+    activateTab("friends");
+
+    tabs.friends.btn.addEventListener("click", () => activateTab("friends"));
+    tabs.members.btn.addEventListener("click", () => activateTab("members"));
+    tabs.pending.btn.addEventListener("click", () => activateTab("pending"));
   }, 0);
 
   return (
@@ -39,62 +80,64 @@ export function Friends() {
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Meet the Members"
-            subtitle="Welcome to your club's heart — connect with friends, discover new players, and grow your circle."
+            subtitle="Welcome to the beating heart of your club — grow your circle, connect with legends, and discover new challengers."
           />
-          <div className="flex flex-col gap-8 w-full max-w-5xl">
-            <ul className="flex justify-center gap-8 ">
-              <li
-                id="friends"
-                className="text-base font-semibold w-64 text-center bg-pong-dark-accent hover:bg-pong-secondary transition rounded-md shadow-md text-white px-6 py-2 cursor-pointer"
-              >
-                Friends
-              </li>
-              <li
-                id="all-members"
-                className="text-base font-semibold w-64 text-center bg-pong-dark-accent hover:bg-pong-secondary transition rounded-md shadow-md text-white px-6 py-2 cursor-pointer"
-              >
-                All Members
-              </li>
-              <li
-                id="pending-requests"
-                className="text-base font-semibold w-64 text-center bg-pong-dark-accent hover:bg-pong-secondary transition rounded-md shadow-md text-white px-6 py-2 cursor-pointer"
-              >
-                Pending Requests
-              </li>
-            </ul>
-            <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
-              <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
-                <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
-                Friends List
-              </h2>
-              <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
-                Your current club friends
-              </p>
-              <FriendsList />
-            </div>
 
-            <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
-              <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
-                <span className="inline-block w-1.5 h-8 bg-pong-highlight rounded-sm"></span>
-                Rival Requests
-              </h2>
-              <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
-                Your fellow members are looking to connect — will you rally
-                back?
-              </p>
-              <PendingRequestsList />
-            </div>
+          <ul className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 text-center">
+            <li
+              id="friends-item"
+              className={`${styles.membersActiveBtn} px-4 py-2 rounded-md`}
+            >
+              My Inner Circle
+            </li>
+            <li
+              id="all-members-item"
+              className={`${styles.membersInactiveBtn} px-4 py-2 rounded-md`}
+            >
+              Entire Clubhouse
+            </li>
+            <li
+              id="pending-requests-item"
+              className={`${styles.membersInactiveBtn} px-4 py-2 rounded-md`}
+            >
+              Rally Requests
+            </li>
+          </ul>
 
-            <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
-              <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
-                <span className="inline-block w-1.5 h-8 bg-pong-highlight rounded-sm"></span>
-                All Members
-              </h2>
-              <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
-                Browse and connect with other BHC members
-              </p>
-              <AllMembersList />
-            </div>
+          <div id="friends-container" className={styles.membersListStyle}>
+            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+              <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
+              Trusted Allies
+            </h2>
+            <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
+              These are your confirmed club companions — ready for a match or a
+              message at any time.
+            </p>
+            <FriendsList />
+          </div>
+
+          <div id="members-container" className={styles.membersListStyle}>
+            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+              <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
+              The Club Directory
+            </h2>
+            <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
+              Explore the full roster of BHV PONG — find future teammates,
+              rivals, or just someone to spectate with.
+            </p>
+            <AllMembersList />
+          </div>
+
+          <div id="pending-container" className={styles.membersListStyle}>
+            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+              <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
+              Incoming Connections
+            </h2>
+            <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
+              Fellow members have sent you a rally invite — accept their
+              challenge and expand your crew.
+            </p>
+            <PendingRequestsList />
           </div>
         </main>
       </div>
