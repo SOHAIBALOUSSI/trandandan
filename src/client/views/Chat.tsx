@@ -6,56 +6,53 @@ import { MessageSent } from "types/types";
 import { getUserById } from "@/services/get-user-by-id";
 import { Loader } from "@/components/common/Loader";
 import { ChatBlock } from "@/components/chat/ChatBlock";
+import { NavBar } from "@/components/layout/NavBar";
 
 export async function Chat(friendId: number) {
   const friend = await getUserById(friendId);
+  const currentUser = getCurrentUser();
+
   if (!friend) {
     const section = document.createElement("section");
     section.className = styles.pageLayoutDark;
-    section.innerHTML = `
-	  <div class="w-full relative">
-	    ${TopBar().outerHTML}
-	    ${
-        Loader({ text: "Unable to load chat. Please try again later." })
-          .outerHTML
-      }
-	  </div>
-	`;
+    section.appendChild(TopBar());
+    section.appendChild(
+      Loader({ text: "Unable to load chat. Please try again later." })
+    );
     return section;
   }
 
-  const currentUser = getCurrentUser();
   if (!currentUser) {
     const section = document.createElement("section");
     section.className = styles.pageLayoutDark;
-    section.innerHTML = `
-	  <div class="w-full relative">
-	    ${TopBar().outerHTML}
-	    ${Loader({ text: "Preparing your club profile..." }).outerHTML}
-	  </div>
-	`;
+    section.appendChild(TopBar());
+    section.appendChild(Loader({ text: "Preparing your club profile..." }));
     return section;
   }
 
-  const messages: MessageSent[] = [];
-
   const section = document.createElement("section");
   section.className = styles.pageLayoutDark;
+  section.appendChild(NavBar());
 
-  section.innerHTML = `
-    <div class="w-full relative">
-      ${TopBar().outerHTML}
-      <main class="px-0 md:px-16 pt-16 md:pt-24 md:pb-12 h-[100vh] md:h-[calc(100vh-2rem)] overflow-y-auto flex flex-col items-center gap-6">
-        ${ChatBlock(friend).outerHTML}
-      </main>
-    </div>
-  `;
+  const container = document.createElement("div");
+  container.className = "w-full relative";
+  container.appendChild(TopBar());
 
+  const main = document.createElement("main");
+  main.className =
+    "px-0 md:px-16 pt-16 md:pt-24 md:pb-12 h-[100vh] md:h-[calc(100vh-2rem)] overflow-y-auto flex flex-col items-center gap-6";
+  main.appendChild(ChatBlock(friend));
+
+  container.appendChild(main);
+  section.appendChild(container);
+
+  // --- Chat logic ---
   const chatMessages = section.querySelector(
     "#chat-messages"
   ) as HTMLDivElement;
   const chatForm = section.querySelector("#chat-input-form") as HTMLFormElement;
   const chatInput = section.querySelector("#chat-input") as HTMLInputElement;
+  const messages: MessageSent[] = [];
 
   if (!chatMessages || !chatForm || !chatInput) return section;
 

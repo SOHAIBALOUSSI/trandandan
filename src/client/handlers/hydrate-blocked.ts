@@ -23,7 +23,7 @@ export async function hydrateBlocked() {
 
     const li = document.createElement("li");
     li.className =
-      "flex items-center justify-between gap-4 py-2 border-b border-white/10";
+      "flex items-center justify-between p-4 md:p-5 rounded-xl bg-pong-sport-bg-light/40 dark:bg-pong-dark-bg/70 shadow-sm border border-pong-sport-accent/10 hover:shadow-md transition-all";
 
     const avatar = document.createElement("img");
     avatar.src = getAvatarUrl(user);

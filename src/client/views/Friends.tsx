@@ -84,21 +84,15 @@ export function Friends() {
           />
 
           <ul className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 text-center">
-            <li
-              id="friends-item"
-              className={`${styles.membersActiveBtn} px-4 py-2 rounded-md`}
-            >
+            <li id="friends-item" className={styles.membersActiveBtn}>
               My Inner Circle
             </li>
-            <li
-              id="all-members-item"
-              className={`${styles.membersInactiveBtn} px-4 py-2 rounded-md`}
-            >
+            <li id="all-members-item" className={styles.membersInactiveBtn}>
               Entire Clubhouse
             </li>
             <li
               id="pending-requests-item"
-              className={`${styles.membersInactiveBtn} px-4 py-2 rounded-md`}
+              className={styles.membersInactiveBtn}
             >
               Rally Requests
             </li>

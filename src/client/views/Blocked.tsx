@@ -18,17 +18,23 @@ export function Blocked() {
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Silenced Opponents"
-            subtitle="Players you’ve muted in the club lounge."
+            subtitle="Below are the players you've muted — peace and focus are yours on the court."
           />
 
-          <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
-              <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
-              Muted Members
+          <div className={styles.cardOneStyle}>
+            <h2
+              className={`flex items-center gap-2 text-white ${fontSizes.smallTitleFontSize}`}
+            >
+              <span className="text-pong-accent">⛔</span>
+              <span className="font-bold">Muted Members</span>
             </h2>
-            <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
-              You won’t hear from these players in chat or matches.
+            <p
+              className={`${fontSizes.smallTextFontSize} text-white/80 leading-relaxed`}
+            >
+              You've silenced these players — they won't disturb your flow in
+              chat or matches.
             </p>
+
             <BlockedList />
           </div>
         </main>

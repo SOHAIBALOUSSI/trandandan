@@ -342,7 +342,7 @@ export const styles = {
 	w-full max-w-5xl mx-auto
   `,
   membersActiveBtn: `
-	text-base font-semibold 
+	text-base lg:text-lg font-semibold 
 	w-64 
 	text-center 
 	bg-pong-dark-accent 
@@ -351,9 +351,10 @@ export const styles = {
 	shadow-md 
 	text-white 
 	px-6 py-2 
+	cursor-pointer
   `,
   membersInactiveBtn: `
-	text-base font-semibold 
+	text-base lg:text-lg font-semibold 
 	w-64 
 	text-center 
 	bg-pong-primary 
