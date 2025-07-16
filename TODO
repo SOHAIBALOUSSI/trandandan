@@ -3,3 +3,23 @@
 - switch to use https and wss
 - if the player online show the toast if not dont show
 - send message quue for notification read in client side
+- add btns in Profile for view frieds, security, update email, password
+
+
+1. 🏆 Player Profile Summary
+Avatar, Rank Badge (Gold/Silver/etc.)
+Level, Total Matches, Win Ratio, victories, losses
+
+2. 📊 Performance Metrics
+Display stats in a visually engaging way (charts or cards):
+Win/Loss chart
+Average match duration
+Points scored vs conceded
+
+4. 🤝 Rivalry Tracker
+Top rivals (head-to-head stats)
+Most recent opponent
+
+5. 📅 Recent Matches
+Timeline/list of past games with scores
+

@@ -1,15 +1,35 @@
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
-import { TitleDark } from "@/components/common/TitleDark";
 import { styles } from "@/styles/styles";
+import { getCurrentUser } from "@/utils/user-store";
+import { Loader } from "@/components/common/Loader";
+import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 
 export function Dashboard() {
+  const user = getCurrentUser();
+  if (!user) {
+    return (
+      <section className={styles.pageLayoutDark}>
+        <NavBar />
+        <div className="w-full relative">
+          <TopBar />
+          <Loader text="Preparing your club profile..." />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
-        <main className="p-4 pt-20 md:pt-24 h-[calc(100vh-4rem)] overflow-y-auto"></main>
+        <main className={styles.pageContent}>
+          <SecondaryHeader
+            title="The Honor Board"
+            subtitle="Your Club Dashboard — track progress, stats & rivalries"
+          />
+        </main>
       </div>
     </section>
   );
