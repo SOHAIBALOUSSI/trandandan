@@ -1,10 +1,11 @@
-import { displayToast } from "@/utils/display-toast";
 import { Notification } from "types/types";
+import { navigateTo } from "@/utils/navigate-to-link";
+import { displayToast } from "@/utils/display-toast";
+import { getUserById } from "@/services/get-user-by-id";
 
 let ws: WebSocket | null = null;
 let unseenCount = 0;
-
-const seenIds = new Set<string>(
+const seenIds = new Set<number>(
   JSON.parse(sessionStorage.getItem("seenNotifs") || "[]")
 );
 
@@ -18,6 +19,85 @@ function updateCounter() {
   );
 }
 
+async function renderNotification(notif: Notification) {
+  const li = document.createElement("li");
+  li.className = `
+    text-sm text-white p-3 rounded-md shadow-lg border border-pong-dark-primary/40
+    bg-pong-dark-bg hover:bg-pong-dark-primary/10 transition-all duration-200 cursor-pointer
+  `;
+  li.setAttribute("data-id", String(notif.notification_id));
+
+  let route = "";
+  let label = "";
+  const sender = await getUserById(notif.sender_id || 0);
+
+  switch (notif.type) {
+    case "FRIEND_REQUEST_SENT":
+      label = `
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-pong-accent text-base"></i>
+          <span>
+            <span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> sent you a friend request.
+          </span>
+        </div>
+      `;
+      route = `/members`;
+      break;
+
+    case "FRIEND_REQUEST_ACCEPTED":
+      label = `
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-user-check text-pong-success text-base"></i>
+          <span>
+            <span class="text-pong-success font-semibold normal-case">${sender?.username}</span> accepted your friend request.
+          </span>
+        </div>
+      `;
+      route = `/members/${notif.sender_id}`;
+      break;
+
+    case "MESSAGE_RECEIVED":
+      label = `
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-message text-pong-accent text-base"></i>
+          <span>
+            New message from <span class="font-semibold text-pong-accent">${sender?.username}</span>.
+          </span>
+        </div>
+      `;
+      route = `/lounge/${notif.sender_id}`;
+      break;
+
+    default:
+      label = `
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bell text-pong-accent text-base"></i>
+          <span>New notification received.</span>
+        </div>
+      `;
+      break;
+  }
+
+  li.innerHTML = label;
+
+  if (route) {
+    li.onclick = () => {
+      li.style.pointerEvents = "none";
+      li.style.opacity = "0.5";
+      li.classList.add("line-through");
+      li.setAttribute("aria-disabled", "true");
+      navigateTo(route);
+      setTimeout(() => li.remove(), 400);
+
+      if (notif.notification_id) {
+        markNotificationsAsRead([notif.notification_id]);
+      }
+    };
+  }
+
+  return li;
+}
+
 export function startNotificationListener() {
   if (ws && ws.readyState === WebSocket.OPEN) return;
 
@@ -27,54 +107,23 @@ export function startNotificationListener() {
     console.log("Notification Websocket connection established.");
   };
 
-  ws.onmessage = (event: MessageEvent) => {
+  ws.onmessage = async (event: MessageEvent) => {
     try {
       const notif: Notification = JSON.parse(event.data);
 
-	  console.log("Received notification:", notif);
-
-      const notifId = `${notif.type}-${
-        notif.recipient_id
-      }-${new Date().getTime()}`;
-
-      if (!seenIds.has(notifId)) {
-        seenIds.add(notifId);
+      if (notif.notification_id && !seenIds.has(notif.notification_id)) {
+        seenIds.add(notif.notification_id);
         saveSeen();
         unseenCount++;
         updateCounter();
       }
 
-      //  i will add notification to the UI based on type
-      switch (notif.type) {
-        case "FRIEND_REQUEST_SENT":
-          displayToast(
-            `New friend request from ${notif.sender_id}.`,
-            "warning"
-          );
-          break;
-        case "FRIEND_REQUEST_ACCEPTED":
-          displayToast(
-            `Your friend request to ${notif.recipient_id} was accepted.`,
-            "success"
-          );
-          break;
-        case "FRIEND_REQUEST_REJECTED":
-          displayToast(
-            `Your friend request to ${notif.recipient_id} was declined.`,
-            "warning"
-          );
-          break;
-        case "INVITE_SENT":
-          displayToast(
-            `You have been invited to a room by ${notif.sender_id}.`,
-            "warning"
-          );
-          break;
-        case "MESSAGE_RECEIVED":
-          displayToast("You have a new message!", "warning");
-          break;
-        default:
-          break;
+      const notifList = document.getElementById("notif-list");
+      if (notifList) {
+        notifList.prepend(await renderNotification(notif));
+        while (notifList.children.length > 20) {
+          notifList.removeChild(notifList.lastChild!);
+        }
       }
     } catch (error) {
       displayToast(
@@ -85,21 +134,10 @@ export function startNotificationListener() {
   };
 
   ws.onclose = () => {
-    console.warn("Notification WebSocket connection closed.");
     ws = null;
-
     setTimeout(() => {
-      console.log("Reconnecting to WebSocket...");
       startNotificationListener();
     }, 5000);
-  };
-
-  ws.onerror = (error) => {
-    console.error("Notification WebSocket error:", error);
-    displayToast(
-      "The club’s lights are out at the moment. Try again shortly.",
-      "error"
-    );
   };
 }
 
@@ -112,9 +150,23 @@ export function stopNotificationListener() {
 }
 
 export function clearNotificationCounter() {
-  console.log("Notification counter cleared.");
   unseenCount = 0;
   sessionStorage.setItem("seenNotifs", JSON.stringify([]));
   seenIds.clear();
   updateCounter();
+}
+
+function markNotificationsAsRead(ids: number[]) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(
+      JSON.stringify({
+        type: "NOTIFICATION_READ",
+        notification_ids: ids,
+      })
+    );
+    ids.forEach((id) => seenIds.add(id));
+    saveSeen();
+    unseenCount = Math.max(0, unseenCount - ids.length);
+    updateCounter();
+  }
 }

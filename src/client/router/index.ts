@@ -19,7 +19,6 @@ import { Logout } from "@/views/Logout";
 import { UpdateCredentialsPassword } from "@/views/UpdateCredentialsPassword";
 import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
 import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentials";
-import { Notifications } from "@/views/Notifications";
 import { LocalGame } from "@/components/game/LocalGame";
 import { RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
@@ -50,7 +49,6 @@ const routes: Record<string, (id?: number) => HTMLElement> = {
   verification: VerifyUpdateCredentials,
   muted_players: Blocked,
   wipe_account: DeleteAccount,
-  notifs: Notifications,
   checkout: Logout,
 };
 

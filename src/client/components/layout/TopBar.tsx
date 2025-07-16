@@ -1,4 +1,5 @@
 import { styles } from "@/styles/styles";
+import { clearNotificationCounter } from "@/handlers/notifications";
 
 export function TopBar() {
   setTimeout(() => {
@@ -7,7 +8,7 @@ export function TopBar() {
 
     function updateBadge(e: CustomEvent) {
       const count = Number(e.detail);
-      badge.textContent = count > 0 ? String(count) : "";
+      badge.textContent = count > 0 ? String(count) : "0";
       if (count > 0) {
         badge.classList.remove("text-black", "bg-pong-dark-primary");
         badge.classList.add("text-white", "bg-pong-accent");
@@ -36,6 +37,8 @@ export function TopBar() {
     btn.addEventListener("click", () => {
       notifContainer.classList.toggle("hidden");
     });
+
+    clearNotificationCounter();
   }, 0);
 
   return (
@@ -51,20 +54,24 @@ export function TopBar() {
         <button
           id="bell-btn"
           className="relative text-xl text-pong-dark-primary hover:text-pong-dark-accent"
+          aria-label="Show notifications"
         >
-          <a href="/notifs" data-link>
-            <i className="fa-regular fa-bell"></i>
-            <span
-              id="notif-badge"
-              className="absolute -top-1 -right-2 bg-pong-dark-primary text-black text-xs rounded-full px-2 py-0.5"
-            ></span>
-          </a>
+          <i className="fa-regular fa-bell"></i>
+          <span
+            id="notif-badge"
+            className="absolute -top-1 -right-2 bg-pong-dark-primary text-black text-xs rounded-full px-2 py-0.5 transition-all duration-300"
+          ></span>
           <div
             id="notif-container"
-            className="absolute bg-pong-dark-primary text-black w-[450px] hidden right-0 shadow-lg rounded-lg p-4 mt-2"
+            className="animate-fadeInUp absolute bg-pong-dark-bg text-pong-dark-primary w-[300px] md:w-[450px] max-h-[480px] hidden right-0 shadow-2xl rounded-xl p-4 mt-2 z-50 border border-pong-dark-primary"
           >
-            <h3 className="font-semibold mb-2">Notifications</h3>
-            <ul id="notif-list" className="list-none p-0 m-0"></ul>
+            <h3 className="font-semibold mb-3 text-lg text-pong-accent flex items-center gap-2">
+              <i className="fa-regular fa-bell"></i> Club Updates
+            </h3>
+            <ul
+              id="notif-list"
+              className="list-none p-0 m-0 space-y-2 max-h-[220px] overflow-y-auto"
+            ></ul>
           </div>
         </button>
         <button className="text-xl text-pong-dark-primary hover:text-pong-dark-accent">
