@@ -98,3 +98,9 @@ export interface GameStateLocal {
   ballSpeed: number;
   count: number;
 }
+
+export type GameActivity = {
+  enemyId: string;
+  userId: string;
+  gameEndResult: "Won" | "Lost";
+};
