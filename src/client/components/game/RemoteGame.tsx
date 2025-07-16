@@ -511,9 +511,9 @@ class FlowField {
         console.error("Error updating user:", error);
       });
   }
-  public async getLastMatchId(): Promise<PlayerData> {
+  public async getgetCurrentUserDataMatchId(): Promise<PlayerData> {
     const response = await fetch(
-      `http://localhost:5000/last-match/${this.deps.userName}`,
+      `http://localhost:5000/getCurrentUserData-match/${this.deps.userName}`,
       {
         method: "GET",
         headers: {
@@ -527,7 +527,7 @@ class FlowField {
     const data = await response.json();
     return data as PlayerData;
   }
-  public async getUserStats(): Promise<PlayerData[]> {
+  public async getgetCurrentUserDatas(): Promise<PlayerData[]> {
     const response = await fetch(
       `http://localhost:5000/user-stats/${this.deps.userName}`,
       {
@@ -566,9 +566,8 @@ class FlowField {
         this.deps.result.textContent = "You " + this.gameState.gameEndResult;
         this.deps.gameTabe.style.display = "block";
         (async () => {
-          const lastMatch = await this.getLastMatchId();
-          const userStat = await this.getUserStats();
-          if (!lastMatch || lastMatch.length === 0 || !userStat) {
+          const getCurrentUserData = getCurrentUser();
+          if (!getCurrentUserData) {
             console.warn(
               "No previous match data found. Initializing defaults."
             );
@@ -603,40 +602,39 @@ class FlowField {
             this.sendPlayerData(playerData);
             return;
           }
-          const last = lastMatch[0];
           if (this.gameState.playerId === 1 && flag_one === true) {
             flag_one = false;
-            this.gameState.matchPlayed = userStat.matches_played + 1;
-            this.gameState.level = last.level + this.gameState.rightPlayerScore;
+            this.gameState.matchPlayed = getCurrentUserData.matches_played + 1;
+            this.gameState.level = getCurrentUserData.level + this.gameState.rightPlayerScore;
             if (this.gameState.gameEndResult === "Won") {
-              this.gameState.solde = Math.max(0, 5 + last.Solde);
-              this.gameState.level = Math.max(0, 5 + last.level);
-              this.gameState.matchLost = userStat.matches_lost;
-              this.gameState.matchWon = userStat.matches_won + 1;
+              this.gameState.solde = Math.max(0, 5 + getCurrentUserData.solde);
+              this.gameState.level = Math.max(0, 5 + getCurrentUserData.level);
+              this.gameState.matchLost = getCurrentUserData.matches_lost;
+              this.gameState.matchWon = getCurrentUserData.matches_won + 1;
             } else if (this.gameState.gameEndResult === "Lost") {
               // Ensure solde and level never go negative
-              this.gameState.solde = Math.max(0, last.Solde - 5);
-              this.gameState.level = Math.max(0, last.level - 5);
-              this.gameState.matchLost = userStat.matches_lost + 1;
-              this.gameState.matchWon = userStat.matches_won;
+              this.gameState.solde = Math.max(0, getCurrentUserData.solde - 5);
+              this.gameState.level = Math.max(0, getCurrentUserData.level - 5);
+              this.gameState.matchLost = getCurrentUserData.matches_lost + 1;
+              this.gameState.matchWon = getCurrentUserData.matches_won;
             }
           }
 
           if (this.gameState.playerId === 2 && flag_two === true) {
             flag_two = false;
-            this.gameState.matchPlayed = userStat.matches_played + 1;
-            this.gameState.level = last.level - this.gameState.leftPlayerScore;
+            this.gameState.matchPlayed = getCurrentUserData.matches_played + 1;
+            this.gameState.level = getCurrentUserData.level - this.gameState.leftPlayerScore;
             if (this.gameState.gameEndResult === "Won") {
-              this.gameState.solde = Math.max(0, 5 + last.Solde);
-              this.gameState.level = Math.max(0, 5 + last.level);
-              this.gameState.matchWon = userStat.matches_won + 1;
-              this.gameState.matchLost = userStat.matches_lost;
+              this.gameState.solde = Math.max(0, 5 + getCurrentUserData.solde);
+              this.gameState.level = Math.max(0, 5 + getCurrentUserData.level);
+              this.gameState.matchWon = getCurrentUserData.matches_won + 1;
+              this.gameState.matchLost = getCurrentUserData.matches_lost;
             } else if (this.gameState.gameEndResult === "Lost") {
               // Ensure solde and level never go negative
-              this.gameState.solde = Math.max(0, last.Solde - 5);
-              this.gameState.level = Math.max(0, last.level - 5);
-              this.gameState.matchLost = userStat.matches_lost + 1;
-              this.gameState.matchWon = userStat.matches_won;
+              this.gameState.solde = Math.max(0, getCurrentUserData.solde - 5);
+              this.gameState.level = Math.max(0, getCurrentUserData.level - 5);
+              this.gameState.matchLost = getCurrentUserData.matches_lost + 1;
+              this.gameState.matchWon = getCurrentUserData.matches_won;
             }
           }
           const playerData: PlayerData = {
@@ -664,11 +662,26 @@ class FlowField {
             currentUser.matches_played = this.gameState.matchPlayed;
             currentUser.matches_won = this.gameState.matchWon;
             currentUser.matches_lost = this.gameState.matchLost;
-            if (this.gameState.playerId === 1) this.updateUser(currentUser);
-            else if (this.gameState.playerId === 2)
+            if (this.gameState.playerId === 1 && flag_update === true){
+              flag_update = false;
+              console.log("Updating user for player 1");
+              console.log(currentUser.solde);
+              console.log(currentUser.level);
+              console.log(currentUser.matches_played);
+              console.log(currentUser.matches_won);
+              console.log(currentUser.matches_lost);
+              this.updateUser(currentUser);
+            }
+            else if (this.gameState.playerId === 2 && flag_update === true)
             {
+              flag_update = false;
               console.log("Updating user for player 2");
-              console.log(currentUser);
+              console.log(currentUser.solde);
+              console.log(currentUser.level);
+              console.log(currentUser.matches_played);
+              console.log(currentUser.matches_won);
+              console.log(currentUser.matches_lost);
+              // console.log(currentUser);
               this.updateUser(currentUser);
             }
           }
