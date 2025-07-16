@@ -203,6 +203,7 @@ interface GameState {
   matchPlayed: number;
   matchWon: number;
   matchLost: number;
+  enemyId: number;
 }
 
 interface PlayerData {
@@ -220,6 +221,8 @@ interface PlayerData {
   matchPlayed: number;
   matchWon: number;
   matchLost: number;
+  enemyId: number; // Added enemyId to track the opponent
+  userId?: number; // Optional, used for server-side updates
 }
 
 interface Particle {
@@ -291,10 +294,12 @@ class FlowField {
       matchPlayed: 0,
       matchWon: 0,
       matchLost: 0,
+      enemyId: 0, // Added enemyId to track the opponent
     };
   }
 
   private sendPlayerData(playerData: PlayerData): void {
+    console.log("Sending player data to server:", playerData);
     fetch("http://0.0.0.0:5000/storePlayerData", {
       method: "POST",
       headers: {
@@ -436,6 +441,7 @@ class FlowField {
       matchPlayed: 0,
       matchWon: 0,
       matchLost: 0,
+      enemyId: 0, // Reset enemyId
     };
 
     // Reconnect the WebSocket if it is closed
@@ -567,11 +573,11 @@ class FlowField {
         this.deps.gameTabe.style.display = "block";
         (async () => {
           const getCurrentUserData = getCurrentUser();
+          const cuurrUser = getCurrentUserData?.userId;
           if (!getCurrentUserData) {
             console.warn(
               "No previous match data found. Initializing defaults."
             );
-            
             const playerData: PlayerData = {
               userName: this.deps.userName,
               matchId: this.gameState.matchId,
@@ -587,7 +593,10 @@ class FlowField {
               matchPlayed: 1,
               matchWon: this.gameState.gameEndResult === "Won" ? 1 : 0,
               matchLost: this.gameState.gameEndResult === "Lost" ? 1 : 0,
+              enemyId: this.gameState.enemyId, // Include
+              userId: cuurrUser,
             };
+            
             const currentUser = getCurrentUser();
             if (currentUser) {
               currentUser.solde = 5;
@@ -637,6 +646,7 @@ class FlowField {
               this.gameState.matchWon = getCurrentUserData.matches_won;
             }
           }
+          const currentUser = getCurrentUser();
           const playerData: PlayerData = {
             userName: this.deps.userName,
             matchId: this.gameState.matchId,
@@ -652,9 +662,11 @@ class FlowField {
             matchPlayed: this.gameState.matchPlayed,
             matchWon: this.gameState.matchWon,
             matchLost: this.gameState.matchLost,
+            enemyId: this.gameState.enemyId, // Include
+            userId: currentUser?.userId ?? 0, // Include userId
           };
-          this.sendPlayerData(playerData);
-          const currentUser = getCurrentUser();
+            this.sendPlayerData(playerData);
+
           
           if (currentUser) {
             currentUser.solde = this.gameState.solde;
@@ -664,24 +676,11 @@ class FlowField {
             currentUser.matches_lost = this.gameState.matchLost;
             if (this.gameState.playerId === 1 && flag_update === true){
               flag_update = false;
-              console.log("Updating user for player 1");
-              console.log(currentUser.solde);
-              console.log(currentUser.level);
-              console.log(currentUser.matches_played);
-              console.log(currentUser.matches_won);
-              console.log(currentUser.matches_lost);
               this.updateUser(currentUser);
             }
             else if (this.gameState.playerId === 2 && flag_update === true)
             {
               flag_update = false;
-              console.log("Updating user for player 2");
-              console.log(currentUser.solde);
-              console.log(currentUser.level);
-              console.log(currentUser.matches_played);
-              console.log(currentUser.matches_won);
-              console.log(currentUser.matches_lost);
-              // console.log(currentUser);
               this.updateUser(currentUser);
             }
           }
