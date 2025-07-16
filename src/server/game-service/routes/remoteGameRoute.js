@@ -158,6 +158,7 @@ export function remoteGame(connection, req) {
         rightPlayerBallHit: 0,
         startTime: Date.now(),
         endTime: 0,
+        enemyId: 0, // Added enemyId
       },
     };
   }
@@ -172,8 +173,8 @@ export function remoteGame(connection, req) {
       return;
     }
     const [
-      { toke1: token1, connection: player1 },
-      { token2: token2, connection: player2 },
+      { token: token1, connection: player1 },
+      { token: token2, connection: player2 },
     ] = rooms[roomId].players;
 
     rooms[roomId].gameState.startTime = Date.now();
@@ -205,10 +206,12 @@ export function remoteGame(connection, req) {
           //send data to first player
           updatedState.gameEndResult = "Lost";
           updatedState.playerId = 1;
+          updatedState.enemyId = token2;
           player1.send(JSON.stringify(updatedState));
 
           //send data to second player
           updatedState.playerId = 2;
+          updatedState.enemyId = token1;
           updatedState.gameEndResult = "Won";
           player2.send(JSON.stringify(updatedState));
           return;
@@ -216,10 +219,12 @@ export function remoteGame(connection, req) {
         if (updatedState.leftPlayerScore === updatedState.rounds) {
           updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
           updatedState.playerId = 1;
+          updatedState.enemyId = token2;
           updatedState.gameEndResult = "Won";
           player1.send(JSON.stringify(updatedState));
 
           updatedState.playerId = 2;
+          updatedState.enemyId = token1;
           updatedState.gameEndResult = "Lost";
           player2.send(JSON.stringify(updatedState));
           return;

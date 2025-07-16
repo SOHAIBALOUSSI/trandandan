@@ -6,6 +6,8 @@
         user_name VARCHAR(100) NOT NULL,
         match_id VARCHAR(100) NOT NULL,
         player_id INTEGER NOT NULL,
+        enemy_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
         left_player_score INTEGER NOT NULL,
         right_player_score INTEGER NOT NULL,
         game_duration INTEGER NOT NULL,
