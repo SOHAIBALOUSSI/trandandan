@@ -68,3 +68,42 @@ This route is used to accept an invitation and confirm the game room.
 ### Notes
 - The `roomId` is stored in Redis for 5 minutes.
 - Ensure all required fields are provided in the request body.
+
+## `/recent-activity` (WebSocket)
+
+### Description
+This WebSocket endpoint provides real-time updates about recent game activity. It monitors the database for new game completions and sends updates to connected clients whenever a match finishes.
+
+### Connection
+- **Method:** WebSocket
+- **URL:** `ws://localhost:5000/recent-activity`
+- **Protocol:** WebSocket
+
+### How It Works
+1. **Connection**: Client connects to the WebSocket endpoint
+2. **Monitoring**: Server continuously polls the database for new completed games
+3. **Updates**: When a new game completes, server sends game data to all connected clients
+4. **Real-time**: Updates are sent in real-time as games finish
+
+### Response Format
+When a new game completes, the server sends an array of game data:
+
+```json
+[
+  {
+    "enemyId": "<string>",
+    "userId": "<string>",
+    "gameEndResult": "Won" | "Lost"
+  },
+  {
+    "enemyId": "<string>",
+    "userId": "<string>",
+    "gameEndResult": "Won" | "Lost"
+  }
+]
+```
+
+### Response Fields
+- **enemyId**: The ID of the opponent player
+- **userId**: The ID of the current player
+- **gameEndResult**: The result of the game ("Won" or "Lost")
