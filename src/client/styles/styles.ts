@@ -25,6 +25,7 @@ export const styles = {
   	px-8 py-10 md:py-14
   `,
   pageContent: `
+    animate-fadeInUp
 	px-6 md:px-16 pt-20 md:pt-24 pb-8 md:pb-12 
 	h-[calc(100vh-2rem)] 
 	overflow-y-auto
@@ -86,7 +87,7 @@ export const styles = {
     ${fontSizes.buttonFontSize}
     font-semibold
     capitalize
-    px-6 py-2
+    px-4 md:px-6 py-2
     rounded-lg
     bg-pong-accent
     text-white
@@ -98,6 +99,7 @@ export const styles = {
 	text-center
   `,
   darkSubmitBtn: `
+	relative
 	px-6 py-3
 	${fontSizes.buttonFontSize}
 	font-semibold
@@ -105,6 +107,7 @@ export const styles = {
 	bg-pong-accent
 	rounded-xl
 	shadow-md
+	flex items-center justify-center
 	hover:bg-pong-dark-accent
 	hover:shadow-pong-accent/40
 	focus:outline-none
@@ -324,7 +327,7 @@ export const styles = {
   `,
   // === End Custom Cards styles ===
 
-  //   === Start Custom List styles ===
+  // === Start Custom List styles ===
   listStyle: `
   	flex items-start gap-3 
 	hover:bg-pong-dark-highlight/10 
@@ -332,4 +335,85 @@ export const styles = {
 	rounded-md 
 	transition-all
   `,
+  membersListStyle: `
+	bg-pong-secondary/10 
+	rounded-xl shadow-md 
+	p-6 md:p-10 
+	w-full max-w-5xl mx-auto
+  `,
+  membersActiveBtn: `
+	text-base lg:text-lg font-semibold 
+	w-64 
+	text-center 
+	bg-pong-dark-accent 
+	transition 
+	rounded-md 
+	shadow-md 
+	text-white 
+	px-6 py-2 
+	cursor-pointer
+  `,
+  membersInactiveBtn: `
+	text-base lg:text-lg font-semibold 
+	w-64 
+	text-center 
+	bg-pong-primary 
+	hover:bg-pong-dark-accent 
+	transition 
+	rounded-md 
+	shadow-md 
+	text-white 
+	px-6 py-2 
+	cursor-pointer
+`,
+  // === End Custom List styles ===
+
+  // === Start Game styles ===
+  gameContainer: `
+  	flex flex-col items-center justify-center
+  	w-full min-h-screen
+  	overflow-hidden
+  	relative
+	transition-all duration-300 ease-in-out
+  `,
+  gameExitBtn: `
+  	fixed top-5 left-5
+	text-2xl md:text-3xl
+  	p-2 rounded-full shadow-md
+  	backdrop-blur-md
+  	transition-all duration-300 ease-in-out
+  `,
+  gameThemeBtn: `
+  	fixed top-5 right-5
+	w-24
+	text-2xl md:text-3xl
+  	p-2 rounded-full shadow-md
+  	backdrop-blur-md
+  	transition-all duration-300 ease-in-out
+  `,
+  gameTitle: `
+  	font-orbitron
+  	text-[8vw] md:text-[80px]
+  	font-bold tracking-wide
+  	mt-14 mb-4
+  	animate-fadeInUp
+  `,
+  gameCanvas: `
+	border-2 
+	rounded-md 
+	shadow-[0_0_20px_rgba(255,215,0,0.3)] 
+	backdrop-blur-sm 
+	transition-all duration-300
+  `,
+  gameTab: `
+	h-fit w-11/12 
+	max-w-lg 
+	absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-20 
+	shadow-2xl backdrop-blur-md 
+	flex-col items-center justify-center 
+	px-6 py-12 
+	rounded-xl border 
+	text-center 
+  `,
+  // === End Game styles ===
 };

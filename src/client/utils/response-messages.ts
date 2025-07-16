@@ -111,30 +111,31 @@ export const Change2FaStateRes: Record<string, string> = {
 
 export const DeleteAccountRes: Record<string, string> = {
   UNAUTHORIZED: "Unauthorized. Only logged-in champs can delete their account.",
-  USER_DATA_DELETED: "Your account has been successfully deleted.",
+  USER_DATA_DELETED:
+    "Your club profile has been retired. We'll miss you on the court!",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
 export const UpdateCredentialsRes: Record<string, string> = {
   PASSWORDS_REQUIRED:
-    "Both old and new passwords are required. Please provide them.",
+    "Both your old and new passwords are needed to proceed. Let’s tighten up your defense.",
   INVALID_PASSWORD:
-    "Your old password is incorrect. Check your grip and try again.",
+    "Hmm… that old password doesn’t match your past swings. Give it another go.",
   UNMATCHED_PASSWORDS:
-    "Your new passwords don’t match. Adjust your swing and re-enter.",
+    "Your new passwords aren’t syncing. Adjust your aim and try again.",
   PASSWORD_POLICY:
-    "Your password needs more training: 8+ characters with upper, lower, number, and a special move.",
+    "Your password needs more finesse: at least 8 characters with uppercase, lowercase, a number, and a special shot.",
   EMAIL_EXISTS:
-    "This email is already linked to another account. Please use a different email.",
+    "That email’s already in the club registry. Try another to secure your spot.",
   UNAUTHORIZED:
-    "Unauthorized. You need to be logged in to update your credentials.",
+    "Hold up, you need to be logged in to adjust your credentials. Back to the lounge login!",
   PASSWORD_UPDATED:
-    "Your password has been successfully updated. You've leveled up your security. Please sign in again to rejoin the court.",
+    "Password updated successfully! You’re ready for a fresh round — log in to continue.",
   EMAIL_UPDATED:
-    "Your email has been updated. The club knows how to reach you now.",
+    "Email updated. You’re all set — the club has your new contact!",
   TWOFA_REQUIRED:
-    "Two-factor authentication required. Let’s finish your warm-up with verification.",
+    "Two-factor authentication required. Let’s wrap this up with a quick verification serve.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
@@ -155,7 +156,7 @@ export const VerifyUpdateCredentialsRes: Record<string, string> = {
   OTP_INVALID:
     "That code doesn’t match our playbook. Double-check and try again.",
   PASSWORD_UPDATED:
-    "Your password has been successfully updated. You've leveled up your security. Please sign in again to rejoin the court.",
+    "Password locked in — your security game just leveled up. Please sign in again to re-enter the arena.",
   EMAIL_UPDATED:
     "Your email has been updated. The club knows how to reach you now.",
   INTERNAL_SERVER_ERROR:
@@ -166,79 +167,75 @@ export const VerifyUpdateCredentialsRes: Record<string, string> = {
 export const UpdateUserProfileRes: Record<string, string> = {
   UNAUTHORIZED: "Unauthorized. Only logged-in champs can update their profile.",
   PROFILE_NOT_FOUND: "Profile not found. Please check your request.",
-  USERNAME_EXISTS: "This username is already taken. Please choose another one.",
+  USERNAME_EXISTS:
+    "That name’s already claimed by another club member. Try a fresh one!",
   MISSING_FIELDS: "All fields are required. Please fill them in.",
   FST_ERR_VALIDATION:
     "Your credentials need a bit more polish. Check your input and try again.",
-  ZERO_CHANGES: "No changes detected. Please modify at least one field.",
+  ZERO_CHANGES: "No tweaks detected. Make a move before saving!",
   PROFILE_UPDATED: "Your profile has been successfully updated.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
 export const UploadAvatarRes: Record<string, string> = {
-  FILE_REQUIRED: "An avatar file is required. Please upload an image.",
-  AVATAR_UPLOADED: "Your avatar has been successfully uploaded.",
-  INTERNAL_SERVER_ERROR:
-    "The club’s lights are out at the moment. Try again shortly.",
-};
-
-export const GetUserAvatarRes: Record<string, string> = {
-  FILE_NAME_REQUIRED: "A file name is required to retrieve the avatar.",
-  FILE_NOT_FOUND: "Avatar not found. Please check the file name.",
-  AVATAR_UPLOADED: "Your avatar has been successfully retrieved.",
+  FILE_REQUIRED: "No avatar selected — please upload your signature look.",
+  AVATAR_UPLOADED: "Your avatar has been added. Looking sharp, champ!",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
 // Response messages for various Relationships service actions
 export const FriendRequestRes: Record<string, string> = {
-  ADDRESSEE_REQUIRED: "Addressee is required to send a friend request.",
-  ADDRESSEE_INVALID: "Invalid addressee. Please check the user ID.",
-  FRIEND_REQUEST_ALREADY_SENT: "Friend request already sent to this user.",
-  FRIEND_REQUEST_SENT: "Friend request sent successfully.",
+  ADDRESSEE_REQUIRED: "Select a member to send your rally request.",
+  ADDRESSEE_INVALID: "We couldn't find that player — double-check the ID.",
+  FRIEND_REQUEST_ALREADY_SENT:
+    "You've already sent an invitation to this player.",
+  FRIEND_REQUEST_SENT: "Rally request sent — awaiting their response.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
 export const FriendAcceptRes: Record<string, string> = {
-  REQUESTER_REQUIRED: "Requester is required to accept a friend request.",
-  REQUESTER_INVALID: "Invalid requester. Please check the user ID.",
-  FRIEND_REQUEST_ACCEPTED: "Friend request accepted successfully.",
+  REQUESTER_REQUIRED:
+    "Requester ID is missing — try refreshing your club session.",
+  REQUESTER_INVALID: "We couldn't verify the requester — something’s off.",
+  FRIEND_REQUEST_ACCEPTED: "You’ve added a new ally to your circle!",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
 export const FriendRejectRes: Record<string, string> = {
-  REQUESTER_REQUIRED: "Requester is required to accept a friend request.",
-  REQUESTER_INVALID: "Invalid requester. Please check the user ID.",
-  FRIEND_REQUEST_REJECTED: "Friend request rejected successfully.",
+  REQUESTER_REQUIRED: "A requester must be specified to respond.",
+  REQUESTER_INVALID: "Invalid request origin — check again.",
+  FRIEND_REQUEST_REJECTED: "You’ve kindly declined the invitation.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
 export const FriendRemoveRes: Record<string, string> = {
-  FRIEND_REQUIRED: "Friend is required to remove a friend.",
-  FRIEND_INVALID: "Invalid friend. Please check the user ID.",
-  FRIEND_REMOVED: "Friend removed successfully.",
+  FRIEND_REQUIRED: "Please specify which member you’d like to remove.",
+  FRIEND_INVALID: "We couldn’t identify that member. Try again.",
+  FRIEND_REMOVED: "You’ve updated your circle — connection removed.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
 export const FriendBlockRes: Record<string, string> = {
-  BLOCKED_REQUIRED: "Friend is required to block a friend.",
-  BLOCKED_INVALID: "Invalid friend. Please check the user ID.",
-  BLOCKED_EXISTS: "You have already blocked this friend.",
-  BLOCK_SUCCESS: "Friend blocked successfully.",
+  BLOCKED_REQUIRED:
+    "Choose the member you'd like to block from your club space.",
+  BLOCKED_INVALID: "We couldn’t locate this member. Please try again.",
+  BLOCKED_EXISTS: "This player is already on your block list.",
+  BLOCK_SUCCESS: "You've blocked this member. The club respects your space.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
 
 export const FriendUnblockRes: Record<string, string> = {
-  BLOCKED_REQUIRED: "Friend is required to unblock a friend.",
-  BLOCKED_INVALID: "Invalid friend. Please check the user ID.",
-  BLOCKED_NOT_FOUND: "You have not blocked this friend.",
-  UNBLOCK_SUCCESS: "Friend unblocked successfully.",
+  BLOCKED_REQUIRED: "Specify the member you'd like to welcome back.",
+  BLOCKED_INVALID: "Couldn’t verify this player. Please check again.",
+  BLOCKED_NOT_FOUND: "This player isn’t currently blocked.",
+  UNBLOCK_SUCCESS: "They’re back in the room — member unblocked successfully.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };

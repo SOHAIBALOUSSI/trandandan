@@ -60,7 +60,7 @@ export function SignInForm() {
         className={`${fontSizes.inputFontSize} w-full font-medium text-pong-primary/80`}
       >
         not a member yet?{" "}
-        <a href="signup" className={styles.customFormLink} data-link>
+        <a href="register" className={styles.customFormLink} data-link>
           apply for a paddle.
         </a>
       </p>

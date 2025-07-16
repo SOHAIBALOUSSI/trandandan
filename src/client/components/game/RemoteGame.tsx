@@ -1,64 +1,79 @@
 import { navigateTo } from "@/utils/navigate-to-link";
 import { getCurrentUser } from "@/utils/user-store";
 import { UserProfile } from "types/types";
+import { initGameThemeToggle } from "@/utils/game-theme-toggle";
+import { styles } from "@/styles/styles";
 
 export function RemoteGame() {
+  setTimeout(() => {
+    initGameThemeToggle();
+  }, 0);
+
+  const vw = Math.max(
+    document.documentElement.clientWidth || 0,
+    window.innerWidth || 0
+  );
+  const vh = Math.max(
+    document.documentElement.clientHeight || 0,
+    window.innerHeight || 0
+  );
+  const canvasWidth = Math.min(1000, vw * 0.95);
+  const canvasHeight = Math.min(600, vh * 0.7);
+
   // Create a container element for the game
   const container = document.createElement("div");
-  container.className =
-    "w-full h-[100vh] overflow-hidden bg-pong-dark-bg font-orbitron relative";
+  container.className = styles.gameContainer;
+  container.id = "game-screen";
+  container.dataset.theme = localStorage.getItem("gameTheme") || "dark";
 
   // Add your game HTML structure
   container.innerHTML = `
-    <h1 class="text-center text-[100px] text-amber-50 top-20">
-      <span class="text-pong-dark-secondary">PING</span> PONG
-    </h1>
+  	<button id="exit" class="${styles.gameExitBtn} group" title="Leave Lounge">
+      <i class="fa-solid fa-arrow-left"></i>
+	  <span class="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
+        Leave Lounge
+      </span>
+  	</button>
+  	<button id="game-theme-toggle" class="${styles.gameThemeBtn} group" title="Switch Mood">
+      <i class="fa-solid fa-circle-half-stroke"></i>
+  	</button>
+
+  	<h1 id="title" class="${styles.gameTitle}">
+      BHV <span class="text-pong-dark-accent font-orbitron">PONG</span>
+  	</h1>
+
     <h3 class="text-center text-pong-dark-secondary" id="playerSide">YOU ARE LEFT PLAYER</h3>
-    <div class="flex items-center justify-center flex-col h-230">
-      <div class="score flex justify-center gap-60 w-full">
-        <h1 id="leftPlayerScoreRemote" class="text-amber-50 text-8xl">0</h1>
-        <h1 id="rightPlayerScoreRemote" class="text-amber-50 text-8xl">0</h1>
+
+   	<div class="flex items-center justify-center flex-col w-full" style="min-height:${canvasHeight}px;">
+      <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4 transition-all duration-300">
+		<span id="leftPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</span>
+		<span id="rightPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</span>
+	  </div>
+
+      <div class="flex justify-center w-full pb-8">
+		<canvas class="${styles.gameCanvas}"
+        		id="canvas"
+        		width=${canvasWidth}
+        		height=${canvasHeight}>
+      	</canvas>
       </div>
-      <canvas class="bg-game-table z-10 border-4 border-white rounded-4xl" id="canvas" width="1000" height="600"></canvas>
-    </div>
-    <!-- Your decorative elements -->
-    <div class="absolute w-10 h-10 bg-red-500 opacity-10 animate-square top-0 left-0"></div>
-    <div class="absolute w-10 h-10 bg-blue-500 opacity-10 animate-square top-[45px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-green-500 opacity-10 animate-square top-[800px] left-[322px]"></div>
-    <div class="absolute w-10 h-10 bg-yellow-500 opacity-10 animate-square top-[550px] left-[800px]"></div>
-    <div class="absolute w-10 h-10 bg-purple-500 opacity-10 animate-square top-[90px] left-[1800px]"></div>
-    <div class="absolute w-10 h-10 bg-pink-500 opacity-10 animate-square top-[250px] left-[1656px]"></div>
-    <div class="absolute w-10 h-10 bg-teal-500 opacity-10 animate-square top-[750px] left-[1100px]"></div>
-    <div class="absolute w-10 h-10 bg-orange-500 opacity-10 animate-square top-[580px] left-[100px]"></div>
-    <div class="absolute w-10 h-10 bg-indigo-500 opacity-10 animate-square top-[475px] left-[1580px]"></div>
-    <div class="absolute w-10 h-10 bg-lime-500 opacity-10 animate-square top-[250px] left-[40px]"></div>
-    <div class="absolute w-10 h-10 bg-cyan-500 opacity-10 animate-square top-[390px] left-[1800px]"></div>
-    <div class="absolute w-10 h-10 bg-amber-500 opacity-10 animate-square top-[760px] left-[770px]"></div>
-    <div class="absolute w-10 h-10 bg-rose-500 opacity-10 animate-square top-[200px] left-[250px]"></div>
-    <div class="absolute w-10 h-10 bg-fuchsia-500 opacity-10 animate-square top-[890px] left-[1450px]"></div>
-    <div class="absolute w-10 h-10 bg-emerald-500 opacity-10 animate-square top-[250px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-violet-500 opacity-10 animate-square top-[15px] left-[1400px]"></div>
-    <div class="absolute w-10 h-10 bg-sky-500 opacity-10 animate-square top-[240px] left-[1500px]"></div>
-    <div class="absolute w-10 h-10 bg-amber-600 opacity-10 animate-square top-[100px] left-[320px]"></div>
-    <div class="absolute w-10 h-10 bg-pink-600 opacity-10 animate-square top-[750px] left-[1700px]"></div>
-    <div class="absolute w-10 h-10 bg-teal-600 opacity-10 animate-square top-[50px] left-[500px]"></div>
-    <div class="absolute w-10 h-10 bg-indigo-600 opacity-10 animate-square top-[190px] left-[450px]"></div>
+  	</div>
+
     <div id="gameTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
         <h1 id="result" class="text-2xl mt-2 text-amber-50">WON</h1>
         <button id="restartButton" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <div id="disconnected" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+        <div class="flex flex-col items-center justify-center h-full px-20 py-4">
+          <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
+          <h1 class="text-2xl mt-2 text-amber-50"> DISCONNECTED</h1>
         </div>
-        </div>
-        <div id="disconnected" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
-          <div class="flex flex-col items-center justify-center h-full px-20 py-4">
-            <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
-            <h1 class="text-2xl mt-2 text-amber-50"> DISCONNECTED</h1>
-          </div>
-        </div>
-        <div id="exitTab" class="h-80 w-150 bg-pong-dark-bg  rounded-2xl absolute top-1/2 left-1/2 translate-y-[120%] translate-x-[-50%] ">
-          <button id="exit" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">EXIT</button>
-        </div>
+    </div>
+ 
   `;
 
   // Initialize game elements
@@ -166,6 +181,20 @@ export function RemoteGame() {
     flow.animate();
   }
 
+  window.addEventListener("resize", (e) => {
+    e.preventDefault();
+    const newVw = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+    const newVh = Math.max(
+      document.documentElement.clientHeight || 0,
+      window.innerHeight || 0
+    );
+    canvas.width = Math.min(1000, newVw * 0.95);
+    canvas.height = Math.min(600, newVh * 0.7);
+  });
+
   // Start the game when the container is added to DOM
   init();
 
@@ -225,16 +254,6 @@ interface PlayerData {
   userId?: number; // Optional, used for server-side updates
 }
 
-interface Particle {
-  x: number;
-  y: number;
-  radius: number;
-  color: string;
-  alpha: number;
-  velocityX: number;
-  velocityY: number;
-}
-
 interface FlowFieldDependencies {
   rightPlayerScore: HTMLElement;
   leftPlayerScore: HTMLElement;
@@ -257,8 +276,8 @@ class FlowField {
   private canvasHeight: number = 600;
   private keys: Record<string, boolean>;
   private gameState: GameState;
-  private particles: Particle[] = [];
   private deps: FlowFieldDependencies;
+  private ballPulse: number = 0;
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -316,46 +335,14 @@ class FlowField {
       });
   }
 
-  private ballParticle(x: number, y: number): void {
-    for (let i = 0; i < 5; i++) {
-      this.particles.push({
-        x: x,
-        y: y,
-        radius: Math.random() * 2 + 1,
-        color: "#C44536",
-        alpha: 1,
-        velocityX: (Math.random() - 0.5) * 2,
-        velocityY: (Math.random() - 0.5) * 2,
-      });
-    }
-  }
-
-  private updateParticles(): void {
-    this.particles.forEach((particle, index) => {
-      particle.x += particle.velocityX;
-      particle.y += particle.velocityY;
-      particle.alpha -= 0.02;
-
-      if (particle.alpha <= 0) {
-        this.particles.splice(index, 1);
-      }
-    });
-  }
-
-  private drawParticles(): void {
-    this.particles.forEach((particle) => {
-      this.ctx.beginPath();
-      this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-      this.ctx.fillStyle = particle.color.replace("1)", `${particle.alpha})`);
-      this.ctx.fill();
-    });
-  }
-
   private draw(): void {
+    const isDark =
+      document.getElementById("game-screen")?.dataset.theme === "dark";
+
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
     // Paddle left
-    this.ctx.fillStyle = "#E0A458";
+    this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
     this.ctx.strokeRect(
       10,
@@ -379,7 +366,7 @@ class FlowField {
     );
 
     // Ball
-    this.ctx.fillStyle = "#C44536";
+   this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(
       this.gameState.ballX,
@@ -388,12 +375,27 @@ class FlowField {
       0,
       Math.PI * 2
     );
+    this.ctx.shadowColor = isDark ? "#FFD700" : "#00B894";
+    this.ctx.shadowBlur = 24;
+    this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
     this.ctx.fill();
+    this.ctx.lineWidth = 3;
+    this.ctx.strokeStyle = isDark ? "#fff" : "#23272f";
     this.ctx.stroke();
-
-    this.ballParticle(this.gameState.ballX, this.gameState.ballY);
-    this.updateParticles();
-    this.drawParticles();
+    this.ctx.restore();
+    this.ballPulse += 0.08;
+    this.ctx.globalAlpha = 0.25 + 0.15 * Math.sin(this.ballPulse);
+    this.ctx.beginPath();
+    this.ctx.arc(
+      this.gameState.ballX,
+      this.gameState.ballY,
+      13 + 10 + 5 * Math.abs(Math.sin(this.ballPulse)),
+      0,
+      Math.PI * 2
+    );
+    this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
+    this.ctx.fill();
+    this.ctx.globalAlpha = 1;
   }
 
   private keysFunction(): void {

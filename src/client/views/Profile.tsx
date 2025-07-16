@@ -37,11 +37,6 @@ export function Profile() {
             <div className="order-1 flex flex-col items-center space-y-6 gap-4">
               <MemberCard user={user} showUpdateOptions={true} />
             </div>
-
-            <div className="order-2 space-y-6 flex flex-col items-center gap-4 w-full max-w-5xl mx-auto">
-              <RecentMatches />
-              <BadgesAndTrophies />
-            </div>
           </div>
         </main>
       </div>

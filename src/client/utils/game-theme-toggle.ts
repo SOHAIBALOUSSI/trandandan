@@ -7,8 +7,8 @@ export function initGameThemeToggle() {
   const setIcon = () => {
     const isDark = container.dataset.theme === "dark";
     toggleBtn.innerHTML = isDark
-      ? '<i class="fa-solid fa-moon"></i>'
-      : '<i class="fa-solid fa-sun"></i>';
+      ? '<i class="fa-solid fa-moon"></i><span class="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">Switch Mood</span>'
+      : '<i class="fa-solid fa-sun"></i><span class="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">Switch Mood</span>';
   };
 
   setIcon();
@@ -18,6 +18,7 @@ export function initGameThemeToggle() {
   toggleBtn.addEventListener("click", () => {
     const isDark = container.dataset.theme === "dark";
     container.dataset.theme = isDark ? "light" : "dark";
+	localStorage.setItem("gameTheme", container.dataset.theme);
     setIcon();
 
     const canvas = container.querySelector("canvas");

@@ -55,7 +55,7 @@ export function handleVerifyCredentials() {
             : displayToast(VerifyUpdateCredentialsRes.EMAIL_UPDATED, "success");
 
           setTimeout(() => {
-            isPassword ? navigateTo("/signin") : navigateTo("/security");
+            isPassword ? navigateTo("/login") : navigateTo("/security");
             if (isPassword) {
               fetch("/auth/logout", {
                 method: "POST",
