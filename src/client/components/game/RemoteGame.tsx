@@ -2,7 +2,6 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { getCurrentUser } from "@/utils/user-store";
 import { UserProfile } from "types/types";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
-import { GameStateLocal } from "types/types";
 import { styles } from "@/styles/styles";
 
 export function RemoteGame() {
@@ -29,10 +28,13 @@ export function RemoteGame() {
 
   // Add your game HTML structure
   container.innerHTML = `
-  	<button id="exit" class="${styles.gameExitBtn}" title="Leave Lounge">
+  	<button id="exit" class="${styles.gameExitBtn} group" title="Leave Lounge">
       <i class="fa-solid fa-arrow-left"></i>
+	  <span class="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
+        Leave Lounge
+      </span>
   	</button>
-  	<button id="game-theme-toggle" class="${styles.gameThemeBtn}" title="Switch Mood">
+  	<button id="game-theme-toggle" class="${styles.gameThemeBtn} group" title="Switch Mood">
       <i class="fa-solid fa-circle-half-stroke"></i>
   	</button>
 

@@ -1,4 +1,5 @@
 import { styles } from "@/styles/styles";
+import { displayToast } from "@/utils/display-toast";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { navigateTo } from "@/utils/navigate-to-link";
 
@@ -26,73 +27,108 @@ export function Tournaments() {
 
   // Add HTML structure
   container.innerHTML = `
-  	<button id="exit" class="${styles.gameExitBtn}" title="Leave Lounge">
-      <i class="fa-solid fa-arrow-left"></i>
-  	</button>
-  	<button id="game-theme-toggle" class="${styles.gameThemeBtn}" title="Switch Mood">
-      <i class="fa-solid fa-circle-half-stroke"></i>
-  	</button>
+  <!-- Exit & Theme Toggle Buttons -->
+  <button id="exit" class="${styles.gameExitBtn} group" title="Exit Lounge">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span class="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
+      Leave Lounge
+    </span>
+  </button>
 
-  	<h1 id="title" class="${styles.gameTitle}">
-      BHV <span class="text-pong-dark-accent font-orbitron">PONG</span>
-  	</h1>
+  <button id="game-theme-toggle" class="${styles.gameThemeBtn} group" title="Switch Theme">
+    <i class="fa-solid fa-circle-half-stroke"></i>
+  </button>
 
-   	<div class="flex items-center justify-center flex-col w-full" style="min-height:${canvasHeight}px;">
-      <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4 transition-all duration-300">
-		<h2 id="leftPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</h2>
-		<h2 id="rightPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</h2>
-	  </div>
+  <!-- Title -->
+  <h1 id="title" class="${styles.gameTitle}">
+    BHV <span class="text-pong-dark-accent font-orbitron">PONG</span>
+  </h1>
 
-      <div class="flex justify-center w-full pb-8">
-		<canvas class="${styles.gameCanvas}"
-        		id="canvas"
-        		width=${canvasWidth}
-        		height=${canvasHeight}>
-      	</canvas>
-      </div>
+  <!-- Game Layout -->
+  <div class="flex items-center justify-center flex-col w-full" style="min-height:${canvasHeight}px;">
+    <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4 transition-all duration-300">
+      <span id="leftPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</span>
+      <span id="rightPlayerScoreLocal" class="text-3xl md:text-5xl font-semibold font-orbitron">0</span>
+    </div>
+
+    <div class="flex justify-center w-full pb-8">
+      <canvas class="${styles.gameCanvas}" id="canvas" width=${canvasWidth} height=${canvasHeight}></canvas>
+    </div>
+  </div>
+
+  <!-- Game Tab -->
+  <div id="gameTab" class="${styles.gameTab} game-tab p-6 rounded-2xl border transition-all duration-300 shadow-xl space-y-4 hidden">
+  	<h2 id="result" class="text-3xl font-bold tracking-tight text-center">
+  	  Victory Board
+  	</h2>
+
+  	<div class="flex flex-col gap-3 text-base md:text-lg text-center font-medium">
+  	  <h3 id="currentMatch" class="py-2 px-4 rounded-lg shadow-md">
+  	    Current Challenge
+  	  </h3>
+  	  <h3 id="prevMatch" class="py-2 px-4 rounded-lg shadow-md hidden">
+  	    Previous Duel
+  	  </h3>
+  	  <h3 id="nextMatch" class="py-2 px-4 rounded-lg shadow-md hidden">
+  	    Next Face-off
+  	  </h3>
   	</div>
- 
-    <div id="gameTab" class="${styles.gameTab} hidden game-tab">
-        <h2 id="result" class="text-2xl font-semibold"></h2>
-        <h2 id="currentMatch" class="text-2xl font-semibold"></h2>
-        <h2 id="prevMatch" class="font-semibold"></h2>
-        <h2 id="nextMatch" class="font-semibold"></h2>
-        <button id="restart" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300 hidden">play</button>
-        <button id="start" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">play</button>
-    </div>
 
-    <!-- Result tab -->
-    <div id="resultTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
-      <div class="flex flex-col items-center justify-center h-full px-20 py-4">
-        <h3 id="resultStat" class="text-2xl mt-2 text-amber-50"></h3>
-        <button id="restartTournoi" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">play again</button>
+  	<div class="flex justify-center gap-4 mt-6">
+  	  <button
+  	    id="restart"
+  	    class="hidden game-btn font-semibold py-3 px-8 rounded-xl text-md md:text-lg shadow-md tracking-wide transition-all duration-300 text-white bg-pong-sport-accent hover:bg-pong-sport-primary dark:bg-pong-dark-secondary dark:hover:bg-pong-dark-accent"
+  	  >
+  	    Play Again
+  	  </button>
+  	  <button
+  	    id="start"
+  	    class="game-btn font-semibold py-3 px-8 rounded-xl text-md md:text-lg shadow-md tracking-wide transition-all duration-300 text-white bg-pong-sport-accent hover:bg-pong-sport-primary dark:bg-pong-dark-accent dark:hover:bg-pong-dark-secondary"
+  	  >
+  	    Start Game
+  	  </button>
+  	</div>
+  </div>
+
+  <!-- Final Result Tab -->
+  <div id="resultTab" class="game-tab h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] z-20 hidden">
+    <div class="flex flex-col items-center justify-center h-full px-20 gap-6">
+      <h2 id="resultStat" class="text-2xl font-bold">Champion Crowned!</h2>
+      <button id="restartTournoi" class="game-btn text-white font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">
+        Play Again
+      </button>
+    </div>
+  </div>
+
+  <!-- Tournament Setup -->
+  <div id="tourTab" class="${styles.gameTab} game-tab">
+    <div id="selectTab" class="flex flex-col items-center justify-center h-full gap-6">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Choose Your Arena Size</h2>
+      <div id="tournPlayerNumber" class="flex items-center justify-center gap-20">
+        <button id="eight_players" class="game-btn text-white font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">
+          8 Players
+        </button>
+        <button id="four_Players" class="game-btn text-white font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">
+          4 Players
+        </button>
       </div>
     </div>
 
-    <!-- Tournament tab -->
-    <div id="tourTab" class="${styles.gameTab} game-tab">
-      <div id="selectTab" class="flex flex-col items-center justify-center h-full gap-2">
-        <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight">select the number of players</h2>
-        <div id="tournPlayerNumber" class="flex items-center justify-center gap-20">
-          <button id="eight_players" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">8</button>
-          <button id="four_Players" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">4</button>
+    <div id="inputPlayers" class="h-full hidden">
+      <div class="flex flex-col items-center justify-center gap-6">
+        <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-center">
+          Enter Challenger Usernames
+        </h2>
+        <div class="flex items-center justify-center gap-6">
+          <input type="text" id="playerIdField" pattern="[a-zA-Z0-9]+" placeholder="Username" class="focus:outline-none normal-case placeholder:capitalize text-md rounded-lg p-3 placeholder-pong-sport-muted" maxlength="15" />
+          <button id="addPlayerBtn" class="capitalize game-btn text-white font-bold py-3 px-8 rounded-xl text-md shadow-md tracking-wide transition-all duration-300">
+            Add Player
+          </button>
         </div>
       </div>
-
-      <div id="inputPlayers" class="h-full hidden">
-        <div class="flex flex-col items-center justify-center">
-          <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Enter Player's username</h2>
-          <div class="flex items-end justify-center gap-6">
-            <div>
-              <label for="playerIdField" class="block text-sm font-medium text-left text-pong-sport-muted">username</label>
-              <input type="text" id="playerIdField" class="bg-pong-dark-bg border border-pong-dark-secondary text-amber-50 text-sm rounded-lg focus:ring-pong-dark-secondary focus:border-pong-dark-secondary block w-full p-3 placeholder-amber-50" maxlength="15" pattern="[A-Za-z0-9]+" title="Only alphanumeric characters are allowed and up to 15 characters" required />
-            </div>
-            <button id="addPlayerBtn" class="game-btn text-white font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">add player</button>
-          </div>
-        </div>
-      </div>
     </div>
-  `;
+  </div>
+`;
 
   // Get DOM elements
   const canvas = container.querySelector("canvas") as HTMLCanvasElement;
@@ -171,7 +207,7 @@ export function Tournaments() {
     // Setup event listeners
     players4.addEventListener("click", () => {
       selectTab.style.display = "none";
-      inputPlayers.style.display = "flex";
+      inputPlayers.style.display = "block";
       numberOfPlayers = 4;
     });
 
@@ -183,11 +219,15 @@ export function Tournaments() {
 
     addPlayerBtn.addEventListener("click", () => {
       if (!playerIdField.checkValidity()) {
-        alert("Invalid input! Please enter a valid player ID.");
+        displayToast("Invalid username!", "error");
+        playerIdField.value = "";
+        playerIdField.focus();
         return;
       }
       if (Players.includes(playerIdField.value)) {
-        alert("Player Already Exist.");
+        displayToast("Player already exists!", "error");
+        playerIdField.value = "";
+        playerIdField.focus();
         return;
       }
       Players.push(playerIdField.value);
@@ -431,7 +471,7 @@ class FlowFieldLocal {
       // If there's only one winner left, declare them as the final winner
       if (this.deps.Players.length === 1) {
         this.deps.restartTournoi.addEventListener("click", () => {
-          window.location.reload();
+          navigateTo("/tournament");
         });
         this.deps.resultStat.textContent = `Tournament winner is: ${this.deps.Players[0]}`;
         this.deps.resultTab.style.display = "flex";
@@ -455,7 +495,7 @@ class FlowFieldLocal {
 
     this.deps.restart.addEventListener("click", () => {
       this.deps.gameTab.style.display = "none";
-      const newSocket = new WebSocket("ws://0.0.0.0:5000/ws");
+      const newSocket = new WebSocket("ws://localhost:5000/ws");
       this.deps.socketLocal = newSocket;
       newSocket.onmessage = (event: MessageEvent) => {
         this.updateGameState(event.data);

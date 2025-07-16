@@ -270,6 +270,14 @@ a {
   color: theme("colors.pong-sport-primary-light");
   border-color: theme("colors.pong-sport-primary-light");
 }
+#game-screen[data-theme="dark"] .game-tab h3 {
+  background-color: #212121;
+  color: theme("colors.pong-dark-primary");
+}
+#game-screen[data-theme="light"] .game-tab h3 {
+  background-color: #fafafa;
+  color: theme("colors.pong-primary");
+}
 #game-screen[data-theme="dark"] #result {
   color: theme("colors.pong-dark-primary");
 }
@@ -290,14 +298,26 @@ a {
 }
 #game-screen[data-theme="dark"] #startMessage {
   background-color: theme("colors.pong-sport-surface/70");
+  color: theme("colors.pong-dark-primary");
 }
 #game-screen[data-theme="light"] #startMessage {
   background-color: theme("colors.pong-sport-surface-light/70");
+  color: theme("colors.pong-primary");
 }
 #game-screen[data-theme="dark"] h2 {
   color: theme("colors.pong-dark-primary");
 }
 #game-screen[data-theme="light"] h2 {
   color: theme("colors.pong-primary");
+}
+#game-screen[data-theme="dark"] #playerIdField {
+  background-color: theme("colors.pong-dark-bg");
+  color: #fff;
+  border: 1px solid theme("colors.pong-dark-secondary");
+}
+#game-screen[data-theme="light"] #playerIdField {
+  background-color: theme("colors.pong-bg");
+  color: #000;
+  border: 1px solid theme("colors.pong-secondary");
 }
 /* End Game Design */

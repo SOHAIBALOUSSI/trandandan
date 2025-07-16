@@ -26,10 +26,13 @@ export function LocalGame() {
   container.dataset.theme = localStorage.getItem("gameTheme") || "dark";
 
   container.innerHTML = `
-  	<button id="exit" class="${styles.gameExitBtn}" title="Leave Lounge">
+  	<button id="exit" class="${styles.gameExitBtn} group" title="Leave Lounge">
       <i class="fa-solid fa-arrow-left"></i>
+	  <span class="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
+        Leave Lounge
+      </span>
   	</button>
-  	<button id="game-theme-toggle" class="${styles.gameThemeBtn}" title="Switch Mood">
+  	<button id="game-theme-toggle" class="${styles.gameThemeBtn} group" title="Switch Mood">
       <i class="fa-solid fa-circle-half-stroke"></i>
   	</button>
 
@@ -68,7 +71,7 @@ export function LocalGame() {
     "backdrop-blur-md absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50 text-center text-2xl md:text-3xl font-bold text-pong-sport-muted px-6 py-4 rounded-xl shadow-lg";
   startMessage.innerHTML = `
   <p>Press <span class="text-pong-dark-accent">F</span> to Serve</p>
-  <p class="text-sm text-pong-sport-muted mt-2 font-normal">Welcome to the BHV Lounge — let the rally begin.</p>
+  <p class="text-sm mt-2 font-normal">Welcome to the BHV Lounge — let the rally begin.</p>
 `;
   container.appendChild(startMessage);
 
@@ -143,7 +146,7 @@ export function LocalGame() {
   }
 
   window.addEventListener("resize", (e) => {
-	e.preventDefault();
+    e.preventDefault();
     const newVw = Math.max(
       document.documentElement.clientWidth || 0,
       window.innerWidth || 0
