@@ -31,7 +31,7 @@ fastify.register(async function (fastify) {
       const { token, roomId } = req.query;
   console.log("Token:", token);
   console.log("Room ID:", roomId);
-    remoteGame(connection, req);
+    remoteGame(connection, req);  
   });
 });
 
@@ -56,36 +56,42 @@ fastify.register(async function name(fastify) {
     return Accept(req, reply, fastify);
   });
 });
+
 import getRoomId from "./routes/getRoomId.js";
 fastify.register(async function name(req, reply) {
   fastify.post("/getRoomId", async (req, reply) => {
     return getRoomId(req, reply, fastify);
   });
 });
+
 import getUserHistory from "./routes/getUserHistory.js";
 fastify.register(async function name(fastify) {
   fastify.get("/user-history", async (req, reply) => {
     return getUserHistory(req, reply);
   });
 });
+
 import getData  from "./routes/gethistroy.js";
 fastify.register(async function name(fastify) {
   fastify.get("/getData", async (req, reply) => {
     return getData(req, reply);
   });
 });
+
 import getLastMatchByUser from "./routes/getLastMatch.js";
 fastify.register(async function name(fastify) {
   fastify.get("/last-match/:userName", async (req, reply) => {
     return getLastMatchByUser(req, reply);
   });
 });
+
 import getCount from "./routes/getCount.js";
 fastify.register(async function name(fastify) {
   fastify.get("/user-stats/:userName", async (req, reply) => {
     return getCount(req, reply);
   });
 });
+
 fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);
