@@ -528,8 +528,11 @@ class FlowField {
             flag_one = false;
 
             const scoreFactor = 0.1;
-            const levelGain = this.gameState.leftPlayerBallHit * scoreFactor;
-
+            let levelGain: number = 0;
+            if (this.gameState.leftPlayerBallHit !== 0)
+              levelGain = this.gameState.leftPlayerBallHit * scoreFactor;
+            console.log("levelGain", levelGain.toFixed(1) + 1);
+            console.log("leftPlayerBallHit", this.gameState.leftPlayerBallHit);
             this.gameState.matchPlayed =
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
@@ -537,9 +540,8 @@ class FlowField {
                 0,
                 5 + getOldDataOfCurrentUserData.solde
               );
-              console.log("gamseStat ", this.gameState.level);
-              console.log("OldGamestat ", getOldDataOfCurrentUserData.level);
-              this.gameState.level += getOldDataOfCurrentUserData.level + 1; // 1 is the win bonus
+              this.gameState.level += getOldDataOfCurrentUserData.level + 1 + levelGain; // 1 is the win bonus
+              console.log("level", this.gameState.level);
               this.gameState.matchLost =
                 getOldDataOfCurrentUserData.matches_lost;
               this.gameState.matchWon =
@@ -557,14 +559,17 @@ class FlowField {
                 getOldDataOfCurrentUserData.matches_lost + 1;
               this.gameState.matchWon = getOldDataOfCurrentUserData.matches_won;
             }
-            console.log("player 1 ", this.gameState.level);
           }
 
           if (this.gameState.playerId === 2 && flag_two === true) {
             flag_two = false;
             const scoreFactor = 0.1; // adjust this value to control how much each point increases the level
-            const levelGain = this.gameState.rightPlayerBallHit * scoreFactor;
+            let levelGain: number = 0;
+            if (this.gameState.rightPlayerBallHit !== 0)
+              levelGain = this.gameState.rightPlayerBallHit * scoreFactor;
 
+            console.log("levelGain", levelGain.toFixed(1) + 1);
+            console.log("rightPlayerBallHit", this.gameState.rightPlayerBallHit);
             this.gameState.matchPlayed =
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
@@ -572,7 +577,8 @@ class FlowField {
                 0,
                 5 + getOldDataOfCurrentUserData.solde
               );
-              this.gameState.level = getOldDataOfCurrentUserData.level + 1; // 1 is the win bonus
+              this.gameState.level = getOldDataOfCurrentUserData.level + 1 + levelGain; // 1 is the win bonus
+              console.log("level", this.gameState.level);
               this.gameState.matchWon =
                 getOldDataOfCurrentUserData.matches_won + 1;
               this.gameState.matchLost =
@@ -593,7 +599,6 @@ class FlowField {
             }
 
             // Ensure level stays non-negative
-            console.log("player id", this.gameState.level);
           }
           const currentUser = getCurrentUser();
           const playerData: PlayerData = {
