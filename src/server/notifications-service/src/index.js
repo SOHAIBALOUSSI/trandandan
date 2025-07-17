@@ -59,7 +59,7 @@ wss.on('connection', async (ws, request) => {
       users.set(ws.userId, new Set());
     users.get(ws.userId).add(ws);
     const notifications = await getAllNotifications(db, ws.userId);
-    if (notifications) {
+    if (notifications && ws.readyState === WebSocket.OPEN) {
       for (const notification of notifications) {
         notification.notification_ids = JSON.parse(notification.notification_ids);
         console.log("On connection notification: ", notification);

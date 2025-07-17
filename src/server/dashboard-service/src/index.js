@@ -2,10 +2,10 @@ import fastify from "fastify";
 import dotenv from 'dotenv';
 import websocket from "@fastify/websocket";
 import sqlitePlugin from './plugins/sqlite-plugin.js'
-import { createStatsTable } from "./src/database/initDataBase.js";
-import redisPlugin from "./src/plugins/redis-plugin.js";
-import rabbitmqPlugin from "./src/plugins/rabbitmq-plugin.js";
-import { statsRoutes } from "./src/routes/statsRoutes.js";
+import { createStatsTable } from "./database/initDataBase.js";
+import redisPlugin from "./plugins/redis-plugin.js";
+import rabbitmqPlugin from "./plugins/rabbitmq-plugin.js";
+import { statsRoutes } from "./routes/statsRoutes.js";
 
 const server = fastify({logger: true});
 

@@ -68,7 +68,7 @@ wss.on('connection', async (ws, request) => {
             users.set(ws.userId, new Set());
         users.get(ws.userId).add(ws);
         const messages = await getAllMessages(db, ws.userId);
-        if (messages) {
+        if (messages && ws.readyState === WebSocket.OPEN) {
             for (const message of messages)
                 ws.send(JSON.stringify(message));
         }

@@ -68,6 +68,20 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    
+  dashboard:
+    container_name: dashboard-service
+    build: ./dashboard-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - back-end
+    ports:
+      - "3005:3005"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   redis:
     container_name: redis

@@ -1,6 +1,7 @@
 import { 
     avatarUrlValidation, 
     emailValidation, 
+    floatValidation, 
     integerValidation, 
     usernameValidation 
 } from "./validationSchemas.js"
@@ -38,7 +39,7 @@ export const updateProfileSchema = {
         avatar_url :avatarUrlValidation,
         solde: integerValidation,
         rank: integerValidation,
-        level: integerValidation,
+        level: floatValidation,
 		matches_played: integerValidation,
 		matches_won: integerValidation,
 		matches_lost: integerValidation

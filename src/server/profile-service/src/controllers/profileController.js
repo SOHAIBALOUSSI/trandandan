@@ -64,6 +64,13 @@ export async function updateProfile(request, reply) {
         if (changes === 0)
             return reply.code(400).send(createResponse(400, 'ZERO_CHANGES'));
         const updatedProfile = await getProfileById(this.db, id);
+        await this.redis.sendCommand([
+            'JSON.SET',
+            `player:${tokenId}`,
+            '$',
+            JSON.stringify(updatedProfile)
+        ])
+
 
         return reply.code(200).send(createResponse(200, 'PROFILE_UPDATED', { profile: updatedProfile }));
     } catch (error) {

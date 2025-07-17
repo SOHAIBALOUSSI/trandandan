@@ -4,7 +4,7 @@ import sqlitePlugin from './plugins/sqlite-plugin.js'
 import profileRoutes from './routes/profileRoutes.js';
 import { createProfileTable } from './database/createProfileTable.js';
 import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
-import { addProfile, deleteProfile, updateProfileEmailById } from './models/profileDAO.js';
+import { addProfile, deleteProfile, getProfileById, updateProfileEmailById } from './models/profileDAO.js';
 import redisPlugin from './plugins/redis-plugin.js';
 import multipart from '@fastify/multipart'
 
@@ -53,6 +53,13 @@ server.rabbit.consumeMessages(async(request) => {
     } else if (request.type === 'INSERT') {
         const { userId, username, email, avatar_url, gender } = request;
         await addProfile(server.db, userId, username, email, avatar_url, gender);
+        const profile = await getProfileById(server.db, userId);
+        await server.redis.sendCommand([
+            'JSON.SET',
+            `player:${userId}`,
+            '$',
+            JSON.stringify(profile)
+        ])
     } else if (request.type === 'DELETE') {
         const userId = request.userId;
         await deleteProfile(server.db, userId);
