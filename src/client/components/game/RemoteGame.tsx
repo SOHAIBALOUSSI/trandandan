@@ -304,40 +304,10 @@ class FlowField {
     };
 
     this.deps.restartButton.addEventListener("click", async () => {
-      try {
-        // Fetch the latest user level from the server
-        const getLastUserData =
-        await this.getOldDataOfgetCurrentUserDataMatchId();
-        // console.log("Last match data fetched:___", getLastUserData);
-        this.handleRestart(getLastUserData);
-      } catch (error) {
-        console.error("Error fetching user level:", error);
-        // Fallback to cached user level
-        // const currentUser = getCurrentUser();
-        // const fallbackLevel = currentUser?.level ?? 0;
-        // console.log("Using fallback level:", fallbackLevel);
-        // this.handleRestart(fallbackLevel);
-      }
+        window.location.reload();
     });
   }
-  private async getOldDataOfgetCurrentUserDataMatchId(): Promise<LastMatchData> {
-    const response = await fetch(
-      `http://localhost:5000/last-match/${this.deps.userName}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    const matchData = data[0]; 
 
-    return matchData as LastMatchData;
-  }
   private sendPlayerData(playerData: PlayerData): void {
     fetch("http://0.0.0.0:5000/storePlayerData", {
       method: "POST",
@@ -445,70 +415,6 @@ class FlowField {
   private ballPositionUpdate(): void {
     if (this.deps.socket.readyState === WebSocket.OPEN) {
       this.deps.socket.send(JSON.stringify(this.gameState));
-    }
-  }
-
-  private handleRestart(lastUserData: LastMatchData): void {
-    this.deps.gameTabe.style.display = "none";
-    const userInfo = getCurrentUser();
-    // Reset the game state
-    this.gameState = {
-      matchId: "",
-      playerId: 0,
-      ballX: 500,
-      ballY: 300,
-      ballSpeed: 5,
-      flagX: false,
-      flagY: false,
-      paddleLeftY: 240,
-      paddelRightY: 240,
-      keypressd: "",
-      disconnected: false,
-      leftPlayerScore: 0,
-      rightPlayerScore: 0,
-      rounds: 5,
-      endGame: false,
-      alive: true,
-      leftPlayerBallHit: 0,
-      rightPlayerBallHit: 0,
-      startTime: Date.now(),
-      endTime: 0,
-      solde: lastUserData.Solde, // Use the last match data
-      level: lastUserData.level,
-      matchPlayed: lastUserData.matchPlayed,
-      matchWon: lastUserData.matchWon,
-      matchLost: lastUserData.matchLost,
-      enemyId: 0, // Reset enemyId
-    };
-    // Reconnect the WebSocket if it is closed
-    if (
-      this.deps.socket.readyState === WebSocket.CLOSED ||
-      this.deps.socket.readyState === WebSocket.CLOSING
-    ) {
-      const newSocket = new WebSocket(
-        `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.userId}&roomId=${this.deps.roomdIdentif}`
-      );
-
-      newSocket.onopen = () => {
-        console.log("WebSocket reconnected");
-        newSocket.send(JSON.stringify(this.gameState));
-      };
-      flag_one = true;
-      flag_two = true;
-      flag_update = true;
-      newSocket.onmessage = (event: MessageEvent) => {
-        this.updateGameState(event.data);
-      };
-
-      newSocket.onerror = (err) => {
-        console.error("[client] WebSocket error:", err);
-      };
-
-      newSocket.onclose = () => {
-        console.log("match ended");
-      };
-
-      this.deps.socket = newSocket;
     }
   }
   public normalizeUser(raw: UserProfile): UserProfile {
