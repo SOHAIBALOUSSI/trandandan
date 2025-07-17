@@ -51,11 +51,9 @@ export type Notification = {
     | "INVITE_SENT";
   recipient_id?: number;
   sender_id?: number;
-  actualMessage?: string;
-  roomId?: number;
-  senderId?: number;
-  receiverId?: number;
   notifications_count?: number;
+  last_notification_at?: string;
+  notification_ids?: number[];
 };
 
 export type MessageSent = {

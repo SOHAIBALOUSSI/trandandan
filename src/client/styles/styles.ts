@@ -256,11 +256,10 @@ export const styles = {
 	bg-pong-dark-primary/10 text-white placeholder:text-pong-dark-primary/70
 	px-4 py-2 rounded-lg outline-none  
 	focus:ring-2 focus:ring-pong-dark-accent 
-	w-full max-w-md
 	placeholder:text-xs placeholder:lg:text-base
 	text-sm lg:text-base
 	normal-case 
-	ml-14 md:ml-0
+	w-full
   `,
   // === End Top Bar styles ===
 
