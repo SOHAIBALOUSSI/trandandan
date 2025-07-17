@@ -27,7 +27,7 @@ export function Hero(props: { user: UserProfile }) {
           <h2
             className={`${fontSizes.titleFontSize} font-bold text-pong-dark-primary mb-3`}
           >
-            Welcome back, {getWelcomeTitle(user)}{" "}
+            Welcome, {getWelcomeTitle(user)}{" "}
             <span className="text-pong-dark-accent normal-case">
               {user.username}
             </span>
@@ -38,7 +38,7 @@ export function Hero(props: { user: UserProfile }) {
           >
             Ranked #{user.rank} in BHV Club • Level {user.level}
           </p>
-          <RankBadge rank={user.level} />
+          <RankBadge rank={user.rank} />
           <hr className="my-4 border-pong-accent/20" />
           <p
             className={`text-pong-dark-primary/80 italic ${fontSizes.smallTextFontSize} mb-3`}

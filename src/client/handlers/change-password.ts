@@ -2,6 +2,7 @@ import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdateCredentialsRes } from "@/utils/response-messages";
 import { clearCurrentUser } from "@/utils/user-store";
+import { handleLogout } from "./logout";
 
 export function handleChangePassword() {
   const form = document.getElementById(
@@ -13,6 +14,8 @@ export function handleChangePassword() {
     e.preventDefault();
 
     const btn = form.querySelector<HTMLButtonElement>("#submit-btn");
+    const spinner = form.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
     const oldPasswordInput =
       form.querySelector<HTMLInputElement>("#old-password");
     const newPasswordInput =
@@ -21,12 +24,23 @@ export function handleChangePassword() {
       "#confirm-new-password"
     );
 
-    if (!btn || !oldPasswordInput || !newPasswordInput || !confirmPasswordInput)
+    if (
+      !btn ||
+      !spinner ||
+      !btnLabel ||
+      !oldPasswordInput ||
+      !newPasswordInput ||
+      !confirmPasswordInput
+    )
       return;
 
-    const oldPassword = oldPasswordInput?.value.trim();
-    const newPassword = newPasswordInput?.value.trim();
-    const confirmPassword = confirmPasswordInput?.value.trim();
+    const btnLabelText = btnLabel.textContent;
+    const feedbackDelay = 900;
+    const redirectDelay = 1500;
+
+    const oldPassword = oldPasswordInput.value.trim();
+    const newPassword = newPasswordInput.value.trim();
+    const confirmPassword = confirmPasswordInput.value.trim();
 
     if (!oldPassword) {
       oldPasswordInput.focus();
@@ -50,11 +64,10 @@ export function handleChangePassword() {
       return;
     }
 
-    const feedbackDelay = 900;
-    const redirectDelay = 1500;
-
     btn.disabled = true;
     btn.setAttribute("aria-busy", "true");
+    spinner.classList.remove("hidden");
+    btnLabel.textContent = "updating...";
 
     try {
       const response = await fetch("/auth/update-credentials", {
@@ -75,20 +88,8 @@ export function handleChangePassword() {
           displayToast(UpdateCredentialsRes.PASSWORD_UPDATED, "success");
 
           setTimeout(() => {
-            navigateTo("/signin");
-            fetch("/auth/logout", {
-              method: "POST",
-              credentials: "include",
-            })
-              .then(() => {
-                clearCurrentUser();
-              })
-              .catch(() => {
-                displayToast(
-                  "The club’s lights are out at the moment. Try again shortly.",
-                  "error"
-                );
-              });
+            navigateTo("/login");
+            handleLogout();
           }, redirectDelay);
         }, feedbackDelay);
       } else if (response.ok && result.statusCode === 206) {
@@ -108,13 +109,16 @@ export function handleChangePassword() {
             "Error during password change. Please try again.";
           displayToast(errorMsg, "error");
         }, feedbackDelay);
+        oldPasswordInput.focus();
       }
     } catch (err) {
       displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       setTimeout(() => {
         btn.disabled = false;
-        btn.removeAttribute("aria-busy");
+        btn.setAttribute("aria-busy", "false");
+        spinner.classList.add("hidden");
+        btnLabel.textContent = btnLabelText;
       }, feedbackDelay + 300);
     }
   });

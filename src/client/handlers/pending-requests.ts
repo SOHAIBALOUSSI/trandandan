@@ -2,8 +2,8 @@ import { acceptFriend } from "@/services/accept-friend";
 import { rejectFriend } from "@/services/reject-friend";
 import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
-import MaleAvatar from "@/assets/male.png";
-import FemaleAvatar from "@/assets/female.png";
+import { getAvatarUrl } from "@/utils/get-avatar";
+import { navigateTo } from "@/utils/navigate-to-link";
 
 export async function listPendingRequests() {
   try {
@@ -29,15 +29,14 @@ export async function handlePendingRequests() {
   ) as HTMLUListElement;
   if (!list) return;
 
-  list.innerHTML = `<li class="text-white text-center">Loading pending requests...</li>`;
-
   const pending = await listPendingRequests();
-  list.replaceChildren();
 
   if (!pending.length) {
-    list.innerHTML = `<li class="text-white text-center">No pending friend requests found.</li>`;
+    list.innerHTML = `<li class="text-white text-center">No pending requests found.</li>`;
     return;
   }
+
+  list.innerHTML = "";
 
   for (const requester_id of pending) {
     const user = await getUserById(requester_id);
@@ -47,23 +46,22 @@ export async function handlePendingRequests() {
 
     const li = document.createElement("li");
     li.className =
-      "flex items-center justify-between gap-4 py-2 border-b border-white/10";
+      "flex flex-wrap items-center justify-between gap-4 py-2 border-b border-white/10";
 
     const avatar = document.createElement("img");
-    avatar.src = user.avatar_url
-      ? user.avatar_url
-      : user.gender === "M"
-      ? MaleAvatar
-      : FemaleAvatar;
+    avatar.src = getAvatarUrl(user);
     avatar.alt = `${user.username}'s avatar`;
-    avatar.className =
-      "w-10 h-10 rounded-full object-cover border border-pong-accent/30 bg-gray-700";
+    avatar.className = "w-10 h-10 rounded-full";
+
+    const name = document.createElement("span");
+    name.className = "text-lg font-semibold text-white normal-case";
+    name.textContent = user.username;
 
     const left = document.createElement("div");
-    left.className = "flex items-center space-x-4";
-    const name = document.createElement("span");
-    name.className = "text-white font-semibold text-base";
-    name.textContent = username;
+    left.className = "flex items-center gap-4 cursor-pointer";
+    left.onclick = () => {
+      navigateTo(`/members/${user.id}`);
+    };
     left.appendChild(avatar);
     left.appendChild(name);
 
@@ -73,7 +71,7 @@ export async function handlePendingRequests() {
     const acceptBtn = document.createElement("button");
     acceptBtn.textContent = "Accept";
     acceptBtn.className =
-      "bg-green-600 hover:bg-green-500 text-white px-4 py-1.5 rounded shadow transition";
+      "font-semibold capitalize bg-pong-success hover:bg-green-600 text-white px-4 py-1.5 rounded shadow transition focus:outline-none active:scale-[0.98]";
     acceptBtn.setAttribute(
       "aria-label",
       `Accept friend request from ${username}`
@@ -86,7 +84,7 @@ export async function handlePendingRequests() {
     const rejectBtn = document.createElement("button");
     rejectBtn.textContent = "Reject";
     rejectBtn.className =
-      "bg-red-600 hover:bg-red-500 text-white px-4 py-1.5 rounded shadow transition";
+      "font-semibold capitalize bg-pong-error hover:bg-red-600 text-white px-4 py-1.5 rounded shadow transition focus:outline-none active:scale-[0.98]";
     rejectBtn.setAttribute(
       "aria-label",
       `Reject friend request from ${username}`

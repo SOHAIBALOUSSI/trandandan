@@ -84,7 +84,7 @@ export function SignUpForm() {
         className={`${fontSizes.inputFontSize} w-full font-medium text-pong-primary/80`}
       >
         already a member of the hall?{" "}
-        <a href="signin" className={styles.customFormLink} data-link>
+        <a href="login" className={styles.customFormLink} data-link>
           enter the lounge.
         </a>
       </p>

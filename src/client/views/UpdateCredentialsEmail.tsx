@@ -2,6 +2,7 @@ import { handleChangeEmail } from "@/handlers/change-email";
 import { styles } from "@/styles/styles";
 import { NavBar } from "@/components/layout/NavBar";
 import { fontSizes } from "@/styles/fontSizes";
+import { TopBar } from "@/components/layout/TopBar";
 
 export function UpdateCredentialsEmail() {
   setTimeout(() => {
@@ -11,41 +12,50 @@ export function UpdateCredentialsEmail() {
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
-      <main className={styles.pageContent}>
-        <div className={styles.darkForm}>
-          <h2
-            className={`${fontSizes.smallTitleFontSize} font-bold text-pong-accent mb-4`}
-          >
-            Update Email
-          </h2>
-          <p
-            className={`${fontSizes.smallTextFontSize} text-pong-secondary/80 text-center mb-6`}
-          >
-            Enter your new email address below. You’ll receive a confirmation
-            email if required.
-          </p>
-
-          <form id="change-email-form" className="w-full flex flex-col gap-6">
-            <input
-              type="text"
-              name="email"
-              id="email"
-              className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
-              placeholder="Enter your new email"
-              autoComplete="off"
-			  autofocus
-            />
-            <button
-              type="submit"
-              className={styles.darkSubmitBtn}
-              id="submit-btn"
+      <div className="w-full relative">
+        <TopBar />
+        <main className={styles.pageContent}>
+          <div className={styles.darkForm}>
+            <h2
+              className={`${fontSizes.smallTitleFontSize} font-bold text-pong-accent mb-4`}
             >
-              <i className="fa-solid fa-envelope-circle-check mr-2"></i>
               Update Email
-            </button>
-          </form>
-        </div>
-      </main>
+            </h2>
+            <p
+              className={`${fontSizes.smallTextFontSize} text-pong-secondary/80 text-center mb-6`}
+            >
+              Enter your new email address below. You’ll receive a confirmation
+              email if required.
+            </p>
+
+            <form id="change-email-form" className="w-full flex flex-col gap-6">
+              <input
+                type="text"
+                name="email"
+                id="email"
+                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
+                placeholder="Enter your new email"
+                autoComplete="off"
+                autofocus
+              />
+              <button
+                type="submit"
+                className={styles.darkSubmitBtn}
+                id="submit-btn"
+                aria-busy="false"
+              >
+                <span
+                  id="spinner"
+                  className="hidden absolute left-4 w-4 h-4 border-2 border-white border-t-pong-accent rounded-full animate-spin"
+                  aria-hidden="true"
+                ></span>
+                <i className="fa-solid fa-envelope-circle-check mr-2"></i>
+                <span id="btn-label">Update Email</span>
+              </button>
+            </form>
+          </div>
+        </main>
+      </div>
     </section>
   );
 }

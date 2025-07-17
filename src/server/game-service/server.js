@@ -28,10 +28,7 @@ fastify.register(async function (fastify) {
 import { remoteGame } from "./routes/remoteGameRoute.js";
 fastify.register(async function (fastify) {
   fastify.get("/remoteGame", { websocket: true }, (connection, req) => {
-      const { token, roomId } = req.query;
-  console.log("Token:", token);
-  console.log("Room ID:", roomId);
-    remoteGame(connection, req);  
+    remoteGame(connection, req);
   });
 });
 
@@ -91,7 +88,12 @@ fastify.register(async function name(fastify) {
     return getCount(req, reply);
   });
 });
-
+import recentAtivity from "./routes/recentActivity.js";
+fastify.register(async function (fastify) {
+  fastify.get("/recent-activity", { websocket: true }, (connection, req) => {
+     recentAtivity(connection, req);
+  });
+});
 fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);

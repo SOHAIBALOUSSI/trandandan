@@ -2,8 +2,14 @@ import { styles } from "@/styles/styles";
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
+import { ChatList } from "@/components/chat/ChatList";
+import { loadChatList } from "@/handlers/load-chat-list";
 
 export function Lounge() {
+  setTimeout(() => {
+    loadChatList();
+  }, 0);
+
   return (
     <section className={styles.pageLayoutDark}>
       <NavBar />
@@ -11,9 +17,23 @@ export function Lounge() {
         <TopBar />
         <main className={styles.pageContent}>
           <SecondaryHeader
-            title="Lounge Conversations"
-            subtitle="Chat with fellow club champions"
+            title="The Lounge"
+            subtitle="Where conversations echo and rivalries spark — connect with fellow club champions."
           />
+
+          <div
+            id="friends-container"
+            className={`${styles.membersListStyle} bg-pong-dark-bg/60 rounded-2xl shadow-lg px-6 md:px-10 py-8 max-w-6xl mx-auto`}
+          >
+            <h2 className="text-pong-dark-primary text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-6">
+              <span className="inline-block w-1.5 h-8 bg-pong-dark-accent rounded-sm"></span>
+              Ongoing Chats
+            </h2>
+            <p className="text-sm text-pong-dark-highlight/80 -mt-4 mb-6 pl-6">
+              Dive back into your latest conversations with clubmates.
+            </p>
+            <ChatList />
+          </div>
         </main>
       </div>
     </section>

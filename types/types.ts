@@ -60,13 +60,13 @@ export type Notification =
   | {
       type: "MESSAGE_RECEIVED";
       recipient_id: number;
-	  sender_id?: number;
+      sender_id?: number;
       actualMessage: string;
     }
   | {
       type: "INVITE_SENT";
-	  recipient_id?: number;
-	  sender_id?: number;
+      recipient_id?: number;
+      sender_id?: number;
       roomId: number;
       senderId: number;
       receiverId: number;
@@ -83,4 +83,24 @@ export type MessageSent = {
 export type MessageRead = {
   type: "MESSAGE_READ";
   message_id: number;
+};
+
+export interface GameStateLocal {
+  paddleLeftY: number;
+  paddelRightY: number;
+  ballX: number;
+  ballY: number;
+  keypressd: string[];
+  rightPlayerScore: number;
+  leftPlayerScore: number;
+  flagX: boolean;
+  flagY: boolean;
+  ballSpeed: number;
+  count: number;
+}
+
+export type GameActivity = {
+  enemyId: string;
+  userId: string;
+  gameEndResult: "Won" | "Lost";
 };

@@ -19,8 +19,14 @@ export function handleChangeEmail() {
 
     const emailInput = form.querySelector<HTMLInputElement>("#email");
     const btn = form.querySelector<HTMLButtonElement>("#submit-btn");
+    const spinner = form.querySelector<HTMLSpanElement>("#spinner");
+    const btnLabel = form.querySelector<HTMLSpanElement>("#btn-label");
 
-    if (!emailInput || !btn) return;
+    if (!emailInput || !btn || !spinner || !btnLabel) return;
+
+    const btnLabelText = btnLabel.textContent;
+    const feedbackDelay = 900;
+    const redirectDelay = 1500;
 
     const email = emailInput.value.trim();
 
@@ -39,18 +45,17 @@ export function handleChangeEmail() {
       return;
     }
 
-    const feedbackDelay = 900;
-    const redirectDelay = 1500;
-
     btn.disabled = true;
     btn.setAttribute("aria-busy", "true");
+    spinner.classList.remove("hidden");
+    btnLabel.textContent = "updating...";
 
     try {
       const response = await fetch("/auth/update-credentials", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email }),
+        body: JSON.stringify({ email }),
       });
 
       const result = await response.json();
@@ -79,11 +84,12 @@ export function handleChangeEmail() {
       }
     } catch (err) {
       displayToast(UpdateCredentialsRes.INTERNAL_SERVER_ERROR, "error");
-      emailInput.focus();
     } finally {
       setTimeout(() => {
         btn.disabled = false;
-        btn.removeAttribute("aria-busy");
+        btn.setAttribute("aria-busy", "false");
+        spinner.classList.add("hidden");
+        btnLabel.textContent = btnLabelText;
       }, feedbackDelay + 300);
     }
   });

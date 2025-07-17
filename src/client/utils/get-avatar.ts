@@ -1,6 +1,6 @@
 import { UserProfile } from "types/types";
-import MaleAvatar from "@/assets/male.png";
-import FemaleAvatar from "@/assets/female.png";
+import MaleAvatar from "@/assets/male-avatar.png";
+import FemaleAvatar from "@/assets/female-avatar.png";
 
 const BACKEND_URL = "http://localhost:3001";
 
