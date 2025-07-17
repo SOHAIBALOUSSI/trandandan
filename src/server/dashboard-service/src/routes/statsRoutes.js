@@ -1,4 +1,4 @@
-import { getAllStats, getLiveDashboard } from "../controllers/statsController.js";
+import { getLiveDashboard } from "../controllers/statsController.js";
 // import { verifyToken } from "../middleware/authWSMiddleWare.js";
 
 export async function statsRoutes(fastify) {

@@ -11,12 +11,12 @@ const server = fastify({logger: true});
 
 dotenv.config();
 
-await server.register(sqlitePlugin);
+// await server.register(sqlitePlugin);
 await server.register(redisPlugin);
-await server.register(rabbitmqPlugin);
+// await server.register(rabbitmqPlugin);
 await server.register(websocket);
 
-await createStatsTable(server.db);
+// await createStatsTable(server.db);
 
 await server.register(statsRoutes, { prefix: '/stats' });
 

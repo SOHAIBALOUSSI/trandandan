@@ -1,22 +1,22 @@
-import { getStatsById } from "../database/statsDAO.js";
+// import { getStatsById } from "../database/statsDAO.js";
 // import { verifyWSToken } from "../middleware/authRESTMiddleWare.js";
-import { createResponse, displayDashBoard } from "../utils/utils.js";
+import { displayDashBoard } from "../utils/utils.js";
 
-export async function getAllStats(request, reply) {
-    try {
-        const userId = request.user.id;
+// export async function getAllStats(request, reply) {
+//     try {
+//         const userId = request.user.id;
 
-        const userStats = await getStatsById(this.db, userId);
-        if (!userStats)
-            return reply.code(404).send(createResponse(404, 'STATS_NOT_FOUND'));
+//         const userStats = await getStatsById(this.db, userId);
+//         if (!userStats)
+//             return reply.code(404).send(createResponse(404, 'STATS_NOT_FOUND'));
 
-        return reply.code(200).send(createResponse(200, 'STATS_FETCHED', { stats: userStats }));
+//         return reply.code(200).send(createResponse(200, 'STATS_FETCHED', { stats: userStats }));
 
-    } catch (error) {
-        console.log(error);
-        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
-    }
-}
+//     } catch (error) {
+//         console.log(error);
+//         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+//     }
+// }
 
 const users = new Map();
 
