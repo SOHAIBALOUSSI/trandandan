@@ -6,6 +6,8 @@ import { styles } from "@/styles/styles";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { removeFriend } from "@/services/remove-friend";
 import { blockFriend } from "@/services/block-friend";
+import { inviteFriend } from "@/services/invite-friend";
+import { displayToast } from "@/utils/display-toast";
 
 export function MemberProfile(id: number) {
   const container = document.createElement("section");
@@ -38,34 +40,43 @@ export function MemberProfile(id: number) {
     actions.className = "flex flex-wrap gap-3 mt-8 justify-center";
 
     actions.innerHTML = `
-      <button
-        id="chat-btn"
-        class="bg-pong-accent hover:bg-pong-dark-accent text-white px-4 py-2 rounded-full text-xs font-semibold shadow transition"
-        title="Chat"
-      >
-        <i class="fa-solid fa-comments mr-2"></i>Chat
-      </button>
-      <button
-        id="invite-btn"
-        class="bg-pong-highlight hover:bg-yellow-400 text-black px-4 py-2 rounded-full text-xs font-semibold shadow transition"
-        title="Invite to Match"
-      >
-        <i class="fa-solid fa-table-tennis-paddle-ball mr-2"></i>Invite to Match
-      </button>
-      <button
-        id="unfriend-btn"
-        class="bg-pong-dark-accent hover:bg-pong-accent text-white px-4 py-2 rounded-full text-xs font-semibold shadow transition"
-        title="Unfriend"
-      >
-        <i class="fa-solid fa-user-minus mr-2"></i>Unfriend
-      </button>
-      <button
-        id="block-btn"
-        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full text-xs font-semibold shadow transition"
-        title="Block"
-      >
-        <i class="fa-solid fa-ban mr-2"></i>Block
-      </button>
+		<div class="flex flex-wrap gap-3">
+		<button
+			id="chat-btn"
+			class="flex items-center gap-2 bg-pong-accent hover:bg-pong-accent/80 active:bg-pong-accent/70 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pong-accent/60"
+			title="Chat"
+		>
+			<i class="fa-solid fa-comments"></i>
+			Chat
+		</button>
+
+		<button
+			id="invite-btn"
+			class="flex items-center gap-2 bg-pong-highlight hover:bg-yellow-400 active:bg-yellow-300 text-black px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400/60"
+			title="Invite to Match"
+		>
+			<i class="fa-solid fa-table-tennis-paddle-ball"></i>
+			Invite to Match
+		</button>
+
+		<button
+			id="unfriend-btn"
+			class="flex items-center gap-2 bg-pong-dark-accent hover:bg-pong-accent active:bg-pong-accent/80 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pong-accent/40"
+			title="Unfriend"
+		>
+			<i class="fa-solid fa-user-minus"></i>
+			Unfriend
+		</button>
+
+		<button
+			id="block-btn"
+			class="flex items-center gap-2 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-600/40"
+			title="Block"
+		>
+			<i class="fa-solid fa-ban"></i>
+			Block
+		</button>
+		</div>
     `;
 
     main.appendChild(actions);
@@ -94,8 +105,9 @@ export function MemberProfile(id: number) {
         });
       }
       if (inviteBtn) {
-        inviteBtn.addEventListener("click", () => {
-          alert(`Match invite sent to ${user.username}!`);
+        inviteBtn.addEventListener("click", async () => {
+          await inviteFriend(user.id.toString(), user.id.toString());
+          displayToast("Invite sent successfully", "success");
         });
       }
     }, 0);

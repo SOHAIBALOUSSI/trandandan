@@ -24,6 +24,7 @@ export default defineConfig({
       "/block": "http://friends:3002",
       "/notifications": "http://notifications:3003",
       "/chat": "http://chat:3004",
+	  "/game": "http://game:5000",
     },
     historyApiFallback: true,
   },

@@ -2,6 +2,8 @@ import { Notification } from "types/types";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { displayToast } from "@/utils/display-toast";
 import { getUserById } from "@/services/get-user-by-id";
+import { getInviteRoomId } from "@/services/get-invite-room-id";
+import { acceptInvite } from "@/services/accept-invite";
 
 let ws: WebSocket | null = null;
 let unseenCount = 0;
@@ -68,6 +70,17 @@ async function renderNotification(notif: Notification) {
       route = `/lounge/${notif.sender_id}`;
       break;
 
+    case "INVITE_SENT":
+      label = `
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
+          <span>
+            <span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
+          </span>
+        </div>
+      `;
+      break;
+
     default:
       label = `
         <div class="flex items-center gap-2">
@@ -92,6 +105,22 @@ async function renderNotification(notif: Notification) {
       if (notif.notification_id) {
         markNotificationsAsRead([notif.notification_id]);
       }
+    };
+  } else if (notif.type === "INVITE_SENT") {
+    li.onclick = async () => {
+      if (typeof notif.senderId === "undefined") {
+        displayToast("Invite sender ID is missing.", "error");
+        return;
+      }
+      const roomId = await getInviteRoomId(notif.senderId.toString());
+      await acceptInvite(
+        roomId,
+        notif.senderId.toString(),
+        (notif.receiverId !== undefined ? notif.receiverId.toString() : "")
+      );
+      navigateTo(`/remote?roomId=${roomId}`);
+      markNotificationsAsRead([notif.notification_id]);
+      li.remove();
     };
   }
 
