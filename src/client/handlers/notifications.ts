@@ -255,15 +255,16 @@ export function clearNotificationCounter() {
 
 function markNotificationsAsRead(ids: number[]) {
   if (ws && ws.readyState === WebSocket.OPEN) {
-    ws.send(
-      JSON.stringify({
-        type: "NOTIFICATION_READ",
-        notification_ids: ids,
-      })
-    );
     ids.forEach((id) => seenIds.add(id));
     saveSeen();
     unseenCount = Math.max(0, unseenCount - ids.length);
     updateCounter();
+
+    ws.send(
+      JSON.stringify({
+        type: "NOTIFICATION_READ",
+        notification_ids: Array.from(seenIds),
+      })
+    );
   }
 }
