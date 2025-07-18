@@ -1,22 +1,17 @@
 import fastify from "fastify";
 import dotenv from 'dotenv';
 import websocket from "@fastify/websocket";
-import sqlitePlugin from './plugins/sqlite-plugin.js'
-import { createStatsTable } from "./database/initDataBase.js";
 import redisPlugin from "./plugins/redis-plugin.js";
 import rabbitmqPlugin from "./plugins/rabbitmq-plugin.js";
 import { statsRoutes } from "./routes/statsRoutes.js";
 
-const server = fastify({logger: true});
+const server = fastify({ logger: true });
 
 dotenv.config();
 
-// await server.register(sqlitePlugin);
 await server.register(redisPlugin);
-// await server.register(rabbitmqPlugin);
+await server.register(rabbitmqPlugin);
 await server.register(websocket);
-
-// await createStatsTable(server.db);
 
 await server.register(statsRoutes, { prefix: '/stats' });
 

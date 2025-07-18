@@ -80,3 +80,13 @@ export async function fetchAllProfiles(db) {
   console.log("Fetching all profiles...");
   return await db.all("SELECT * FROM profile");
 }
+
+
+export async function updateRankById(db, userId, rank) {
+  await db.run('UPDATE profile SET rank = ? WHERE userId = ?', 
+    [
+      rank,
+      userId
+    ]
+  );
+}

@@ -1,19 +1,6 @@
-// export function createResponse(status, code, data) {
-//     return ({
-//         statusCode: status,
-//         code: code,
-//         data: data
-//     });
-// }
-    // for (const id of playersIds) {
-    //     const player = await redis.json.get(`player:${id}`, { path: "$" });
-    //     if (!player)
-    //         continue ;
+import WebSocket from 'ws';
 
-    //     players.push(player);
-    // }
-
-async function getPlayersData(redis) {
+async function getPlayersData(redis, rabbit) {
     let players = [];
 
     const playersIds = await redis.sMembers('userIds');
@@ -24,12 +11,25 @@ async function getPlayersData(redis) {
             ...idKeys,
             '$'
         ])
-        players = players.map(jsonPlayer => {
+        players = players
+        .map(jsonPlayer => {
             const player = JSON.parse(jsonPlayer)
             return player[0];
-        }).filter(player => player !== null);
-        players.sort(sortPlayers);
+        })
+        .filter(player => player !== null)
+        .sort(sortPlayers);
+        
         console.log("Players from dashboard-service", players);
+
+        players.forEach((player, rank) => {
+            if (player.rank !== rank + 1) {
+                rabbit.produceMessage({
+                    type: 'UPDATE_RANK',
+                    userId: player.userId,
+                    rank: rank + 1
+                }, 'profile.rank.update')
+            }
+        });
     }
     return players;
 }
@@ -50,9 +50,9 @@ function sortPlayers(player1, player2) {
     return (1);
 }
 
-export async function displayDashBoard(redis, socket) {
-    const players = await getPlayersData(redis);
+export async function displayDashBoard(redis, socket, rabbit) {
+    const players = await getPlayersData(redis, rabbit);
     
-    // if (socket.readyState === WebSocket.OPEN)
-    socket.send(JSON.stringify(players));
+    if (socket.isAuthenticated && socket.readyState === WebSocket.OPEN)
+        socket.send(JSON.stringify(players));
 } 
