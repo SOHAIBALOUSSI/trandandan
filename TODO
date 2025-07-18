@@ -1,10 +1,8 @@
-- toast for all type of notifications
-- show a timer when dealing with otp code
 - switch to use https and wss
-- if the player online show the toast if not dont show
-- send message quue for notification read in client side
 - add btns in Profile for view frieds, security, update email, password
-
+- enhance the select gender option in signup
+- “Every champion was once a contender who refused to give up.” make this dynamic
+- add cancel btn in update username
 
 1. Player Profile Summary
 Avatar, Rank Badge (Gold/Silver/etc.)

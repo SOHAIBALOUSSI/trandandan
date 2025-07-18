@@ -27,7 +27,7 @@ export function DeleteAccount() {
           <div
             className={`${styles.cardOneStyle} items-center gap-8`}
           >
-            <p className="text-center text-pong-dark-primary font-medium text-lg md:text-xl max-w-2xl leading-relaxed">
+            <p className={`text-center text-pong-dark-primary font-medium ${fontSizes.bodyFontSize} leading-relaxed`}>
               As you step away from the club, your legacy echoes through the
               halls of the lounge.
             </p>
@@ -36,34 +36,32 @@ export function DeleteAccount() {
               name="farewell"
               id="farewell-message"
               placeholder="Write your final words to the club..."
-              className="w-full max-w-xl h-32 p-4 rounded-lg text-base md:text-lg font-medium bg-pong-primary/10 text-pong-dark-primary placeholder-pong-secondary/40 shadow-md focus:outline-none focus:ring-2 focus:ring-pong-secondary resize-none"
+              className={`normal-case placeholder:capitalize w-full max-w-xl h-32 p-4 rounded-lg ${fontSizes.inputFontSize} font-medium bg-pong-primary/10 text-pong-dark-primary placeholder-pong-secondary/40 shadow-md ring-1 ring-pong-secondary/40 focus:outline-none focus:ring-pong-secondary resize-none`}
               autoFocus
             ></textarea>
 
-            {/* Warning Box */}
             <div className="bg-pong-error/10 border border-pong-error/30 rounded-xl p-6 w-full max-w-xl text-center space-y-3 shadow-md">
-              <p className="text-pong-error font-bold text-lg md:text-xl">
+              <p className={`text-pong-error font-bold ${fontSizes.smallTextFontSize}`}>
                 ⚠️ This action is permanent.
               </p>
-              <p className="text-pong-dark-primary/80 text-sm md:text-base leading-snug">
+              <p className={`text-pong-dark-primary/80 ${fontSizes.smallTextFontSize}`}>
                 Your member profile, match history, and club stats will be
                 permanently deleted. There's no turning back.
               </p>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               id="submit-btn"
               aria-busy="false"
-              className="relative flex items-center justify-center gap-2 bg-pong-error hover:bg-red-700 text-white font-bold px-8 py-4 rounded-xl text-md md:text-lg shadow-lg uppercase tracking-wide transition-all duration-300 focus:ring-2 focus:ring-pong-error/50 focus:outline-none"
+              className={styles.darkSubmitBtn + " w-full max-w-xl"}
             >
               <span
                 id="spinner"
                 className="hidden absolute left-4 w-4 h-4 border-2 border-white border-t-pong-accent rounded-full animate-spin"
                 aria-hidden="true"
               ></span>
-              <i className="fa-solid fa-trash"></i>
+              <i className="fa-solid fa-trash mr-2"></i>
               <span id="btn-label">Leave the Club</span>
             </button>
           </div>

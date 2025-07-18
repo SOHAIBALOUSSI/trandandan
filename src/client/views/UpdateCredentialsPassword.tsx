@@ -48,23 +48,33 @@ export function UpdateCredentialsPassword() {
                   type="password"
                   name="old-password"
                   id={currentPasswordId}
-                  className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
+                  className={styles.inputFieldDark + " mb-0"}
                   placeholder="Current password"
                   autoComplete="off"
+                  autofocus
                 />
-                <i className={styles.showPassIcon} id={showPasswordIconId}></i>
+                <i
+                  className={
+                    styles.showPassIcon +
+                    " text-pong-dark-primary/80 hover:text-pong-dark-primary"
+                  }
+                  id={showPasswordIconId}
+                ></i>
               </div>
               <div className="relative w-full">
                 <input
                   type="password"
                   name="new-password"
                   id={newPasswordId}
-                  className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
+                  className={styles.inputFieldDark + " mb-0"}
                   placeholder="New password"
                   autoComplete="off"
                 />
                 <i
-                  className={styles.showPassIcon}
+                  className={
+                    styles.showPassIcon +
+                    " text-pong-dark-primary/80 hover:text-pong-dark-primary"
+                  }
                   id={showNewPasswordIconId}
                 ></i>
               </div>
@@ -73,12 +83,15 @@ export function UpdateCredentialsPassword() {
                   type="password"
                   name="confirm-new-password"
                   id={confirmNewPasswordId}
-                  className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize pr-12"
+                  className={styles.inputFieldDark + " mb-0"}
                   placeholder="Confirm new password"
                   autoComplete="off"
                 />
                 <i
-                  className={styles.showPassIcon}
+                  className={
+                    styles.showPassIcon +
+                    " text-pong-dark-primary/80 hover:text-pong-dark-primary"
+                  }
                   id={showConfirmPasswordIconId}
                 ></i>
               </div>

@@ -16,6 +16,29 @@ export function SignUpForm() {
     showPasswordToggle(showPasswordIconId, passwordId);
     showPasswordToggle(showConfirmPasswordIconId, confirmPasswordId);
     handleSignUp();
+
+    const titleInput = document.getElementById("title") as HTMLInputElement;
+    const genderSelect = document.getElementById(
+      "gender-options"
+    ) as HTMLDivElement | null;
+    const male = document.getElementById("gender-male");
+    const female = document.getElementById("gender-female");
+
+    if (!titleInput || !genderSelect || !male || !female) return;
+
+    titleInput.addEventListener("click", (e) => {
+      e.stopPropagation();
+      genderSelect.classList.toggle("hidden");
+    });
+
+    male.addEventListener("click", () => {
+      titleInput.value = "gentleman";
+      genderSelect.classList.add("hidden");
+    });
+    female.addEventListener("click", () => {
+      titleInput.value = "lady";
+      genderSelect.classList.add("hidden");
+    });
   }, 0);
 
   return (
@@ -33,8 +56,34 @@ export function SignUpForm() {
         id="email"
         placeholder="your correspondence address"
       />
+
       <div className="relative w-full text-left">
-        <select name="gender" id="gender" className={styles.selectField}>
+        <input
+          type="text"
+          name="title"
+          id="title"
+          placeholder="select your title of elegance"
+          autoComplete="off"
+          className={styles.InputFieldOne}
+        />
+        <div
+          id="gender-options"
+          className="text-center hidden absolute rounded-xl z-50 top-16 left-0 bg-pong-secondary flex flex-col items-start justify-center gap-2 w-full h-full text-md text-pong-primary/80"
+        >
+          <p
+            id="gender-male"
+            className="block hover:bg-pong-primary/50 cursor-pointer w-full"
+          >
+            gentleman
+          </p>
+          <p
+            id="gender-female"
+            className="block hover:bg-pong-primary/50 cursor-pointer w-full"
+          >
+            lady
+          </p>
+        </div>
+        {/* <select name="gender" id="gender" className={styles.selectField}>
           <option value="" disabled selected hidden>
             select your title of elegance
           </option>
@@ -47,8 +96,9 @@ export function SignUpForm() {
         </select>
         <div className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2 text-pong-highlight">
           <i className="fa-solid fa-chevron-down text-sm"></i>
-        </div>
+        </div> */}
       </div>
+
       <div className="relative w-full">
         <input
           type="password"
@@ -69,10 +119,7 @@ export function SignUpForm() {
           autoComplete="off"
           className={styles.InputFieldOne}
         />
-        <i
-          className={styles.showPassIcon}
-          id={showConfirmPasswordIconId}
-        ></i>
+        <i className={styles.showPassIcon} id={showConfirmPasswordIconId}></i>
       </div>
 
       <SubmitBtn

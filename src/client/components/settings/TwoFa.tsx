@@ -94,6 +94,7 @@ function attach2FAListeners(type: "app" | "email") {
       verifySection?.classList.remove("hidden");
       setupBtn.classList.add("hidden");
       if (isApp && qrImg) qrImg.classList.remove("hidden");
+	  otpInput.focus();
     });
     setupBtn.dataset.listener = "true";
   }
@@ -255,7 +256,7 @@ function TwoFaMode(type: "app" | "email") {
             <img
               id="app-qr"
               alt="QR Code"
-              className="hidden mx-auto mb-4 w-40 h-40 rounded-lg shadow"
+              className="hidden mx-auto mb-4 w-24 md:w-32 xl:w-40 h-24 md:h-32 xl:h-40 rounded-lg shadow"
             />
           ) : (
             <br className="hidden" />
@@ -266,8 +267,9 @@ function TwoFaMode(type: "app" | "email") {
             maxLength={6}
             inputMode="numeric"
             pattern="[0-9]*"
-            className={styles.inputFieldDark}
+            className={styles.inputFieldDark + "tracking-widest placeholder:tracking-normal"}
             placeholder="Enter 6-digit code"
+			autoComplete="off"
           />
 
           <button

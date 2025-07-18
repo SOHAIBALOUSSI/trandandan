@@ -2,7 +2,6 @@ import "./styles/all.min.css";
 import "./styles/normalize.css";
 import "./styles/main.css";
 import { router } from "./router";
-import { startNotificationListener } from "./handlers/notifications";
 
 function setupSPA(): void {
   document.addEventListener("click", async (e: Event) => {
@@ -20,7 +19,6 @@ function setupSPA(): void {
   });
 }
 
-// Main SPA router logic
 setupSPA();
 
 window.addEventListener("load", router);

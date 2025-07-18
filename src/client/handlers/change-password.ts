@@ -1,7 +1,6 @@
 import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdateCredentialsRes } from "@/utils/response-messages";
-import { clearCurrentUser } from "@/utils/user-store";
 import { handleLogout } from "./logout";
 
 export function handleChangePassword() {
