@@ -66,8 +66,8 @@ server.rabbit.consumeMessages(async(request) => {
     } else if (request.type === 'UPDATE_RANK') {
         const { userId, rank } = request;
         await updateRankById(server.db, userId, rank);
-        const updatedProfile = await getProfileById(this.db, userId);
-        await this.redis.sendCommand([
+        const updatedProfile = await getProfileById(server.db, userId);
+        await server.redis.sendCommand([
             'JSON.SET',
             `player:${userId}`,
             '$',
