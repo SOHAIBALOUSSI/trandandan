@@ -1,4 +1,4 @@
-# chat Service
+# Chat Service
 
 ## Overview
 A real-time WebSocket-based `chat-service` for user-to-user messaging. Built with `ws`, `SQLite`, `Redis`, and `RabbitMQ`. Designed to be used within a microservices architecture, fully authenticated via JWT.

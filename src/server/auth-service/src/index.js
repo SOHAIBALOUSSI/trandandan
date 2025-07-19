@@ -59,3 +59,19 @@ const start = async () => {
 
 start();
 
+const handleShutDown = async (signal) => {
+    try {
+        console.log(`Caught a signal or type ${signal}`);
+        await server.redis.close();
+        await server.db.close();
+        await server.rabbit.close();
+        await server.close();
+        process.exit(0);
+    } catch (error) {
+        console.log(error);
+        process.exit(0);
+    }
+}
+
+process.on('SIGINT', handleShutDown);
+process.on('SIGTERM', handleShutDown);

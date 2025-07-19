@@ -24,3 +24,4 @@ export async function generateUsername(db, name) {
     }
     return uniqueUserName;
 }
+

@@ -12,7 +12,7 @@ The `profile-service` is responsible for managing user profile data. It handles 
 | Method | Path          | Description                           | Authentication Required  | Body required                         |
 | :----: | ------------  | ------------------------------------- | :----------------------: | :-----------------------------------: |
 | POST   | `/register`   | Register a new user profile           | Yes                      | { username, email}                    |
-| PATCH  | `/user/:id`   | Update a user profile                 | Yes                      | { username/avatar_url/solde/level/rank } (one or many)|
+| PATCH  | `/user/:id`   | Update a user profile                 | Yes                      | { username/rank/matches_won/matches_lost } (one or many)|
 | GET    | `/user/:id`   | Retrieve a user profile by id         | Yes                      | (none)                                |
 | POST   | `/upload`     | Updates a user's avatar               | Yes                      | image as formData                     |
 | GET   | `/avatar/:fileName`| Fetches a user's avatar           | Yes                      | (none)                     |

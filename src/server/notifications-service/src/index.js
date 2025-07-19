@@ -154,3 +154,18 @@ wss.on('error', (error) => {
   console.error('WebSocket: Server error:', error);
   process.exit(1);
 });
+
+const handleShutDown = async (signal) => {
+    try {
+        console.log(`Caught a signal or type ${signal}`);
+        await rabbit.close();
+        await redis.close();
+        await db.close();
+        process.exit(0);
+    } catch (error) {
+        console.log(error);
+        process.exit(0);
+    }
+}
+process.on('SIGINT', handleShutDown);
+process.on('SIGTERM', handleShutDown);

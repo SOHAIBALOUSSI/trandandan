@@ -14,6 +14,7 @@ import {
 import { clearAuthCookies, setAuthCookies } from '../utils/authCookies.js';
 
 export async function setup2FAApp(request, reply) {
+    
     try {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
@@ -47,6 +48,7 @@ export async function setup2FAApp(request, reply) {
 }
 
 export async function verify2FAAppSetup(request, reply) {
+    
     try {
         
         const userId = request.user?.id;
@@ -85,6 +87,7 @@ export async function verify2FAAppSetup(request, reply) {
 }
 
 export async function verify2FAAppLogin(request, reply) {
+    
     try {
         
         const userId = request.user?.id;

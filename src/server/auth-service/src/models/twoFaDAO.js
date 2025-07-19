@@ -127,6 +127,6 @@ export async function makeTwoFaPrimaryByUidAndType(db, id, type) {
         await db.exec('COMMIT');
     } catch (error) {
         await db.exec('ROLLBACK');
-        throw error;
+        throw new Error(error);
     }
 }

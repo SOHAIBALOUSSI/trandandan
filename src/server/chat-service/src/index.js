@@ -171,3 +171,18 @@ rabbit.consumeMessages(async (request) => {
         });
     }
 })
+
+const handleShutDown = async (signal) => {
+    try {
+        console.log(`Caught a signal or type ${signal}`);
+        await rabbit.close();
+        await db.close();
+        await redis.close();
+        process.exit(0);
+    } catch (error) {
+        console.log(error);
+        process.exit(0);
+    }
+}
+process.on('SIGINT', handleShutDown);
+process.on('SIGTERM', handleShutDown);
