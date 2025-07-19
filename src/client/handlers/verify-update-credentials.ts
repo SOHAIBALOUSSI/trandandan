@@ -46,6 +46,7 @@ export function handleVerifyCredentials() {
       if (response.ok) {
         sessionStorage.removeItem("2faModeUpdate");
 		sessionStorage.removeItem("passwordUpdated");
+		localStorage.removeItem("changedemailInput");
         setTimeout(() => {
           isPassword
             ? displayToast(

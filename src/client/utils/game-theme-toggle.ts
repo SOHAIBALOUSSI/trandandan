@@ -13,20 +13,14 @@ export function initGameThemeToggle() {
 
   setIcon();
 
-  toggleBtn.onclick = null;
+  toggleBtn.addEventListener("click", (e: Event) => {
+    e.preventDefault();
 
-  toggleBtn.addEventListener("click", () => {
     const isDark = container.dataset.theme === "dark";
     container.dataset.theme = isDark ? "light" : "dark";
-	localStorage.setItem("gameTheme", container.dataset.theme);
-    setIcon();
 
-    const canvas = container.querySelector("canvas");
-    if (canvas) {
-      (canvas as HTMLCanvasElement).style.background =
-        container.dataset.theme === "dark"
-          ? "rgba(0,0,0,0.8)"
-          : "rgba(255,255,255,0.8)";
-    }
+    localStorage.setItem("gameTheme", container.dataset.theme);
+    
+	setIcon();
   });
 }

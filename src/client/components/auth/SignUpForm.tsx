@@ -16,6 +16,82 @@ export function SignUpForm() {
     showPasswordToggle(showPasswordIconId, passwordId);
     showPasswordToggle(showConfirmPasswordIconId, confirmPasswordId);
     handleSignUp();
+
+    const titleInput = document.getElementById("title") as HTMLInputElement;
+    const genderSelect = document.getElementById(
+      "gender-options"
+    ) as HTMLDivElement | null;
+    const male = document.getElementById("gender-male") as HTMLParagraphElement;
+    const female = document.getElementById(
+      "gender-female"
+    ) as HTMLParagraphElement;
+    const options = [male, female];
+
+    let focusedIndex = -1;
+
+    if (!titleInput || !genderSelect || !male || !female) return;
+
+    function openOptions() {
+      genderSelect?.classList.remove("hidden");
+      titleInput.setAttribute("aria-expanded", "true");
+      focusedIndex = 0;
+      options[focusedIndex].focus();
+    }
+
+    function closeOptions() {
+      genderSelect?.classList.add("hidden");
+      titleInput.setAttribute("aria-expanded", "false");
+      focusedIndex = -1;
+    }
+
+    titleInput.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (genderSelect.classList.contains("hidden")) {
+        openOptions();
+      } else {
+        closeOptions();
+      }
+    });
+
+    titleInput.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openOptions();
+      }
+    });
+
+    options.forEach((opt, idx) => {
+      opt.addEventListener("click", () => {
+        titleInput.value = opt.textContent || "";
+        closeOptions();
+        titleInput.focus();
+      });
+      opt.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          focusedIndex = (idx + 1) % options.length;
+          options[focusedIndex].focus();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          focusedIndex = (idx - 1 + options.length) % options.length;
+          options[focusedIndex].focus();
+        } else if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          titleInput.value = opt.textContent || "";
+          closeOptions();
+          titleInput.focus();
+        } else if (e.key === "Escape") {
+          closeOptions();
+          titleInput.focus();
+        }
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!genderSelect.contains(e.target as Node) && e.target !== titleInput) {
+        closeOptions();
+      }
+    });
   }, 0);
 
   return (
@@ -33,22 +109,49 @@ export function SignUpForm() {
         id="email"
         placeholder="your correspondence address"
       />
-      <div className="relative w-full text-left">
-        <select name="gender" id="gender" className={styles.selectField}>
-          <option value="" disabled selected hidden>
-            select your title of elegance
-          </option>
-          <option value="male" className="bg-pong-secondary/10">
-            gentleman
-          </option>
-          <option value="female" className="bg-pong-secondary/10">
-            lady
-          </option>
-        </select>
-        <div className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2 text-pong-highlight">
-          <i className="fa-solid fa-chevron-down text-sm"></i>
+
+      <div className="relative w-full">
+        <input
+          type="text"
+          name="title"
+          id="title"
+          placeholder="select your title of elegance"
+          autoComplete="off"
+          className={`${styles.InputFieldOne} cursor-pointer`}
+          readOnly
+          tabIndex={0}
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-controls="gender-options"
+          aria-autocomplete="list"
+        />
+        <div
+          id="gender-options"
+          role="listbox"
+          tabIndex={-1}
+          className="hidden absolute z-50 top-14 left-0 w-full bg-pong-secondary border border-pong-accent rounded-2xl shadow-xl flex flex-col text-md text-pong-primary/80 overflow-hidden transition-all duration-200 ease-in-out"
+        >
+          <p
+            id="gender-male"
+            role="option"
+            aria-selected="false"
+            className="px-4 py-3 hover:bg-pong-accent/20 focus:bg-pong-accent/30 cursor-pointer transition-colors duration-150 ease-in-out"
+            tabIndex={0}
+          >
+        	Gentleman
+          </p>
+          <p
+            id="gender-female"
+            role="option"
+            aria-selected="false"
+            className="px-4 py-3 hover:bg-pong-accent/20 focus:bg-pong-accent/30 cursor-pointer transition-colors duration-150 ease-in-out"
+            tabIndex={0}
+          >
+            Lady
+          </p>
         </div>
       </div>
+
       <div className="relative w-full">
         <input
           type="password"
@@ -69,10 +172,7 @@ export function SignUpForm() {
           autoComplete="off"
           className={styles.InputFieldOne}
         />
-        <i
-          className={styles.showPassIcon}
-          id={showConfirmPasswordIconId}
-        ></i>
+        <i className={styles.showPassIcon} id={showConfirmPasswordIconId}></i>
       </div>
 
       <SubmitBtn

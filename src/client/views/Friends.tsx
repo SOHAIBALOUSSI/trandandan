@@ -26,11 +26,17 @@ export function Friends() {
   }
 
   setTimeout(() => {
+    handlePendingRequests();
     hydrateFriends();
     hydrateAllMembers(user);
-    handlePendingRequests();
 
     const tabs = {
+      pending: {
+        btn: document.getElementById("pending-requests-item") as HTMLLIElement,
+        container: document.getElementById(
+          "pending-container"
+        ) as HTMLDivElement,
+      },
       friends: {
         btn: document.getElementById("friends-item") as HTMLLIElement,
         container: document.getElementById(
@@ -41,12 +47,6 @@ export function Friends() {
         btn: document.getElementById("all-members-item") as HTMLLIElement,
         container: document.getElementById(
           "members-container"
-        ) as HTMLDivElement,
-      },
-      pending: {
-        btn: document.getElementById("pending-requests-item") as HTMLLIElement,
-        container: document.getElementById(
-          "pending-container"
         ) as HTMLDivElement,
       },
     };
@@ -65,11 +65,11 @@ export function Friends() {
       tabs[tabKey].container?.classList.remove("hidden");
     }
 
-    activateTab("friends");
+    activateTab("pending");
 
+    tabs.pending.btn.addEventListener("click", () => activateTab("pending"));
     tabs.friends.btn.addEventListener("click", () => activateTab("friends"));
     tabs.members.btn.addEventListener("click", () => activateTab("members"));
-    tabs.pending.btn.addEventListener("click", () => activateTab("pending"));
   }, 0);
 
   return (
@@ -84,19 +84,28 @@ export function Friends() {
           />
 
           <ul className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 text-center">
-            <li id="friends-item" className={styles.membersActiveBtn}>
+            <li id="pending-requests-item" className={styles.membersActiveBtn}>
+              Rally Requests
+            </li>
+            <li id="friends-item" className={styles.membersInactiveBtn}>
               My Inner Circle
             </li>
             <li id="all-members-item" className={styles.membersInactiveBtn}>
               Entire Clubhouse
             </li>
-            <li
-              id="pending-requests-item"
-              className={styles.membersInactiveBtn}
-            >
-              Rally Requests
-            </li>
           </ul>
+
+          <div id="pending-container" className={styles.membersListStyle}>
+            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+              <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
+              Incoming Connections
+            </h2>
+            <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
+              Fellow members have sent you a rally invite — accept their
+              challenge and expand your crew.
+            </p>
+            <PendingRequestsList />
+          </div>
 
           <div id="friends-container" className={styles.membersListStyle}>
             <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
@@ -120,18 +129,6 @@ export function Friends() {
               rivals, or just someone to spectate with.
             </p>
             <AllMembersList />
-          </div>
-
-          <div id="pending-container" className={styles.membersListStyle}>
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
-              <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
-              Incoming Connections
-            </h2>
-            <p className="text-sm text-white/60 mt-[-1rem] mb-6 pl-6">
-              Fellow members have sent you a rally invite — accept their
-              challenge and expand your crew.
-            </p>
-            <PendingRequestsList />
           </div>
         </main>
       </div>

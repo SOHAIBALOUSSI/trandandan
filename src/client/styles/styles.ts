@@ -125,7 +125,7 @@ export const styles = {
   InputFieldOne: `
   	normal-case placeholder:capitalize
 	input-field
-	w-full px-5 py-3.5
+	w-full pl-5 pr-12 py-3.5
 	${fontSizes.inputFontSize} 
 	font-semibold tracking-wide
 	bg-pong-secondary/10
@@ -139,13 +139,19 @@ export const styles = {
 	backdrop-blur-md
   `,
   inputFieldDark: `
- 	w-full text-center tracking-widest font-semibold text-pong-dark-bg 
-    bg-gradient-to-br from-white/80 to-white/60 placeholder:text-pong-dark-bg/40 
-    rounded-xl border border-pong-accent/30 shadow-inner 
-    focus:outline-none focus:ring-2 focus:ring-pong-accent focus:border-transparent 
-    transition-all duration-200 ease-in-out px-4 py-3 mb-4 
+	w-full 
+	bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 
+	px-4 py-3 
+	rounded-xl 
+	border border-pong-accent/30
+	outline-none
+	focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent 
+	transition-all duration-300 ease-in-out
+	normal-case 
+	placeholder:capitalize
     ${fontSizes.inputFontSize}
-  `,
+	mb-4
+  `,  
   selectField: `
   	capitalize
   	w-full px-5 py-3.5
@@ -177,10 +183,11 @@ export const styles = {
   showPassIcon: `
 	fa-solid fa-eye fa-eye-slash 
 	show-pass text-sm 
+	px-2
 	absolute top-1/2 right-3
 	transform -translate-y-1/2 
 	cursor-pointer 
-	text-pong-highlight hover:text-pong-primary 
+	text-pong-primary/80 hover:text-pong-primary
 	transition
   `,
   // === End Input Field styles ===
@@ -256,11 +263,10 @@ export const styles = {
 	bg-pong-dark-primary/10 text-white placeholder:text-pong-dark-primary/70
 	px-4 py-2 rounded-lg outline-none  
 	focus:ring-2 focus:ring-pong-dark-accent 
-	w-full max-w-md
 	placeholder:text-xs placeholder:lg:text-base
 	text-sm lg:text-base
 	normal-case 
-	ml-14 md:ml-0
+	w-full
   `,
   // === End Top Bar styles ===
 

@@ -61,6 +61,7 @@ export function handleChangeEmail() {
       const result = await response.json();
 
       if (response.ok && result.statusCode === 200) {
+		localStorage.removeItem("changedemailInput");
         setTimeout(() => {
           displayToast(UpdateCredentialsRes.EMAIL_UPDATED, "success");
 

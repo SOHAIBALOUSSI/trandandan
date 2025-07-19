@@ -1,11 +1,11 @@
 export function getUserRank(rank: number): string {
-  if (rank <= 100) {
+  if (rank <= 5) {
     return "Club Champion";
-  } else if (rank <= 500) {
+  } else if (rank <= 10) {
     return "Elite Contender";
-  } else if (rank <= 1000) {
+  } else if (rank <= 20) {
     return "Veteran Player";
-  } else{
+  } else {
     return "Challenger";
   }
 }
