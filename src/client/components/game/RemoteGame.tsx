@@ -436,7 +436,7 @@ class FlowField {
     };
   }
   public updateUser(currentUser: UserProfile): void {
-    console.log("Updating user data:");
+    // console.log("Updating user data:");
     const payload = {
       level: currentUser.level,
       solde: currentUser.solde,
@@ -531,8 +531,6 @@ class FlowField {
             let levelGain: number = 0;
             if (this.gameState.leftPlayerBallHit !== 0)
               levelGain = this.gameState.leftPlayerBallHit * scoreFactor;
-            console.log("levelGain", levelGain.toFixed(1) + 1);
-            console.log("leftPlayerBallHit", this.gameState.leftPlayerBallHit);
             this.gameState.matchPlayed =
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
@@ -541,7 +539,6 @@ class FlowField {
                 5 + getOldDataOfCurrentUserData.solde
               );
               this.gameState.level += getOldDataOfCurrentUserData.level + 1 + levelGain; // 1 is the win bonus
-              console.log("level", this.gameState.level);
               this.gameState.matchLost =
                 getOldDataOfCurrentUserData.matches_lost;
               this.gameState.matchWon =
@@ -567,9 +564,6 @@ class FlowField {
             let levelGain: number = 0;
             if (this.gameState.rightPlayerBallHit !== 0)
               levelGain = this.gameState.rightPlayerBallHit * scoreFactor;
-
-            console.log("levelGain", levelGain.toFixed(1) + 1);
-            console.log("rightPlayerBallHit", this.gameState.rightPlayerBallHit);
             this.gameState.matchPlayed =
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
@@ -629,9 +623,11 @@ class FlowField {
             currentUser.matches_lost = this.gameState.matchLost;
             if (this.gameState.playerId === 1 && flag_update === true) {
               flag_update = false;
+              console.log("level", this.gameState.level);
               this.updateUser(currentUser);
             } else if (this.gameState.playerId === 2 && flag_update === true) {
               flag_update = false;
+              console.log("level", this.gameState.level);
               this.updateUser(currentUser);
             }
           }

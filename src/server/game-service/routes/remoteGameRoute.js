@@ -234,7 +234,7 @@ export function remoteGame(connection, req) {
         updatedState.playerId = 2;
         player2.send(JSON.stringify(updatedState));
       } catch (error) {
-        console.error("Invalid JSON format", error);
+        // console.error("Invalid JSON format", error);
       }
     };
 

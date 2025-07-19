@@ -87,7 +87,7 @@ export default function savePlayerData(req, reply) {
         data.matchLost
       ];
 
-      console.log("Inserting values:", values); // Debug log
+      // console.log("Inserting values:", values); // Debug log
 
       db.run(insertQuery, values, function (err) {
         return reply.status(200).send({ 
