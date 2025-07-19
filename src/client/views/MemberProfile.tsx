@@ -10,8 +10,12 @@ import { inviteFriend } from "@/services/invite-friend";
 import { displayToast } from "@/utils/display-toast";
 import { sendFriendRequest } from "@/services/send-friend-request"; // Make sure this exists
 import { getAllFriends } from "@/services/get-friends";
+import { getCurrentUser } from "@/utils/user-store";
 
 export function MemberProfile(id: number) {
+  const me = getCurrentUser();
+  if (!me) return;
+
   const container = document.createElement("section");
   container.className = styles.pageLayoutDark;
 
@@ -91,7 +95,7 @@ export function MemberProfile(id: number) {
         }
         if (inviteBtn) {
           inviteBtn.addEventListener("click", () => {
-            inviteFriend(user.id.toString(), user.id.toString());
+            inviteFriend(me.id, user.id);
             displayToast("Invite sent successfully", "success");
           });
         }

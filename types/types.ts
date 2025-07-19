@@ -53,7 +53,7 @@ export type Notification = {
   sender_id?: number;
   notifications_count?: number;
   last_notification_at?: string;
-  notification_ids?: number[];
+  notification_ids?: number[];  
 };
 
 export type MessageSent = {

@@ -74,6 +74,20 @@ services:
       rabbitmq:
         condition: service_healthy
 
+  dashboard:
+    container_name: dashboard-service
+    build: src/server/dashboard-service
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - trandenden-net
+    ports:
+      - "3005:3005"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
   redis:
     container_name: redis
     build: src/server/redis

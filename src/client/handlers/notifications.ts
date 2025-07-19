@@ -77,8 +77,8 @@ async function renderNotification(notif: Notification) {
           <span>
             <span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
 			</span>
-		  <button>Accept Invite</button>
-		  <button>Decline Invite</button>
+		  <button id="accept-invite">Accept Invite</button>
+		  <button id="decline-invite">Decline Invite</button>
         </div>
       `;
       break;
@@ -115,11 +115,7 @@ async function renderNotification(notif: Notification) {
         return;
       }
       const roomId = await getInviteRoomId(notif.sender_id.toString());
-      await acceptInvite(
-        roomId,
-        notif.sender_id.toString(),
-        notif.recipient_id !== undefined ? notif.recipient_id.toString() : ""
-      );
+      await acceptInvite(roomId, notif.sender_id, notif.recipient_id || 0);
       navigateTo(`/remote?roomId=${roomId}`);
       markNotificationsAsRead([notif.notification_id]);
       li.remove();
@@ -181,8 +177,11 @@ export function startNotificationListener() {
   };
 
   ws.onmessage = async (event: MessageEvent) => {
+    console.log("Notification received:", event.data);
     try {
       const notif: Notification = JSON.parse(event.data);
+
+      console.log("Parsed notification:", notif);
 
       if (notif.type === "MESSAGE_RECEIVED") {
         if (notif.notification_id && !seenIds.has(notif.notification_id)) {

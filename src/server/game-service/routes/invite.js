@@ -17,9 +17,9 @@ const invitePlayer = async (req, reply, fastify) => {
       return reply.code(500).send({ error: "Redis client is not available" });
     }
 
-    let isBlocked = redis.sIsMember(`blocker:${senderId}`, `${receiverId}`) // Check is there is a block relationship between users first
+    let isBlocked = await redis.sIsMember(`blocker:${senderId}`, `${receiverId}`) // Check is there is a block relationship between users first
     if (!isBlocked)
-      isBlocked = redis.sIsMember(`blocker:${receiverId}`, `${senderId}`)
+      isBlocked = await redis.sIsMember(`blocker:${receiverId}`, `${senderId}`)
     if (isBlocked)
       return reply.code(400).send({ error: "Block exists" });
 
@@ -28,12 +28,12 @@ const invitePlayer = async (req, reply, fastify) => {
     try {
       const message = {
         type: "INVITE_SENT",
-        senderId,
-        receiverId,
+        sender_id: senderId,
+        recipient_id: receiverId,
         roomId,
       };
       console.log(message);
-      await rabbitMQ.produceMessage(message, 'game.invite');
+      await rabbitMQ.produceMessage(message, 'notifications.game.invite');
       
       return reply.code(200).send({ message: "Invite notification queued" });
     } catch (error) {

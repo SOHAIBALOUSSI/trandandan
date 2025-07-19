@@ -1,4 +1,4 @@
-export async function inviteFriend(senderId: string, receiverId: string) {
+export async function inviteFriend(senderId: number, receiverId: number) {
   try {
     const res = await fetch("http://localhost:5000/invite", {
       method: "POST",
