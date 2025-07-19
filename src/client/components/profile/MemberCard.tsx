@@ -21,78 +21,108 @@ export function MemberCard(props: {
     if (showUpdateOptions) {
       const updateBtn = document.getElementById("update-username-btn");
       const usernameEl = document.getElementById("member-username");
-      const saveBtn = document.getElementById("save-btn-user");
 
-      if (updateBtn && usernameEl && saveBtn) {
-        updateBtn.onclick = null;
-        updateBtn.addEventListener("click", () => {
-          console.log("Update btn clicked");
-          usernameEl.setAttribute("contenteditable", "true");
-          updateBtn.classList.add("hidden");
-          saveBtn.classList.remove("hidden");
+      const updateBtns = document.getElementById(
+        "update-btns"
+      ) as HTMLDivElement;
+      const saveBtn = document.getElementById(
+        "save-btn-user"
+      ) as HTMLButtonElement;
+      let cancelBtn = document.getElementById(
+        "cancel-btn-user"
+      ) as HTMLButtonElement;
 
-          usernameEl.focus();
+      if (!updateBtns || !updateBtn || !usernameEl || !saveBtn || !cancelBtn)
+        return;
 
-          const save = () => {
-            const newUsername = usernameEl.textContent?.trim();
+      updateBtn.addEventListener("click", (e: Event) => {
+        e.preventDefault();
 
-            if (!newUsername) {
-              displayToast("Username cannot be empty.", "error");
-              usernameEl.removeAttribute("contenteditable");
-              usernameEl.textContent = user.username;
-              return;
-            }
+        updateBtns.classList.remove("hidden");
 
-            if (newUsername !== user.username) {
-              updateUsername(user.id, newUsername)
-                .then((res) =>
-                  res.json().then((data) => ({ status: res.status, data }))
-                )
-                .then(({ status, data }) => {
-                  if (status === 200) {
-                    displayToast("Display name updated — you're looking sharp!", "success");
-                  } else {
-                    const msg =
-                      UpdateUserProfileRes[data.code] ||
-                      "Failed to update username.";
-                    displayToast(msg, "error");
-                    usernameEl.textContent = user.username;
-                  }
-                })
-                .catch(() => {
+        usernameEl.setAttribute("contenteditable", "true");
+        updateBtn.classList.add("hidden");
+        saveBtn.classList.remove("hidden");
+        cancelBtn.style.display = "inline-block";
+        usernameEl.focus();
+
+        const save = (e: Event) => {
+          e.preventDefault();
+          const newUsername = usernameEl.textContent?.trim();
+          if (!newUsername) {
+            displayToast("Username cannot be empty.", "error");
+            usernameEl.removeAttribute("contenteditable");
+            usernameEl.textContent = user.username;
+            saveBtn.classList.add("hidden");
+            cancelBtn.style.display = "none";
+            updateBtn.classList.remove("hidden");
+            return;
+          }
+          if (newUsername !== user.username) {
+            updateUsername(user.id, newUsername)
+              .then((res) =>
+                res.json().then((data) => ({ status: res.status, data }))
+              )
+              .then(({ status, data }) => {
+                if (status === 200) {
                   displayToast(
-                    UpdateUserProfileRes.INTERNAL_SERVER_ERROR,
-                    "error"
+                    "Display name updated — you're looking sharp!",
+                    "success"
                   );
+                  user.username = newUsername;
                   usernameEl.textContent = user.username;
-                })
-                .finally(() => {
-                  usernameEl.removeAttribute("contenteditable");
-                  saveBtn.classList.add("hidden");
-                  updateBtn.classList.remove("hidden");
-                });
-            } else {
-              displayToast("No changes made.", "warning");
-              usernameEl.removeAttribute("contenteditable");
-              saveBtn.classList.add("hidden");
-              updateBtn.classList.remove("hidden");
-            }
-          };
+                } else {
+                  const msg =
+                    UpdateUserProfileRes[data.code] ||
+                    "Failed to update username.";
+                  displayToast(msg, "error");
+                  usernameEl.textContent = user.username;
+                }
+              })
+              .catch(() => {
+                displayToast(
+                  UpdateUserProfileRes.INTERNAL_SERVER_ERROR,
+                  "error"
+                );
+                usernameEl.textContent = user.username;
+              })
+              .finally(() => {
+                usernameEl.removeAttribute("contenteditable");
+                saveBtn.classList.add("hidden");
+                cancelBtn.style.display = "none";
+                updateBtn.classList.remove("hidden");
+              });
+          } else {
+            displayToast("No changes made.", "warning");
+            usernameEl.removeAttribute("contenteditable");
+            saveBtn.classList.add("hidden");
+            cancelBtn.style.display = "none";
+            updateBtn.classList.remove("hidden");
+          }
+        };
 
-          saveBtn.addEventListener("click", save, { once: true });
+        const cancel = (e: Event) => {
+          e.preventDefault();
+          usernameEl.textContent = user.username;
+          usernameEl.removeAttribute("contenteditable");
+          saveBtn.classList.add("hidden");
+          cancelBtn.style.display = "none";
+          updateBtn.classList.remove("hidden");
+        };
 
-          usernameEl.addEventListener(
-            "keydown",
-            (e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                usernameEl.blur();
-              }
-            },
-            { once: true }
-          );
-        });
-      }
+        saveBtn.onclick = save;
+        cancelBtn.onclick = cancel;
+
+        usernameEl.onkeydown = (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            usernameEl.blur();
+            save(e);
+          } else if (e.key === "Escape") {
+            cancel(e);
+          }
+        };
+      });
 
       uploadAvatar();
     }
@@ -105,13 +135,6 @@ export function MemberCard(props: {
       </h2>
 
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full relative">
-        <button
-          id="save-btn-user"
-          className="hidden text-sm absolute bottom-0 right-0 bg-pong-success hover:bg-[#2BF075] text-black rounded-md px-4 py-2 animate-fadeInUp transition"
-        >
-          Save
-        </button>
-
         <div className="relative">
           <div className="w-24 h-24 md:w-28 md:h-28 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg relative">
             <img
@@ -168,7 +191,7 @@ export function MemberCard(props: {
 
           <div>
             <span className="block uppercase text-pong-secondary tracking-widest mb-1 text-xs md:text-sm">
-              contact address
+              Contact Address
             </span>
             <span className="block font-medium text-pong-dark-primary/80 border-b border-pong-dark-highlight pb-1 break-all text-lg md:text-xl normal-case">
               {user.email}
@@ -186,15 +209,39 @@ export function MemberCard(props: {
 
           <div className="flex flex-wrap gap-3 mt-4">
             <span className="bg-pong-secondary/20 text-pong-secondary px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              Sold: {user.solde}
+              💰 Sold: {user.solde}
             </span>
             <span className="bg-pong-highlight/20 text-pong-highlight px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              Level: {user.level}
+              🎯 Level: {user.level}
             </span>
             <span className="bg-yellow-400/20 text-yellow-300 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              {getUserRank(user.rank)}
+              🏓 {getUserRank(user.rank)}
             </span>
           </div>
+
+          {showUpdateOptions ? (
+            <div
+              id="update-btns"
+              className="hidden flex justify-end gap-4 mt-6"
+            >
+              <button
+                id="cancel-btn-user"
+                className="text-sm bg-pong-error hover:bg-red-700 text-white rounded-full px-4 py-2 transition"
+                title="Cancel Changes"
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+              <button
+                id="save-btn-user"
+                className="text-sm bg-pong-success hover:bg-[#2BF075] text-black rounded-full px-4 py-2 transition"
+                title="Save Changes"
+              >
+                <i className="fa-solid fa-check"></i>
+              </button>
+            </div>
+          ) : (
+            <br className="hidden" />
+          )}
         </div>
       </div>
     </div>

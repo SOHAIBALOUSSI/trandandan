@@ -29,7 +29,7 @@ export function handleSignUp() {
       signupForm.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = signupForm.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = signupForm.querySelector<HTMLSpanElement>("#btn-label");
-    const genderInput = signupForm.querySelector<HTMLSelectElement>("#gender");
+    const genderInput = signupForm.querySelector<HTMLInputElement>("#title");
     const passwordInput =
       signupForm.querySelector<HTMLInputElement>("#password");
     const confirmPasswordInput =
@@ -53,9 +53,9 @@ export function handleSignUp() {
       username: usernameInput.value.trim(),
       email: emailInput.value.trim(),
       gender:
-        genderInput.value === "male"
+        genderInput.value === "Gentleman"
           ? "M"
-          : genderInput.value === "female"
+          : genderInput.value === "Lady"
           ? "F"
           : "",
       password: passwordInput.value.trim(),
