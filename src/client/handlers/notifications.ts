@@ -8,11 +8,11 @@ import { acceptInvite } from "@/services/accept-invite";
 let ws: WebSocket | null = null;
 let unseenCount = 0;
 const seenIds = new Set<number>(
-  JSON.parse(sessionStorage.getItem("seenNotifs") || "[]")
+  JSON.parse(localStorage.getItem("seenNotifs") || "[]")
 );
 
 function saveSeen() {
-  sessionStorage.setItem("seenNotifs", JSON.stringify(Array.from(seenIds)));
+  localStorage.setItem("seenNotifs", JSON.stringify(Array.from(seenIds)));
 }
 
 function updateCounter() {
@@ -177,17 +177,54 @@ export function startNotificationListener() {
   };
 
   ws.onmessage = async (event: MessageEvent) => {
-    console.log("Notification received:", event.data);
     try {
-      const notif: Notification = JSON.parse(event.data);
+      const notif = JSON.parse(event.data);
 
-      console.log("Parsed notification:", notif);
+      if (
+        typeof notif.notifications_count === "number" &&
+        Array.isArray(notif.notification_ids) &&
+        notif.notification_ids.length > 0
+      ) {
+        if (notif.type === "MESSAGE_RECEIVED") {
+          notif.notification_ids.forEach((id: number) => {
+            if (!seenIds.has(id)) {
+              seenIds.add(id);
+              unseenCount++;
+            }
+          });
+          saveSeen();
+          updateCounter();
+
+          messageGroups.set(notif.sender_id, {
+            count: notif.notifications_count,
+            notif: {
+              ...notif,
+              notification_id: notif.notification_ids[0],
+            },
+          });
+
+          const notifList = document.getElementById("notif-list");
+          if (notifList) {
+            const oldLi = document.getElementById(
+              `msg-group-${notif.sender_id}`
+            );
+            if (oldLi) oldLi.remove();
+            notifList.prepend(
+              await renderGroupedMessageNotification(
+                notif,
+                notif.notifications_count
+              )
+            );
+          }
+          return;
+        }
+      }
 
       if (notif.type === "MESSAGE_RECEIVED") {
         if (notif.notification_id && !seenIds.has(notif.notification_id)) {
           seenIds.add(notif.notification_id);
-          saveSeen();
           unseenCount++;
+          saveSeen();
           updateCounter();
         }
 
@@ -209,8 +246,8 @@ export function startNotificationListener() {
       } else {
         if (notif.notification_id && !seenIds.has(notif.notification_id)) {
           seenIds.add(notif.notification_id);
-          saveSeen();
           unseenCount++;
+          saveSeen();
           updateCounter();
         }
         const notifList = document.getElementById("notif-list");
@@ -247,7 +284,7 @@ export function stopNotificationListener() {
 
 export function clearNotificationCounter() {
   unseenCount = 0;
-  sessionStorage.setItem("seenNotifs", JSON.stringify([]));
+  localStorage.setItem("seenNotifs", JSON.stringify([]));
   seenIds.clear();
   updateCounter();
 }
