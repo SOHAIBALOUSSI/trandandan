@@ -13,8 +13,8 @@ export async function getUserById(id: number): Promise<UserProfile | null> {
     const user = data.data.profile;
     user.avatar_url = getAvatarUrl(user);
     return user;
-  } catch (error) {
-    console.error(`Error fetching user with ID ${id}:`, error);
+  } catch (err) {
+    console.error(`Error fetching user with ID ${id}:`, err);
     return null;
   }
 }

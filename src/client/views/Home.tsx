@@ -29,7 +29,7 @@ export function Home() {
         <TopBar />
         <main className={styles.pageContent}>
           <Hero user={user} />
-          <QuickStatsCards user={user} />
+          {/* <QuickStatsCards user={user} /> */}
           <RecentActivityFeed />
           <LeaderboardPreview user={user} />
         </main>

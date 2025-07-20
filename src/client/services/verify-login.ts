@@ -1,4 +1,3 @@
-import { startNotificationListener } from "@/handlers/notifications";
 import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { Verify2FaRes } from "@/utils/response-messages";
@@ -49,8 +48,6 @@ export function verifyLogin(mode: string | null) {
 
       if (response.ok) {
         sessionStorage.removeItem("2faMode");
-
-        startNotificationListener();
 
         setTimeout(() => {
           displayToast(Verify2FaRes.USER_LOGGED_IN, "success");

@@ -28,7 +28,7 @@ export async function hydrateBlocked() {
     const avatar = document.createElement("img");
     avatar.src = getAvatarUrl(user);
     avatar.alt = `${user.username}'s avatar`;
-    avatar.className = "w-10 h-10 rounded-full";
+    avatar.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
 
     const name = document.createElement("span");
     name.className = "text-lg font-semibold text-white normal-case";
@@ -47,9 +47,7 @@ export async function hydrateBlocked() {
       unmuteBtn.textContent = "Unmuting...";
       unmuteBtn.style.backgroundColor = "#4a5568";
       const success = await unblockFriend(user.id);
-      console.log(success);
       if (success) {
-        console.log("succes");
         li.remove();
       }
     };

@@ -53,7 +53,7 @@ export type Notification = {
   sender_id?: number;
   notifications_count?: number;
   last_notification_at?: string;
-  notification_ids?: number[];  
+  notification_ids?: number[];
 };
 
 export type MessageSent = {
@@ -68,20 +68,6 @@ export type MessageRead = {
   type: "MESSAGE_READ";
   message_id: number;
 };
-
-export interface GameStateLocal {
-  paddleLeftY: number;
-  paddelRightY: number;
-  ballX: number;
-  ballY: number;
-  keypressd: string[];
-  rightPlayerScore: number;
-  leftPlayerScore: number;
-  flagX: boolean;
-  flagY: boolean;
-  ballSpeed: number;
-  count: number;
-}
 
 export type GameActivity = {
   enemyId: string;

@@ -33,7 +33,7 @@ export async function hydrateTopThree() {
 
     const avatarImg = document.createElement("img");
     avatarImg.src = getAvatarUrl(user);
-    avatarImg.alt = "Profile Avatar";
+    avatarImg.alt = `${user.username}'s avatar`;
     avatarImg.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
 
     const nameSpan = document.createElement("span");

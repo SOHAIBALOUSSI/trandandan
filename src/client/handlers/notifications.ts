@@ -168,7 +168,7 @@ async function renderGroupedMessageNotification(
 }
 
 export function startNotificationListener() {
-  if (ws && ws.readyState === WebSocket.OPEN) return;
+  //   if (ws && ws.readyState === WebSocket.OPEN) return;
 
   ws = new WebSocket("/notifications");
 
@@ -221,7 +221,7 @@ export function startNotificationListener() {
           }
         }
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(
         "The club’s lights are out at the moment. Try again shortly.",
         "error"

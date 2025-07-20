@@ -21,7 +21,7 @@ export async function unblockFriend(id: number): Promise<boolean> {
     }
     displayToast(FriendUnblockRes.UNBLOCK_SUCCESS, "success");
     return true;
-  } catch (error) {
+  } catch (err) {
     displayToast(FriendUnblockRes.INTERNAL_SERVER_ERROR, "error");
     return false;
   }

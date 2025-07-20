@@ -120,35 +120,34 @@ export function SignUpForm() {
           className={`${styles.InputFieldOne} cursor-pointer`}
           readOnly
           tabIndex={0}
-          aria-haspopup="listbox"
-          aria-expanded="false"
-          aria-controls="gender-options"
-          aria-autocomplete="list"
         />
         <div
           id="gender-options"
           role="listbox"
           tabIndex={-1}
-          className="hidden absolute z-50 top-14 left-0 w-full bg-pong-secondary border border-pong-accent rounded-2xl shadow-xl flex flex-col text-md text-pong-primary/80 overflow-hidden transition-all duration-200 ease-in-out"
+          className={`hidden ${fontSizes.inputFontSize} text-left absolute z-50 top-14 left-0 w-full bg-pong-secondary rounded-xl shadow-inner border border-pong-primary/10 flex flex-col text-pong-primary overflow-hidden transition-all duration-200 ease-in-out`}
         >
           <p
             id="gender-male"
             role="option"
             aria-selected="false"
-            className="px-4 py-3 hover:bg-pong-accent/20 focus:bg-pong-accent/30 cursor-pointer transition-colors duration-150 ease-in-out"
+            className="outline-none px-5 py-3.5 hover:bg-pong-accent/20 focus:bg-pong-accent/30 cursor-pointer transition-colors duration-150 ease-in-out"
             tabIndex={0}
           >
-        	Gentleman
+            Gentleman
           </p>
           <p
             id="gender-female"
             role="option"
             aria-selected="false"
-            className="px-4 py-3 hover:bg-pong-accent/20 focus:bg-pong-accent/30 cursor-pointer transition-colors duration-150 ease-in-out"
+            className="outline-none px-5 py-3.5 hover:bg-pong-accent/20 focus:bg-pong-accent/30 cursor-pointer transition-colors duration-150 ease-in-out"
             tabIndex={0}
           >
             Lady
           </p>
+        </div>
+        <div className="pointer-events-none absolute top-1/2 right-3 px-2 transform -translate-y-1/2 text-pong-primary/80">
+          <i className="fa-solid fa-chevron-down text-sm"></i>
         </div>
       </div>
 

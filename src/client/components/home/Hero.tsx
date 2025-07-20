@@ -29,7 +29,7 @@ export function Hero(props: { user: UserProfile }) {
             className={`${fontSizes.titleFontSize} font-bold text-pong-dark-primary mb-3`}
           >
             Welcome, {getWelcomeTitle(user)}{" "}
-            <span className="text-pong-dark-accent normal-case">
+            <span className="text-pong-dark-accent">
               {user.username}
             </span>
             !
