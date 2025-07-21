@@ -17,6 +17,8 @@ export const theme = {
       "pong-dark-accent": "#E05E4B",
       "pong-dark-secondary": "#D1A25F",
       "pong-dark-highlight": "#838E91",
+      "pong-gold": "#d4af37",
+      "pong-light-bg": "#2c2f40",
       "pong-sport-primary": "#C8A100",
       "pong-sport-accent": "#F6C177",
       "pong-sport-bg": "#1A1C22",

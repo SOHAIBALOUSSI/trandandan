@@ -135,7 +135,8 @@ export async function router(): Promise<void> {
     const chatView = await Chat(chatRoom);
     app.appendChild(chatView);
   } else if (path === "member-profile" && memberId) {
-    app.appendChild(MemberProfile(memberId));
+    const memberProfileElem = MemberProfile(memberId);
+    memberProfileElem && app.appendChild(memberProfileElem);
   } else {
     app.appendChild(render());
   }
