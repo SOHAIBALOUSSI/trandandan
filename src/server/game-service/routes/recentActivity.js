@@ -56,7 +56,7 @@ function pollForNewMatches() {
 }
 
 
-setInterval(pollForNewMatches, 0);
+setInterval(pollForNewMatches, 2000);
 
 // This is the function you will import
 export default function recentActivity(connection, req) {

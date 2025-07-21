@@ -1,5 +1,5 @@
 import { handleLostPassword } from "@/handlers/lost-password";
-import { verifyOtpCode } from "@/services/verify-otp-code";
+import { verifyOtpCode } from "@/handlers/verify-otp-code";
 import { handleOtpInput } from "@/handlers/otp-input";
 import { Footer } from "@/components/layout/Footer";
 import { InputField } from "@/components/common/InputField";

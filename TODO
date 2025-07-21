@@ -1,5 +1,8 @@
 - scan 2fa then print the otp code
-
+- add authorization for game service endpoints
+- keep the notif list until i click on it
+- cancel request
+- add a cta for playing in home page
 
 1. Player Profile Summary
 Avatar, Rank Badge (Gold/Silver/etc.)

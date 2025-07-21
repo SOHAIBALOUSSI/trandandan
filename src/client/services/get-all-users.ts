@@ -4,16 +4,16 @@ export async function getAllUsers() {
       credentials: "include",
     });
 
+    const data = await res.json();
+
     if (!res.ok) {
-      const errorData = await res.json();
-      console.error("Failed to fetch users:", errorData);
+      console.error("Failed to fetch users");
       return [];
     }
 
-    const data = await res.json();
     return data.data.profiles;
-  } catch (err) {
-    console.error("Error fetching all users:", err);
+  } catch {
+    console.error("Error fetching all users");
     return [];
   }
 }

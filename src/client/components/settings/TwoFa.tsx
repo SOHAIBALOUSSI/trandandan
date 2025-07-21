@@ -1,5 +1,5 @@
 import { styles } from "@/styles/styles";
-import { setup2FA, verify2FASetup } from "@/services/setup-2fa";
+import { setup2FA } from "@/services/setup-2fa";
 import { setPrimaryMethod } from "@/services/set-primary-method";
 import { enable2FA } from "@/services/enable-2fa";
 import { disable2FA } from "@/services/disable-2fa";
@@ -94,7 +94,7 @@ function attach2FAListeners(type: "app" | "email") {
       verifySection?.classList.remove("hidden");
       setupBtn.classList.add("hidden");
       if (isApp && qrImg) qrImg.classList.remove("hidden");
-	  otpInput.focus();
+      otpInput.focus();
     });
     setupBtn.dataset.listener = "true";
   }
@@ -102,10 +102,12 @@ function attach2FAListeners(type: "app" | "email") {
   if (verifyBtn && !verifyBtn.dataset.listener) {
     verifyBtn.addEventListener("click", () => {
       if (!otpInput.value) return;
-      verify2FASetup(otpInput.value, type, () => {
-        verifySection?.classList.add("hidden");
-        if (isApp && qrImg) qrImg.classList.add("hidden");
-      });
+      otpInput.value,
+        type,
+        () => {
+          verifySection?.classList.add("hidden");
+          if (isApp && qrImg) qrImg.classList.add("hidden");
+        };
     });
     verifyBtn.dataset.listener = "true";
   }
@@ -267,9 +269,12 @@ function TwoFaMode(type: "app" | "email") {
             maxLength={6}
             inputMode="numeric"
             pattern="[0-9]*"
-            className={styles.inputFieldDark + "tracking-widest placeholder:tracking-normal"}
+            className={
+              styles.inputFieldDark +
+              "tracking-widest placeholder:tracking-normal"
+            }
             placeholder="Enter 6-digit code"
-			autoComplete="off"
+            autoComplete="off"
           />
 
           <button

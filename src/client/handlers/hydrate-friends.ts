@@ -1,4 +1,4 @@
-import { getAllFriends } from "@/services/get-friends";
+import { getFriends } from "@/services/get-friends";
 import { getUserById } from "@/services/get-user-by-id";
 import { removeFriend } from "@/services/remove-friend";
 import { styles } from "@/styles/styles";
@@ -9,7 +9,7 @@ export async function hydrateFriends() {
   const list = document.getElementById("friends-list") as HTMLUListElement;
   if (!list) return;
 
-  const friends = await getAllFriends();
+  const friends = await getFriends();
 
   if (!friends.length) {
     list.innerHTML = `<li class="text-pong-dark-secondary text-center">No friends found.</li>`;
@@ -47,8 +47,6 @@ export async function hydrateFriends() {
     unfriendBtn.innerHTML = `<i class="fa-solid fa-user-minus"></i>`;
     unfriendBtn.onclick = async () => {
       unfriendBtn.disabled = true;
-      unfriendBtn.textContent = "Unfriending...";
-      unfriendBtn.style.backgroundColor = "#4a5568";
       await removeFriend(user.id);
     };
 

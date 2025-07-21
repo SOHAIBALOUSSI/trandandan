@@ -10,11 +10,12 @@ export async function getUserById(id: number): Promise<UserProfile | null> {
     if (!response.ok) return null;
 
     const data = await response.json();
+
     const user = data.data.profile;
     user.avatar_url = getAvatarUrl(user);
     return user;
-  } catch (err) {
-    console.error(`Error fetching user with ID ${id}:`, err);
+  } catch {
+    console.error(`Error fetching user with ID ${id}:`);
     return null;
   }
 }

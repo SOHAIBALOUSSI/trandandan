@@ -1,4 +1,4 @@
-import { getAllUsers } from "@/services/get-users";
+import { getAllUsers } from "@/services/get-all-users";
 import { navigateTo } from "@/utils/navigate-to-link";
 
 let allUsersCache: { id: number; username: string }[] = [];

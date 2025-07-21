@@ -15,6 +15,8 @@ async function getUserHistory(req, reply) {
   //
   const userId = req.body.userId;
 
+  console.log("Fetching history for user ID:", userId);
+
   if (!userId) {
     return reply.status(400).send({ error: "User ID is required" });
   }

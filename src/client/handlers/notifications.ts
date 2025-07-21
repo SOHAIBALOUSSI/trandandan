@@ -2,7 +2,7 @@ import { Notification } from "types/types";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { displayToast } from "@/utils/display-toast";
 import { getUserById } from "@/services/get-user-by-id";
-import { getInviteRoomId } from "@/services/get-invite-room-id";
+import { getRoomId } from "@/services/get-room-id";
 import { acceptInvite } from "@/services/accept-invite";
 
 let ws: WebSocket | null = null;
@@ -72,15 +72,19 @@ async function renderNotification(notif: Notification) {
 
     case "INVITE_SENT":
       label = `
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
-          <span>
-            <span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
-			</span>
-		  <button id="accept-invite">Accept Invite</button>
-		  <button id="decline-invite">Decline Invite</button>
-        </div>
-      `;
+          <div class="flex items-center justify-between gap-2">
+			<div>
+			  <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
+			  <span>
+			  	<span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
+			  </span>
+			</div>
+			<div>
+			  <button id="accept-invite">Accept</button>
+			  <button id="decline-invite">Decline</button>
+			</div>
+          </div>
+        `;
       break;
 
     default:
@@ -110,13 +114,11 @@ async function renderNotification(notif: Notification) {
     };
   } else if (notif.type === "INVITE_SENT") {
     li.onclick = async () => {
-      if (typeof notif.sender_id === "undefined") {
-        displayToast("Invite sender ID is missing.", "error");
-        return;
+      const roomId: string | null = await getRoomId(notif.sender_id || 0);
+      if (roomId) {
+        acceptInvite(roomId, notif.sender_id || 0, notif.recipient_id || 0);
+        navigateTo(`/remote?roomId=${roomId}`);
       }
-      const roomId = await getInviteRoomId(notif.sender_id.toString());
-      await acceptInvite(roomId, notif.sender_id, notif.recipient_id || 0);
-      navigateTo(`/remote?roomId=${roomId}`);
       markNotificationsAsRead([notif.notification_id]);
       li.remove();
     };
@@ -168,7 +170,7 @@ async function renderGroupedMessageNotification(
 }
 
 export function startNotificationListener() {
-    if (ws && ws.readyState === WebSocket.OPEN) return;
+  if (ws && ws.readyState === WebSocket.OPEN) return;
 
   ws = new WebSocket("/notifications");
 

@@ -9,7 +9,7 @@ import { blockFriend } from "@/services/block-friend";
 import { inviteFriend } from "@/services/invite-friend";
 import { displayToast } from "@/utils/display-toast";
 import { sendFriendRequest } from "@/services/send-friend-request";
-import { getAllFriends } from "@/services/get-friends";
+import { getFriends } from "@/services/get-friends";
 import { getCurrentUser } from "@/utils/user-store";
 
 export function MemberProfile(id: number) {
@@ -19,18 +19,18 @@ export function MemberProfile(id: number) {
   const container = document.createElement("section");
   container.className = styles.pageLayoutDark;
 
-  Promise.all([getUserById(id), getAllFriends()]).then(([user, friends]) => {
+  Promise.all([getUserById(id), getFriends()]).then(([user, friends]) => {
     if (!user) {
       container.innerHTML = `
-		<div class="flex flex-col items-center justify-center text-center text-white py-16 space-y-4">
-		<i class="fa-solid fa-user-xmark text-5xl text-red-500"></i>
-		<h2 class="text-2xl md:text-3xl font-bold text-pong-accent">Member Not Found</h2>
-		<p class="text-sm md:text-base text-white/80 max-w-md">
-			Alas! The player you seek does not dwell in this hall. Perhaps they’ve chosen anonymity, or vanished into the shadows of unranked history.
-		</p>
-		<a href="/salon" data-link class="${styles.darkPrimaryBtn}">
-			<i class="fa-solid fa-arrow-left"></i> Return to Salon
-		</a>
+		<div class="flex flex-col items-center justify-center text-center text-white py-16 px-6 space-y-4">
+		  <i class="fa-solid fa-user-xmark text-5xl text-pong-error"></i>
+		  <h2 class="text-2xl md:text-3xl font-bold text-pong-error">Member Not Found</h2>
+		  <p class="text-sm md:text-base text-pong-dark-primary max-w-md">
+		  	Alas! The player you seek does not dwell in this hall. Perhaps they’ve chosen anonymity, or vanished into the shadows of unranked history.
+		  </p>
+		  <a href="/salon" data-link class="${styles.darkPrimaryBtn}">
+		  	<i class="fa-solid fa-arrow-left"></i> Return to Salon
+		  </a>
 		</div>
       `;
       return;
@@ -107,7 +107,6 @@ export function MemberProfile(id: number) {
         if (inviteBtn) {
           inviteBtn.addEventListener("click", () => {
             inviteFriend(me.id, user.id);
-            displayToast("Invite sent successfully", "success");
           });
         }
       } else {
@@ -115,7 +114,6 @@ export function MemberProfile(id: number) {
         if (addFriendBtn) {
           addFriendBtn.addEventListener("click", () => {
             sendFriendRequest(user.id);
-            displayToast("Friend request sent!", "success");
           });
         }
       }

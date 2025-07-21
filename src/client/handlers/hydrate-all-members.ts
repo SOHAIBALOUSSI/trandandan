@@ -1,9 +1,9 @@
 import { UserProfile } from "types/types";
 import { styles } from "@/styles/styles";
-import { getAllUsers } from "@/services/get-users";
+import { getAllUsers } from "@/services/get-all-users";
 import { sendFriendRequest } from "@/services/send-friend-request";
 import { getAvatarUrl } from "@/utils/get-avatar";
-import { getAllFriends } from "@/services/get-friends";
+import { getFriends } from "@/services/get-friends";
 import { navigateTo } from "@/utils/navigate-to-link";
 
 export async function hydrateAllMembers(currentUser: UserProfile) {
@@ -11,7 +11,7 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
   if (!list) return;
 
   const users = await getAllUsers();
-  const friends = await getAllFriends();
+  const friends = await getFriends();
 
   if (!users.length || users.length === 1) {
     list.innerHTML = `<li class="text-pong-dark-secondary text-center">No members found.</li>`;

@@ -1,4 +1,4 @@
-import { getAllUsers } from "@/services/get-users";
+import { getAllUsers } from "@/services/get-all-users";
 import { getAvatarUrl } from "@/utils/get-avatar";
 import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";

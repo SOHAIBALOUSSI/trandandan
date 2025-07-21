@@ -1,18 +1,17 @@
-export async function listPendingRequests() {
+export async function listPendingRequests(): Promise<number[]> {
   try {
-    const res = await fetch("/profile/requests", {
+    const res = await fetch("/friends/requests", {
       credentials: "include",
     });
 
-    if (!res.ok) {
-      console.error("Failed to fetch pending requests:", res.statusText);
-      return [];
-    }
+    if (!res.ok) return [];
 
     const data = await res.json();
-    return data.data.requests;
-  } catch (err) {
-    console.log(err);
+    const requesterIds = data.data.requests.map(
+      (r: { requester_id: number }) => r.requester_id
+    );
+    return requesterIds;
+  } catch {
     return [];
   }
 }

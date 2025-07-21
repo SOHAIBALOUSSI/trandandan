@@ -60,6 +60,22 @@ This service powers the real-time and stats features for the BHV Pong game, incl
 - **Recent Activity:**  
   Connect to `/recent-activity` via WebSocket to receive real-time updates about finished games.
 
+Each message sent is an array of objects, each with:
+```
+[
+  {
+    "enemyId": 123,
+    "userId": 456,
+    "gameEndResult": "WIN" // or "LOSE" or "DRAW"
+  },
+  {
+    "enemyId": 456,
+    "userId": 123,
+    "gameEndResult": "LOSE"
+  }
+]
+```
+
 ---
 
 ## Technologies Used

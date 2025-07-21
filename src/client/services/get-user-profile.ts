@@ -14,12 +14,11 @@ export async function getUserProfile() {
     if (!profileRes.ok) return null;
 
     const profile = await profileRes.json();
-
     setCurrentUser(profile);
 
     return profile;
-  } catch (err) {
-    console.error(err);
+  } catch {
+    console.error("Error fetching user profile");
     return null;
   }
 }

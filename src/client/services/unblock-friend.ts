@@ -1,5 +1,4 @@
 import { displayToast } from "@/utils/display-toast";
-import { hydrateFriends } from "@/handlers/hydrate-friends";
 import { FriendUnblockRes } from "@/utils/response-messages";
 
 export async function unblockFriend(id: number): Promise<boolean> {
@@ -12,16 +11,15 @@ export async function unblockFriend(id: number): Promise<boolean> {
     const data = await res.json();
 
     if (!res.ok) {
-      displayToast(
+      const msg =
         FriendUnblockRes[data.code] ||
-          "Failed to unblock friend. Please try again.",
-        "error"
-      );
+        "Failed to unblock friend. Please try again.";
+      displayToast(msg, "error");
       return false;
     }
     displayToast(FriendUnblockRes.UNBLOCK_SUCCESS, "success");
     return true;
-  } catch (err) {
+  } catch {
     displayToast(FriendUnblockRes.INTERNAL_SERVER_ERROR, "error");
     return false;
   }

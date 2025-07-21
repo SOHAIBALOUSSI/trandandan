@@ -4,24 +4,7 @@ import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
 import { getAvatarUrl } from "@/utils/get-avatar";
 import { navigateTo } from "@/utils/navigate-to-link";
-
-export async function listPendingRequests() {
-  try {
-    const res = await fetch("/friends/requests", {
-      credentials: "include",
-    });
-
-    if (!res.ok) return [];
-
-    const data = await res.json();
-    const requesterIds = data.data.requests.map(
-      (r: { requester_id: number }) => r.requester_id
-    );
-    return requesterIds;
-  } catch (err) {
-    return [];
-  }
-}
+import { listPendingRequests } from "@/services/list-pending-requests";
 
 export async function handlePendingRequests() {
   const list = document.getElementById(

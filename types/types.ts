@@ -30,6 +30,19 @@ export type UserRank = {
   avatarUrl: string;
 };
 
+export type UserHistory = {
+  id: number;
+  user_name: string;
+  enemy_id: number;
+  user_id: number;
+  left_player_score: number; // my score
+  right_player_score: number; // my enemy's score
+  game_duration: number;
+  game_end_result: "Won" | "Lost";
+  left_player_ball_hit: number;
+  right_player_ball_hit: number;
+};
+
 export type Activity =
   | { type: "win"; user: string; targetUser: string }
   | { type: "loss"; user: string; targetUser: string }
@@ -72,5 +85,5 @@ export type MessageRead = {
 export type GameActivity = {
   enemyId: string;
   userId: string;
-  gameEndResult: "Won" | "Lost";
+  gameEndResult: "WIN" | "LOSE";
 };

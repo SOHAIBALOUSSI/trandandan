@@ -1,4 +1,4 @@
-export async function getAllFriends(): Promise<number[]> {
+export async function getFriends(): Promise<number[]> {
   try {
     const res = await fetch("/friends/", {
       credentials: "include",
@@ -11,8 +11,7 @@ export async function getAllFriends(): Promise<number[]> {
       (f: { friend_id: number }) => f.friend_id
     );
     return friendIds;
-  } catch (err) {
-    console.log(err);
+  } catch {
     return [];
   }
 }

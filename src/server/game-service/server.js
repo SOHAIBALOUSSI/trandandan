@@ -63,7 +63,7 @@ fastify.register(async function name(req, reply) {
 
 import getUserHistory from "./routes/getUserHistory.js";
 fastify.register(async function name(fastify) {
-  fastify.get("/user-history", async (req, reply) => {
+  fastify.post("/user-history", async (req, reply) => {
     return getUserHistory(req, reply);
   });
 });
