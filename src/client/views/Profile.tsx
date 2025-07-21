@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/utils/user-store";
 import { Loader } from "@/components/common/Loader";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { fontSizes } from "@/styles/fontSizes";
+import { showUserBadge } from "@/utils/show-user-badge";
 
 export function Profile() {
   const user = getCurrentUser();
@@ -31,6 +32,14 @@ export function Profile() {
             title="Member Profile"
             subtitle="Review your identity, matches, and achievements."
           />
+
+          <div className="absolute z-50 top-100 right-2 md:right-10 w-20 md:w-32 h-20 md:h-32 rounded-full overflow-hidden bg-gradient-to-br from-pong-primary/80 to-pong-secondary">
+            <img
+              src={showUserBadge(user.rank)}
+              alt={`${user.username}'s badge`}
+              className="bg-cover p-1 rounded-full"
+            />
+          </div>
 
           <div className="grid grid-cols-1 gap-8 w-full">
             <div className="order-1 flex flex-col items-center space-y-6 gap-4">

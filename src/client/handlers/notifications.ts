@@ -168,7 +168,7 @@ async function renderGroupedMessageNotification(
 }
 
 export function startNotificationListener() {
-  //   if (ws && ws.readyState === WebSocket.OPEN) return;
+    if (ws && ws.readyState === WebSocket.OPEN) return;
 
   ws = new WebSocket("/notifications");
 
