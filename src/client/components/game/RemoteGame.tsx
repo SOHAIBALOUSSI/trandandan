@@ -435,10 +435,9 @@ class FlowField {
       matches_lost: raw.matches_lost ?? 0,
     };
   }
-  public updateUser(currentUser: UserProfile): void {
+  public updateUser(currentUser: UserProfile, hasWon: boolean): void {
     const payload = {
-      matches_won: currentUser.matches_won,
-      matches_lost: currentUser.matches_lost,
+      hasWon: hasWon,
     };
     console.log("Updating user data:", payload);
     fetch(`/profile/user/${currentUser.userId}`, {
@@ -521,6 +520,7 @@ class FlowField {
             this.sendPlayerData(playerData);
             return;
           }
+          let hasWonPlayerOne: boolean = false;
           if (this.gameState.playerId === 1 && flag_one === true) {
             flag_one = false;
 
@@ -531,6 +531,7 @@ class FlowField {
             this.gameState.matchPlayed =
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
+              hasWonPlayerOne = true;
               this.gameState.solde = Math.max(
                 0,
                 5 + getOldDataOfCurrentUserData.solde
@@ -541,6 +542,7 @@ class FlowField {
               this.gameState.matchWon =
                 getOldDataOfCurrentUserData.matches_won + 1;
             } else if (this.gameState.gameEndResult === "Lost") {
+              hasWonPlayerOne = false;
               this.gameState.solde = Math.max(
                 0,
                 getOldDataOfCurrentUserData.solde - 5
@@ -554,7 +556,7 @@ class FlowField {
               this.gameState.matchWon = getOldDataOfCurrentUserData.matches_won;
             }
           }
-
+          let hasWonPlayerTwo: boolean = false;
           if (this.gameState.playerId === 2 && flag_two === true) {
             flag_two = false;
             const scoreFactor = 0.1; // adjust this value to control how much each point increases the level
@@ -564,6 +566,7 @@ class FlowField {
             this.gameState.matchPlayed =
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
+              hasWonPlayerTwo = true;
               this.gameState.solde = Math.max(
                 0,
                 5 + getOldDataOfCurrentUserData.solde
@@ -575,7 +578,7 @@ class FlowField {
               this.gameState.matchLost =
                 getOldDataOfCurrentUserData.matches_lost;
             } else if (this.gameState.gameEndResult === "Lost") {
-              // Ensure solde and level never go negative
+              hasWonPlayerTwo = false;
               this.gameState.solde = Math.max(
                 0,
                 getOldDataOfCurrentUserData.solde - 5
@@ -621,11 +624,11 @@ class FlowField {
             if (this.gameState.playerId === 1 && flag_update === true) {
               flag_update = false;
               console.log("level", this.gameState.level);
-              this.updateUser(currentUser);
+              this.updateUser(currentUser, hasWonPlayerOne);
             } else if (this.gameState.playerId === 2 && flag_update === true) {
               flag_update = false;
               console.log("level", this.gameState.level);
-              this.updateUser(currentUser);
+              this.updateUser(currentUser, hasWonPlayerTwo);
             }
           }
         })();
