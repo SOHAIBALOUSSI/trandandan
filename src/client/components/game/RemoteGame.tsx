@@ -516,9 +516,20 @@ class FlowField {
                 this.gameState.gameEndResult === "Won" ? 1 : 0;
               currentUser.matches_lost =
                 this.gameState.gameEndResult === "Lost" ? 1 : 0;
-              if (this.gameState.playerId === 1) this.updateUser(currentUser);
+              if (this.gameState.playerId === 1) 
+              {
+                if (this.gameState.gameEndResult === "Won")
+                  this.updateUser(currentUser, true);
+                else if (this.gameState.gameEndResult === "Lost")
+                  this.updateUser(currentUser, false);
+              }
               else if (this.gameState.playerId === 2)
-                this.updateUser(currentUser);
+              {
+                if (this.gameState.gameEndResult === "Won")
+                  this.updateUser(currentUser, true);
+                else if (this.gameState.gameEndResult === "Lost")
+                  this.updateUser(currentUser, false);
+              }
             }
             this.sendPlayerData(playerData);
             return;
