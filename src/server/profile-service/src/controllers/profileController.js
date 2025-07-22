@@ -56,7 +56,6 @@ export async function updateProfile(request, reply) {
             updatedFields.matches_played = profile.matches_lost + matches_won;
             updatedFields.level = (matches_won * 100 + profile.matches_lost * 50) / 500;
             updatedFields.solde = profile.solde + 5;
-
         } 
         if (matches_lost !== undefined) {
             updatedFields.matches_lost = matches_lost;
