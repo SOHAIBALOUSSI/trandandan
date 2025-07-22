@@ -27,3 +27,7 @@ export const floatValidation = {
     minimum: 0,
     maximum: 10000
 }
+
+export const booleanValidation = {
+    type: 'boolean'
+}
