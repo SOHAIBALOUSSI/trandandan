@@ -11,7 +11,7 @@ export async function createProfileTable(db){
             avatar_url TEXT DEFAULT '',
             status TEXT DEFAULT 'offline',
             solde INTEGER DEFAULT 5,
-            level INTEGER DEFAULT 0,
+            level REAL NOT NULL DEFAULT 0,
             rank INTEGER DEFAULT 0,
             matches_played INTEGER DEFAULT 0,
             matches_won INTEGER DEFAULT 0,

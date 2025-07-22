@@ -14,7 +14,7 @@
         game_end_result VARCHAR(100) NOT NULL,
         left_player_ball_hit INTEGER NOT NULL,
         right_player_ball_hit INTEGER NOT NULL,
-        level INTEGER NOT NULL,
+        level REAL NOT NULL DEFAULT 0,
         Solde INTEGER NOT NULL,
         matchPlayed INTEGER NOT NULL,
         matchWon INTEGER NOT NULL,

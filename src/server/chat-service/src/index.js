@@ -68,7 +68,7 @@ wss.on('connection', async (ws, request) => {
             users.set(ws.userId, new Set());
         users.get(ws.userId).add(ws);
         const messages = await getAllMessages(db, ws.userId);
-        if (messages) {
+        if (messages && ws.readyState === WebSocket.OPEN) {
             for (const message of messages)
                 ws.send(JSON.stringify(message));
         }
@@ -171,3 +171,18 @@ rabbit.consumeMessages(async (request) => {
         });
     }
 })
+
+const handleShutDown = async (signal) => {
+    try {
+        console.log(`Caught a signal or type ${signal}`);
+        await rabbit.close();
+        await db.close();
+        await redis.close();
+        process.exit(0);
+    } catch (error) {
+        console.log(error);
+        process.exit(0);
+    }
+}
+process.on('SIGINT', handleShutDown);
+process.on('SIGTERM', handleShutDown);

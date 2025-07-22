@@ -1,9 +1,4 @@
-- toast for all type of notifications
-- show a timer when dealing with otp code
-- switch to use https and wss
-- if the player online show the toast if not dont show
-- send message quue for notification read in client side
-- add btns in Profile for view frieds, security, update email, password
+- scan 2fa then print the otp code
 
 
 1. Player Profile Summary

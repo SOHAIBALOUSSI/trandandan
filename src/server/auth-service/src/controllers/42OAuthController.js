@@ -19,11 +19,13 @@ import {
 } from "../utils/authCookies.js";
 
 export async function   fortyTwoSetupHandler(request, reply) {
+    
     const url = `https://api.intra.42.fr/oauth/authorize?client_id=${process.env.FORTY_TWO_ID}&redirect_uri=${process.env.FORTY_TWO_REDIRECT_URI}&response_type=code`;
     reply.redirect(url);
 }
 
 export async function fortyTwoLoginHandler(request, reply) {
+    
     const { code } = request.query;
     if (!code)
         return reply.code(400).send(createResponse(400, 'AUTH_CODE_REQUIRED'));

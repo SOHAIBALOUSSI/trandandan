@@ -10,7 +10,7 @@ async function rabbitMQPlugin(fastify, options) {
         fastify.decorate('rabbit', rabbit);    
     } catch (error) {
         console.log("Failed to connect to RabbitMQ");
-        throw error;
+        throw new Error(error);
     }
 }
 

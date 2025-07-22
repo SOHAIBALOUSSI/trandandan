@@ -1,6 +1,6 @@
 import { 
     avatarUrlValidation, 
-    emailValidation, 
+    emailValidation,
     integerValidation, 
     usernameValidation 
 } from "./validationSchemas.js"
@@ -34,16 +34,31 @@ export const updateProfileSchema = {
     type: 'object',
     properties: {
         username: usernameValidation,
-        email: emailValidation,
-        avatar_url :avatarUrlValidation,
-        solde: integerValidation,
         rank: integerValidation,
-        level: integerValidation,
-		matches_played: integerValidation,
 		matches_won: integerValidation,
 		matches_lost: integerValidation
     },
     minProperties: 1,
-    maxProperties: 9,
+    maxProperties: 4,
     additionalProperties: false
+}
+
+export const profileIdSchema = {
+    type: 'object',
+    required: ['id'],
+    properties: {
+        id: { type: 'number' }
+    },
+    additionalProperties: false
+};
+
+export const fileNameSchema = {
+    type: 'object',
+    required: [':fileName'],
+    properties: {
+        fileName: {
+            type: 'string',
+            pattern: '^[a-zA-Z0-9-_]\.+$'
+        }
+    }
 }

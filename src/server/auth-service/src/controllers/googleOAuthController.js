@@ -4,11 +4,13 @@ import { createResponse, generateUsername } from "../utils/utils.js";
 import { setAuthCookies, clearAuthCookies } from "../utils/authCookies.js";
 
 export async function   googleSetupHandler(request, reply) {
+    
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_ID}&redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&response_type=code&scope=profile email&access_type=offline&prompt=consent`;
     reply.redirect(url);
 }
 
 export async function googleLoginHandler(request, reply) {
+    
     const { code } = request.query;
     if (!code)
         return reply.code(400).send(createResponse(400, 'AUTH_CODE_REQUIRED'));

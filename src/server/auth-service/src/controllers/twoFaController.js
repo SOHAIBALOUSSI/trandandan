@@ -10,6 +10,7 @@ import { findUserById } from "../models/userDAO.js";
 import { createResponse } from "../utils/utils.js";
 
 export async function getTwoFaHandler(request, reply) {
+    
     try {
         const userId = request.user?.id;
                 
@@ -28,6 +29,7 @@ export async function getTwoFaHandler(request, reply) {
 }
 
 export async function disableTwoFa(request, reply) {
+    
     try {
         const userId = request.user?.id;
                 
@@ -57,6 +59,7 @@ export async function disableTwoFa(request, reply) {
 }
 
 export async function enableTwoFa(request, reply) {
+    
     try {
         const userId = request.user?.id;
                 
@@ -82,6 +85,7 @@ export async function enableTwoFa(request, reply) {
 }
 
 export async function makePrimaryHandler(request, reply) {
+    
     try {
         const userId = request.user?.id;
                 

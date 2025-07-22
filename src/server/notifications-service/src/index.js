@@ -59,7 +59,7 @@ wss.on('connection', async (ws, request) => {
       users.set(ws.userId, new Set());
     users.get(ws.userId).add(ws);
     const notifications = await getAllNotifications(db, ws.userId);
-    if (notifications) {
+    if (notifications && ws.readyState === WebSocket.OPEN) {
       for (const notification of notifications) {
         notification.notification_ids = JSON.parse(notification.notification_ids);
         console.log("On connection notification: ", notification);
@@ -154,3 +154,18 @@ wss.on('error', (error) => {
   console.error('WebSocket: Server error:', error);
   process.exit(1);
 });
+
+const handleShutDown = async (signal) => {
+    try {
+        console.log(`Caught a signal or type ${signal}`);
+        await rabbit.close();
+        await redis.close();
+        await db.close();
+        process.exit(0);
+    } catch (error) {
+        console.log(error);
+        process.exit(0);
+    }
+}
+process.on('SIGINT', handleShutDown);
+process.on('SIGTERM', handleShutDown);

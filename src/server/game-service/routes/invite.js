@@ -3,28 +3,38 @@ import  RabbitMGame  from "./RabbitMGame.js"
 const invitePlayer = async (req, reply, fastify) => {
     const { senderId, receiverId } = req.body;
     const roomId = Math.random().toString(36).substr(2, 9);
+    console.log(roomId);
+    
+    if (!roomId || !senderId || !receiverId)
+      return reply.code(400).send({ error: "Missing fields" });
+    
     const rabbitMQ = new RabbitMGame('game'); // Queue name should match what the consumer listens to
     await rabbitMQ.connect();
-    console.log(roomId);
+    
     const redis = fastify.redis; // Access the Redis client from Fastify instance
     if (!redis) {
       console.error("Redis client is not available");
       return reply.code(500).send({ error: "Redis client is not available" });
     }
+
+    let isBlocked = await redis.sIsMember(`blocker:${senderId}`, `${receiverId}`) // Check is there is a block relationship between users first
+    if (!isBlocked)
+      isBlocked = await redis.sIsMember(`blocker:${receiverId}`, `${senderId}`)
+    if (isBlocked)
+      return reply.code(400).send({ error: "Block exists" });
+
     redis.set(`invite:${senderId}`, roomId, 'EX', 60 * 5); // Store the invite for 5 minutes
-  
-    if (!roomId || !senderId || !receiverId) {
-      return reply.code(400).send({ error: "Missing fields" });
-    }
+
     try {
       const message = {
         type: "INVITE_SENT",
-        senderId,
-        receiverId,
+        sender_id: senderId,
+        recipient_id: receiverId,
         roomId,
       };
       console.log(message);
-      await rabbitMQ.produceMessage(message, 'game.invite');
+      await rabbitMQ.produceMessage(message, 'notifications.game.invite');
+      
       return reply.code(200).send({ message: "Invite notification queued" });
     } catch (error) {
       console.error("Failed to send to RabbitMQ:", error);

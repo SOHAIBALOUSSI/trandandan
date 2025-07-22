@@ -41,36 +41,20 @@ export type TwoFAMethod = {
   is_primary: 1 | 0;
 };
 
-export type Notification =
-  | {
-      type: "FRIEND_REQUEST_SENT";
-      recipient_id: number;
-      sender_id: number;
-    }
-  | {
-      type: "FRIEND_REQUEST_ACCEPTED";
-      recipient_id: number;
-      sender_id: number;
-    }
-  | {
-      type: "FRIEND_REQUEST_REJECTED";
-      recipient_id: number;
-      sender_id: number;
-    }
-  | {
-      type: "MESSAGE_RECEIVED";
-      recipient_id: number;
-      sender_id?: number;
-      actualMessage: string;
-    }
-  | {
-      type: "INVITE_SENT";
-      recipient_id?: number;
-      sender_id?: number;
-      roomId: number;
-      senderId: number;
-      receiverId: number;
-    };
+export type Notification = {
+  notification_id: number;
+  type:
+    | "FRIEND_REQUEST_SENT"
+    | "FRIEND_REQUEST_ACCEPTED"
+    | "FRIEND_REQUEST_REJECTED"
+    | "MESSAGE_RECEIVED"
+    | "INVITE_SENT";
+  recipient_id?: number;
+  sender_id?: number;
+  notifications_count?: number;
+  last_notification_at?: string;
+  notification_ids?: number[];  
+};
 
 export type MessageSent = {
   type: "MESSAGE_SENT";

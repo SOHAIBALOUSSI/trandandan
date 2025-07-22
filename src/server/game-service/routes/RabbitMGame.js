@@ -37,7 +37,7 @@ class RabbitMGame {
         console.log('Failed to connect to RabbitMQ: ', error);
         this.isConnecting = false;
         await this.#attemptReconnect();
-        throw error;
+        throw new Error(error);
     }
   }
 
@@ -73,7 +73,7 @@ class RabbitMGame {
 
     } catch (error) {
         console.log('Error producing messages.', error);
-        throw error;
+        throw new Error(error);
     }
   }
 
@@ -99,7 +99,7 @@ class RabbitMGame {
       })
     } catch (error) {
         console.log('Error consuming messages.');
-        throw error;
+        throw new Error(error);
     }
   }
 

@@ -43,6 +43,7 @@ const hash = bcrypt.hash;
 const compare = bcrypt.compare;
 
 export async function lostPasswordHandler(request, reply) {
+    
     try {
         
         const { email } = request.body;
@@ -73,6 +74,7 @@ export async function lostPasswordHandler(request, reply) {
 }
 
 export async function verifyCodeHandler(request, reply) {
+    
     try {
         const userId = request.user?.id;
         const user = await findUserById(this.db, userId);
@@ -98,6 +100,7 @@ export async function verifyCodeHandler(request, reply) {
 }
 
 export async function updatePasswordHandler(request, reply) {
+    
     try {
         
         const userId = request.user?.id;
@@ -151,6 +154,7 @@ export async function updatePasswordHandler(request, reply) {
 }
 
 export async function loginHandler(request, reply) {
+    
     try {
         const { username, email, password } = request.body;
         const user = await findUser(this.db, username, email);
@@ -196,6 +200,7 @@ export async function loginHandler(request, reply) {
 }
 
 export async function registerHandler(request, reply) {
+    
     try {
         const { email, username, password, confirmPassword, gender} = request.body;
         if (password !== confirmPassword)
@@ -228,6 +233,7 @@ export async function registerHandler(request, reply) {
 }
 
 export async function logoutHandler(request, reply) {
+    
     try {
         const userId = request.user?.id;
         
@@ -253,6 +259,7 @@ export async function logoutHandler(request, reply) {
 }
 
 export async function meHandler(request, reply) {
+    
     try {
         const userId = request.user?.id;
         
@@ -268,6 +275,7 @@ export async function meHandler(request, reply) {
 }
 
 export async function refreshHandler(request, reply) {
+    
     try {
         const tokens = getAuthCookies(request);
         if (!tokens.refreshToken)
@@ -297,6 +305,7 @@ export async function refreshHandler(request, reply) {
 
 
 export async function updateCredentialsHandler(request, reply) {
+    
     const userId = request.user?.id;
     const { email, oldPassword, newPassword, confirmNewPassword } = request.body;
     try {
@@ -361,6 +370,7 @@ export async function updateCredentialsHandler(request, reply) {
 }
 
 export async function verifyUpdateCredentialsHandler(request, reply) {
+    
     const userId = request.user?.id;
     try {
         const user = await findUserById(this.db, userId);
@@ -423,6 +433,7 @@ export async function verifyUpdateCredentialsHandler(request, reply) {
 }
 
 export async function deleteUserDataHandler(request, reply) {
+    
     const userId = request.user?.id;
     try {
         const user = await findUserById(this.db, userId);

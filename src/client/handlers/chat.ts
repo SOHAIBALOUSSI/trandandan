@@ -6,7 +6,7 @@ let ws: WebSocket | null = null;
 export function startChatListener(onMessage: (msg: MessageSent) => void) {
 //   if (ws && ws.readyState === WebSocket.OPEN) return;
 
-  ws = new WebSocket("ws://localhost:3004");
+  ws = new WebSocket("/chat");
 
   ws.onopen = () => {
     console.log("Chat Websocket connection established.");

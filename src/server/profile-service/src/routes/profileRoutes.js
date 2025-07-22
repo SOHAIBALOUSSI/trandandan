@@ -1,6 +1,6 @@
 import { getAllProfiles, getAvatarUrl, getProfile, updateProfile, uploadAvatarUrl } from "../controllers/profileController.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
-import { updateProfileSchema } from "../schemas/profileSchema.js";
+import { profileIdSchema, updateProfileSchema } from "../schemas/profileSchema.js";
 
 async function profileRoutes(fastify) {
 
@@ -20,12 +20,16 @@ async function profileRoutes(fastify) {
     })
     
     fastify.get('/user/:id', {
+        schema: {
+            params: profileIdSchema
+        },
         preHandler: verifyToken,
         handler: getProfile
     })
     
     fastify.patch('/user/:id', {
         schema: {
+            params: profileIdSchema,
             body: updateProfileSchema
         },
         preHandler: verifyToken,

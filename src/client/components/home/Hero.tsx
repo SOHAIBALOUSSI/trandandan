@@ -2,6 +2,7 @@ import { fontSizes } from "@/styles/fontSizes";
 import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";
 import { RankBadge } from "@/components/common/RankBadge";
+import { generateRankQuote } from "@/utils/generate-rank-quote";
 
 function getWelcomeTitle(user: UserProfile): string {
   if (user.gender === "M") return `Mr.`;
@@ -43,7 +44,7 @@ export function Hero(props: { user: UserProfile }) {
           <p
             className={`text-pong-dark-primary/80 italic ${fontSizes.smallTextFontSize} mb-3`}
           >
-            “Every champion was once a contender who refused to give up.”
+           {generateRankQuote(user.rank)}
           </p>
           <a href="/my_profile" className={styles.darkPrimaryBtn} data-link>
             View Profile

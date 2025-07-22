@@ -21,3 +21,9 @@ export const integerValidation = {
     minimum: 0,
     maximum: 10000
 }
+
+export const floatValidation = {
+    type: 'number',
+    minimum: 0,
+    maximum: 10000
+}
