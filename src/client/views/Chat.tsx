@@ -1,6 +1,6 @@
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
-import { startChatListener, sendChatMessage } from "@/handlers/chat";
+import { startChatListener, sendChatMessage } from "@/services/chat-service";
 import { getCurrentUser } from "@/utils/user-store";
 import { MessageSent } from "types/types";
 import { getUserById } from "@/services/get-user-by-id";

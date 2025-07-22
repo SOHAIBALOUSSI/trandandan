@@ -27,3 +27,11 @@ export function dashboardLive(onData: (data: UserProfile[]) => void) {
     ws = null;
   };
 }
+
+export function stopDashboardListener() {
+  if (ws) {
+    ws.close();
+    ws = null;
+    console.log("Dashboard Websocket connection stopped.");
+  }
+}

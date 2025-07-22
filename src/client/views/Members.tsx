@@ -9,24 +9,16 @@ import { Loader } from "@/components/common/Loader";
 import { FriendsList } from "@/components/friends/FriendsList";
 import { AllMembersList } from "@/components/friends/AllMembersList";
 import { PendingRequestsList } from "@/components/friends/PendingRequestsList";
-import { handlePendingRequests } from "@/handlers/pending-requests";
+import { hydratePendingRequests } from "@/handlers/hydrate-pending";
 
-export function Friends() {
+export function Members() {
   const user = getCurrentUser();
   if (!user) {
-    return (
-      <section className={styles.pageLayoutDark}>
-        <NavBar />
-        <div className="w-full relative">
-          <TopBar />
-          <Loader text="Preparing your club profile..." />
-        </div>
-      </section>
-    );
+    return <Loader text="Preparing your club profile..." />;
   }
 
   setTimeout(() => {
-    handlePendingRequests();
+    hydratePendingRequests();
     hydrateFriends();
     hydrateAllMembers(user);
 

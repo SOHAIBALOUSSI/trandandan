@@ -1,4 +1,4 @@
-export function getUserRank(rank: number): string {
+export function getUserTitle(rank: number): string {
   if (rank <= 5) {
     return "Club Champion";
   } else if (rank <= 10) {

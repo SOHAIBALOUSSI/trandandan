@@ -3,7 +3,7 @@ import { navigateTo } from "@/utils/navigate-to-link";
 
 let allUsersCache: { id: number; username: string }[] = [];
 
-export async function handleSearchMemberLive(query: string) {
+export async function handleSearchMembers(query: string) {
   if (!allUsersCache.length) {
     allUsersCache = await getAllUsers();
   }

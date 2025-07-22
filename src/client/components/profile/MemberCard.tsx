@@ -3,7 +3,7 @@ import { updateUsername } from "@/services/update-username";
 import { displayToast } from "@/utils/display-toast";
 import { UpdateUserProfileRes } from "@/utils/response-messages";
 import { uploadAvatar } from "@/services/upload-avatar";
-import { getUserRank } from "@/utils/get-user-rank";
+import { getUserTitle } from "@/utils/get-user-title";
 
 export function MemberCard(props: {
   user: UserProfile;
@@ -215,7 +215,7 @@ export function MemberCard(props: {
               🎯 Level: {user.level}
             </span>
             <span className="bg-yellow-400/20 text-yellow-300 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              🏓 {getUserRank(user.rank)}
+              🏓 {getUserTitle(user.rank)}
             </span>
           </div>
 

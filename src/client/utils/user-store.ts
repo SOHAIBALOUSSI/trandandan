@@ -1,5 +1,5 @@
 import { UserProfile } from "types/types";
-import { getAvatarUrl } from "./get-avatar";
+import { getAvatarUrl } from "./get-avatar-url";
 
 let currentUser: UserProfile | null = null;
 

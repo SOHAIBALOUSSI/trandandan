@@ -4,8 +4,8 @@ import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
 import { Loader } from "@/components/common/Loader";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
-import { dashboardLive } from "@/handlers/dashboard";
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { dashboardLive } from "@/services/dashboard-service";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { UserProfile } from "types/types";
 
 export function Dashboard() {
@@ -75,15 +75,7 @@ export function Dashboard() {
   }, 0);
 
   if (!user) {
-    return (
-      <section className={styles.pageLayoutDark}>
-        <NavBar />
-        <div className="w-full relative">
-          <TopBar />
-          <Loader text="Preparing your club profile..." />
-        </div>
-      </section>
-    );
+    return <Loader text="Preparing your club profile..." />;
   }
 
   return (

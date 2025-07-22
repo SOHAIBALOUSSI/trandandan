@@ -2,7 +2,7 @@ import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { UpdatePasswordRes } from "@/utils/response-messages";
 
-export function handleUpdatePassword() {
+export function handleResetPassword() {
   const form = document.getElementById(
     "update-password-form"
   ) as HTMLFormElement;

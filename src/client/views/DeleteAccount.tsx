@@ -2,7 +2,6 @@ import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { deleteAccount } from "@/handlers/delete-account";
-import { SubmitBtn } from "@/components/common/SubmitBtn";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { fontSizes } from "@/styles/fontSizes";
 
@@ -24,10 +23,10 @@ export function DeleteAccount() {
             subtitle="Every journey has an end—even in the club of legends."
           />
 
-          <div
-            className={`${styles.cardOneStyle} items-center gap-8`}
-          >
-            <p className={`text-center text-pong-dark-primary font-medium ${fontSizes.bodyFontSize} leading-relaxed`}>
+          <div className={`${styles.cardOneStyle} items-center gap-8`}>
+            <p
+              className={`text-center text-pong-dark-primary font-medium ${fontSizes.bodyFontSize} leading-relaxed`}
+            >
               As you step away from the club, your legacy echoes through the
               halls of the lounge.
             </p>
@@ -41,17 +40,21 @@ export function DeleteAccount() {
             ></textarea>
 
             <div className="bg-pong-error/10 border border-pong-error/30 rounded-xl p-6 w-full max-w-xl text-center space-y-3 shadow-md">
-              <p className={`text-pong-error font-bold ${fontSizes.smallTextFontSize}`}>
+              <p
+                className={`text-pong-error font-bold ${fontSizes.smallTextFontSize}`}
+              >
                 ⚠️ This action is permanent.
               </p>
-              <p className={`text-pong-dark-primary/80 ${fontSizes.smallTextFontSize}`}>
+              <p
+                className={`text-pong-dark-primary/80 ${fontSizes.smallTextFontSize}`}
+              >
                 Your member profile, match history, and club stats will be
                 permanently deleted. There's no turning back.
               </p>
             </div>
 
             <button
-              type="submit"
+              type="button"
               id="submit-btn"
               aria-busy="false"
               className={styles.darkSubmitBtn + " w-full max-w-xl"}

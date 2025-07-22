@@ -2,7 +2,7 @@ import { getFriends } from "@/services/get-friends";
 import { getUserById } from "@/services/get-user-by-id";
 import { removeFriend } from "@/services/remove-friend";
 import { styles } from "@/styles/styles";
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { navigateTo } from "@/utils/navigate-to-link";
 
 export async function hydrateFriends() {

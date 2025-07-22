@@ -2,11 +2,11 @@ import { acceptFriend } from "@/services/accept-friend";
 import { rejectFriend } from "@/services/reject-friend";
 import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { listPendingRequests } from "@/services/list-pending-requests";
 
-export async function handlePendingRequests() {
+export async function hydratePendingRequests() {
   const list = document.getElementById(
     "pending-requests-list"
   ) as HTMLUListElement;

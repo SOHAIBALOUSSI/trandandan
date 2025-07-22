@@ -23,13 +23,6 @@ export type UserRegister = {
   confirmPassword: string;
 };
 
-export type UserRank = {
-  rank: number;
-  name: string;
-  level: string;
-  avatarUrl: string;
-};
-
 export type UserHistory = {
   id: number;
   user_name: string;
@@ -42,11 +35,6 @@ export type UserHistory = {
   left_player_ball_hit: number;
   right_player_ball_hit: number;
 };
-
-export type Activity =
-  | { type: "win"; user: string; targetUser: string }
-  | { type: "loss"; user: string; targetUser: string }
-  | { type: "tournament"; user: string; tournament: string };
 
 export type TwoFAMethod = {
   type: "app" | "email";

@@ -4,7 +4,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { fontSizes } from "@/styles/fontSizes";
 import { TopBar } from "@/components/layout/TopBar";
 
-export function UpdateCredentialsEmail() {
+export function ChangeEmail() {
   setTimeout(() => {
     handleChangeEmail();
   }, 0);

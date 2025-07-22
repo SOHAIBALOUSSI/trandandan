@@ -19,9 +19,9 @@ export function handleVerifyCredentials() {
 
     if (!btn || !codeInput) return;
 
-    const code = codeInput.value.trim();
+    const otpCode = codeInput.value.trim();
 
-    if (!code || code.length != 6) {
+    if (!otpCode || otpCode.length != 6) {
       displayToast("Please enter a valid 6-digit code.", "error");
       codeInput.focus();
       return;
@@ -38,15 +38,15 @@ export function handleVerifyCredentials() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otpCode: code }),
+        body: JSON.stringify({ otpCode }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
         sessionStorage.removeItem("2faModeUpdate");
-		sessionStorage.removeItem("passwordUpdated");
-		localStorage.removeItem("changedemailInput");
+        sessionStorage.removeItem("passwordUpdated");
+        localStorage.removeItem("changedemailInput");
         setTimeout(() => {
           isPassword
             ? displayToast(

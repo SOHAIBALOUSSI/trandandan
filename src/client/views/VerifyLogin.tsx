@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Overlay } from "@/components/layout/Overlay";
 import { OtpInput } from "@/components/common/OtpInput";
 import { verifyLogin } from "@/handlers/verify-login";
-import { handleOtpInput } from "@/handlers/otp-input";
+import { manipulateOtpInput } from "@/utils/manipulate-otp-input";
 import { fontSizes } from "@/styles/fontSizes";
 import { SubmitBtn } from "@/components/common/SubmitBtn";
 
@@ -11,7 +11,7 @@ export function VerifyLogin() {
   const twofaMode = sessionStorage.getItem("2faMode");
 
   setTimeout(() => {
-    handleOtpInput("verify-login-otp");
+    manipulateOtpInput("verify-login-otp");
     verifyLogin(twofaMode);
   }, 0);
 

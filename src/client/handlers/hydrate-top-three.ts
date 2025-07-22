@@ -1,5 +1,5 @@
 import { getAllUsers } from "@/services/get-all-users";
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";
 import { navigateTo } from "@/utils/navigate-to-link";

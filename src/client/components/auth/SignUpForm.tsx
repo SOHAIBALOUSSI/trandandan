@@ -4,7 +4,7 @@ import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { SubmitBtn } from "../common/SubmitBtn";
 import { handleSignUp } from "@/handlers/signup";
-import { showPasswordToggle } from "@/utils/show-password";
+import { showPasswordToggle } from "@/utils/show-password-toggle";
 
 export function SignUpForm() {
   const passwordId = "password";

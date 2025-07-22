@@ -3,12 +3,12 @@ import { handleVerifyCredentials } from "@/handlers/verify-update-credentials";
 import { NavBar } from "@/components/layout/NavBar";
 import { fontSizes } from "@/styles/fontSizes";
 
-export function VerifyUpdateCredentials() {
-  const twofaMode = sessionStorage.getItem("2faModeUpdate");
-
+export function VerifyChangeCredentials() {
   setTimeout(() => {
     handleVerifyCredentials();
   }, 0);
+
+  const twofaMode = sessionStorage.getItem("2faModeUpdate");
 
   const isAppMode = twofaMode === "app";
   const instructionText = isAppMode

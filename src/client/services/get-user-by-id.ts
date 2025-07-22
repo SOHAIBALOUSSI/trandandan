@@ -1,4 +1,4 @@
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { UserProfile } from "types/types";
 
 export async function getUserById(id: number): Promise<UserProfile | null> {

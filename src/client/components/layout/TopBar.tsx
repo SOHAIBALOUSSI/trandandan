@@ -1,6 +1,6 @@
 import { styles } from "@/styles/styles";
-import { clearNotificationCounter } from "@/handlers/notifications";
-import { handleSearchMemberLive } from "@/handlers/search-members";
+import { clearNotificationCounter } from "@/services/notifications-service";
+import { handleSearchMembers } from "@/handlers/search-members";
 
 export function TopBar() {
   setTimeout(() => {
@@ -44,11 +44,11 @@ export function TopBar() {
     const searchBar = document.getElementById("search-bar") as HTMLInputElement;
     if (searchBar) {
       searchBar.addEventListener("input", () => {
-        handleSearchMemberLive(searchBar.value);
+        handleSearchMembers(searchBar.value);
       });
       searchBar.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-          handleSearchMemberLive(searchBar.value);
+          handleSearchMembers(searchBar.value);
         }
       });
     }
@@ -62,7 +62,7 @@ export function TopBar() {
           id="search-bar"
           placeholder="Find A Racket Companion..."
           className={styles.searchBarStyle}
-		  autocomplete="off"
+          autocomplete="off"
         />
       </div>
 

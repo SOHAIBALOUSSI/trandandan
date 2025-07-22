@@ -1,7 +1,7 @@
 import { getBlockedUsers } from "@/services/get-blocked-users";
 import { getUserById } from "@/services/get-user-by-id";
 import { unblockFriend } from "@/services/unblock-friend";
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { styles } from "@/styles/styles";
 
 export async function hydrateBlocked() {

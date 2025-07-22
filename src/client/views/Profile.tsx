@@ -11,15 +11,7 @@ import { showUserBadge } from "@/utils/show-user-badge";
 export function Profile() {
   const user = getCurrentUser();
   if (!user) {
-    return (
-      <section className={styles.pageLayoutDark}>
-        <NavBar />
-        <div className="w-full relative">
-          <TopBar />
-          <Loader text="Preparing your club profile..." />
-        </div>
-      </section>
-    );
+    return <Loader text="Preparing your club profile..." />;
   }
 
   return (

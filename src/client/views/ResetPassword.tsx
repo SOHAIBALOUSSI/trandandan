@@ -1,12 +1,12 @@
-import { handleUpdatePassword } from "@/handlers/reset-password";
+import { handleResetPassword } from "@/handlers/reset-password";
 import { Footer } from "@/components/layout/Footer";
 import { styles } from "@/styles/styles";
 import { Overlay } from "@/components/layout/Overlay";
 import { SubmitBtn } from "@/components/common/SubmitBtn";
 import { fontSizes } from "@/styles/fontSizes";
-import { showPasswordToggle } from "@/utils/show-password";
+import { showPasswordToggle } from "@/utils/show-password-toggle";
 
-export function UpdatePassword() {
+export function ResetPassword() {
   const passwordId = "new-password";
   const showPasswordIconId = "update-show-pass";
   const confirmPasswordId = "confirm-new-password";
@@ -15,7 +15,7 @@ export function UpdatePassword() {
   setTimeout(() => {
     showPasswordToggle(showPasswordIconId, passwordId);
     showPasswordToggle(showConfirmPasswordIconId, confirmPasswordId);
-    handleUpdatePassword();
+    handleResetPassword();
   }, 0);
 
   return (

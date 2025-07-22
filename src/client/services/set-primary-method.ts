@@ -17,6 +17,6 @@ export async function setPrimaryMethod(
     displayToast(msg, res.ok ? "success" : "error");
     if (onUpdate) onUpdate();
   } catch {
-    displayToast("Set primary method error", "error");
+    displayToast(Change2FaStateRes.INTERNAL_SERVER_ERROR, "error");
   }
 }

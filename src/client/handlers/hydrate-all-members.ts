@@ -2,7 +2,7 @@ import { UserProfile } from "types/types";
 import { styles } from "@/styles/styles";
 import { getAllUsers } from "@/services/get-all-users";
 import { sendFriendRequest } from "@/services/send-friend-request";
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { getFriends } from "@/services/get-friends";
 import { navigateTo } from "@/utils/navigate-to-link";
 
