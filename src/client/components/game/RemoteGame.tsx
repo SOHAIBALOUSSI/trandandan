@@ -436,14 +436,11 @@ class FlowField {
     };
   }
   public updateUser(currentUser: UserProfile): void {
-    // console.log("Updating user data:");
     const payload = {
-      level: currentUser.level,
-      solde: currentUser.solde,
-      matches_played: currentUser.matches_played,
       matches_won: currentUser.matches_won,
       matches_lost: currentUser.matches_lost,
     };
+    console.log("Updating user data:", payload);
     fetch(`/profile/user/${currentUser.userId}`, {
       method: "PATCH",
       credentials: "include",
