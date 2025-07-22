@@ -345,47 +345,20 @@ class FlowFieldLocal {
       };
     });
   }
-  public updateProfile(currentUser: UserProfile): void {
-    const payload = {
-      solde: currentUser.solde,
-    };
-    fetch(`/profile/user/${currentUser.userId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("User updated successfully:", data);
-      })
-      .catch((error) => {
-        console.error("Error updating user:", error);
-      });
-  }
-
   public updateGameState(data: string): void {
-    const currentProfile = getCurrentUser();
-    if (!currentProfile) return;
-
     this.gameState = JSON.parse(data);
     this.domElements.rightPlayerScoreLocal.textContent =
       this.gameState.rightPlayerScore.toString();
     this.domElements.leftPlayerScoreLocal.textContent =
       this.gameState.leftPlayerScore.toString();
     if (this.gameState.rightPlayerScore === 5) {
-      currentProfile!.solde += 5;
       this.domElements.result.innerText =
         "Right Side Triumphs! A well-earned victory.";
-      this.updateProfile(currentProfile!);
       this.setInitialStat();
     }
     if (this.gameState.leftPlayerScore === 5) {
-      currentProfile!.solde += 5;
       this.domElements.result.innerText =
         "Left Side Prevails! The rally ends in glory.";
-      this.updateProfile(currentProfile!);
       this.setInitialStat();
     }
   }
