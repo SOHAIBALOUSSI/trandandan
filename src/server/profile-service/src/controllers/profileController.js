@@ -32,7 +32,7 @@ export async function updateProfile(request, reply) {
         if (tokenId != id)
             return reply.code(403).send(createResponse(403, 'UNAUTHORIZED'));
         
-        const { username, rank, matches_won, matches_lost } = request.body;
+        const { username, matches_won, matches_lost, hasWon } = request.body;
         
         const profile = await getProfileById(this.db, id);
         if (!profile)
@@ -50,15 +50,13 @@ export async function updateProfile(request, reply) {
             }, 'auth.username.updated');
         }
         
-        if (rank !== undefined) updatedFields.rank = rank;
-        if (matches_won !== undefined) {
+        if (matches_won !== undefined && hasWon) {
             updatedFields.matches_won = matches_won;
             updatedFields.matches_played = profile.matches_lost + matches_won;
             updatedFields.level = (matches_won * 100 + profile.matches_lost * 50) / 500;
             updatedFields.solde = profile.solde + 5;
-
         } 
-        if (matches_lost !== undefined) {
+        if (matches_lost !== undefined && !hasWon) {
             updatedFields.matches_lost = matches_lost;
             updatedFields.matches_played = profile.matches_won + matches_lost;
             updatedFields.level = (matches_lost * 50 + profile.matches_won * 100) / 500;

@@ -1,5 +1,6 @@
 import { 
     avatarUrlValidation, 
+    booleanValidation, 
     emailValidation,
     integerValidation, 
     usernameValidation 
@@ -36,10 +37,11 @@ export const updateProfileSchema = {
         username: usernameValidation,
         rank: integerValidation,
 		matches_won: integerValidation,
-		matches_lost: integerValidation
+		matches_lost: integerValidation,
+        hasWon: booleanValidation
     },
     minProperties: 1,
-    maxProperties: 4,
+    maxProperties: 5,
     additionalProperties: false
 }
 
