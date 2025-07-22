@@ -19,16 +19,17 @@ import {
 import { 
     registerSchema, 
     loginSchema,
-    tokenSchema, 
     otpCodeSchema, 
     emailSchema,
     passwordSchema, 
     updateCredentialsSchema
 } from '../schemas/authSchema.js';
+import { strictRateLimit } from '../schemas/rateLimitSchema.js';
 
 
 async function authRoutes(fastify) {
     fastify.post('/login',  {
+        config: strictRateLimit,
         schema: {
             body: loginSchema
         },
@@ -36,6 +37,7 @@ async function authRoutes(fastify) {
     });
 
     fastify.post('/register', {
+        config: strictRateLimit,
         schema: {
             body: registerSchema
         },
@@ -57,6 +59,7 @@ async function authRoutes(fastify) {
     } );
 
     fastify.get('/google',{
+        config: strictRateLimit,
         handler: googleSetupHandler
     } );
 
@@ -65,6 +68,7 @@ async function authRoutes(fastify) {
     } );
 
     fastify.get('/42',{
+        config: strictRateLimit,
         handler: fortyTwoSetupHandler
     } );
 
@@ -73,6 +77,7 @@ async function authRoutes(fastify) {
     } );
 
     fastify.post('/lost-password', {
+        config: strictRateLimit,
         schema: {
             body: emailSchema
         }, 
@@ -80,6 +85,7 @@ async function authRoutes(fastify) {
     });
 
     fastify.post('/verify-code', {
+        config: strictRateLimit,
         schema: {
             body: otpCodeSchema
         }, 
@@ -88,6 +94,7 @@ async function authRoutes(fastify) {
     });
 
     fastify.post('/update-password', {
+        config: strictRateLimit,
         schema: {
             body: passwordSchema
         }, 
@@ -96,6 +103,7 @@ async function authRoutes(fastify) {
     });
 
     fastify.post('/update-credentials', {
+        config: strictRateLimit,
         schema: {
             body: updateCredentialsSchema
         }, 
@@ -104,6 +112,7 @@ async function authRoutes(fastify) {
     });
     
     fastify.post('/verify-update-credentials', {
+        config: strictRateLimit,
         schema: {
             body: otpCodeSchema
         }, 
@@ -112,6 +121,7 @@ async function authRoutes(fastify) {
     });
 
     fastify.delete('/delete', {
+        config: strictRateLimit,
         preHandler: fastify.authenticate,
         handler: deleteUserDataHandler
     });
