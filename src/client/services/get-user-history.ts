@@ -1,4 +1,6 @@
-export async function getUserHistory(userId: number) : Promise<any[]> {
+import { UserHistory } from "types/types";
+
+export async function getUserHistory(userId: number): Promise<UserHistory[]> {
   try {
     const response = await fetch("http://localhost:5000/user-history", {
       method: "POST",

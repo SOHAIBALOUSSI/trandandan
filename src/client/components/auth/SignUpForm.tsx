@@ -28,14 +28,27 @@ export function SignUpForm() {
     const options = [male, female];
 
     let focusedIndex = -1;
+    let selectedIndex = -1;
 
-    if (!titleInput || !genderSelect || !male || !female) return;
+    function updateSelectedOption(index: number) {
+      options.forEach((opt, idx) => {
+        if (idx === index) {
+          opt.setAttribute("aria-selected", "true");
+          opt.classList.add("bg-pong-accent/40", "font-bold");
+        } else {
+          opt.setAttribute("aria-selected", "false");
+          opt.classList.remove("bg-pong-accent/40", "font-bold");
+        }
+      });
+      selectedIndex = index;
+    }
 
     function openOptions() {
       genderSelect?.classList.remove("hidden");
       titleInput.setAttribute("aria-expanded", "true");
-      focusedIndex = 0;
+      focusedIndex = selectedIndex >= 0 ? selectedIndex : 0;
       options[focusedIndex].focus();
+      updateSelectedOption(focusedIndex);
     }
 
     function closeOptions() {
@@ -46,7 +59,7 @@ export function SignUpForm() {
 
     titleInput.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (genderSelect.classList.contains("hidden")) {
+      if (genderSelect?.classList.contains("hidden")) {
         openOptions();
       } else {
         closeOptions();
@@ -63,6 +76,7 @@ export function SignUpForm() {
     options.forEach((opt, idx) => {
       opt.addEventListener("click", () => {
         titleInput.value = opt.textContent || "";
+        updateSelectedOption(idx);
         closeOptions();
         titleInput.focus();
       });
@@ -71,13 +85,16 @@ export function SignUpForm() {
           e.preventDefault();
           focusedIndex = (idx + 1) % options.length;
           options[focusedIndex].focus();
+          updateSelectedOption(focusedIndex);
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
           focusedIndex = (idx - 1 + options.length) % options.length;
           options[focusedIndex].focus();
+          updateSelectedOption(focusedIndex);
         } else if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           titleInput.value = opt.textContent || "";
+          updateSelectedOption(idx);
           closeOptions();
           titleInput.focus();
         } else if (e.key === "Escape") {
@@ -88,10 +105,20 @@ export function SignUpForm() {
     });
 
     document.addEventListener("click", (e) => {
-      if (!genderSelect.contains(e.target as Node) && e.target !== titleInput) {
+      if (
+        !genderSelect?.contains(e.target as Node) &&
+        e.target !== titleInput
+      ) {
         closeOptions();
       }
     });
+
+    if (titleInput.value) {
+      const idx = options.findIndex(
+        (opt) => opt.textContent === titleInput.value
+      );
+      if (idx >= 0) updateSelectedOption(idx);
+    }
   }, 0);
 
   return (

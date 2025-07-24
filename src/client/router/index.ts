@@ -2,7 +2,7 @@ import { Welcome } from "@/views/Welcome";
 import { Signin } from "@/views/Signin";
 import { Signup } from "@/views/Signup";
 import { LostPassword } from "@/views/LostPassword";
-import { ResetPassword } from "@/views/LostPassword";
+import { ResetPassword } from "@/views/ResetPassword";
 import { VerifyLogin } from "@/views/VerifyLogin";
 import { Home } from "@/views/Home";
 import { Game } from "@/views/Game";

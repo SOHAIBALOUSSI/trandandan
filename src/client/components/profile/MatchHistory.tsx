@@ -1,6 +1,12 @@
 import { fontSizes } from "@/styles/fontSizes";
+import { UserProfile } from "types/types";
+import { loadMatchHistory } from "@/handlers/load-match-history";
 
-export function RecentMatches() {
+export function MatchHistory(props: { user: UserProfile }) {
+  setTimeout(() => {
+    loadMatchHistory(props.user);
+  }, 0);
+
   return (
     <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
       <h2
@@ -9,6 +15,7 @@ export function RecentMatches() {
         Recent Matches
       </h2>
       <ul
+        id="match-history-list"
         className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`}
       >
         <p className="text-gray-400">No recent matches found.</p>

@@ -7,6 +7,8 @@ import { Loader } from "@/components/common/Loader";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { fontSizes } from "@/styles/fontSizes";
 import { showUserBadge } from "@/utils/show-user-badge";
+import { getUserTitle } from "@/utils/get-user-title";
+import { MatchHistory } from "@/components/profile/MatchHistory";
 
 export function Profile() {
   const user = getCurrentUser();
@@ -25,52 +27,42 @@ export function Profile() {
             subtitle="Review your identity, matches, and achievements."
           />
 
-          <div className="absolute z-50 top-100 right-2 md:right-10 w-20 md:w-32 h-20 md:h-32 rounded-full overflow-hidden bg-gradient-to-br from-pong-primary/80 to-pong-secondary">
-            <img
-              src={showUserBadge(user.rank)}
-              alt={`${user.username}'s badge`}
-              className="bg-cover p-1 rounded-full"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 gap-8 w-full">
-            <div className="order-1 flex flex-col items-center space-y-6 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 w-full max-w-5xl">
+            <div className="lg:col-span-2 flex flex-col items-center">
               <MemberCard user={user} showUpdateOptions={true} />
+            </div>
 
-              <div className="w-full max-w-2xl">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-2">
-                  <a
-                    href="/members"
-                    data-link
-                    className={styles.darkPrimaryBtn}
-                  >
-                    <i className="fa-solid fa-user-group mr-2"></i>View Friends
-                  </a>
-                  <a
-                    href="/chamber"
-                    data-link
-                    className={styles.darkPrimaryBtn}
-                  >
-                    <i className="fa-solid fa-ranking-star mr-2"></i>See Ranking
-                  </a>
-                  <a
-                    href="/security"
-                    data-link
-                    className={styles.darkPrimaryBtn}
-                  >
-                    <i className="fa-solid fa-lock mr-2"></i>Enable 2FA
-                  </a>
-                  <a
-                    href="/security"
-                    data-link
-                    className={styles.darkPrimaryBtn}
-                  >
-                    <i className="fa-solid fa-gear mr-2"></i>Update Password
-                  </a>
-                </div>
+            <div className="lg:col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-2">
+              <div className="p-4 bg-pong-dark-custom rounded-xl shadow-md text-center">
+                <h3
+                  className={`${fontSizes.smallTitleFontSize} pb-2 font-bold text-yellow-400 `}
+                >
+                  Wins
+                </h3>
+                <p className="text-2xl md:text-3xl">{user.matches_won || 0}</p>
+              </div>
+              <div className="p-4 bg-pong-dark-custom rounded-xl shadow-md text-center">
+                <h3
+                  className={`${fontSizes.smallTitleFontSize} pb-2 font-bold text-yellow-400 `}
+                >
+                  Losses
+                </h3>
+                <p className="text-2xl md:text-3xl">{user.matches_lost || 0}</p>
+              </div>
+              <div className="p-4 bg-pong-dark-custom rounded-xl shadow-md text-center col-span-2">
+                <h3
+                  className={`${fontSizes.smallTitleFontSize} pb-2 font-bold text-yellow-400 `}
+                >
+                  Current Title
+                </h3>
+                <p className="text-2xl md:text-3xl">
+                  {getUserTitle(user.rank) || "Challenger"}
+                </p>
               </div>
             </div>
           </div>
+
+          <MatchHistory user={user} />
         </main>
       </div>
     </section>
