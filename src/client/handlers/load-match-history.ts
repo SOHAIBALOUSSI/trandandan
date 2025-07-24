@@ -63,7 +63,7 @@ export async function loadMatchHistory(user: UserProfile) {
 
     const enemy = document.createElement("p");
     enemy.className = "text-sm text-gray-300";
-    enemy.textContent = `Opponent: ID ${enemyId?.username || "Unknown"}`;
+    enemy.textContent = `Opponent: ${enemyId?.username || "Unknown"}`;
 
     const hits = document.createElement("p");
     hits.className = "text-sm text-gray-400";
