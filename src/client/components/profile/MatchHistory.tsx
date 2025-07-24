@@ -8,11 +8,11 @@ export function MatchHistory(props: { user: UserProfile }) {
   }, 0);
 
   return (
-    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
+    <div className="bg-pong-dark-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
       <h2
         className={`text-pong-dark-primary font-bold mb-8 tracking-tight ${fontSizes.smallTitleFontSize}`}
       >
-        Recent Matches
+        Chronicles of Play
       </h2>
       <ul
         id="match-history-list"
