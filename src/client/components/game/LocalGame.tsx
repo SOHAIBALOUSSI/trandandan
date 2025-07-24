@@ -2,7 +2,6 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { getCurrentUser } from "@/utils/user-store";
 import { UserProfile } from "types/types";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
-import { GameStateLocal } from "types/types";
 import { styles } from "@/styles/styles";
 
 export function LocalGame() {
@@ -167,6 +166,20 @@ export function LocalGame() {
   // Call after DOM is ready
 
   return container;
+}
+
+interface GameStateLocal {
+  paddleLeftY: number;
+  paddelRightY: number;
+  ballX: number;
+  ballY: number;
+  keypressd: string[];
+  rightPlayerScore: number;
+  leftPlayerScore: number;
+  flagX: boolean;
+  flagY: boolean;
+  ballSpeed: number;
+  count: number;
 }
 
 // Modified FlowFieldLocal class

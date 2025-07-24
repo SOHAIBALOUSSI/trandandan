@@ -1,9 +1,9 @@
 import { UserProfile } from "types/types";
 import { styles } from "@/styles/styles";
-import { getAllUsers } from "@/services/get-users";
+import { getAllUsers } from "@/services/get-all-users";
 import { sendFriendRequest } from "@/services/send-friend-request";
-import { getAvatarUrl } from "@/utils/get-avatar";
-import { getAllFriends } from "@/services/get-friends";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
+import { getFriends } from "@/services/get-friends";
 import { navigateTo } from "@/utils/navigate-to-link";
 
 export async function hydrateAllMembers(currentUser: UserProfile) {
@@ -11,10 +11,10 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
   if (!list) return;
 
   const users = await getAllUsers();
-  const friends = await getAllFriends();
+  const friends = await getFriends();
 
   if (!users.length || users.length === 1) {
-    list.innerHTML = `<li class="text-white text-center">No members found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center">No members found.</li>`;
     return;
   }
 
@@ -23,13 +23,12 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
   users.forEach((user: UserProfile) => {
     if (user.id !== currentUser.id && !friends.includes(user.id)) {
       const li = document.createElement("li");
-      li.className =
-        "flex items-center justify-between gap-4 py-2 border-b border-white/10";
+      li.className = styles.listStyle + " items-center justify-between gap-4";
 
       const avatar = document.createElement("img");
       avatar.src = getAvatarUrl(user);
       avatar.alt = `${user.username}'s avatar`;
-      avatar.className = "w-10 h-10 rounded-full";
+      avatar.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
 
       const name = document.createElement("span");
       name.className = "text-lg font-semibold text-white normal-case";
@@ -45,10 +44,10 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
 
       const addBtn = document.createElement("button");
       addBtn.className = styles.darkPrimaryBtn;
-      addBtn.textContent = "Add Friend";
+      addBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i>`;
       addBtn.onclick = () => {
         addBtn.disabled = true;
-        addBtn.textContent = "Request Sent";
+        addBtn.innerHTML = `<i class="fa-solid fa-circle-xmark"></i>`;
         addBtn.style.backgroundColor = "#4a5568";
         sendFriendRequest(user.id);
       };

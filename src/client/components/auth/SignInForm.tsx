@@ -4,7 +4,7 @@ import { RemoteLink } from "./RemoteLink";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { handleSignIn } from "@/handlers/signin";
-import { showPasswordToggle } from "@/utils/show-password";
+import { showPasswordToggle } from "@/utils/show-password-toggle";
 
 export function SignInForm() {
   const showPasswordIconId = "signin-show-pass";

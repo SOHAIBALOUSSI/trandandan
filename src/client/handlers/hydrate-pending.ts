@@ -2,28 +2,11 @@ import { acceptFriend } from "@/services/accept-friend";
 import { rejectFriend } from "@/services/reject-friend";
 import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { listPendingRequests } from "@/services/list-pending-requests";
 
-export async function listPendingRequests() {
-  try {
-    const res = await fetch("/friends/requests", {
-      credentials: "include",
-    });
-
-    if (!res.ok) return [];
-
-    const data = await res.json();
-    const requesterIds = data.data.requests.map(
-      (r: { requester_id: number }) => r.requester_id
-    );
-    return requesterIds;
-  } catch (err) {
-    return [];
-  }
-}
-
-export async function handlePendingRequests() {
+export async function hydratePendingRequests() {
   const list = document.getElementById(
     "pending-requests-list"
   ) as HTMLUListElement;
@@ -32,7 +15,7 @@ export async function handlePendingRequests() {
   const pending = await listPendingRequests();
 
   if (!pending.length) {
-    list.innerHTML = `<li class="text-white text-center">No pending requests found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center">No pending requests found.</li>`;
     return;
   }
 
@@ -45,13 +28,12 @@ export async function handlePendingRequests() {
     const username = user.username;
 
     const li = document.createElement("li");
-    li.className =
-      "flex flex-wrap items-center justify-between gap-4 py-2 border-b border-white/10";
+    li.className = styles.listStyle + " items-center justify-between gap-4";
 
     const avatar = document.createElement("img");
     avatar.src = getAvatarUrl(user);
     avatar.alt = `${user.username}'s avatar`;
-    avatar.className = "w-10 h-10 rounded-full";
+    avatar.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
 
     const name = document.createElement("span");
     name.className = "text-lg font-semibold text-white normal-case";
@@ -69,9 +51,9 @@ export async function handlePendingRequests() {
     buttons.className = "flex flex-row items-center gap-4";
 
     const acceptBtn = document.createElement("button");
-    acceptBtn.textContent = "Accept";
+    acceptBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
     acceptBtn.className =
-      "font-semibold capitalize bg-pong-success hover:bg-green-600 text-white px-4 py-1.5 rounded shadow transition focus:outline-none active:scale-[0.98]";
+      styles.darkPrimaryBtn + " bg-pong-success hover:!bg-green-600";
     acceptBtn.setAttribute(
       "aria-label",
       `Accept friend request from ${username}`
@@ -82,9 +64,9 @@ export async function handlePendingRequests() {
     };
 
     const rejectBtn = document.createElement("button");
-    rejectBtn.textContent = "Reject";
+    rejectBtn.innerHTML = `<i class="fa-solid fa-circle-xmark"></i>`;
     rejectBtn.className =
-      "font-semibold capitalize bg-pong-error hover:bg-red-600 text-white px-4 py-1.5 rounded shadow transition focus:outline-none active:scale-[0.98]";
+      styles.darkPrimaryBtn + " bg-pong-error hover:!bg-red-600";
     rejectBtn.setAttribute(
       "aria-label",
       `Reject friend request from ${username}`

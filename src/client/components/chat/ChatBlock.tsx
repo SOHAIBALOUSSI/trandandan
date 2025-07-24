@@ -1,5 +1,5 @@
 import { UserProfile } from "types/types";
-import { getUserRank } from "@/utils/get-user-rank";
+import { getUserTitle } from "@/utils/get-user-title";
 
 export function ChatBlock(friend: UserProfile) {
   return (
@@ -27,7 +27,7 @@ export function ChatBlock(friend: UserProfile) {
               Level {friend.level}
             </span>
             <span className="bg-yellow-400/10 text-yellow-300 px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              {getUserRank(friend.level)}
+              {getUserTitle(friend.level)}
             </span>
           </div>
         </div>
@@ -36,7 +36,9 @@ export function ChatBlock(friend: UserProfile) {
             className="relative bg-pong-dark-accent text-white hover:bg-pong-accent/90 px-3 py-2 md:px-4 md:py-2 rounded-lg shadow-md transition group"
             title="Challenge to Match"
           >
-            <span className="normal-case w-24 absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">Challenge {friend.username} to a match</span>
+            <span className="normal-case w-24 absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
+              Challenge {friend.username} to a match
+            </span>
             <i className="fa-solid fa-table-tennis-paddle-ball text-base md:text-lg"></i>
           </button>
         </div>

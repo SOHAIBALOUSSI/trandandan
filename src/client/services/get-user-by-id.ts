@@ -1,4 +1,4 @@
-import { getAvatarUrl } from "@/utils/get-avatar";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { UserProfile } from "types/types";
 
 export async function getUserById(id: number): Promise<UserProfile | null> {
@@ -10,11 +10,12 @@ export async function getUserById(id: number): Promise<UserProfile | null> {
     if (!response.ok) return null;
 
     const data = await response.json();
+
     const user = data.data.profile;
     user.avatar_url = getAvatarUrl(user);
     return user;
-  } catch (error) {
-    console.error(`Error fetching user with ID ${id}:`, error);
+  } catch {
+    console.error(`Error fetching user with ID ${id}:`);
     return null;
   }
 }

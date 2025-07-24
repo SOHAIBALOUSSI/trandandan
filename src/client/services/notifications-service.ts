@@ -2,17 +2,17 @@ import { Notification } from "types/types";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { displayToast } from "@/utils/display-toast";
 import { getUserById } from "@/services/get-user-by-id";
-import { getInviteRoomId } from "@/services/get-invite-room-id";
+import { getRoomId } from "@/services/get-room-id";
 import { acceptInvite } from "@/services/accept-invite";
 
 let ws: WebSocket | null = null;
 let unseenCount = 0;
 const seenIds = new Set<number>(
-  JSON.parse(sessionStorage.getItem("seenNotifs") || "[]")
+  JSON.parse(localStorage.getItem("seenNotifs") || "[]")
 );
 
 function saveSeen() {
-  sessionStorage.setItem("seenNotifs", JSON.stringify(Array.from(seenIds)));
+  localStorage.setItem("seenNotifs", JSON.stringify(Array.from(seenIds)));
 }
 
 function updateCounter() {
@@ -72,15 +72,19 @@ async function renderNotification(notif: Notification) {
 
     case "INVITE_SENT":
       label = `
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
-          <span>
-            <span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
-			</span>
-		  <button id="accept-invite">Accept Invite</button>
-		  <button id="decline-invite">Decline Invite</button>
-        </div>
-      `;
+          <div class="flex items-center justify-between gap-2">
+			<div>
+			  <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
+			  <span>
+			  	<span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
+			  </span>
+			</div>
+			<div>
+			  <button id="accept-invite">Accept</button>
+			  <button id="decline-invite">Decline</button>
+			</div>
+          </div>
+        `;
       break;
 
     default:
@@ -110,13 +114,11 @@ async function renderNotification(notif: Notification) {
     };
   } else if (notif.type === "INVITE_SENT") {
     li.onclick = async () => {
-      if (typeof notif.sender_id === "undefined") {
-        displayToast("Invite sender ID is missing.", "error");
-        return;
+      const roomId: string | null = await getRoomId(notif.sender_id || 0);
+      if (roomId) {
+        acceptInvite(roomId, notif.sender_id || 0, notif.recipient_id || 0);
+        navigateTo(`/remote?roomId=${roomId}`);
       }
-      const roomId = await getInviteRoomId(notif.sender_id.toString());
-      await acceptInvite(roomId, notif.sender_id, notif.recipient_id || 0);
-      navigateTo(`/remote?roomId=${roomId}`);
       markNotificationsAsRead([notif.notification_id]);
       li.remove();
     };
@@ -177,17 +179,54 @@ export function startNotificationListener() {
   };
 
   ws.onmessage = async (event: MessageEvent) => {
-    console.log("Notification received:", event.data);
     try {
-      const notif: Notification = JSON.parse(event.data);
+      const notif = JSON.parse(event.data);
 
-      console.log("Parsed notification:", notif);
+      if (
+        typeof notif.notifications_count === "number" &&
+        Array.isArray(notif.notification_ids) &&
+        notif.notification_ids.length > 0
+      ) {
+        if (notif.type === "MESSAGE_RECEIVED") {
+          notif.notification_ids.forEach((id: number) => {
+            if (!seenIds.has(id)) {
+              seenIds.add(id);
+              unseenCount++;
+            }
+          });
+          saveSeen();
+          updateCounter();
+
+          messageGroups.set(notif.sender_id, {
+            count: notif.notifications_count,
+            notif: {
+              ...notif,
+              notification_id: notif.notification_ids[0],
+            },
+          });
+
+          const notifList = document.getElementById("notif-list");
+          if (notifList) {
+            const oldLi = document.getElementById(
+              `msg-group-${notif.sender_id}`
+            );
+            if (oldLi) oldLi.remove();
+            notifList.prepend(
+              await renderGroupedMessageNotification(
+                notif,
+                notif.notifications_count
+              )
+            );
+          }
+          return;
+        }
+      }
 
       if (notif.type === "MESSAGE_RECEIVED") {
         if (notif.notification_id && !seenIds.has(notif.notification_id)) {
           seenIds.add(notif.notification_id);
-          saveSeen();
           unseenCount++;
+          saveSeen();
           updateCounter();
         }
 
@@ -209,8 +248,8 @@ export function startNotificationListener() {
       } else {
         if (notif.notification_id && !seenIds.has(notif.notification_id)) {
           seenIds.add(notif.notification_id);
-          saveSeen();
           unseenCount++;
+          saveSeen();
           updateCounter();
         }
         const notifList = document.getElementById("notif-list");
@@ -221,7 +260,7 @@ export function startNotificationListener() {
           }
         }
       }
-    } catch (error) {
+    } catch (err) {
       displayToast(
         "The club’s lights are out at the moment. Try again shortly.",
         "error"
@@ -247,7 +286,7 @@ export function stopNotificationListener() {
 
 export function clearNotificationCounter() {
   unseenCount = 0;
-  sessionStorage.setItem("seenNotifs", JSON.stringify([]));
+  localStorage.setItem("seenNotifs", JSON.stringify([]));
   seenIds.clear();
   updateCounter();
 }

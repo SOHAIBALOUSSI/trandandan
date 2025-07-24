@@ -9,9 +9,9 @@ function WinActivity(user: string, targetUser: string) {
   li.innerHTML = `
     <i class="fas fa-trophy text-pong-success mt-1"></i>
     <div>
-      <span class="text-pong-dark-secondary font-semibold">${user}</span>
+      <span class="text-pong-dark-secondary font-semibold normal-case">${user}</span>
       <span class="text-pong-dark-primary"> won a match against </span>
-      <span class="text-pong-dark-secondary font-semibold">${targetUser}</span>
+      <span class="text-pong-dark-secondary font-semibold normal-case">${targetUser}</span>
     </div>
   `;
   return li;
@@ -23,9 +23,9 @@ function LossActivity(user: string, targetUser: string) {
   li.innerHTML = `
     <i class="fas fa-skull-crossbones text-pong-error mt-1"></i>
     <div>
-      <span class="text-pong-dark-secondary font-semibold">${user}</span>
+      <span class="text-pong-dark-secondary font-semibold normal-case">${user}</span>
       <span class="text-pong-dark-primary"> lost a match to </span>
-      <span class="text-pong-dark-secondary font-semibold">${targetUser}</span>
+      <span class="text-pong-dark-secondary font-semibold normal-case">${targetUser}</span>
     </div>
   `;
   return li;
@@ -33,9 +33,9 @@ function LossActivity(user: string, targetUser: string) {
 
 function renderActivity(activity: GameActivity) {
   switch (activity.gameEndResult) {
-    case "Won":
+    case "WIN":
       return WinActivity(activity.userId, activity.enemyId);
-    case "Lost":
+    case "LOSE":
       return LossActivity(activity.userId, activity.enemyId);
     default:
       return null;
@@ -56,11 +56,24 @@ export function RecentActivityFeed() {
   ul.className = `space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`;
   wrapper.appendChild(ul);
 
-  ul.innerHTML = `<li class="text-pong-dark-secondary text-center">No recent activity yet.</li>`;
+  const fakeData: GameActivity[] = [
+    { userId: "John snow", enemyId: "Night king", gameEndResult: "WIN" },
+    { userId: "Night king", enemyId: "John snow", gameEndResult: "LOSE" },
+	{ userId: "Arya Stark", enemyId: "Cersei Lannister", gameEndResult: "WIN" },
+	{ userId: "Cersei Lannister", enemyId: "Arya Stark", gameEndResult: "LOSE" },
+	{ userId: "Jon Snow", enemyId: "Daenerys Targaryen", gameEndResult: "WIN" },
+	{ userId: "Daenerys Targaryen", enemyId: "Jon Snow", gameEndResult: "LOSE" },
+  ];
+
+  let activities: GameActivity[] = [...fakeData];
+
+  ul.innerHTML = "";
+  activities.forEach((activity) => {
+    const elem = renderActivity(activity);
+    if (elem) ul.appendChild(elem);
+  });
 
   const ws = new window.WebSocket("ws://localhost:5000/recent-activity");
-
-  let activities: GameActivity[] = [];
 
   ws.onmessage = (event) => {
     try {

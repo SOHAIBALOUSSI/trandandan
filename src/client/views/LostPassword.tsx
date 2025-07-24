@@ -1,6 +1,6 @@
 import { handleLostPassword } from "@/handlers/lost-password";
-import { verifyOtpCode } from "@/services/verify-otp-code";
-import { handleOtpInput } from "@/handlers/otp-input";
+import { verifyOtpCode } from "@/handlers/verify-otp-code";
+import { manipulateOtpInput } from "@/utils/manipulate-otp-input";
 import { Footer } from "@/components/layout/Footer";
 import { InputField } from "@/components/common/InputField";
 import { styles } from "@/styles/styles";
@@ -9,10 +9,10 @@ import { OtpInput } from "@/components/common/OtpInput";
 import { fontSizes } from "@/styles/fontSizes";
 import { SubmitBtn } from "@/components/common/SubmitBtn";
 
-export function ResetPassword() {
+export function LostPassword() {
   setTimeout(() => {
     handleLostPassword();
-    handleOtpInput("lost-pass-otp");
+    manipulateOtpInput("lost-pass-otp");
     verifyOtpCode();
   }, 0);
 

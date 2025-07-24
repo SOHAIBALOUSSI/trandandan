@@ -1,3 +1,5 @@
+import { displayToast } from "@/utils/display-toast";
+
 export async function inviteFriend(senderId: number, receiverId: number) {
   try {
     const res = await fetch("http://localhost:5000/invite", {
@@ -5,14 +7,15 @@ export async function inviteFriend(senderId: number, receiverId: number) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ senderId, receiverId }),
     });
-    const data = await res.json();
-    console.log(data);
     if (res.ok) {
-      return data.message || "invite sent successfully";
+      displayToast("Challenge issued successfully", "success");
     } else {
-      throw new Error(data.error || "Failed to send invite");
+      displayToast(
+        "Failed to issue the challenge. Try again, warrior!",
+        "error"
+      );
     }
-  } catch (err) {
-    return "Error sending invite: " + err;
+  } catch {
+    displayToast("Connection lost. Challenge could not be sent.", "error");
   }
 }

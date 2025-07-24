@@ -1,5 +1,13 @@
-- scan 2fa then print the otp code
-
+- add authorization for game service endpoints
+- keep the notif list until i click on it
+- cancel request
+- correct the recent activity 
+- handle 429 too many requests in auth
+- users status (online / offline)
+- add stats and match history of user in his profile and profiles of all other members
+- read about dashboard in subject
+- GDPR ?
+- test that the web app can work on multiple web browsers
 
 1. Player Profile Summary
 Avatar, Rank Badge (Gold/Silver/etc.)

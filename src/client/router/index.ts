@@ -1,13 +1,13 @@
 import { Welcome } from "@/views/Welcome";
 import { Signin } from "@/views/Signin";
 import { Signup } from "@/views/Signup";
-import { ResetPassword } from "@/views/LostPassword";
-import { UpdatePassword } from "@/views/ResetPassword";
+import { LostPassword } from "@/views/LostPassword";
+import { ResetPassword } from "@/views/ResetPassword";
 import { VerifyLogin } from "@/views/VerifyLogin";
 import { Home } from "@/views/Home";
 import { Game } from "@/views/Game";
 import { Dashboard } from "@/views/Dashboard";
-import { Friends } from "@/views/Friends";
+import { Members } from "@/views/Members";
 import { Chat } from "@/views/Chat";
 import { Lounge } from "@/views/Lounge";
 import { Profile } from "@/views/Profile";
@@ -16,37 +16,37 @@ import { Security } from "@/views/Security";
 import { Blocked } from "@/views/Blocked";
 import { DeleteAccount } from "@/views/DeleteAccount";
 import { Logout } from "@/views/Logout";
-import { UpdateCredentialsPassword } from "@/views/UpdateCredentialsPassword";
-import { UpdateCredentialsEmail } from "@/views/UpdateCredentialsEmail";
-import { VerifyUpdateCredentials } from "@/views/VerifyUpdateCredentials";
+import { ChangePassword } from "@/views/ChangePassword";
+import { ChangeEmail } from "@/views/ChangeEmail";
+import { VerifyChangeCredentials } from "@/views/VerifyChangeCredentials";
 import { LocalGame } from "@/components/game/LocalGame";
 import { RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
-import { startNotificationListener } from "@/handlers/notifications";
+import { startNotificationListener } from "@/services/notifications-service";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
   welcome: Welcome,
   login: Signin,
   register: Signup,
-  password_reset: ResetPassword,
-  password_update: UpdatePassword,
+  password_reset: LostPassword,
+  password_update: ResetPassword,
   verify_login: VerifyLogin,
   salon: Home,
   arena: Game,
   chamber: Dashboard,
   lounge: Lounge,
-  members: Friends,
+  members: Members,
   exit: Logout,
   duel: LocalGame,
   remote: RemoteGame,
   tournament: Tournaments,
   my_profile: Profile,
   security: Security,
-  change_password: UpdateCredentialsPassword,
-  change_email: UpdateCredentialsEmail,
-  verification: VerifyUpdateCredentials,
+  change_password: ChangePassword,
+  change_email: ChangeEmail,
+  verification: VerifyChangeCredentials,
   muted_players: Blocked,
   wipe_account: DeleteAccount,
   checkout: Logout,
@@ -135,7 +135,8 @@ export async function router(): Promise<void> {
     const chatView = await Chat(chatRoom);
     app.appendChild(chatView);
   } else if (path === "member-profile" && memberId) {
-    app.appendChild(MemberProfile(memberId));
+    const memberProfileElem = MemberProfile(memberId);
+    memberProfileElem && app.appendChild(memberProfileElem);
   } else {
     app.appendChild(render());
   }

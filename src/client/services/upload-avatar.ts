@@ -51,7 +51,7 @@ export function uploadAvatar() {
           "error"
         );
       }
-    } catch (err) {
+    } catch {
       displayToast(UploadAvatarRes.INTERNAL_SERVER_ERROR, "error");
     } finally {
       fileInput!.value = "";

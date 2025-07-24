@@ -57,27 +57,27 @@
 │   │   ├── utils/                         # Client-side utility helpers
 │   │   │   ├── display-toast.ts
 │   │   │   ├── response-messages.ts
-│   │   │   └── user-store.ts             
+│   │   │   └── user-store.ts
 │   │
 │   │   ├── views/                         # Top-level route views/pages
 │   │   │   ├── Blocked.tsx
 │   │   │   ├── Chat.tsx
 │   │   │   ├── Dashboard.tsx
 │   │   │   ├── DeleteAccount.tsx
-│   │   │   ├── Friends.tsx
+│   │   │   ├── Members.tsx
 │   │   │   ├── Game.tsx
 │   │   │   ├── Home.tsx
 │   │   │   ├── LostPassword.tsx
 │   │   │   ├── Logout.tsx
 │   │   │   ├── Profile.tsx
-│   │   │   ├── ResetPassword.tsx
+│   │   │   ├── LostPassword.tsx
 │   │   │   ├── Security.tsx
 │   │   │   ├── Signin.tsx
 │   │   │   ├── Signup.tsx
-│   │   │   ├── UpdateCredentialsEmail.tsx
-│   │   │   ├── UpdateCredentialsPassword.tsx
+│   │   │   ├── ChangeEmail.tsx
+│   │   │   ├── ChangePassword.tsx
 │   │   │   ├── VerifyLogin.tsx
-│   │   │   ├── VerifyUpdateCredentials.tsx
+│   │   │   ├── VerifyChangeCredentials.tsx
 │   │   │   └── Welcome.tsx
 │   │
 │   │   ├── webfonts/                      # Custom fonts (woff/woff2)

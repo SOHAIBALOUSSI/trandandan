@@ -3,7 +3,8 @@ import { updateUsername } from "@/services/update-username";
 import { displayToast } from "@/utils/display-toast";
 import { UpdateUserProfileRes } from "@/utils/response-messages";
 import { uploadAvatar } from "@/services/upload-avatar";
-import { getUserRank } from "@/utils/get-user-rank";
+import { getUserTitle } from "@/utils/get-user-title";
+import { showUserBadge } from "@/utils/show-user-badge";
 
 export function MemberCard(props: {
   user: UserProfile;
@@ -129,13 +130,13 @@ export function MemberCard(props: {
   }, 0);
 
   return (
-    <div className="flex flex-col gap-6 p-6 md:p-8 bg-pong-dark-custom rounded-3xl w-full max-w-2xl mx-auto border border-pong-dark-highlight/30 shadow-lg backdrop-blur-xl">
+    <div className="relative flex flex-col gap-6 p-6 md:p-8 bg-pong-dark-custom rounded-3xl w-full max-w-2xl mx-auto border border-pong-dark-highlight/30 shadow-lg backdrop-blur-xl">
       <h2 className="text-center text-2xl md:text-3xl font-extrabold text-pong-accent tracking-tight">
         BHV Member Card
       </h2>
 
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full relative">
-        <div className="relative">
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
+        <div className="relative flex flex-col items-center">
           <div className="w-24 h-24 md:w-28 md:h-28 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg relative">
             <img
               src={user.avatar_url}
@@ -158,6 +159,14 @@ export function MemberCard(props: {
               <br className="hidden" />
             )}
           </div>
+
+          {/* <div className="border border-pong-accent/40 user-badge mt-2 w-16 h-16 relative overflow-hidden	">
+            <img
+              src={showUserBadge(user.rank)}
+              alt={`${user.username}'s badge`}
+              className="w-full h-full object-cover drop-shadow-lg"
+            />
+          </div> */}
         </div>
 
         <div className="flex flex-col gap-3 flex-1 w-full">
@@ -209,13 +218,13 @@ export function MemberCard(props: {
 
           <div className="flex flex-wrap gap-3 mt-4">
             <span className="bg-pong-secondary/20 text-pong-secondary px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              💰 Sold: {user.solde}
+              💰 Solde: {user.solde}
             </span>
             <span className="bg-pong-highlight/20 text-pong-highlight px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
               🎯 Level: {user.level}
             </span>
             <span className="bg-yellow-400/20 text-yellow-300 px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              🏓 {getUserRank(user.rank)}
+              🏓 {getUserTitle(user.rank)}
             </span>
           </div>
 

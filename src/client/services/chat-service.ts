@@ -4,8 +4,6 @@ import { displayToast } from "@/utils/display-toast";
 let ws: WebSocket | null = null;
 
 export function startChatListener(onMessage: (msg: MessageSent) => void) {
-//   if (ws && ws.readyState === WebSocket.OPEN) return;
-
   ws = new WebSocket("/chat");
 
   ws.onopen = () => {
@@ -15,8 +13,8 @@ export function startChatListener(onMessage: (msg: MessageSent) => void) {
   ws.onmessage = (event: MessageEvent) => {
     try {
       const message: MessageSent = JSON.parse(event.data);
-      if (onMessage) onMessage(message);
-    } catch (error) {
+      onMessage(message);
+    } catch (err) {
       displayToast(
         "The club’s lights are out at the moment. Try again shortly.",
         "error"

@@ -1,4 +1,4 @@
-export function handleOtpInput(id: string) {
+export function manipulateOtpInput(id: string) {
   const inputs = document.querySelectorAll<HTMLInputElement>(`#${id} input`);
   if (!inputs) return;
 

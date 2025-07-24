@@ -1,8 +1,9 @@
 import { clearCurrentUser } from "@/utils/user-store";
 import { router } from "@/router";
 import { displayToast } from "@/utils/display-toast";
-import { stopNotificationListener } from "./notifications";
-import { stopChatListener } from "@/handlers/chat";
+import { stopNotificationListener } from "../services/notifications-service";
+import { stopChatListener } from "@/services/chat-service";
+import { stopDashboardListener } from "@/services/dashboard-service";
 
 export async function handleLogout(): Promise<void> {
   try {
@@ -17,9 +18,10 @@ export async function handleLogout(): Promise<void> {
     );
   } finally {
     clearCurrentUser();
-    history.replaceState(null, "", "/welcome");
     stopNotificationListener();
     stopChatListener();
+    stopDashboardListener();
+    history.replaceState(null, "", "/welcome");
     await router();
   }
 }

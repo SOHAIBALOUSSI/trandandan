@@ -2,10 +2,10 @@ import { handleChangePassword } from "@/handlers/change-password";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { NavBar } from "@/components/layout/NavBar";
-import { showPasswordToggle } from "@/utils/show-password";
+import { showPasswordToggle } from "@/utils/show-password-toggle";
 import { TopBar } from "@/components/layout/TopBar";
 
-export function UpdateCredentialsPassword() {
+export function ChangePassword() {
   const currentPasswordId = "old-password";
   const newPasswordId = "new-password";
   const confirmNewPasswordId = "confirm-new-password";

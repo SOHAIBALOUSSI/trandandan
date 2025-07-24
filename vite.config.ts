@@ -24,6 +24,7 @@ export default defineConfig({
       "/block": "http://friends:3002",
       "/notifications": "ws://notifications:3003",
       "/chat": "ws://chat:3004",
+      "/dashboard": "ws://dashboard:3005",
     },
     historyApiFallback: true,
   },

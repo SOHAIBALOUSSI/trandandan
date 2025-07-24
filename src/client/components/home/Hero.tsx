@@ -29,10 +29,7 @@ export function Hero(props: { user: UserProfile }) {
             className={`${fontSizes.titleFontSize} font-bold text-pong-dark-primary mb-3`}
           >
             Welcome, {getWelcomeTitle(user)}{" "}
-            <span className="text-pong-dark-accent normal-case">
-              {user.username}
-            </span>
-            !
+            <span className="text-pong-dark-accent">{user.username}</span>!
           </h2>
           <p
             className={`text-pong-dark-secondary ${fontSizes.bodyFontSize} font-semibold mb-3`}
@@ -44,11 +41,21 @@ export function Hero(props: { user: UserProfile }) {
           <p
             className={`text-pong-dark-primary/80 italic ${fontSizes.smallTextFontSize} mb-3`}
           >
-           {generateRankQuote(user.rank)}
+            {generateRankQuote(user.rank)}
           </p>
-          <a href="/my_profile" className={styles.darkPrimaryBtn} data-link>
-            View Profile
-          </a>
+          <div className="flex flex-col sm:flex-row items-center sm:justify-start gap-3 mb-4">
+            <a
+              href="/arena"
+              className={`inline-flex items-center gap-2 bg-gradient-to-br from-pong-accent to-pong-dark-accent text-white px-4 md:px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-transform hover:scale-105 duration-300 ${fontSizes.buttonFontSize}`}
+              data-link
+            >
+              <i className="fa-solid fa-table-tennis-paddle-ball"></i>
+              <span className="font-semibold">Enter the Arena</span>
+            </a>
+            <a href="/my_profile" className={styles.darkPrimaryBtn} data-link>
+              View Profile
+            </a>
+          </div>
         </div>
       </div>
     </div>
