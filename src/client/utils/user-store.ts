@@ -6,6 +6,7 @@ let currentUser: UserProfile | null = null;
 export function setCurrentUser(apiResponse: any) {
   if (apiResponse && apiResponse.data && apiResponse.data.profile) {
     currentUser = apiResponse.data.profile;
+    console.log(currentUser);
     if (currentUser) {
       currentUser.avatar_url = getAvatarUrl(currentUser);
     }

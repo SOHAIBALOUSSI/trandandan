@@ -118,7 +118,7 @@ export function RemoteGame() {
     const roomdIdentif = await getRoomIdByUserId(userInfo?.id ?? 0);
 
     socket = new WebSocket(
-      `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.userId}&roomId=${roomdIdentif}`
+      `ws://0.0.0.0:5000/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
     );
     exit.addEventListener("click", () => {
       socket.close();
@@ -441,8 +441,6 @@ class FlowField {
       matches_won: currentUser.matches_won,
       matches_lost: currentUser.matches_lost,
     };
-    console.log("playload", payload);
-    console.log("Updating user data:", payload);
     fetch(`/profile/user/${currentUser.userId}`, {
       method: "PATCH",
       credentials: "include",

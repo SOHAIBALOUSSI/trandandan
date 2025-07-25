@@ -7,6 +7,7 @@ import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
 import { addProfile, deleteProfile, getProfileById, updateProfileEmailById, updateRankById } from './models/profileDAO.js';
 import redisPlugin from './plugins/redis-plugin.js';
 import multipart from '@fastify/multipart'
+import { downloadAvatarUrl } from './utils/utils.js';
 
 
 const server = fastify({ logger: true });
@@ -51,12 +52,12 @@ server.rabbit.consumeMessages(async(request) => {
         const { userId, email } = request;
         await updateProfileEmailById(server.db, userId, email);
     } else if (request.type === 'INSERT') {
+        let avatarUrl = null;
         const { userId, username, email, avatar_url, gender } = request;
-        let profile = await getProfileById(server.db, userId);
-        if (profile && profile.username === username)
-            return ;
-        await addProfile(server.db, userId, username, email, avatar_url, gender);
-        profile = await getProfileById(server.db, userId);
+        if (avatar_url)
+            avatarUrl = await downloadAvatarUrl(avatar_url, userId);
+        await addProfile(server.db, userId, username, email, avatarUrl, gender);
+        const profile = await getProfileById(server.db, userId);
         await server.redis.sendCommand([
             'JSON.SET',
             `player:${userId}`,

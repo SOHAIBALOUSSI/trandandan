@@ -23,6 +23,7 @@ function updateCounter() {
 }
 
 async function renderNotification(notif: Notification) {
+  console.log(notif.type);
   const li = document.createElement("li");
   li.className = `
     text-sm text-white p-3 rounded-md shadow-lg border border-pong-dark-primary/40
