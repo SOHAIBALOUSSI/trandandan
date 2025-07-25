@@ -9,36 +9,36 @@ The `auth-service` is responsible for handling user authentication, registration
 **Prefix: /auth**
 
 
-| Method | Path               | Description                                                            | Authentication Required | Body Required                                  |
-| :----: | ------------------ | ---------------------------------------------------------------------- | :----------------------: | :-------------------------------------------: |
-| POST   | `/login`           | Log in a user                                                          | No                       | { username/email, password }                  |
-| POST   | `/register`        | Register a new user                                                    | No                       | { username, email, password, confirmPassword }|
-| GET    | `/google`          | Log in a user using Google sign in                                     | No                       | (none)                                        |
-| GET    | `/42`              | Log in a user using 42 sign in                                         | No                       | (none)                                        |
-| POST   | `/logout`          | Log out a logged-in user                                               | Yes                      | { token }                              |
-| GET    | `/me`              | Get current user profile                                               | Yes                      | (none)                                        |
-| POST   | `/refresh`         | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes | { token }                                |
-| POST   | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |
-| POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                   |
-| POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                 |
-| POST   | `/update-credentials`| Updates either email or password or both OR sends OTP code if 2fa enabled| Yes                      | { email or  (oldPassword, newPassword, confirmPassword) or both }                 |
-| POST   | `/verify-update-credentials`| Verifies the OTP code then updates email or password or both if it's valid| Yes                      | { otpCode }                 |
-| DELETE | `/delete`          | Deletes all data related to userId permanently across all services     | Yes                      | (none)                 |
+| Method | Path               | Description                                                            | Authentication Required | Body Required                                  | Rate limited |
+| :----: | ------------------ | ---------------------------------------------------------------------- | :----------------------: | :-------------------------------------------: |:------------:|
+| POST   | `/login`           | Log in a user                                                          | No                       | { username/email, password }                  |yes           |
+| POST   | `/register`        | Register a new user                                                    | No                       | { username, email, password, confirmPassword }|yes           |
+| GET    | `/google`          | Log in a user using Google sign in                                     | No                       | (none)                                        |yes           |
+| GET    | `/42`              | Log in a user using 42 sign in                                         | No                       | (none)                                        |yes           |
+| POST   | `/logout`          | Log out a logged-in user                                               | Yes                      | { token }                              |        no    |
+| GET    | `/me`              | Get current user profile                                               | Yes                      | (none)                                        | no           |
+| POST   | `/refresh`         | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes | { token }                                |        no    |
+| POST   | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |yes           |
+| POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                   |yes           |
+| POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                 |yes           |
+| POST   | `/update-credentials`| Updates either email or password or both OR sends OTP code if 2fa enabled| Yes                      | { email or  (oldPassword, newPassword, confirmPassword) or both }|yes           |
+| POST   | `/verify-update-credentials`| Verifies the OTP code then updates email or password or both if it's valid| Yes                      | { otpCode }                 |yes           |
+| DELETE | `/delete`          | Deletes all data related to userId permanently across all services     | Yes                      | (none)                 | yes          |
 
 **Prefix: /2fa**
 
-| Method | Path                  | Description                                    | Authentication Required  | Body Required |
-| :----: | --------------------- | ---------------------------------------------- | :----------------------: | :------------:| 
-| POST   | `/app/setup`          | Set up new 2FA for authenticator app           | Yes                      | (none)        |
-| POST   | `/app/verify-setup`   | Verify 2FA TOPT code for app setup             | Yes                      | { otpCode }   |
-| POST   | `/app/verify-login`   | Verify TOPT code for login with 2fa using app  | Yes                      | { otpCode }   |
-| POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      | (none)        |
-| POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      | { otpCode }   |
-| POST   | `/email/verify-login` | Verify OPT code for login with 2fa using email | Yes                      | { otpCode }   |
-| GET    | `/`                   | Get informations about the user's twoFa methods| Yes                      | (none)        |
-| POST   | `/enable`             | Enables the 2FA method received in body        | Yes                      | { method }    |
-| POST   | `/disable`            | Disables the 2FA method received in body       | Yes                      | { method }    |
-| POST   | `/primary`            | Makes the 2FA method received in body primary  | Yes                      | { method }    |
+| Method | Path                  | Description                                    | Authentication Required  | Body Required | Rate limited |
+| :----: | --------------------- | ---------------------------------------------- | :----------------------: | :------------:| :----------: |
+| POST   | `/app/setup`          | Set up new 2FA for authenticator app           | Yes                      | (none)        |yes           |
+| POST   | `/app/verify-setup`   | Verify 2FA TOPT code for app setup             | Yes                      | { otpCode }   |yes           |
+| POST   | `/app/verify-login`   | Verify TOPT code for login with 2fa using app  | Yes                      | { otpCode }   |yes           |
+| POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      | (none)        |yes           |
+| POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      | { otpCode }   |yes           |
+| POST   | `/email/verify-login` | Verify OPT code for login with 2fa using email | Yes                      | { otpCode }   |yes           |
+| GET    | `/`                   | Get informations about the user's twoFa methods| Yes                      | (none)        |no            |
+| POST   | `/enable`             | Enables the 2FA method received in body        | Yes                      | { method }    |no            |
+| POST   | `/disable`            | Disables the 2FA method received in body       | Yes                      | { method }    |no            |
+| POST   | `/primary`            | Makes the 2FA method received in body primary  | Yes                      | { method }    |no            |
 
 ---
 
@@ -88,6 +88,17 @@ The `auth-service` is responsible for handling user authentication, registration
     ACCESS_TOKEN_INVALID
   }
   500: INTERNAL_SERVER_ERROR
+```
+
+**Rate Limit Respose**
+```yaml
+{
+  {
+    statusCode: 429,
+    error: 'Too Many Requests',
+    message: 'Rate limit exceeded, retry in 1 minute'
+  }
+}
 ```
 
 **Prefix: /auth**

@@ -13,6 +13,7 @@ import rabbitmqPlugin from './plugins/rabbitmq-plugin.js';
 import { updateUsernameById } from './models/userDAO.js';
 import { createPendingCredentialsTable } from './database/createPendingCredentialsTable.js';
 import redisPlugin from './plugins/redis-plugin.js';
+import rateLimit from '@fastify/rate-limit';
 
 const server = fastify({logger: true});
 
@@ -34,6 +35,10 @@ await createPendingCredentialsTable(server.db);
 await server.register(redisPlugin);
 await server.register(nodemailerPlugin);
 await server.register(rabbitmqPlugin);
+await server.register(rateLimit, {
+    max: 100,
+    timeWindow: '1 minute'
+});
 
 server.rabbit.consumeMessages(async (message) => {
     const { id, username } = message;

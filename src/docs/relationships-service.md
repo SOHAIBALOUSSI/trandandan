@@ -58,6 +58,30 @@ The relationships-service handles all operations related to friend management, i
 
 ```
 
+## Online status (friends only)
+
+**Endpoint: /friends/status**
+
+When a user connects, they continuously receive updates about their specific friends' online/offline status. It's not a global broadcast to all users about all friends, but rather tailored updates for each connected user based on this format :
+
+```json
+  {
+    "friendsStatuses": [
+      {
+        "friendId": 123,
+        "isOnline": true
+      },
+      {
+        "friendId": 456,
+        "isOnline": false
+      }
+      , //...
+    ]
+  }
+```
+
+
+
 ## Response Codes
 
 **Prefix: /friends**
@@ -130,6 +154,8 @@ The relationships-service handles all operations related to friend management, i
   500: INTERNAL_SERVER_ERROR
 
 ```
+
+
 
 **Prefix: /block**
 
