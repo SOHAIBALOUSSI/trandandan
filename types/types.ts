@@ -49,12 +49,14 @@ export type Notification = {
     | "FRIEND_REQUEST_ACCEPTED"
     | "FRIEND_REQUEST_REJECTED"
     | "MESSAGE_RECEIVED"
-    | "INVITE_SENT";
+    | "INVITE_SENT"
+    | "INVITE_ACCEPTED";
   recipient_id?: number;
   sender_id?: number;
   notifications_count?: number;
   last_notification_at?: string;
   notification_ids?: number[];
+  roomId?: string;
 };
 
 export type MessageSent = {

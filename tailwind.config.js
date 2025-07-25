@@ -62,6 +62,10 @@ export const theme = {
         "66%": { boxShadow: "0 0 6px #facc15" },
         "100%": { boxShadow: "0 0 1px #facc15" },
       },
+	  slideIn: {
+		"0%": {opacity: 0, transform: "translateY(50%)" },
+		"100%": {opacity: 1, transform: "translateY(0)" },
+	  }
     },
     animation: {
       fadeInUp: "fadeInUp 0.8s ease-out",
@@ -70,6 +74,7 @@ export const theme = {
       myFloat: "myFloat 3s ease-in-out infinite",
       myPulse: "myPulse 1.3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       glow: "glow 2s infinite ease-in-out",
+	  slideIn: "slideIn 0.5s ease-out forwards",
     },
   },
 };

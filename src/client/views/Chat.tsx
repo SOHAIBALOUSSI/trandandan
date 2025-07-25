@@ -7,6 +7,7 @@ import { getUserById } from "@/services/get-user-by-id";
 import { Loader } from "@/components/common/Loader";
 import { ChatBlock } from "@/components/chat/ChatBlock";
 import { NavBar } from "@/components/layout/NavBar";
+import { inviteFriend } from "@/services/invite-friend";
 
 export async function Chat(friendId: number) {
   const friend = await getUserById(friendId);
@@ -46,7 +47,6 @@ export async function Chat(friendId: number) {
   container.appendChild(main);
   section.appendChild(container);
 
-  // --- Chat logic ---
   const chatMessages = section.querySelector(
     "#chat-messages"
   ) as HTMLDivElement;
@@ -115,6 +115,19 @@ export async function Chat(friendId: number) {
     renderMessages();
     chatInput.value = "";
   });
+
+  const challengeBtn = section.querySelector(
+    "#challenge-button"
+  ) as HTMLButtonElement;
+  if (challengeBtn) {
+    challengeBtn.addEventListener("click", async () => {
+      challengeBtn.disabled = true;
+      await inviteFriend(currentUser.id, friend.id);
+      setTimeout(() => {
+        challengeBtn.disabled = false;
+      }, 3000);
+    });
+  }
 
   return section;
 }

@@ -43,7 +43,7 @@ export function Hero(props: { user: UserProfile }) {
           >
             {generateRankQuote(user.rank)}
           </p>
-          <div className="flex flex-col sm:flex-row items-center sm:justify-start gap-3 mb-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 mb-4">
             <a
               href="/arena"
               className={`inline-flex items-center gap-2 bg-gradient-to-br from-pong-accent to-pong-dark-accent text-white px-4 md:px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-transform hover:scale-105 duration-300 ${fontSizes.buttonFontSize}`}

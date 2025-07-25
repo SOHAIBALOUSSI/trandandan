@@ -2,6 +2,7 @@ import { Notification } from "types/types";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { displayToast } from "@/utils/display-toast";
 import { getUserById } from "@/services/get-user-by-id";
+import { showInviteNotification } from "@/utils/show-invite-notif";
 import { getRoomId } from "@/services/get-room-id";
 import { acceptInvite } from "@/services/accept-invite";
 
@@ -72,19 +73,44 @@ async function renderNotification(notif: Notification) {
 
     case "INVITE_SENT":
       label = `
-          <div class="flex items-center justify-between gap-2">
-			<div>
-			  <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
-			  <span>
-			  	<span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
-			  </span>
-			</div>
-			<div>
-			  <button id="accept-invite">Accept</button>
-			  <button id="decline-invite">Decline</button>
-			</div>
-          </div>
-        `;
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
+          <span>
+            <span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
+          </span>
+        </div>
+      `;
+      setTimeout(() => {
+        showInviteNotification(
+          sender?.username || "Unknown",
+          async () => {
+            const roomId = await getRoomId(notif.sender_id || 0);
+            if (roomId) {
+              await acceptInvite(
+                roomId,
+                notif.sender_id || 0,
+                notif.recipient_id || 0
+              );
+              markNotificationsAsRead([notif.notification_id]);
+              li.remove();
+              navigateTo(`/remote?roomId=${roomId}`);
+            }
+          },
+          () => {
+            markNotificationsAsRead([notif.notification_id]);
+            li.remove();
+            displayToast("Invite declined.", "error");
+          }
+        );
+      }, 0);
+      break;
+
+    case "INVITE_ACCEPTED":
+      setTimeout(() => {
+        navigateTo(`/remote?roomId=${notif.roomId}`);
+        markNotificationsAsRead([notif.notification_id]);
+        li.remove();
+      }, 500);
       break;
 
     default:
@@ -99,26 +125,8 @@ async function renderNotification(notif: Notification) {
 
   li.innerHTML = label;
 
-  if (route) {
+  if (notif.type !== "INVITE_SENT" && route) {
     li.onclick = () => {
-      li.style.pointerEvents = "none";
-      li.style.opacity = "0.5";
-      li.classList.add("line-through");
-      li.setAttribute("aria-disabled", "true");
-      navigateTo(route);
-      setTimeout(() => li.remove(), 400);
-
-      if (notif.notification_id) {
-        markNotificationsAsRead([notif.notification_id]);
-      }
-    };
-  } else if (notif.type === "INVITE_SENT") {
-    li.onclick = async () => {
-      const roomId: string | null = await getRoomId(notif.sender_id || 0);
-      if (roomId) {
-        acceptInvite(roomId, notif.sender_id || 0, notif.recipient_id || 0);
-        navigateTo(`/remote?roomId=${roomId}`);
-      }
       markNotificationsAsRead([notif.notification_id]);
       li.remove();
     };
@@ -224,9 +232,7 @@ export function startNotificationListener() {
 
       if (notif.type === "MESSAGE_RECEIVED") {
         if (notif.notification_id && !seenIds.has(notif.notification_id)) {
-          seenIds.add(notif.notification_id);
           unseenCount++;
-          saveSeen();
           updateCounter();
         }
 
@@ -301,7 +307,7 @@ function markNotificationsAsRead(ids: number[]) {
     ws.send(
       JSON.stringify({
         type: "NOTIFICATION_READ",
-        notification_ids: Array.from(seenIds),
+        notification_ids: ids,
       })
     );
   }

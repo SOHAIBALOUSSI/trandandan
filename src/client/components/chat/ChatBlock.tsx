@@ -33,6 +33,7 @@ export function ChatBlock(friend: UserProfile) {
         </div>
         <div className="ml-auto">
           <button
+            id="challenge-button"
             className="relative bg-pong-dark-accent text-white hover:bg-pong-accent/90 px-3 py-2 md:px-4 md:py-2 rounded-lg shadow-md transition group"
             title="Challenge to Match"
           >
