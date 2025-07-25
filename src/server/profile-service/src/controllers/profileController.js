@@ -110,24 +110,6 @@ export async function uploadAvatarUrl(request, reply) {
     }
 }
 
-// export async function downloadAvatar(filename, userId){
-
-//     const ext = path.extname(filename);
-//     const fileName = `${userId}_${Date.now()}${ext}`;
-
-
-//     const uploadPath = path.join(process.cwd(), 'uploads', 'avatars', fileName);
-//     console.log("Upload path: ", uploadPath);
-//     fs.mkdirSync(path.dirname(uploadPath), { recursive: true });
-
-
-//     fs.writeFileSync(uploadPath, response.data);
-
-//     const stream = fs.createReadStream(filePath);
-
-//     await pipeline(stream, fs.createWriteStream(uploadPath));
-// }
-
 export async function getAvatarUrl(request, reply) {
     try {
         const { fileName } = request.params;

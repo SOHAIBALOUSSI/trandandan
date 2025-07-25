@@ -8,6 +8,8 @@ import { deleteFriendships } from './models/friendshipDAO.js';
 import { createBlockTable } from './database/createBlockTable.js';
 import blockRoutes from './routes/blockRoutes.js';
 import redisPlugin from './plugins/redis-plugin.js';
+import websocket from "@fastify/websocket";
+
 
 const server = fastify({ logger: true });
 
@@ -19,6 +21,8 @@ await createBlockTable(server.db);
 
 await server.register(rabbitmqPlugin);
 await server.register(redisPlugin);
+await server.register(websocket);
+
 
 server.rabbit.consumeMessages(async (request) => {
     if (request.type === 'DELETE') {
