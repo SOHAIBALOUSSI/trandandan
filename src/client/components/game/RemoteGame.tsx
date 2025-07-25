@@ -441,8 +441,6 @@ class FlowField {
       matches_won: currentUser.matches_won,
       matches_lost: currentUser.matches_lost,
     };
-    console.log("playload", payload);
-    console.log("Updating user data:", payload);
     fetch(`/profile/user/${currentUser.userId}`, {
       method: "PATCH",
       credentials: "include",
