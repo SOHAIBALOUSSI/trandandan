@@ -32,9 +32,7 @@ const invitePlayer = async (req, reply, fastify) => {
         recipient_id: receiverId,
         roomId,
       };
-      console.log(message);
       await rabbitMQ.produceMessage(message, 'notifications.game.invite');
-      
       return reply.code(200).send({ message: "Invite notification queued" });
     } catch (error) {
       console.error("Failed to send to RabbitMQ:", error);

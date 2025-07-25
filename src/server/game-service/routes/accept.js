@@ -1,11 +1,7 @@
+import RabbitMGame  from "./RabbitMGame.js";
 const Accept = async (req, reply, fastify) => {
   try {
     const { roomId, senderId, receiverId } = req.body;
-    console.log("Accepting invite with data:", {
-      roomId,
-      senderId,
-      receiverId,
-    });
     if (!roomId || !senderId || !receiverId)
       return reply.code(400).send({ error: "Missing fields" });
 
@@ -25,7 +21,17 @@ const Accept = async (req, reply, fastify) => {
 
     redis.set(`invite:${receiverId}`, roomId, "EX", 60 * 5); // Store the invite for 5 minutes
 
-    console.log("Invite retrieved from Redis:", roomId);
+    const rabbitMQ = new RabbitMGame("game");
+    await rabbitMQ.connect();
+
+    const message = {
+      type: "INVITE_ACCEPTED",
+      sender_id: senderId,
+      recipient_id: receiverId,
+      roomId,
+    };
+
+    await rabbitMQ.produceMessage(message, "notifications.game.accept");
     return reply
       .code(200)
       .send({ message: "Invite accepted", roomId, receiverId });
