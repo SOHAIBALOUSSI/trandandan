@@ -52,8 +52,11 @@ server.rabbit.consumeMessages(async(request) => {
         await updateProfileEmailById(server.db, userId, email);
     } else if (request.type === 'INSERT') {
         const { userId, username, email, avatar_url, gender } = request;
+        let profile = await getProfileById(server.db, userId);
+        if (profile && profile.username === username)
+            return ;
         await addProfile(server.db, userId, username, email, avatar_url, gender);
-        const profile = await getProfileById(server.db, userId);
+        profile = await getProfileById(server.db, userId);
         await server.redis.sendCommand([
             'JSON.SET',
             `player:${userId}`,
