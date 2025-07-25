@@ -26,8 +26,8 @@ const Accept = async (req, reply, fastify) => {
 
     const message = {
       type: "INVITE_ACCEPTED",
-      sender_id: senderId,
-      recipient_id: receiverId,
+      sender_id: receiverId,
+      recipient_id: senderId,
       roomId,
     };
 
