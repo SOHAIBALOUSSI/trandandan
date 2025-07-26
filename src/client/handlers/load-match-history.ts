@@ -12,7 +12,7 @@ export async function loadMatchHistory(user: UserProfile) {
 
   const history: UserHistory[] = await getUserHistory(user.id);
   if (!history || history.length === 0) {
-    matchHistoryList.innerHTML = `<p class="text-gray-400">No recent matches found.</p>`;
+    matchHistoryList.innerHTML = `<p class="text-pong-dark-primary">No recent matches found.</p>`;
     return;
   }
 
@@ -39,7 +39,7 @@ export async function loadMatchHistory(user: UserProfile) {
 
     const listItem = document.createElement("li");
     listItem.className =
-      "border border-pong-dark-secondary/30 rounded-xl p-4 mb-3 shadow-sm bg-pong-dark-custom flex flex-col gap-2";
+      "border border-pong-dark-secondary/30 rounded-xl p-4 mb-3 shadow-sm bg-pong-dark-highlight/10 flex flex-col gap-2";
 
     const header = document.createElement("div");
     header.className = "flex justify-between items-center";

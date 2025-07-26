@@ -4,7 +4,7 @@ import { UserProfile } from "types/types";
 import { RankBadge } from "@/components/common/RankBadge";
 import { generateRankQuote } from "@/utils/generate-rank-quote";
 
-function getWelcomeTitle(user: UserProfile): string {
+export function getWelcomeTitle(user: UserProfile): string {
   if (user.gender === "M") return `Mr.`;
   if (user.gender === "F") return `Ms.`;
   return `Champ`;
@@ -46,11 +46,11 @@ export function Hero(props: { user: UserProfile }) {
           <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 mb-4">
             <a
               href="/arena"
-              className={`inline-flex items-center gap-2 bg-gradient-to-br from-pong-accent to-pong-dark-accent text-white px-4 md:px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-transform hover:scale-105 duration-300 ${fontSizes.buttonFontSize}`}
+              className={styles.darkPrimaryBtn + " flex items-center gap-2"}
               data-link
             >
               <i className="fa-solid fa-table-tennis-paddle-ball"></i>
-              <span className="font-semibold">Enter the Arena</span>
+              <span className="f	ont-semibold">Enter the Arena</span>
             </a>
             <a href="/my_profile" className={styles.darkPrimaryBtn} data-link>
               View Profile

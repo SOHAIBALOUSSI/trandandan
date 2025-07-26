@@ -13,7 +13,6 @@ export function dashboardLive(onData: (data: UserProfile[]) => void) {
 
   ws.onmessage = (e: MessageEvent) => {
     const dashboardData = JSON.parse(e.data);
-    console.log("Dashboard data received:", dashboardData);
     onData(dashboardData);
   };
 
