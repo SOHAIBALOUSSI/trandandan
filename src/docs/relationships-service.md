@@ -1,7 +1,7 @@
 # Relationships Service
 
 ## Overview
-The relationships-service handles all operations related to friend management, including sending, accepting, and rejecting friend requests, listing friendsand removing friends + blocking users.
+The `relationship-service` manages user connections including **friendships**, **friend requests**, and **blocks**. It enforces business rules such as blocking behavior, mutual friendship logic, and notification support via RabbitMQ.
 
 ---
 

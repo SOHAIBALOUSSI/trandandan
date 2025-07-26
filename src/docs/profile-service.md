@@ -1,22 +1,27 @@
 # Profile Service Documentation
 
 ## Overview
-The `profile-service` is responsible for managing user profile data. It handles creating, retrieving, and updating user profiles.
+The `profile-service` manages user profiles including avatar handling, username updates, and public statistics like matches won or lost.
 
 ---
 
-## Endpoints
-### Prefix: /profile
+## 📚 Endpoints (`/profile`)
 
+### 📝 Profile Operations
 
-| Method | Path          | Description                           | Authentication Required  | Body required                         |
-| :----: | ------------  | ------------------------------------- | :----------------------: | :-----------------------------------: |
-| POST   | `/register`   | Register a new user profile           | Yes                      | { username, email}                    |
-| PATCH  | `/user/:id`   | Update a user profile                 | Yes                      | { username/rank/matches_won/matches_lost } (one or many)|
-| GET    | `/user/:id`   | Retrieve a user profile by id         | Yes                      | (none)                                |
-| POST   | `/upload`     | Updates a user's avatar               | Yes                      | image as formData                     |
-| GET   | `/avatar/:fileName`| Fetches a user's avatar           | Yes                      | (none)                     |
-| GET   | `/all`         | Fetches all users                     | Yes                      | (none)                     |
+| Method | Path           | Description                      | Auth Required | Body                                      |
+|--------|----------------|----------------------------------|---------------|-------------------------------------------|
+| POST   | `/register`    | Create a new user profile        | ✅            | `{ username, email }`                     |
+| PATCH  | `/user/:id`    | Update user profile              | ✅            | `{ username?, matches_won?, matches_lost? }` |
+| GET    | `/user/:id`    | Get profile by user ID           | ✅            | None                                      |
+| GET    | `/all`         | Get all user profiles            | ✅            | None                                      |
+
+### 🖼️ Avatar Handling
+
+| Method | Path                   | Description                      | Auth Required | Body             |
+|--------|------------------------|----------------------------------|---------------|------------------|
+| POST   | `/upload`             | Upload avatar image              | ✅            | `formData (image)` |
+| GET    | `/avatar/:fileName`  | Get uploaded avatar by filename  | ✅            | None             |
 
 ---
 
@@ -80,10 +85,9 @@ The `profile-service` is responsible for managing user profile data. It handles 
 ```
 
 ---
+## Notes
 
-## Schemas
-
-- **Profile Schema**:
-  - `username`: string, required
-
-
+- File uploads are handled using multipart/form-data via formData.
+- Avatar images are served statically by filename via /avatar/:fileName.
+- Only users with valid tokens can access these endpoints.
+- PATCH is flexible and allows updating one or many fields.
