@@ -401,7 +401,6 @@ export const styles = {
   	font-orbitron
   	text-[8vw] md:text-[80px]
   	font-bold tracking-wide
-  	mt-14 mb-4
   	animate-fadeInUp
   `,
   gameCanvas: `

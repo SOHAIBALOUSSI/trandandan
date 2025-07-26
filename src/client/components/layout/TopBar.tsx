@@ -58,7 +58,7 @@ export function TopBar() {
     <header className={styles.navBarStyle}>
       <div className="relative w-full max-w-md ml-14 md:ml-0">
         <input
-          type="search"
+          type="text"
           id="search-bar"
           placeholder="Find A Racket Companion..."
           className={styles.searchBarStyle}

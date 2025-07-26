@@ -7,7 +7,6 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { removeFriend } from "@/services/remove-friend";
 import { blockFriend } from "@/services/block-friend";
 import { inviteFriend } from "@/services/invite-friend";
-import { displayToast } from "@/utils/display-toast";
 import { sendFriendRequest } from "@/services/send-friend-request";
 import { getFriends } from "@/services/get-friends";
 import { getCurrentUser } from "@/utils/user-store";
