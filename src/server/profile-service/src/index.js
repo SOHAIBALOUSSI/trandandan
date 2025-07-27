@@ -71,6 +71,11 @@ server.rabbit.consumeMessages(async(request) => {
     } else if (request.type === 'DELETE') {
         const userId = request.userId;
         await deleteProfile(server.db, userId);
+        await await server.redis.sendCommand([
+            'JSON.DEL',
+            `player:${userId}`,
+            '$'
+        ])
     } else if (request.type === 'UPDATE_RANK') {
         const { userId, rank } = request;
         await updateRankById(server.db, userId, rank);

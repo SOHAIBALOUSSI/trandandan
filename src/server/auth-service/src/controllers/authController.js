@@ -447,9 +447,9 @@ export async function deleteUserDataHandler(request, reply) {
                 userId: user.id
             }, `${target}.user.deleted`);
         }
-        
         await deleteUser(this.db, user.id);
         await deleteOAuthIdentitybyUID(this.db, user.id);
+        await this.redis.sRem(`userIds`, `${user.id}`);
         clearAuthCookies(reply);
 
         return reply.code(200).send(createResponse(200, 'USER_DATA_DELETED'));
