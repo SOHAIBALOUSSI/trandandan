@@ -23,10 +23,9 @@ function updateCounter() {
 }
 
 async function renderNotification(notif: Notification) {
-  console.log(notif.type);
   const li = document.createElement("li");
   li.className = `
-    text-sm text-white p-3 rounded-md shadow-lg border border-pong-dark-primary/40
+    text-sm text-left text-white p-3 rounded-md shadow-lg border border-pong-dark-primary/40
     bg-pong-dark-bg hover:bg-pong-dark-primary/10 transition-all duration-200 cursor-pointer
   `;
   li.setAttribute("data-id", String(notif.notification_id));
@@ -129,6 +128,7 @@ async function renderNotification(notif: Notification) {
   if (notif.type !== "INVITE_SENT" && route) {
     li.onclick = () => {
       markNotificationsAsRead([notif.notification_id]);
+      navigateTo(route);
       li.remove();
     };
   }
@@ -171,7 +171,13 @@ async function renderGroupedMessageNotification(
     navigateTo(`/lounge/${notif.sender_id}`);
     setTimeout(() => li.remove(), 400);
 
-    markNotificationsAsRead([notif.notification_id]);
+    const ids =
+      notif.notification_ids ??
+      (notif.notification_id ? [notif.notification_id] : []);
+    if (ids.length > 0) {
+      markNotificationsAsRead(ids);
+    }
+
     messageGroups.delete(notif.sender_id!);
   };
 
@@ -210,7 +216,7 @@ export function startNotificationListener() {
             count: notif.notifications_count,
             notif: {
               ...notif,
-              notification_id: notif.notification_ids[0],
+              notification_id: notif.notification_ids?.[0] ?? null,
             },
           });
 
@@ -298,17 +304,19 @@ export function clearNotificationCounter() {
   updateCounter();
 }
 
-function markNotificationsAsRead(ids: number[]) {
+function markNotificationsAsRead(ids: (number | null | undefined)[]) {
+  const cleanIds = ids.filter((id): id is number => typeof id === "number");
+  if (cleanIds.length === 0) return;
   if (ws && ws.readyState === WebSocket.OPEN) {
-    ids.forEach((id) => seenIds.add(id));
+    cleanIds.forEach((id) => seenIds.add(id));
     saveSeen();
-    unseenCount = Math.max(0, unseenCount - ids.length);
+    unseenCount = Math.max(0, unseenCount - cleanIds.length);
     updateCounter();
 
     ws.send(
       JSON.stringify({
         type: "NOTIFICATION_READ",
-        notification_ids: ids,
+        notification_ids: cleanIds,
       })
     );
   }

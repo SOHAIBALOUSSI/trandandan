@@ -21,7 +21,7 @@ export function TopBar() {
 
     window.addEventListener("notification-count", updateBadge as EventListener);
 
-    const seen = JSON.parse(sessionStorage.getItem("seenNotifs") || "[]");
+    const seen = JSON.parse(localStorage.getItem("seenNotifs") || "[]");
     badge.textContent = seen.length > 0 ? String(seen.length) : "0";
     if (seen.length > 0) {
       badge.classList.remove("text-black", "bg-pong-dark-primary");
@@ -37,9 +37,8 @@ export function TopBar() {
 
     btn.addEventListener("click", () => {
       notifContainer.classList.toggle("hidden");
+      clearNotificationCounter();
     });
-
-    clearNotificationCounter();
 
     const searchBar = document.getElementById("search-bar") as HTMLInputElement;
     if (searchBar) {

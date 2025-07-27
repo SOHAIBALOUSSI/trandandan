@@ -11,7 +11,7 @@ export async function hydrateTopThree() {
   const members = await getAllUsers();
 
   members.sort((a: UserProfile, b: UserProfile) => {
-    return a.rank - b.rank;
+    return b.level - a.level;
   });
 
   list.innerHTML = "";
