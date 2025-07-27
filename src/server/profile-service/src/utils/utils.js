@@ -27,7 +27,7 @@ export async function downloadAvatarUrl(avatar_url, userId) {
             file.on("finish", () => {
                 file.close();
                 console.log("Download Completed at ", uploadPath);
-                resolve(uploadPath);
+                resolve(fileName);
                 
             }).on('error', (err) => {
                 fs.unlink(uploadPath, () => {});

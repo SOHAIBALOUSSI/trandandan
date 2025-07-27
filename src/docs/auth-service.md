@@ -1,46 +1,71 @@
 # Auth Service 
 
 ## Overview
-The `auth-service` is responsible for handling user authentication, registration, session management, and user profile retrieval.
+The `auth-service` handles user authentication, registration, session management, and two-factor authentication (2FA). It is designed for a secure microservices architecture using JWT tokens and secure HTTP-only cookies.
 
 ---
 
-## Endpoints
-**Prefix: /auth**
+## 📚 Session Managment (`/auth`)
 
+### 🧍 Authentication
 
-| Method | Path               | Description                                                            | Authentication Required | Body Required                                  | Rate limited |
-| :----: | ------------------ | ---------------------------------------------------------------------- | :----------------------: | :-------------------------------------------: |:------------:|
-| POST   | `/login`           | Log in a user                                                          | No                       | { username/email, password }                  |yes           |
-| POST   | `/register`        | Register a new user                                                    | No                       | { username, email, password, confirmPassword }|yes           |
-| GET    | `/google`          | Log in a user using Google sign in                                     | No                       | (none)                                        |yes           |
-| GET    | `/42`              | Log in a user using 42 sign in                                         | No                       | (none)                                        |yes           |
-| POST   | `/logout`          | Log out a logged-in user                                               | Yes                      | { token }                              |        no    |
-| GET    | `/me`              | Get current user profile                                               | Yes                      | (none)                                        | no           |
-| POST   | `/refresh`         | Revokes the previous refresh token and returns a new refresh token and a new access token | Yes | { token }                                |        no    |
-| POST   | `/lost-password`   | Sends a code to the email recieved (email invalid = cant update password) | No | { email }                                |yes           |
-| POST   | `/verify-code`     | Verifies the code received                                             | Yes                      | { otpCode }                                   |yes           |
-| POST   | `/update-password` | Updates password                                                       | Yes                      | { password, confirmPassword }                 |yes           |
-| POST   | `/update-credentials`| Updates either email or password or both OR sends OTP code if 2fa enabled| Yes                      | { email or  (oldPassword, newPassword, confirmPassword) or both }|yes           |
-| POST   | `/verify-update-credentials`| Verifies the OTP code then updates email or password or both if it's valid| Yes                      | { otpCode }                 |yes           |
-| DELETE | `/delete`          | Deletes all data related to userId permanently across all services     | Yes                      | (none)                 | yes          |
+| Method | Path           | Description                           | Auth Required | Body                      | Rate Limited |
+|--------|----------------|---------------------------------------|---------------|---------------------------|--------------|
+| POST   | `/login`       | Login with email/username & password  | ❌            | `{ email, password }`     | ✅           |
+| POST   | `/register`    | Register new user                     | ❌            | `{ username, email, password, confirmPassword }` | ✅ |
+| GET    | `/google`      | Google OAuth login                    | ❌            | none                      | ✅           |
+| GET    | `/42`          | 42 OAuth login                        | ❌            | none                      | ✅           |
+| POST   | `/logout`      | Logout & revoke refresh token         | ✅            | none                      | ❌           |
+| GET    | `/me`          | Get current user info                 | ✅            | none                      | ❌           |
+| POST   | `/refresh`     | Refresh JWT tokens                    | ✅            | none                      | ❌           |
 
-**Prefix: /2fa**
+### 🔒 Account Recovery
 
-| Method | Path                  | Description                                    | Authentication Required  | Body Required | Rate limited |
-| :----: | --------------------- | ---------------------------------------------- | :----------------------: | :------------:| :----------: |
-| POST   | `/app/setup`          | Set up new 2FA for authenticator app           | Yes                      | (none)        |yes           |
-| POST   | `/app/verify-setup`   | Verify 2FA TOPT code for app setup             | Yes                      | { otpCode }   |yes           |
-| POST   | `/app/verify-login`   | Verify TOPT code for login with 2fa using app  | Yes                      | { otpCode }   |yes           |
-| POST   | `/email/setup`        | Set up new 2FA for email                       | Yes                      | (none)        |yes           |
-| POST   | `/email/verify-setup` | Verify 2FA TOPT code for email setup           | Yes                      | { otpCode }   |yes           |
-| POST   | `/email/verify-login` | Verify OPT code for login with 2fa using email | Yes                      | { otpCode }   |yes           |
-| GET    | `/`                   | Get informations about the user's twoFa methods| Yes                      | (none)        |no            |
-| POST   | `/enable`             | Enables the 2FA method received in body        | Yes                      | { method }    |no            |
-| POST   | `/disable`            | Disables the 2FA method received in body       | Yes                      | { method }    |no            |
-| POST   | `/primary`            | Makes the 2FA method received in body primary  | Yes                      | { method }    |no            |
+| Method | Path                | Description                        | Auth Required | Body                      | Rate Limited |
+|--------|---------------------|------------------------------------|---------------|---------------------------|--------------|
+| POST   | `/lost-password`    | Request OTP code via email         | ❌            | `{ email }`               | ✅           |
+| POST   | `/verify-code`      | Verify received OTP code           | ✅            | `{ otpCode }`             | ✅           |
+| POST   | `/update-password`  | Update password using OTP session  | ✅            | `{ password, confirmPassword }` | ✅     |
+
+### ⚙️ Credential Management
+
+| Method | Path                          | Description                                      | Auth Required | Body                      | Rate Limited |
+|--------|-------------------------------|--------------------------------------------------|---------------|---------------------------|--------------|
+| POST   | `/update-credentials`         | Update email and/or password (2FA OTP if enabled)| ✅            | `{ email?, password?, confirmPassword? }` | ✅ |
+| POST   | `/verify-update-credentials` | Verify OTP & finalize credential updates         | ✅            | `{ otpCode }`             | ✅           |
+| DELETE | `/delete`                     | Delete user across all services                  | ✅            | none                      | ✅           |
 
 ---
+
+## 🔐 Two-Factor Authentication (`/2fa`)
+
+### 📱 App-based 2FA
+
+| Method | Path               | Description                            | Auth Required | Body        | Rate Limited |
+|--------|--------------------|----------------------------------------|---------------|-------------|--------------|
+| POST   | `/app/setup`       | Generate QR code                       | ✅            | none        | ✅           |
+| POST   | `/app/verify-setup`| Verify code to enable 2FA              | ✅            | `{ otpCode }`| ✅          |
+| POST   | `/app/verify-login`| Verify 2FA login code                  | ✅            | `{ otpCode }`| ✅          |
+
+### 📧 Email-based 2FA
+
+| Method | Path                  | Description                         | Auth Required | Body        | Rate Limited |
+|--------|-----------------------|-------------------------------------|---------------|-------------|--------------|
+| POST   | `/email/setup`        | Send 2FA code to email              | ✅            | none        | ✅           |
+| POST   | `/email/verify-setup` | Verify email code & enable 2FA     | ✅            | `{ otpCode }`| ✅          |
+| POST   | `/email/verify-login` | Verify login code from email       | ✅            | `{ otpCode }`| ✅          |
+
+### 🔧 2FA Settings
+
+| Method | Path        | Description                       | Auth Required | Body        | Rate Limited |
+|--------|-------------|-----------------------------------|---------------|-------------|--------------|
+| GET    | `/`         | Get enabled 2FA methods           | ✅            | none        | ❌           |
+| POST   | `/enable`   | Enable 2FA method                 | ✅            | `{ method }`| ❌           |
+| POST   | `/disable`  | Disable 2FA method                | ✅            | `{ method }`| ❌           |
+| POST   | `/primary`  | Set primary 2FA method            | ✅            | `{ method }`| ❌           |
+
+---
+
 
 ## Schemas
 
@@ -412,8 +437,10 @@ The `auth-service` is responsible for handling user authentication, registration
 
 
 ## Notes
-- Successful login returns a token.
-- Logout clears the session or token.
-- `/me` returns the current user info based on session/token.
-- Setting up 2FA for email and app are basically the same, they only differ in how OTP codes are generated.
 
+-  All tokens are JWTs and sent via secure, HTTP-only cookies.
+-  refresh endpoint issues a new refresh + access token.
+-  delete triggers cross-service user deletion via RabbitMQ.
+-  2FA setup is required before enabling it as primary.
+-  App 2FA uses TOTP with QR code (e.g., Google Authenticator).
+-  Email 2FA sends time-limited codes to the user's inbox.
