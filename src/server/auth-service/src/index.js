@@ -41,10 +41,14 @@ await server.register(rateLimit, {
 });
 
 server.rabbit.consumeMessages(async (message) => {
-    const { id, username } = message;
-    if (username)
-        await updateUsernameById(server.db, username, id);
-    console.log('Auth: user updated.');
+    try {
+        const { id, username } = message;
+        if (username)
+            await updateUsernameById(server.db, username, id);
+        console.log('Auth: user updated.');
+    } catch (error) {
+        console.log('Error consuming message in auth-service', error);
+    }
 });
 
 await server.register(authRoutes, { prefix: '/auth' });
@@ -58,6 +62,10 @@ const start = async () => {
     }
     catch (err) {
         server.log.error(err);
+        await server.redis.close();
+        await server.db.close();
+        await server.rabbit.close();
+        await server.close();
         process.exit(1);
     }
 };

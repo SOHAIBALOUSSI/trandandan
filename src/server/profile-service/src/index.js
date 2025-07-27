@@ -38,6 +38,10 @@ const start = async () => {
     }
     catch (err) {
         server.log.error(err);
+        await server.redis.close();
+        await server.db.close();
+        await server.rabbit.close();
+        await server.close();
         process.exit(1);
     }
 };
