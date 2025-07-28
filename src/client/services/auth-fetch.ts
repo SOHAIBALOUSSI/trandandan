@@ -17,8 +17,17 @@ export async function authFetch(
     credentials: "include",
   });
 
-  console.log(res);
+  if (res.status === 400) {
+    let retries = 5;
+    let delay = 500;
 
+    for (let i = 0; i < retries; i++) {
+      const res = await fetch("/profile/me");
+      if (res.ok) break;
+      await new Promise((r) => setTimeout(r, delay));
+      delay *= 2;
+    }
+  }
   if (res.status === 401 && retry) {
     const refreshed = await refreshToken();
 
