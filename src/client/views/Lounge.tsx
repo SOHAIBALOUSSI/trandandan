@@ -21,10 +21,7 @@ export function Lounge() {
             subtitle="Where conversations echo and rivalries spark — connect with fellow club champions."
           />
 
-          <div
-            id="friends-container"
-            className={`${styles.membersListStyle} bg-pong-dark-bg/60 rounded-2xl shadow-lg px-6 md:px-10 py-8 max-w-6xl mx-auto`}
-          >
+          <div id="friends-container" className={styles.membersListStyle}>
             <h2 className="text-pong-dark-primary text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-6">
               <span className="inline-block w-1.5 h-8 bg-pong-dark-accent rounded-sm"></span>
               Ongoing Chats

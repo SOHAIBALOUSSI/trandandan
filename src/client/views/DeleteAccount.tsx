@@ -23,9 +23,9 @@ export function DeleteAccount() {
             subtitle="Every journey has an end—even in the club of legends."
           />
 
-          <div className={`${styles.cardOneStyle} items-center gap-8`}>
+          <div className={`flex flex-col gap-8 w-full max-w-5xl items-center px-8 md:px-10`}>
             <p
-              className={`text-center text-pong-dark-primary font-medium ${fontSizes.bodyFontSize} leading-relaxed`}
+              className={`text-center text-pong-dark-primary font-medium ${fontSizes.bodyFontSize} leading-relaxed max-w-xl`}
             >
               As you step away from the club, your legacy echoes through the
               halls of the lounge.

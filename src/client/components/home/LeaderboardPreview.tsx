@@ -15,7 +15,7 @@ function getTagline(rank: number): string | undefined {
 
 export function LeaderboardPreview(props: { user: UserProfile }) {
   setTimeout(() => {
-    hydrateTopThree();
+    hydrateTopThree(user);
   }, 0);
 
   const { user } = props;

@@ -65,7 +65,12 @@ const publicRoutes: string[] = [
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
-  if (profile) return true;
+  if (profile) {
+    console.log("Profile fetched in router:", profile);
+
+    return true;
+  }
+  console.log("erooooor in fetching");
   return false;
 }
 

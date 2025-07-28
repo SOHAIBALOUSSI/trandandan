@@ -4,7 +4,7 @@ export function FriendsList() {
   return (
     <ul
       id="friends-list"
-      className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`}
+      className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto px-3 md:px-6`}
     >
       <li className="text-pong-dark-secondary text-center">Loading...</li>
     </ul>

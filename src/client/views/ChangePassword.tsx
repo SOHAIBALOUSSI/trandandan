@@ -48,7 +48,7 @@ export function ChangePassword() {
                   type="password"
                   name="old-password"
                   id={currentPasswordId}
-                  className={styles.inputFieldDark + " mb-0"}
+                  className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="Current password"
                   autoComplete="off"
                   autofocus
@@ -66,7 +66,7 @@ export function ChangePassword() {
                   type="password"
                   name="new-password"
                   id={newPasswordId}
-                  className={styles.inputFieldDark + " mb-0"}
+                  className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="New password"
                   autoComplete="off"
                 />
@@ -83,7 +83,7 @@ export function ChangePassword() {
                   type="password"
                   name="confirm-new-password"
                   id={confirmNewPasswordId}
-                  className={styles.inputFieldDark + " mb-0"}
+                  className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="Confirm new password"
                   autoComplete="off"
                 />

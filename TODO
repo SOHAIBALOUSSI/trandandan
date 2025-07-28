@@ -1,6 +1,5 @@
-- add authorization for game service endpoints
-- keep the notif list until i click on it
-- cancel request
+- Token Authorization for game service endpoints
+- Cancel friend request
 - correct the recent activity 
 - handle 429 too many requests in auth
 - users status (online / offline)

@@ -3,7 +3,7 @@ import { UserProfile } from "types/types";
 let ws: WebSocket | null = null;
 
 export function dashboardLive(onData: (data: UserProfile[]) => void) {
-  if (ws && ws.readyState === WebSocket.OPEN) return;
+//   if (ws && ws.readyState === WebSocket.OPEN) return;
 
   ws = new WebSocket("/dashboard/live");
 

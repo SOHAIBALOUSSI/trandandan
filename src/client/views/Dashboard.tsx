@@ -8,6 +8,7 @@ import { dashboardLive } from "@/services/dashboard-service";
 import { UserProfile } from "types/types";
 import { showUserBadge } from "@/utils/show-user-badge";
 import { getWelcomeTitle } from "@/components/home/Hero";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 
 export function Dashboard() {
   const user = getCurrentUser();
@@ -42,7 +43,7 @@ export function Dashboard() {
           : ""
       }">
 				<td class="px-4 py-4 flex items-center gap-3">
-                  <img src="${p.avatar_url}" alt="${p.username}"
+                  <img src="${getAvatarUrl(p)}" alt="${p.username}"
                     class="w-10 h-10 rounded-full object-cover border border-pong-accent/40" />
                   <span class="font-semibold">${p.username}</span>
                 </td>
@@ -54,7 +55,6 @@ export function Dashboard() {
 				</div>
 				<span class="text-xs text-gray-300">${winRate}%</span>
 				</td>
-				<td class="p-4">${p.solde} F</td>
 				<td class="p-4">${p.matches_played}</td>
 			</tr>`;
       })
@@ -168,7 +168,6 @@ export function Dashboard() {
                     <th className="px-4 py-4 text-left">Rank</th>
                     <th className="px-4 py-4 text-left">Level</th>
                     <th className="px-4 py-4 text-left">Win Rate</th>
-                    <th className="px-4 py-4 text-left">Solde</th>
                     <th className="px-4 py-4 text-left">Matches</th>
                   </tr>
                 </thead>

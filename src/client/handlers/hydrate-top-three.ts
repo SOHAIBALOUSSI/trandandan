@@ -4,7 +4,7 @@ import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";
 import { navigateTo } from "@/utils/navigate-to-link";
 
-export async function hydrateTopThree() {
+export async function hydrateTopThree(me: UserProfile) {
   const list = document.getElementById("top-three-list") as HTMLOListElement;
   if (!list) return;
 
@@ -23,7 +23,9 @@ export async function hydrateTopThree() {
     const li = document.createElement("li");
     li.className = styles.listStyle + " items-center gap-4 cursor-pointer";
     li.onclick = () => {
-      navigateTo(`/members/${user.id}`);
+      user.id === me.id
+        ? navigateTo(`/my_profile`)
+        : navigateTo(`/members/${user.id}`);
     };
 
     const rankSpan = document.createElement("span");

@@ -23,7 +23,12 @@ export async function hydrateFriends() {
     if (!user) return;
 
     const li = document.createElement("li");
-    li.className = styles.listStyle + " items-center justify-between gap-4";
+    li.className = `
+        flex items-center justify-between gap-4 p-4 mb-3 
+        bg-pong-dark-highlight/5 rounded-xl border border-pong-dark-highlight/30
+        shadow-md hover:shadow-lg transition-all duration-300
+        cursor-default
+      `;
 
     const avatar = document.createElement("img");
     avatar.src = getAvatarUrl(user);

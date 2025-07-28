@@ -151,7 +151,7 @@ export const styles = {
 	placeholder:capitalize
     ${fontSizes.inputFontSize}
 	mb-4
-  `,  
+  `,
   selectField: `
   	capitalize
   	w-full px-5 py-3.5
@@ -185,7 +185,7 @@ export const styles = {
 	show-pass text-sm 
 	px-2
 	absolute top-1/2 right-3
-	transform -translate-y-1/2 
+	transform translate-y-[-50%] 
 	cursor-pointer 
 	text-pong-primary/80 hover:text-pong-primary
 	transition
@@ -284,7 +284,7 @@ export const styles = {
     transform transition-transform duration-300 ease-in-out -translate-x-full
     flex flex-col gap-10 px-6 py-10
     md:w-64 md:rounded-tr-3xl md:rounded-br-3xl md:shadow-2xl 
-    md:border-r-2 md:border-pong-dark-accent/40 md:-translate-x-[90%] 
+    md:border-r-2 md:border-pong-dark-accent/90 md:-translate-x-[90%] lg:-translate-x-[80%] 
     md:items-center
     md:hover:translate-x-0 md:transition-all md:duration-300 md:ease-in-out
   `,
@@ -342,10 +342,14 @@ export const styles = {
 	transition-all
   `,
   membersListStyle: `
-	bg-pong-secondary/10 
-	rounded-xl shadow-md 
-	p-6 md:p-10 
+	bg-pong-dark-bg/70
+	rounded-2xl
+	border border-pong-dark-highlight/30
+	shadow-md backdrop-blur-md
+	p-6 md:p-10
 	w-full max-w-5xl mx-auto
+	transition-all duration-300
+	hover:shadow-pong-dark-highlight/20
   `,
   membersActiveBtn: `
 	text-base lg:text-lg font-semibold 

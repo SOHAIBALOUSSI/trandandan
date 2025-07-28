@@ -11,7 +11,7 @@ export async function hydrateBlocked() {
   const blocked = await getBlockedUsers();
 
   if (!blocked.length) {
-    list.innerHTML = `<li class="text-white text-center">No blocked users found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center">No blocked users found.</li>`;
     return;
   }
 
