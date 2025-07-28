@@ -22,7 +22,10 @@ export async function authFetch(
     let delay = 500;
 
     for (let i = 0; i < retries; i++) {
-      const res = await fetch("/profile/me");
+      const res = await fetch(url, {
+        ...options,
+        credentials: "include",
+      });
       if (res.ok) break;
       await new Promise((r) => setTimeout(r, delay));
       delay *= 2;

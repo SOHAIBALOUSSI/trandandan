@@ -192,20 +192,20 @@ a {
 /* End Custom Designs */
 
 /* Start Game Mode Design */
-#game-mode-0 {
-  background-image: url(../assets/local-duel-bg.png);
+#game-mode-0,
+#game-mode-1,
+#game-mode-2 {
   background-position: center;
   background-size: cover;
+}
+#game-mode-0 {
+  background-image: url(../assets/local-duel-bg.png);
 }
 #game-mode-1 {
   background-image: url(../assets/tournament-cup-bg.png);
-  background-position: center;
-  background-size: cover;
 }
 #game-mode-2 {
   background-image: url(../assets/remote-battle-bg.png);
-  background-position: center;
-  background-size: cover;
 }
 /* End Game Mode Design */
 
