@@ -51,7 +51,7 @@ export function Game() {
                 id={`game-mode-${index}`}
                 className="flex flex-col items-center justify-center text-center px-6 py-10 bg-gradient-to-br from-black/60 via-pong-dark-custom/30 to-pong-accent/10 border-x border-pong-dark-highlight/30 first:border-l-0 last:border-r-0 hover:scale-[1.02] transition-transform duration-300 ease-in-out cursor-pointer"
               >
-                <div className="flex flex-col items-center gap-5 px-8 py-6 sm:px-12 sm:py-10 rounded-3xl shadow-xl bg-gradient-to-br from-black/60 via-pong-dark-custom/30 to-pong-accent/10 backdrop-blur-sm w-full h-full">
+                <div className="flex flex-col items-center justify-between gap-5 px-8 py-6 sm:px-12 sm:py-10 rounded-3xl shadow-xl bg-gradient-to-br from-black/60 via-pong-dark-custom/30 to-pong-accent/10 backdrop-blur-sm w-full h-full">
                   <h2
                     className={`${fontSizes.smallTitleFontSize} font-extrabold text-white drop-shadow-sm tracking-tight`}
                   >

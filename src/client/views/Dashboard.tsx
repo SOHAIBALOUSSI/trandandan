@@ -62,7 +62,6 @@ export function Dashboard() {
 		</tbody>
       `;
     });
-
   }, 0);
 
   return (
@@ -77,21 +76,12 @@ export function Dashboard() {
           />
 
           <div className="w-full max-w-5xl flex flex-col md:flex-row items-center gap-6 bg-pong-dark-highlight/10 rounded-2xl p-6 shadow-lg border border-pong-dark-highlight/30 backdrop-blur-md">
-            <div className="relative">
-              <div className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg">
-                <img
-                  src={user.avatar_url}
-                  alt={`${user.username}'s avatar`}
-                  className="w-full h-full rounded-full object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-lg overflow-hidden shadow-md">
-                <img
-                  src={showUserBadge(user.rank)}
-                  alt={`${user.username} badge`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+            <div className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg">
+              <img
+                src={user.avatar_url}
+                alt={`${user.username}'s avatar`}
+                className="w-full h-full rounded-full object-cover"
+              />
             </div>
 
             <div className="flex-1 w-full">
@@ -184,7 +174,6 @@ export function Dashboard() {
               </table>
             </div>
           </div>
-
         </main>
       </div>
     </section>

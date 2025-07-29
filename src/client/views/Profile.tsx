@@ -26,19 +26,19 @@ export function Profile() {
       <div className="w-full relative">
         <TopBar />
 
-        <main className={styles.pageContent}>
+        <main className={styles.pageContent + " !gap-10"}>
           <SecondaryHeader
             title="Member Profile"
             subtitle="Review your identity, matches, and achievements."
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full max-w-5xl mx-auto">
-            <div className="lg:col-span-2 flex flex-col items-center">
+            <div className="lg:col-span-2">
               <MemberCard user={user} showUpdateOptions={true} />
             </div>
 
-            <div className="lg:col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-2">
-              <div className="relative col-span-2 w-full rounded-xl shadow-xl overflow-hidden flex items-center justify-center">
+            <div className="lg:col-span-1 flex items-center justify-center">
+              <div className="relative col-span-2 w-1/2 lg:w-full rounded-full overflow-hidden flex items-center justify-center">
                 <img
                   src={showUserBadge(user.rank)}
                   alt={`${user.username}'s badge`}
@@ -51,7 +51,10 @@ export function Profile() {
             </div>
           </div>
 
-          <div id="performance-metrics" class="mt-8 w-full max-w-5xl mx-auto"></div>
+          <div
+            id="performance-metrics"
+            class="w-full max-w-5xl mx-auto"
+          ></div>
 
           <MatchHistory user={user} />
         </main>

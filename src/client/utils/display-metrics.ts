@@ -1,21 +1,87 @@
 import { getUserHistory } from "@/services/get-user-history";
+import { fontSizes } from "@/styles/fontSizes";
 import { UserProfile, UserHistory } from "types/types";
+import Chart from "chart.js/auto";
+
+const fakeHistory: UserHistory[] = [
+  {
+    id: 1,
+    user_name: "demo",
+    enemy_id: 2,
+    user_id: 1,
+    left_player_score: 11,
+    right_player_score: 7,
+    game_duration: 5.2,
+    game_end_result: "Won",
+    left_player_ball_hit: 45,
+    right_player_ball_hit: 32,
+  },
+  {
+    id: 2,
+    user_name: "demo",
+    enemy_id: 3,
+    user_id: 1,
+    left_player_score: 8,
+    right_player_score: 11,
+    game_duration: 6.5,
+    game_end_result: "Lost",
+    left_player_ball_hit: 40,
+    right_player_ball_hit: 50,
+  },
+  {
+    id: 3,
+    user_name: "demo",
+    enemy_id: 4,
+    user_id: 1,
+    left_player_score: 11,
+    right_player_score: 9,
+    game_duration: 7.8,
+    game_end_result: "Won",
+    left_player_ball_hit: 55,
+    right_player_ball_hit: 42,
+  },
+  {
+    id: 4,
+    user_name: "demo",
+    enemy_id: 5,
+    user_id: 1,
+    left_player_score: 11,
+    right_player_score: 4,
+    game_duration: 4.4,
+    game_end_result: "Won",
+    left_player_ball_hit: 38,
+    right_player_ball_hit: 20,
+  },
+  {
+    id: 5,
+    user_name: "demo",
+    enemy_id: 6,
+    user_id: 1,
+    left_player_score: 9,
+    right_player_score: 11,
+    game_duration: 8.2,
+    game_end_result: "Lost",
+    left_player_ball_hit: 50,
+    right_player_ball_hit: 55,
+  },
+];
 
 export async function displayPerformanceMetrics(user: UserProfile) {
   const metricsContainer = document.getElementById("performance-metrics");
   if (!metricsContainer) return;
   metricsContainer.innerHTML = "";
 
-  const history: UserHistory[] = await getUserHistory(user.id);
+  let history: UserHistory[] = await getUserHistory(user.id);
   if (!history || history.length === 0) {
-    metricsContainer.innerHTML = `
-      <p class="text-pong-dark-primary text-center py-6">No performance data available yet.</p>`;
-    return;
+    // metricsContainer.innerHTML = `
+    //   <p class="bg-pong-dark-custom border border-pong-highlight/30 rounded-xl text-pong-dark-secondary text-center py-8 ${fontSizes.bodyFontSize} px-8 md:px-24">No performance data available yet. Start playing and defeat your friends to build your stats!</p>`;
+    // return;
+    history = fakeHistory;
   }
 
-  const wins = history.filter((h) => h.game_end_result === "Won").length;
-  const losses = history.length - wins;
   const totalMatches = history.length;
+  const wins = history.filter((h) => h.game_end_result === "Won").length;
+  const losses = totalMatches - wins;
 
   const avgDuration = (
     history.reduce((acc, h) => acc + h.game_duration, 0) / totalMatches
@@ -30,65 +96,141 @@ export async function displayPerformanceMetrics(user: UserProfile) {
 
   const winRate = Math.round((wins / totalMatches) * 100);
 
-  metricsContainer.innerHTML = `
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+  const recentMatches = history.slice(-5);
+  const labels = recentMatches.map(
+    (_, i) => `Match ${totalMatches - (recentMatches.length - 1 - i)}`
+  );
+  const scoredData = recentMatches.map((h) => h.left_player_score);
+  const concededData = recentMatches.map((h) => h.right_player_score);
 
-      <div class="bg-pong-dark-highlight/10 p-6 rounded-xl shadow-md flex flex-col items-center">
-        <h3 class="text-lg font-bold mb-4 text-pong-accent">Win / Loss</h3>
-        <div class="relative w-24 h-24">
+  const circleCircumference = 2 * Math.PI * 36;
+  const dashOffset = circleCircumference * (1 - wins / totalMatches);
+
+  metricsContainer.innerHTML = `
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full animate-fade-in">
+
+      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-2xl shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
+        <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Win / Loss</h3>
+        <div class="relative w-28 h-28">
           <svg class="transform -rotate-90 w-full h-full">
-            <circle cx="50%" cy="50%" r="36" stroke="gray" stroke-width="8" fill="none"/>
-            <circle cx="50%" cy="50%" r="36"
+            <circle cx="50%" cy="50%" r="36" stroke="rgba(255,255,255,0.15)" stroke-width="8" fill="none"/>
+            <circle id="win-circle" cx="50%" cy="50%" r="36"
               stroke="url(#grad)"
               stroke-width="8" fill="none"
-              stroke-dasharray="${2 * Math.PI * 36}"
-              stroke-dashoffset="${
-                2 * Math.PI * 36 * (1 - wins / totalMatches)
-              }"
-              stroke-linecap="round"/>
+              stroke-dasharray="${circleCircumference}"
+              stroke-dashoffset="${circleCircumference}"
+              stroke-linecap="round"
+              style="transition: stroke-dashoffset 1.2s ease-out;"
+            />
             <defs>
               <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#34D399"/>
-                <stop offset="100%" stop-color="#10B981"/>
+                <stop offset="0%" stop-color="#22c55e"/>
+                <stop offset="100%" stop-color="#26d767"/>
               </linearGradient>
             </defs>
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-xl font-bold">${winRate}%</span>
+            <span class="text-xl font-extrabold text-white drop-shadow">${winRate}%</span>
           </div>
         </div>
-        <p class="mt-2 text-sm text-gray-300">${wins} Wins / ${losses} Losses</p>
+        <p class="mt-3 text-sm text-white/70">${wins} Wins • ${losses} Losses</p>
       </div>
 
-      <div class="bg-pong-dark-highlight/10 p-6 rounded-xl shadow-md flex flex-col items-center">
-        <h3 class="text-lg font-bold mb-4 text-pong-accent">Avg Match Duration</h3>
-        <div class="text-4xl font-extrabold text-yellow-400">${avgDuration}m</div>
+      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-2xl shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
+        <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Avg Match Duration</h3>
+        <div class="text-5xl font-extrabold text-pong-dark-primary drop-shadow-lg">${avgDuration}m</div>
         <p class="mt-2 text-gray-300 text-sm">Per Match</p>
       </div>
 
-      <div class="bg-pong-dark-highlight/10 p-6 rounded-xl shadow-md flex flex-col items-center">
-        <h3 class="text-lg font-bold mb-4 text-pong-accent">Points Scored vs Conceded</h3>
-        <div class="w-full">
-          <div class="flex justify-between text-xs text-gray-400">
-            <span>Scored</span>
-            <span>${pointsScored}</span>
+      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-2xl shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
+        <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Points Scored vs Conceded</h3>
+        <div class="w-full space-y-4">
+          <div>
+            <div class="flex justify-between text-xs text-white/60 mb-1">
+              <span>Scored</span>
+              <span>${pointsScored}</span>
+            </div>
+            <div class="w-full bg-gray-700/50 h-2 rounded-full overflow-hidden">
+              <div class="h-2 bg-pong-success rounded-full bar-scored" style="width:0%; transition: width 1s ease-in-out;"></div>
+            </div>
           </div>
-          <div class="w-full bg-gray-700 h-2 rounded-full mb-3">
-            <div class="h-2 bg-green-500 rounded-full" style="width:${
-              (pointsScored / (pointsScored + pointsConceded)) * 100
-            }%;"></div>
-          </div>
-          <div class="flex justify-between text-xs text-gray-400">
-            <span>Conceded</span>
-            <span>${pointsConceded}</span>
-          </div>
-          <div class="w-full bg-gray-700 h-2 rounded-full">
-            <div class="h-2 bg-red-500 rounded-full" style="width:${
-              (pointsConceded / (pointsScored + pointsConceded)) * 100
-            }%;"></div>
+
+          <div>
+            <div class="flex justify-between text-xs text-white/60 mb-1">
+              <span>Conceded</span>
+              <span>${pointsConceded}</span>
+            </div>
+            <div class="w-full bg-gray-700/50 h-2 rounded-full overflow-hidden">
+              <div class="h-2 bg-pong-error rounded-full bar-conceded" style="width:0%; transition: width 1s ease-in-out;"></div>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-2xl shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02] md:col-span-3">
+        <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Last 5 Matches</h3>
+        <canvas id="mini-bar-chart" class="w-full h-40"></canvas>
+      </div>
     </div>
   `;
+
+  setTimeout(() => {
+    const winCircle = document.getElementById(
+      "win-circle"
+    ) as SVGCircleElement | null;
+    if (winCircle) {
+      winCircle.style.strokeDashoffset = String(dashOffset);
+    }
+    const totalPoints = pointsScored + pointsConceded;
+    const scoredBar = metricsContainer.querySelector(
+      ".bar-scored"
+    ) as HTMLDivElement;
+    const concededBar = metricsContainer.querySelector(
+      ".bar-conceded"
+    ) as HTMLDivElement;
+    if (scoredBar && concededBar && totalPoints > 0) {
+      scoredBar.style.width = `${(pointsScored / totalPoints) * 100}%`;
+      concededBar.style.width = `${(pointsConceded / totalPoints) * 100}%`;
+    }
+  }, 100);
+
+  const ctx = document.getElementById("mini-bar-chart") as HTMLCanvasElement;
+  if (ctx) {
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Scored",
+            data: scoredData,
+            backgroundColor: "#22c55e",
+            borderRadius: 4,
+          },
+          {
+            label: "Conceded",
+            data: concededData,
+            backgroundColor: "#ef4444",
+            borderRadius: 4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: "#fff" } },
+        },
+        scales: {
+          x: {
+            ticks: { color: "#ccc" },
+            grid: { color: "rgba(255,255,255,0.1)" },
+          },
+          y: {
+            ticks: { color: "#ccc" },
+            grid: { color: "rgba(255,255,255,0.1)" },
+          },
+        },
+      },
+    });
+  }
 }

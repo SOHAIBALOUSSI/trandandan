@@ -15,7 +15,7 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
   const friends = await getFriends();
 
   if (!users.length || users.length === 1) {
-    list.innerHTML = `<li class="text-pong-dark-secondary text-center py-6 text-lg">No members found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center">No members found.</li>`;
     return;
   }
 
