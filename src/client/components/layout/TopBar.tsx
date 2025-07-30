@@ -39,6 +39,9 @@ export function TopBar() {
       notifContainer.classList.toggle("hidden");
       clearNotificationCounter();
     });
+    btn.addEventListener("blur", () => {
+      notifContainer.classList.add("hidden");
+    });
 
     const searchBar = document.getElementById("search-bar") as HTMLInputElement;
     if (searchBar) {
