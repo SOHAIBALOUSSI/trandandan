@@ -3,6 +3,7 @@ import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { styles } from "@/styles/styles";
 import { UserProfile } from "types/types";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { getWelcomeTitle } from "@/components/home/Hero";
 
 export async function hydrateTopThree(me: UserProfile) {
   const list = document.getElementById("top-three-list") as HTMLOListElement;
@@ -40,7 +41,7 @@ export async function hydrateTopThree(me: UserProfile) {
 
     const nameSpan = document.createElement("span");
     nameSpan.className = "font-semibold text-pong-dark-primary normal-case";
-    nameSpan.textContent = user.username;
+    nameSpan.innerHTML = `${getWelcomeTitle(user)} <span class="text-pong-dark-accent">${user.username}</span>`;
 
     const levelSpan = document.createElement("span");
     levelSpan.className =

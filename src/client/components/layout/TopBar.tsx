@@ -50,6 +50,10 @@ export function TopBar() {
           handleSearchMembers(searchBar.value);
         }
       });
+      searchBar.addEventListener("blur", () => {
+        const results = document.getElementById("search-results");
+        if (results) results.remove();
+      });
     }
   }, 0);
 

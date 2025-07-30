@@ -39,7 +39,6 @@ export function stopChatListener() {
   if (ws) {
     ws.close();
     ws = null;
-    console.log("Stopping chat Websocket connection.");
   }
 }
 

@@ -24,6 +24,8 @@ import { RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
 import { startNotificationListener } from "@/services/notifications-service";
+import { stopDashboardListener } from "@/services/dashboard-service";
+import { stopChatListener } from "@/services/chat-service";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
@@ -65,12 +67,7 @@ const publicRoutes: string[] = [
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
-  if (profile) {
-    console.log("Profile fetched in router:", profile);
-
-    return true;
-  }
-  console.log("erooooor in fetching");
+  if (profile) return true;
   return false;
 }
 
@@ -144,5 +141,9 @@ export async function router(): Promise<void> {
     memberProfileElem && app.appendChild(memberProfileElem);
   } else {
     app.appendChild(render());
+  }
+
+  if (window.location.pathname !== "/dashboard") {
+    stopDashboardListener();
   }
 }

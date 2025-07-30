@@ -37,7 +37,7 @@ export function MatchHistory(props: { user: UserProfile }) {
         className={`
           space-y-6 
           ${fontSizes.bodyFontSize} 
-          max-h-[340px] overflow-y-auto pr-4 md:pr-8
+          max-h-[500px] overflow-y-auto pr-4 md:pr-8
           custom-scrollbar
 		  py-4
         `}

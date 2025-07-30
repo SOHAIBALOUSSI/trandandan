@@ -20,7 +20,6 @@ export async function handleLogout(): Promise<void> {
     clearCurrentUser();
     stopNotificationListener();
     stopChatListener();
-    stopDashboardListener();
     history.replaceState(null, "", "/welcome");
     await router();
   }
