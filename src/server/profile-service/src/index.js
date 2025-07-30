@@ -13,7 +13,7 @@ import { downloadAvatarUrl } from './utils/utils.js';
 const server = fastify({ logger: true });
 await server.register(multipart, {
     limits: {      
-        fileSize: 1000000,  
+        fileSize: 25000000,  
         files: 1
     }
 });
