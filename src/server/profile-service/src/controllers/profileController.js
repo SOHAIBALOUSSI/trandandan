@@ -89,12 +89,9 @@ export async function updateProfile(request, reply) {
 export async function uploadAvatarUrl(request, reply) {
     try {
         const userId = request.user?.id;
-        let data;
-        try {
-            data = await request.file({ limits: { fileSize: 25000000 }});
-        } catch (error) {               
-            return reply.code(400).send(createResponse(400, 'FILE_TOO_LARGE'));
-        }
+        const data = await request.file();
+        data.file.on('limit', () => { return reply.code(400).send(createResponse(400, 'FILE_TOO_LARGE')); })
+        
         console.log('DATA received: ', data);
         if (!data)
             return reply.code(400).send(createResponse(400, 'FILE_REQUIRED'));
