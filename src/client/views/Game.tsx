@@ -4,8 +4,16 @@ import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { showInviteModal } from "@/utils/show-invite-modal";
+import { getCurrentUser } from "@/utils/user-store";
+import { Loader } from "@/components/common/Loader";
 
 export function Game() {
+  const me = getCurrentUser();
+  if (!me) {
+    return <Loader text="Loading your game options..." />;
+  }
+
   const gameModes = [
     {
       title: "1 vs 1 — Lounge Duel",
@@ -27,9 +35,16 @@ export function Game() {
   setTimeout(() => {
     const playBtn = document.querySelectorAll(".game-mode-btn");
     playBtn.forEach((btn, index) => {
-      btn.addEventListener("click", () => {
-        navigateTo(gameModes[index].href);
-      });
+      if (index === 2) {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          showInviteModal(me);
+        });
+      } else {
+        btn.addEventListener("click", () => {
+          navigateTo(gameModes[index].href);
+        });
+      }
     });
   }, 0);
 
@@ -44,32 +59,69 @@ export function Game() {
             subtitle="Pick your playstyle and step into the arena of champions."
           />
 
-          <div className="hidden lg:grid w-full max-w-6xl mx-auto grid-cols-3 rounded-2xl overflow-hidden h-full min-h-[520px]">
+          <div className="hidden lg:grid w-full max-w-6xl mx-auto grid-cols-3 rounded-3xl overflow-hidden min-h-[520px] max-h-[600px] shadow-2xl">
             {gameModes.map((mode, index) => (
               <div
                 key={index}
                 id={`game-mode-${index}`}
-                className="flex flex-col items-center justify-center text-center px-6 py-10 bg-gradient-to-br from-black/60 via-pong-dark-custom/30 to-pong-accent/10 border-x border-pong-dark-highlight/30 first:border-l-0 last:border-r-0 hover:scale-[1.02] transition-transform duration-300 ease-in-out cursor-pointer"
+                className="
+        			relative flex flex-col items-center justify-center text-center px-8 py-16
+        			bg-gradient-to-br from-black/70 via-pong-dark-custom/30 to-pong-accent/5
+        			border-x border-pong-dark-highlight/20
+        			hover:scale-[1.04] hover:-translate-y-1
+					first:hover:translate-x-1 last:hover:-translate-x-1
+        			transition-transform duration-500 ease-in-out cursor-pointer
+        			first:border-l-0 last:border-r-0
+      			"
               >
-                <div className="flex flex-col items-center justify-between gap-5 px-8 py-6 sm:px-12 sm:py-10 rounded-3xl shadow-xl bg-gradient-to-br from-black/60 via-pong-dark-custom/30 to-pong-accent/10 backdrop-blur-sm w-full h-full">
+                <div className="absolute inset-0 opacity-0 hover:opacity-10 transition-opacity duration-500 bg-pong-accent blur-2xl"></div>
+
+                <div
+                  className="
+        			relative flex flex-col items-center justify-between gap-6 px-8 py-8
+        			rounded-3xl shadow-xl
+        			bg-gradient-to-br from-black/70 via-pong-dark-custom/40 to-pong-accent/10
+        			backdrop-blur-md
+        			w-full h-full
+        			transition-all duration-500 ease-in-out
+      			"
+                >
                   <h2
-                    className={`${fontSizes.smallTitleFontSize} font-extrabold text-white drop-shadow-sm tracking-tight`}
+                    className={`${fontSizes.smallTitleFontSize} font-extrabold text-white drop-shadow-lg tracking-tight`}
                   >
                     {mode.title}
                   </h2>
+
                   <p
-                    className={`${fontSizes.bodyFontSize} text-white/90 leading-relaxed mt-4 mb-6`}
+                    className={`${fontSizes.bodyFontSize} text-white/80 leading-relaxed mt-2 mb-4`}
                   >
                     {mode.text}
                   </p>
+
                   <button
-                    className="game-mode-btn group relative flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-pong-accent hover:bg-pong-dark-accent shadow-lg transition-all duration-300 ease-in-out active:scale-95 focus:outline-none"
+                    className="
+				  		game-mode-btn
+            	  		group relative flex items-center justify-center
+            	  		w-16 h-16 sm:w-20 sm:h-20 rounded-full
+            	  		bg-pong-accent hover:bg-pong-dark-accent
+            	  		shadow-lg shadow-pong-accent/40
+            	  		transition-all duration-300 ease-in-out
+            	  		active:scale-95 focus:outline-none
+          			"
                     aria-label="Start Game"
                   >
                     <i
-                      className={`${fontSizes.bodyFontSize} fa-solid fa-play text-white ml-[1px] group-hover:animate-ping-once`}
+                      className={`${fontSizes.bodyFontSize} fa-solid fa-play text-white ml-[1px] group-hover:scale-110 transition-transform duration-300`}
                     />
-                    <span className="absolute -bottom-9 text-xs text-white/80 bg-black/70 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none">
+                    <span
+                      className="
+           		  		absolute -bottom-10 text-xs text-white/80
+           		  		bg-black/70 px-2 py-1 rounded
+           		  		opacity-0 group-hover:opacity-100
+           		  		transition-all duration-300 ease-in-out
+           		  		pointer-events-none
+           			  "
+                    >
                       Play Now
                     </span>
                   </button>

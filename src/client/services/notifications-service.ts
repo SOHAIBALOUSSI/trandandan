@@ -22,7 +22,7 @@ function updateCounter() {
   );
 }
 
-async function renderNotification(notif: Notification) {
+async function renderNotification(notif: Notification, groupedIds?: number[]) {
   const li = document.createElement("li");
   li.className = `
     text-sm text-left text-white p-3 rounded-md shadow-lg border border-pong-dark-primary/40
@@ -80,29 +80,32 @@ async function renderNotification(notif: Notification) {
           </span>
         </div>
       `;
-      setTimeout(() => {
-        showInviteNotification(
-          sender?.username || "Unknown",
-          async () => {
-            const roomId = await getRoomId(notif.sender_id || 0);
-            if (roomId) {
-              await acceptInvite(
-                roomId,
-                notif.sender_id || 0,
-                notif.recipient_id || 0
-              );
+      // show it only if the user is connected in the app
+      if (!groupedIds) {
+        setTimeout(() => {
+          showInviteNotification(
+            sender?.username || "Unknown",
+            async () => {
+              const roomId = await getRoomId(notif.sender_id || 0);
+              if (roomId) {
+                await acceptInvite(
+                  roomId,
+                  notif.sender_id || 0,
+                  notif.recipient_id || 0
+                );
+                markNotificationsAsRead([notif.notification_id]);
+                li.remove();
+                navigateTo(`/remote?roomId=${roomId}`);
+              }
+            },
+            () => {
               markNotificationsAsRead([notif.notification_id]);
               li.remove();
-              navigateTo(`/remote?roomId=${roomId}`);
+              displayToast("Invite declined.", "error");
             }
-          },
-          () => {
-            markNotificationsAsRead([notif.notification_id]);
-            li.remove();
-            displayToast("Invite declined.", "error");
-          }
-        );
-      }, 0);
+          );
+        }, 0);
+      }
       break;
 
     case "INVITE_ACCEPTED":
@@ -125,23 +128,25 @@ async function renderNotification(notif: Notification) {
 
   li.innerHTML = label;
 
-  if (notif.type !== "INVITE_SENT" && route) {
-    li.onclick = () => {
-      markNotificationsAsRead([notif.notification_id]);
-      navigateTo(route);
-      li.remove();
-    };
-  }
+  li.onclick = () => {
+    let ids: number[] = [];
+    if (groupedIds && groupedIds.length) {
+      ids = groupedIds;
+    } else if (notif.notification_id) {
+      ids = [notif.notification_id];
+    }
+    markNotificationsAsRead(ids);
+    if (route) navigateTo(route);
+    li.remove();
+  };
 
   return li;
 }
 
-const messageGroups: Map<number, { count: number; notif: Notification }> =
-  new Map();
-
 async function renderGroupedMessageNotification(
   notif: Notification,
-  count: number
+  count: number,
+  groupedIds: number[]
 ) {
   const li = document.createElement("li");
   li.className = `
@@ -171,14 +176,9 @@ async function renderGroupedMessageNotification(
     navigateTo(`/lounge/${notif.sender_id}`);
     setTimeout(() => li.remove(), 400);
 
-    const ids =
-      notif.notification_ids ??
-      (notif.notification_id ? [notif.notification_id] : []);
-    if (ids.length > 0) {
-      markNotificationsAsRead(ids);
+    if (groupedIds.length > 0) {
+      markNotificationsAsRead(groupedIds);
     }
-
-    messageGroups.delete(notif.sender_id!);
   };
 
   return li;
@@ -203,23 +203,6 @@ export function startNotificationListener() {
         notif.notification_ids.length > 0
       ) {
         if (notif.type === "MESSAGE_RECEIVED") {
-          notif.notification_ids.forEach((id: number) => {
-            if (!seenIds.has(id)) {
-              seenIds.add(id);
-              unseenCount++;
-            }
-          });
-          saveSeen();
-          updateCounter();
-
-          messageGroups.set(notif.sender_id, {
-            count: notif.notifications_count,
-            notif: {
-              ...notif,
-              notification_id: notif.notification_ids?.[0] ?? null,
-            },
-          });
-
           const notifList = document.getElementById("notif-list");
           if (notifList) {
             const oldLi = document.getElementById(
@@ -229,10 +212,32 @@ export function startNotificationListener() {
             notifList.prepend(
               await renderGroupedMessageNotification(
                 notif,
-                notif.notifications_count
+                notif.notifications_count,
+                notif.notification_ids
               )
             );
           }
+          notif.notification_ids.forEach((id: number) => {
+            if (!seenIds.has(id)) {
+              unseenCount++;
+            }
+          });
+          updateCounter();
+          return;
+        }
+        if (notif.type === "INVITE_SENT") {
+          const notifList = document.getElementById("notif-list");
+          if (notifList) {
+            notifList.prepend(
+              await renderNotification(notif, notif.notification_ids)
+            );
+          }
+          notif.notification_ids.forEach((id: number) => {
+            if (!seenIds.has(id)) {
+              unseenCount++;
+            }
+          });
+          updateCounter();
           return;
         }
       }
@@ -242,35 +247,49 @@ export function startNotificationListener() {
           unseenCount++;
           updateCounter();
         }
-
-        const group = messageGroups.get(notif.sender_id!);
-        if (group) {
-          group.count += 1;
-          const li = document.getElementById(`msg-group-${notif.sender_id}`);
-          if (li) {
-            const badge = li.querySelector(".msg-count") as HTMLSpanElement;
-            if (badge) badge.textContent = String(group.count);
-          }
-        } else {
-          messageGroups.set(notif.sender_id!, { count: 1, notif });
-          const notifList = document.getElementById("notif-list");
-          if (notifList) {
-            notifList.prepend(await renderGroupedMessageNotification(notif, 1));
+        const notifList = document.getElementById("notif-list");
+        if (notifList) {
+          const groupLi = document.getElementById(
+            `msg-group-${notif.sender_id}`
+          );
+          if (groupLi) {
+            const badge = groupLi.querySelector(
+              ".msg-count"
+            ) as HTMLSpanElement;
+            if (badge)
+              badge.textContent = String(Number(badge.textContent) + 1);
+          } else {
+            notifList.prepend(
+              await renderGroupedMessageNotification(notif, 1, [
+                notif.notification_id,
+              ])
+            );
           }
         }
-      } else {
+        return;
+      }
+
+      if (notif.type === "INVITE_SENT") {
         if (notif.notification_id && !seenIds.has(notif.notification_id)) {
-          seenIds.add(notif.notification_id);
           unseenCount++;
-          saveSeen();
           updateCounter();
         }
         const notifList = document.getElementById("notif-list");
         if (notifList) {
           notifList.prepend(await renderNotification(notif));
-          while (notifList.children.length > 20) {
-            notifList.removeChild(notifList.lastChild!);
-          }
+        }
+        return;
+      }
+
+      if (notif.notification_id && !seenIds.has(notif.notification_id)) {
+        unseenCount++;
+        updateCounter();
+      }
+      const notifList = document.getElementById("notif-list");
+      if (notifList) {
+        notifList.prepend(await renderNotification(notif));
+        while (notifList.children.length > 20) {
+          notifList.removeChild(notifList.lastChild!);
         }
       }
     } catch (err) {
@@ -299,8 +318,6 @@ export function stopNotificationListener() {
 
 export function clearNotificationCounter() {
   unseenCount = 0;
-  localStorage.setItem("seenNotifs", JSON.stringify([]));
-  seenIds.clear();
   updateCounter();
 }
 

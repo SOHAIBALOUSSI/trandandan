@@ -21,15 +21,15 @@ export function TopBar() {
 
     window.addEventListener("notification-count", updateBadge as EventListener);
 
-    const seen = JSON.parse(localStorage.getItem("seenNotifs") || "[]");
-    badge.textContent = seen.length > 0 ? String(seen.length) : "0";
-    if (seen.length > 0) {
-      badge.classList.remove("text-black", "bg-pong-dark-primary");
-      badge.classList.add("text-white", "bg-pong-accent");
-    } else {
-      badge.classList.add("text-black", "bg-pong-dark-primary");
-      badge.classList.remove("text-white", "bg-pong-accent");
-    }
+    // const seen = JSON.parse(localStorage.getItem("seenNotifs") || "[]");
+    // badge.textContent = seen.length > 0 ? String(seen.length) : "0";
+    // if (seen.length > 0) {
+    //   badge.classList.remove("text-black", "bg-pong-dark-primary");
+    //   badge.classList.add("text-white", "bg-pong-accent");
+    // } else {
+    //   badge.classList.add("text-black", "bg-pong-dark-primary");
+    //   badge.classList.remove("text-white", "bg-pong-accent");
+    // }
 
     const notifContainer = document.getElementById("notif-container");
     const btn = document.getElementById("bell-btn") as HTMLButtonElement;
@@ -75,7 +75,9 @@ export function TopBar() {
           <span
             id="notif-badge"
             className="absolute -top-1 -right-2 bg-pong-dark-primary text-black text-xs rounded-full px-2 py-0.5 transition-all duration-300"
-          ></span>
+          >
+            0
+          </span>
           <div
             id="notif-container"
             className="animate-fadeInUp absolute bg-pong-dark-bg text-pong-dark-primary w-[300px] md:w-[450px] max-h-[480px] hidden right-0 shadow-2xl rounded-xl p-4 mt-2 z-50 border border-pong-dark-primary"
