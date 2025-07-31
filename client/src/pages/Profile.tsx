@@ -9,6 +9,7 @@ import { fontSizes } from "@/styles/fontSizes";
 import { MatchHistory } from "@/components/profile/MatchHistory";
 import { showUserBadge } from "@/utils/show-user-badge";
 import { displayPerformanceMetrics } from "@/utils/display-metrics";
+import { getUserTitle } from "@/utils/get-user-title";
 
 export function Profile() {
   const user = getCurrentUser();
@@ -29,31 +30,23 @@ export function Profile() {
         <main className={styles.pageContent + " !gap-10"}>
           <SecondaryHeader
             title="Member Profile"
-            subtitle="Review your identity, matches, and achievements."
+            subtitle="Your identity, matches & achievements in the BHV Club."
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full max-w-5xl mx-auto">
-            <div className="lg:col-span-2">
+          <div className="w-[95%] mx-auto flex flex-col 2xl:flex-row gap-10 items-start">
+            <div className="w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 self-start">
               <MemberCard user={user} showUpdateOptions={true} />
             </div>
 
-            <div className="lg:col-span-1 flex items-center justify-center">
-              <div className="relative col-span-2 w-1/2 lg:w-full rounded-full overflow-hidden flex items-center justify-center">
-                <img
-                  src={showUserBadge(user.rank)}
-                  alt={`${user.username}'s badge`}
-                  className="object-cover drop-shadow-md rounded-xl"
-                />
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-black text-sm font-bold px-3 py-1 rounded-full shadow-md">
-                  {user.rank || 0}
-                </div>
-              </div>
+            <div className="flex-1 flex flex-col gap-8">
+              <div
+                id="performance-metrics"
+                className="bg-gradient-to-br from-[#1f2025] to-[#292b33] p-6 rounded-2xl shadow-xl border border-white/5"
+              ></div>
+
+              <MatchHistory user={user} />
             </div>
           </div>
-
-          <div id="performance-metrics" class="w-full max-w-5xl mx-auto"></div>
-
-          <MatchHistory user={user} />
         </main>
       </div>
     </section>

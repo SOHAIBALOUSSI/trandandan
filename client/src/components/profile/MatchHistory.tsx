@@ -15,7 +15,7 @@ export function MatchHistory(props: { user: UserProfile }) {
         border border-pong-dark-highlight/30 
         rounded-2xl shadow-xl 
         p-6 md:p-10 
-        w-full max-w-5xl mx-auto
+        w-full
         backdrop-blur-md
       "
     >
@@ -42,22 +42,6 @@ export function MatchHistory(props: { user: UserProfile }) {
 		  py-4
         `}
       ></ul>
-
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.15);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.3);
-        }
-      `}</style>
     </div>
   );
 }

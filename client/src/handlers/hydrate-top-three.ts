@@ -41,9 +41,7 @@ export async function hydrateTopThree(me: UserProfile) {
 
     const nameSpan = document.createElement("span");
     nameSpan.className = "font-semibold text-pong-dark-primary normal-case";
-    nameSpan.innerHTML = `${getWelcomeTitle(
-      user
-    )} <span class="text-pong-dark-accent">${user.username}</span>`;
+    nameSpan.innerHTML = `${getWelcomeTitle(user)} ${user.username}`;
 
     const levelSpan = document.createElement("span");
     levelSpan.className =

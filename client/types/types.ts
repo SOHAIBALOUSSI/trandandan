@@ -5,7 +5,7 @@ export type UserProfile = {
   email: string;
   gender: string | null;
   avatar_url: string;
-  status: string;
+  status: "online" | "offline";
   solde: number;
   rank: number;
   level: number;
@@ -73,7 +73,9 @@ export type MessageRead = {
 };
 
 export type GameActivity = {
-  enemyId: string;
-  userId: string;
+  enemyId: number;
+  userId: number;
   gameEndResult: "WIN" | "LOSE";
+  userScore: number;
+  enemyScore: number;
 };

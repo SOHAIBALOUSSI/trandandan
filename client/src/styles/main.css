@@ -157,6 +157,20 @@ a {
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
 /* === Custom Toast Animation === */
 @keyframes toast-slide-down {
   0% {
@@ -326,10 +340,16 @@ a {
   color: #000;
   border: 1px solid theme("colors.pong-secondary");
 }
+#game-screen[data-theme="dark"] .entered-players {
+  background-color: theme("colors.pong-primary/40");
+  color: #fff;
+}
+#game-screen[data-theme="light"] .entered-players {
+  background-color: theme("colors.pong-dark-primary/40");
+  color: #000;
+}
 /* End Game Design */
 
 .user-badge {
   clip-path: polygon(0% 0%, 100% 0, 100% 80%, 50% 100%, 0 80%);
 }
-
-

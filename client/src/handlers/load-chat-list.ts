@@ -1,39 +1,65 @@
 import { getFriends } from "@/services/get-friends";
 import { getUserById } from "@/services/get-user-by-id";
+import { styles } from "@/styles/styles";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { fontSizes } from "@/styles/fontSizes";
+import { getUserTitle } from "@/utils/get-user-title";
+import { getWelcomeTitle } from "@/components/home/Hero";
 
 export async function loadChatList() {
   const chatListElement = document.getElementById("chat-list");
   if (!chatListElement) return;
 
-  chatListElement.innerHTML =
-    '<li class="text-pong-dark-secondary text-center">Loading friends...</li>';
-
   const friendIds = await getFriends();
 
   if (!friendIds.length) {
     chatListElement.innerHTML =
-      '<li class="text-pong-dark-secondary text-center">No friends found.</li>';
+      '<li class="text-pong-dark-secondary text-center py-4 text-sm md:text-lg">No friends found.</li>';
     return;
   }
 
-  // Fetch profiles for all friends
   const profiles = await Promise.all(friendIds.map((id) => getUserById(id)));
 
   chatListElement.innerHTML = profiles
     .map((profile) => {
       if (!profile) return "";
+
+      const isOnline = profile.status === "online";
+
       return `
-      <li class="flex items-center justify-between border-b border-pong-dark-accent/30 px-4 py-3 shadow text-white">
+      <li class="${styles.friendsListItemStyle}">
         <div class="flex items-center gap-4">
-          <img src="${profile.avatar_url}" alt="${profile.username}'s avatar" class="w-10 h-10 rounded-full border border-pong-accent object-cover" />
-          <span class="font-semibold text-lg">${profile.username}</span>
+          <div class="relative">
+            <img src="${profile.avatar_url}" alt="${profile.username}'s avatar"
+              class="${styles.friendsAvatarStyle}" />
+            <span class="
+              absolute bottom-0 right-0 block w-3 h-3 rounded-full
+              ring-2 ring-[#1c1d22]
+              ${isOnline ? "bg-pong-success" : "bg-gray-500"}
+            " title="${isOnline ? "Online" : "Offline"}"></span>
+          </div>
+          <div class="flex flex-col">
+            <span class="${
+              fontSizes.bodyFontSize
+            } font-semibold text-white normal-case">
+              ${getWelcomeTitle(profile)} ${profile.username}
+            </span>
+            <span class="text-xs md:text-sm text-pong-dark-secondary">
+              ${getUserTitle(profile.rank)}
+            </span>
+          </div>
         </div>
+
         <button
-          class="bg-pong-accent hover:bg-pong-dark-accent text-white px-4 py-2 rounded-lg font-bold shadow transition"
+          class="
+            p-2 rounded-full
+            hover:bg-pong-dark-highlight/20
+            transition-all duration-200
+            text-pong-dark-primary hover:text-pong-accent
+          "
           data-chat-id="${profile.id}"
         >
-          Chat
+          <i class="fa-solid fa-message text-lg md:text-2xl"></i>
         </button>
       </li>
       `;
