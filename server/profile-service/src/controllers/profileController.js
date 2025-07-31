@@ -90,12 +90,13 @@ export async function uploadAvatarUrl(request, reply) {
     try {
         const userId = request.user?.id;
         const data = await request.file();
-        data.file.on('limit', () => { return reply.code(400).send(createResponse(400, 'FILE_TOO_LARGE')); })
-        
+        data.file.on('limit' , () => {
+            return reply.code(400).send(createResponse(400, 'FILE_TOO_LARGE'));
+        })
         console.log('DATA received: ', data);
         if (!data)
             return reply.code(400).send(createResponse(400, 'FILE_REQUIRED'));
-
+        
         const ext = path.extname(data.filename);
         const fileName = `${userId}_${Date.now()}${ext}`;
         const uploadPath = path.join(process.cwd(), 'uploads', 'avatars', fileName);
