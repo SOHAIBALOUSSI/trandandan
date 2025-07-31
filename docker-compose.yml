@@ -1,11 +1,11 @@
 services:
   auth:
     container_name: auth-service
-    build: src/server/auth-service
+    build: server/auth-service
     image: auth-service
     restart: always
     env_file:
-      - .env
+      - ./server/.env
     networks:
       - trandenden-net
     ports:
@@ -16,11 +16,11 @@ services:
 
   profile:
     container_name: profile-service
-    build: src/server/profile-service
+    build: server/profile-service
     image: profile-service
     restart: always
     env_file:
-      - .env
+      - ./server/.env
     networks:
       - trandenden-net
     ports:
@@ -31,11 +31,11 @@ services:
 
   friends:
     container_name: friends-service
-    build: src/server/relationships-service
+    build: server/relationships-service
     image: friends-service
     restart: always
     env_file:
-      - .env
+      - ./server/.env
     networks:
       - trandenden-net
     ports:
@@ -46,11 +46,11 @@ services:
 
   notifications:
     container_name: notifications-service
-    build: src/server/notifications-service
+    build: server/notifications-service
     image: notifications-service
     restart: always
     env_file:
-      - .env
+      - ./server/.env
     networks:
       - trandenden-net
     ports:
@@ -61,11 +61,11 @@ services:
 
   chat:
     container_name: chat-service
-    build: src/server/chat-service
+    build: server/chat-service
     image: chat-service
     restart: always
     env_file:
-      - .env
+      - ./server/.env
     networks:
       - trandenden-net
     ports:
@@ -76,11 +76,11 @@ services:
 
   dashboard:
     container_name: dashboard-service
-    build: src/server/dashboard-service
+    build: server/dashboard-service
     image: dashboard-service
     restart: always
     env_file:
-      - .env
+      - ./server/.env
     networks:
       - trandenden-net
     ports:
@@ -91,7 +91,7 @@ services:
 
   redis:
     container_name: redis
-    build: src/server/redis
+    build: server/redis
     restart: always
     networks:
       - trandenden-net
@@ -100,17 +100,17 @@ services:
 
   game:
     container_name: game-service
-    build: src/server/game-service
+    build: server/game-service
     image: game-service
     restart: always
     env_file:
-      - .env
+      - ./server/.env
     networks:
       - trandenden-net
     ports:
       - "5000:5000"
     volumes:
-      - ./src/server/game-service/db/.gameData.db:/app/db/.gameData.db
+      - ./server/game-service/db/.gameData.db:/app/db/.gameData.db
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -120,7 +120,7 @@ services:
     image: rabbitmq:3-management
     restart: always
     env_file:
-      - .env
+      - ./server/.env
     networks:
       - trandenden-net
     ports:
@@ -133,15 +133,13 @@ services:
       retries: 5
 
   frontend:
-    container_name: frontend
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.client
-    image: frontend
+    container_name: trandenden-frontend
+    build: client
+    image: trandenden-frontend
     ports:
-      - "8080:3000"
+      - "8080:5173"
     volumes:
-      - .:/app
+      - ./client:/app
       - /app/node_modules
     working_dir: /app
     depends_on:
@@ -154,7 +152,7 @@ services:
       - rabbitmq
       - game
     env_file:
-      - .env
+      - ./client/.env
     networks:
       - trandenden-net
     restart: always
