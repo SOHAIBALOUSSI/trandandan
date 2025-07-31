@@ -21,9 +21,9 @@ function pollForNewMatches() {
 
       // Get last two games with that match_id
       db.all(
-        `SELECT id, enemy_id, user_id, game_end_result 
-         FROM games 
-         WHERE match_id = ? 
+        `SELECT id, enemy_id, user_id, left_player_score, right_player_score, player_id, game_end_result
+         FROM games
+         WHERE match_id = ?
          ORDER BY id DESC LIMIT 2`,
         [latestMatchId],
         (err, rows) => {
@@ -39,6 +39,9 @@ function pollForNewMatches() {
           const payload = rows.map((row) => ({
             enemyId: row.enemy_id,
             userId: row.user_id,
+            leftPlayerScore: row.left_player_score,
+            rightPlayerScore: row.right_player_score,
+            playerId: row.player_id,
             gameEndResult: row.game_end_result,
           }));
 
