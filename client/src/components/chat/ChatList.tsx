@@ -1,8 +1,10 @@
+import { fontSizes } from "@/styles/fontSizes";
+
 export function ChatList() {
   return (
     <ul
       id="chat-list"
-      className="space-y-6 text-base max-h-[340px] overflow-y-auto pr-2"
+      className={`space-y-6 ${fontSizes.bodyFontSize} max-h-[500px] overflow-y-auto pr-3 md:pr-6 custom-scrollbar py-2`}
     >
       <li className="text-pong-dark-secondary text-center">Loading...</li>
     </ul>

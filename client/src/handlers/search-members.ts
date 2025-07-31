@@ -1,5 +1,6 @@
 import { getAllUsers } from "@/services/get-all-users";
 import { getUserById } from "@/services/get-user-by-id";
+import { fontSizes } from "@/styles/fontSizes";
 import { getUserTitle } from "@/utils/get-user-title";
 import { navigateTo } from "@/utils/navigate-to-link";
 
@@ -27,7 +28,7 @@ export async function handleSearchMembers(query: string) {
   const resultList = document.createElement("ul");
   resultList.id = "search-results";
   resultList.className =
-    "absolute top-14 left-0 w-full max-h-72 overflow-y-auto animate-fadeInUp bg-pong-dark-custom text-white rounded-xl shadow-lg z-50 border border-pong-dark-highlight/30 backdrop-blur-md";
+    "absolute top-14 left-0 min-w-[210px] w-full max-h-72 overflow-y-auto animate-fadeInUp bg-pong-dark-custom text-white rounded-xl shadow-lg z-50 border border-pong-dark-highlight/30 backdrop-blur-md";
 
   for (const user of matches) {
     const u = await getUserById(user.id);
@@ -40,14 +41,14 @@ export async function handleSearchMembers(query: string) {
     const avatar = document.createElement("img");
     avatar.src = u.avatar_url;
     avatar.alt = u.username;
-    avatar.className = "w-10 h-10 rounded-full object-cover";
+    avatar.className = "w-6 h-6 md:w-10 md:h-10 rounded-full object-cover";
 
     const info = document.createElement("div");
     info.className = "flex flex-col";
 
     const username = document.createElement("span");
     username.textContent = u.username;
-    username.className = "font-semibold text-pong-dark-primary normal-case";
+    username.className = `font-semibold text-pong-dark-primary normal-case ${fontSizes.bodyFontSize}`;
 
     const title = document.createElement("span");
     title.textContent = getUserTitle(u.rank);

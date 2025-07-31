@@ -29,7 +29,7 @@ export const styles = {
 	px-6 md:px-16 pt-20 md:pt-24 pb-8 md:pb-12 
 	h-[calc(100vh-2rem)] 
 	overflow-y-auto
-	flex flex-col items-center gap-6
+	flex flex-col items-center gap-8
   `,
   // === End Section Layout styles ===
 
@@ -425,4 +425,17 @@ export const styles = {
 	text-center 
   `,
   // === End Game styles ===
+
+  friendsListItemStyle: `
+	flex items-center justify-between gap-4 py-4 px-5 mb-4
+	bg-gradient-to-r from-pong-dark-highlight/20 to-pong-dark-highlight/10
+	rounded-2xl border border-pong-dark-highlight/30
+	shadow-md hover:shadow-xl transition-all duration-300
+	hover:-translate-y-0.5
+  `,
+  friendsAvatarStyle: `
+    w-10 h-10 md:w-14 md:h-14 rounded-full object-cover
+    ring-2 ring-pong-accent/50 transition-transform duration-300
+    group-hover:scale-105
+  `,
 };

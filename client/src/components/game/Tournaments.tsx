@@ -85,7 +85,7 @@ export function Tournaments() {
         <h3 id="nextMatch" class="py-2 px-4 rounded-lg shadow-md hidden">Next Face-off</h3>
       </div>
       <div class="flex justify-center gap-4 mt-6">
-        <button id="restart" class="hidden game-btn font-semibold py-3 px-8 rounded-xl text-md md:text-lg shadow-md tracking-wide transition-all duration-300 text-white bg-pong-sport-accent hover:bg-pong-sport-primary dark:bg-pong-dark-secondary dark:hover:bg-pong-dark-accent">Play Again</button>
+        <button id="restart" class="hidden game-btn font-semibold py-3 px-8 rounded-xl text-md md:text-lg shadow-md tracking-wide transition-all duration-300 text-white bg-pong-sport-accent hover:bg-pong-sport-primary dark:bg-pong-dark-secondary dark:hover:bg-pong-dark-accent">Play</button>
         <button id="start" class="game-btn font-semibold py-3 px-8 rounded-xl text-md md:text-lg shadow-md tracking-wide transition-all duration-300 text-white bg-pong-sport-accent hover:bg-pong-sport-primary dark:bg-pong-dark-accent dark:hover:bg-pong-dark-secondary">Start Game</button>
       </div>
     </div>
@@ -98,7 +98,7 @@ export function Tournaments() {
     <div id="tourTab" class="${styles.gameTab} game-tab">
       <div id="selectTab" class="flex flex-col items-center justify-center h-full gap-6">
         <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Choose Your Arena Size</h2>
-        <div id="tournPlayerNumber" class="flex items-center justify-center gap-20">
+        <div id="tournPlayerNumber" class="flex items-center justify-center gap-6">
           <button id="eight_players" class="game-btn text-white font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">8 Players</button>
           <button id="four_Players" class="game-btn text-white font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">4 Players</button>
         </div>
@@ -150,6 +150,10 @@ export function Tournaments() {
   let socketLocal: WebSocket;
   const Players: string[] = [];
   const Winners: string[] = [];
+
+  // --- Add these at the top-level of your Tournaments() function ---
+  let restartTournoiListenerAdded = false;
+  let restartListenerAdded = false;
 
   exit.addEventListener("click", () => {
     navigateTo("/arena");
@@ -204,25 +208,49 @@ export function Tournaments() {
     });
     players8.addEventListener("click", () => {
       selectTab.style.display = "none";
-      inputPlayers.style.display = "flex";
+      inputPlayers.style.display = "block";
       numberOfPlayers = 8;
     });
 
     addPlayerBtn.addEventListener("click", () => {
+      const username = playerIdField.value.trim();
+
+      if (!username) {
+        displayToast("Username cannot be empty!", "error");
+        playerIdField.value = "";
+        playerIdField.focus();
+        return;
+      }
       if (!playerIdField.checkValidity()) {
         displayToast("Invalid username!", "error");
         playerIdField.value = "";
         playerIdField.focus();
         return;
       }
-      if (Players.includes(playerIdField.value)) {
+      if (Players.includes(username)) {
         displayToast("Player already exists!", "error");
         playerIdField.value = "";
         playerIdField.focus();
         return;
       }
-      Players.push(playerIdField.value);
+      Players.push(username);
       playerIdField.value = "";
+
+      let enteredList = document.getElementById(
+        "entered-players-list"
+      ) as HTMLUListElement;
+      if (!enteredList) {
+        enteredList = document.createElement("ul");
+        enteredList.id = "entered-players-list";
+        enteredList.className = "mt-4 mb-2 flex flex-wrap gap-3 justify-center";
+        inputPlayers.appendChild(enteredList);
+      }
+      enteredList.innerHTML = Players.map(
+        (name, idx) =>
+          `<li class="entered-players px-3 py-1 rounded-lg font-semibold">${
+            idx + 1
+          }. ${name}</li>`
+      ).join("");
 
       if (Players.length === numberOfPlayers) {
         inputPlayers.style.display = "none";
@@ -232,13 +260,16 @@ export function Tournaments() {
         if (Players.length > 2) {
           nextMatch.textContent = `NEXT MATCH: ${Players[2]} vs ${Players[3]}`;
         }
-
-        start.addEventListener("click", () => {
-          start.style.display = "none";
-          restart.style.display = "flex";
-          gameTab.style.display = "none";
-          flow.animate();
-        });
+        // Only add start event listener once
+        if (!start.hasAttribute("data-listener")) {
+          start.setAttribute("data-listener", "true");
+          start.addEventListener("click", () => {
+            start.style.display = "none";
+            restart.style.display = "flex";
+            gameTab.style.display = "none";
+            flow.animate();
+          });
+        }
       }
     });
 
@@ -251,6 +282,28 @@ export function Tournaments() {
     socketLocal.onerror = (err: Event) => {
       console.error("[client] WebSocket error:", err);
     };
+
+    // --- Add these listeners only once ---
+    if (!restartTournoiListenerAdded) {
+      restartTournoiListenerAdded = true;
+      restartTournoi.addEventListener("click", () => {
+        navigateTo("/tournament");
+      });
+    }
+
+    if (!restartListenerAdded) {
+      restartListenerAdded = true;
+      restart.addEventListener("click", () => {
+        // Optionally, reset the game state for a rematch
+        gameTab.style.display = "none";
+        // You may want to reset scores or re-initialize the game here
+        const newSocket = new WebSocket("ws://localhost:5000/ws");
+        flow.setSocketLocal(newSocket);
+        newSocket.onmessage = (event: MessageEvent) => {
+          flow.updateGameState(event.data);
+        };
+      });
+    }
   }
 
   init();
@@ -267,6 +320,10 @@ class FlowFieldLocal {
   private canvasHeight: number;
   private deps: FlowFieldDependencies;
   private ballPulse: number = 0;
+
+  public setSocketLocal(socket: WebSocket) {
+    this.deps.socketLocal = socket;
+  }
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -300,6 +357,19 @@ class FlowFieldLocal {
       document.getElementById("game-screen")?.dataset.theme === "dark";
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
+    // Draw middle separator line (dashed)
+    this.ctx.save();
+    this.ctx.strokeStyle = isDark ? "#FFD700" : "#00B894";
+    this.ctx.lineWidth = 2;
+    this.ctx.setLineDash([18, 18]);
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.canvasWidth / 2, 0);
+    this.ctx.lineTo(this.canvasWidth / 2, this.canvasHeight);
+    this.ctx.stroke();
+    this.ctx.setLineDash([]);
+    this.ctx.restore();
+
+    // Draw paddles
     this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
     this.ctx.strokeRect(
@@ -323,6 +393,7 @@ class FlowFieldLocal {
       this.height
     );
 
+    // Draw ball
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.arc(
@@ -353,6 +424,19 @@ class FlowFieldLocal {
     this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
     this.ctx.fill();
     this.ctx.globalAlpha = 1;
+
+    // --- Display usernames in corners ---
+    if (this.deps.Players && this.deps.Players.length >= 2) {
+      this.ctx.save();
+      this.ctx.font = "bold 22px Arial";
+      this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
+      this.ctx.textAlign = "left";
+      this.ctx.fillText(this.deps.Players[0], 20, 40); // Top-left corner for left player
+
+      this.ctx.textAlign = "right";
+      this.ctx.fillText(this.deps.Players[1], this.canvasWidth - 20, 40); // Top-right corner for right player
+      this.ctx.restore();
+    }
   }
 
   private keysFunction(): void {
@@ -395,9 +479,6 @@ class FlowFieldLocal {
       this.deps.Winners.push(this.deps.Players[0]);
     }
 
-    const oldPlayerLeft = this.deps.Players[0];
-    const oldPlayerRight = this.deps.Players[1];
-
     this.deps.Players.splice(0, 2);
 
     if (this.deps.Players.length < 1) {
@@ -407,36 +488,35 @@ class FlowFieldLocal {
       if (this.deps.Players.length === 1) {
         this.deps.gameTab.style.display = "none";
         this.deps.resultTab.style.display = "flex";
-        this.deps.resultStat.textContent = `Tournament winner is: ${this.deps.Players[0]}`;
-        this.deps.restartTournoi.addEventListener("click", () => {
-          navigateTo("/tournament");
-        });
+        this.deps.resultStat.textContent = `🏆 Tournament winner is: ${this.deps.Players[0]} 🏆`;
+        this._tournamentDone = true;
+        return;
       }
     }
 
-    if (this.deps.Players.length % 2 === 0) {
-      this.deps.prevMatch.textContent = `PREVIOUS MATCH: ${oldPlayerLeft} vs ${oldPlayerRight}`;
+    // Always update/hide match labels appropriately
+    if (this.deps.Players.length >= 2) {
       this.deps.currentMatch.textContent = `${this.deps.Players[0]} vs ${this.deps.Players[1]}`;
+      this.deps.currentMatch.style.display = "block";
       if (this.deps.Players.length >= 4) {
         this.deps.nextMatch.textContent = `NEXT MATCH: ${this.deps.Players[2]} vs ${this.deps.Players[3]}`;
+        this.deps.nextMatch.style.display = "block";
       } else {
         this.deps.nextMatch.textContent = "";
+        this.deps.nextMatch.style.display = "none";
       }
+    } else {
+      this.deps.currentMatch.style.display = "none";
+      this.deps.nextMatch.style.display = "none";
     }
 
     this.resetGameState();
     this.deps.gameTab.style.display = "flex";
     this.deps.socketLocal.close();
-
-    this.deps.restart.addEventListener("click", () => {
-      this.deps.gameTab.style.display = "none";
-      const newSocket = new WebSocket("ws://localhost:5000/ws");
-      this.deps.socketLocal = newSocket;
-      newSocket.onmessage = (event: MessageEvent) => {
-        this.updateGameState(event.data);
-      };
-    });
   }
+
+  // Add a private property to control the animation loop:
+  private _tournamentDone: boolean = false;
 
   private resetGameState() {
     this.gameState = {
@@ -480,7 +560,9 @@ class FlowFieldLocal {
     }
   }
 
+  // Update the animate() method:
   public animate(): void {
+    if (this._tournamentDone) return; // Stop animation if tournament is done
     this.draw();
     this.keysFunction();
     this.ballPositionUpdate();

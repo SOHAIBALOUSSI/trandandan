@@ -6,6 +6,7 @@ import { LeaderboardPreview } from "@/components/home/LeaderboardPreview";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
 import { Loader } from "@/components/common/Loader";
+import { QuickStatsCards } from "@/components/home/QuickStatsCards";
 
 export function Home() {
   const user = getCurrentUser();
@@ -20,6 +21,7 @@ export function Home() {
         <TopBar />
         <main className={styles.pageContent}>
           <Hero user={user} />
+		  <QuickStatsCards user={user} />
           <RecentActivityFeed />
           <LeaderboardPreview user={user} />
         </main>

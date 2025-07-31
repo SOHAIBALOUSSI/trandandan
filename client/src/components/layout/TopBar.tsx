@@ -68,6 +68,7 @@ export function TopBar() {
           id="search-bar"
           placeholder="Find A Racket Companion..."
           className={styles.searchBarStyle}
+		  maxLength={15}
           autocomplete="off"
         />
       </div>
