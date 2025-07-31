@@ -106,6 +106,13 @@ export async function uploadAvatarUrl(request, reply) {
         await pipeline(data.file, fs.createWriteStream(uploadPath));
         
         await updateAvatarUrlById(this.db, userId, fileName);
+        const updatedProfile = await getProfileById(this.db, userId);
+        await this.redis.sendCommand([
+            'JSON.SET',
+            `player:${userId}`,
+            '$',
+            JSON.stringify(updatedProfile)
+        ])
         return reply.code(200).send(createResponse(200, 'AVATAR_UPLOADED', { avatar_url: fileName }));
     } catch (error) {
         console.log(error);
