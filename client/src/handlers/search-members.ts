@@ -3,6 +3,7 @@ import { getUserById } from "@/services/get-user-by-id";
 import { fontSizes } from "@/styles/fontSizes";
 import { getUserTitle } from "@/utils/get-user-title";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { getCurrentUser } from "@/utils/user-store";
 
 let allUsersCache: { id: number; username: string }[] = [];
 
@@ -19,9 +20,12 @@ export async function handleSearchMembers(query: string) {
     allUsersCache = await getAllUsers();
   }
 
-  const matches = allUsersCache.filter((user) =>
-    user.username.toLowerCase().includes(query.trim().toLowerCase())
-  );
+  const currentUser = getCurrentUser();
+  const matches = allUsersCache
+    .filter((user) =>
+      user.username.toLowerCase().includes(query.trim().toLowerCase())
+    )
+    .filter((user) => !currentUser || user.id !== currentUser.id);
 
   if (matches.length === 0) return;
 

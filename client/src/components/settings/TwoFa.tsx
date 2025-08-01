@@ -169,7 +169,7 @@ function TwoFaMode(type: "app" | "email") {
           </button>
           <div
             id={`${type}-dots-menu`}
-            className="hidden absolute right-0 mt-2 w-44 bg-pong-dark-custom rounded-xl shadow-lg z-10 py-2 border border-pong-accent/20"
+            className="hidden absolute right-0 mt-2 w-44 bg-pong-dark-custom rounded-md shadow-lg z-10 py-2 border border-pong-accent/20"
           >
             <button
               id={`${type}-toggle-enable`}
@@ -191,7 +191,7 @@ function TwoFaMode(type: "app" | "email") {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 border border-pong-accent/30 rounded-2xl px-6 py-6 bg-gradient-to-br from-pong-dark-custom/40 to-pong-accent/5 shadow-lg">
+      <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 border border-pong-accent/30 rounded-md px-6 py-6 bg-gradient-to-br from-pong-dark-custom/40 to-pong-accent/5 shadow-lg">
         <div className="flex items-start gap-4 text-white w-full md:w-auto">
           <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 px-2 rounded-full bg-pong-accent/20 shadow-inner">
             <i

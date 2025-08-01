@@ -28,7 +28,7 @@ export function ChangeEmail() {
               email if required.
             </p>
 
-            <form id="change-email-form" className="w-full flex flex-col gap-6">
+            <form id="change-email-form" className="w-full flex flex-col gap-2">
               <input
                 type="text"
                 name="email"
