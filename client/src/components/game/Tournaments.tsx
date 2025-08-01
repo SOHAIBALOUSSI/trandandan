@@ -169,7 +169,7 @@ export function Tournaments() {
   });
 
   function init() {
-    socketLocal = new WebSocket("ws://localhost:5000/ws");
+    socketLocal = new WebSocket(`wss://${window.location.host}/game/ws`);
     const keys: { [key: string]: boolean } = {};
 
     window.addEventListener("keydown", (event: KeyboardEvent) => {
@@ -430,7 +430,7 @@ class FlowFieldLocal {
 
     this.deps.restart.addEventListener("click", () => {
       this.deps.gameTab.style.display = "none";
-      const newSocket = new WebSocket("ws://localhost:5000/ws");
+      const newSocket = new WebSocket(`wss://${window.location.host}/game/ws`);
       this.deps.socketLocal = newSocket;
       newSocket.onmessage = (event: MessageEvent) => {
         this.updateGameState(event.data);

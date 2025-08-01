@@ -1,1 +1,7 @@
 node_modules
+
+# SSL certificates for development
+client/ssl/
+*.pem
+*.key
+*.crt

@@ -4,7 +4,7 @@ export async function acceptInvite(
   receiverId: number
 ): Promise<void> {
   try {
-    const res = await fetch("http://localhost:5000/accept", {
+    const res = await fetch("/game/accept", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ roomId, senderId, receiverId }),

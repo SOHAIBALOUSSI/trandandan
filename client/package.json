@@ -2,10 +2,14 @@
   "name": "ft_transcendence",
   "version": "1.0.0",
   "scripts": {
-    "dev": "vite --host"
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "generate-ssl": "chmod +x generate-dev-ssl.sh && ./generate-dev-ssl.sh"
   },
   "devDependencies": {
     "@types/chart.js": "^4.0.1",
+    "@types/node": "^20.0.0",
     "autoprefixer": "^10.4.14",
     "dotenv": "^16.5.0",
     "postcss": "^8.4.21",

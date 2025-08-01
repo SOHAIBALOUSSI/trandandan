@@ -1,7 +1,8 @@
 import { displayToast } from "@/utils/display-toast";
 import { UploadAvatarRes } from "@/utils/response-messages";
 
-const BACKEND_URL = "http://localhost:3001";
+// Use environment variable or relative URL for HTTPS compatibility
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || window.location.origin;
 
 export function uploadAvatar() {
   const btn = document.getElementById("upload-avatar-btn") as HTMLButtonElement;
