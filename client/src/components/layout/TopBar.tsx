@@ -1,6 +1,7 @@
 import { styles } from "@/styles/styles";
 import { clearNotificationCounter } from "@/services/notifications-service";
 import { handleSearchMembers } from "@/handlers/search-members";
+import { useRef } from "react";
 
 export function TopBar() {
   setTimeout(() => {
@@ -21,16 +22,6 @@ export function TopBar() {
 
     window.addEventListener("notification-count", updateBadge as EventListener);
 
-    // const seen = JSON.parse(localStorage.getItem("seenNotifs") || "[]");
-    // badge.textContent = seen.length > 0 ? String(seen.length) : "0";
-    // if (seen.length > 0) {
-    //   badge.classList.remove("text-black", "bg-pong-dark-primary");
-    //   badge.classList.add("text-white", "bg-pong-accent");
-    // } else {
-    //   badge.classList.add("text-black", "bg-pong-dark-primary");
-    //   badge.classList.remove("text-white", "bg-pong-accent");
-    // }
-
     const notifContainer = document.getElementById("notif-container");
     const btn = document.getElementById("bell-btn") as HTMLButtonElement;
     if (!notifContainer || !btn) return;
@@ -44,19 +35,33 @@ export function TopBar() {
     });
 
     const searchBar = document.getElementById("search-bar") as HTMLInputElement;
+    const closeIcon = document.getElementById(
+      "search-close-icon"
+    ) as HTMLButtonElement;
     if (searchBar) {
       searchBar.addEventListener("input", () => {
         handleSearchMembers(searchBar.value);
+        if (searchBar.value.trim()) {
+          closeIcon.style.display = "flex";
+        } else {
+          closeIcon.style.display = "none";
+        }
       });
       searchBar.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           handleSearchMembers(searchBar.value);
         }
       });
-      searchBar.addEventListener("blur", () => {
-        const results = document.getElementById("search-results");
-        if (results) results.remove();
+    }
+    if (closeIcon) {
+      closeIcon.addEventListener("click", () => {
+        searchBar.value = "";
+        closeIcon.style.display = "none";
+        const oldList = document.getElementById("search-results");
+        if (oldList) oldList.remove();
+        searchBar.focus();
       });
+      closeIcon.style.display = "none";
     }
   }, 0);
 
@@ -68,9 +73,19 @@ export function TopBar() {
           id="search-bar"
           placeholder="Find A Racket Companion..."
           className={styles.searchBarStyle}
-		  maxLength={15}
-          autocomplete="off"
+          maxLength={15}
+          autoComplete="off"
         />
+        <button
+          id="search-close-icon"
+          type="button"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-pong-dark-primary/30 hover:bg-pong-dark-accent/40 text-pong-dark-secondary hover:text-white transition-all duration-200"
+          style={{ display: "none" }}
+          tabIndex={-1}
+          aria-label="Clear search"
+        >
+          <i className="fa-solid fa-xmark text-lg"></i>
+        </button>
       </div>
 
       <div className="flex items-center gap-8">

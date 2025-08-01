@@ -41,7 +41,7 @@ export function ChangePassword() {
 
             <form
               id="change-password-form"
-              className="w-full flex flex-col gap-6"
+              className="w-full flex flex-col gap-4"
             >
               <div className="relative w-ful">
                 <input
@@ -51,6 +51,7 @@ export function ChangePassword() {
                   className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="Current password"
                   autoComplete="off"
+				  maxLength={30}
                   autofocus
                 />
                 <i
@@ -69,6 +70,7 @@ export function ChangePassword() {
                   className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="New password"
                   autoComplete="off"
+				  maxLength={30}
                 />
                 <i
                   className={
@@ -86,6 +88,7 @@ export function ChangePassword() {
                   className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="Confirm new password"
                   autoComplete="off"
+				  maxLength={30}
                 />
                 <i
                   className={

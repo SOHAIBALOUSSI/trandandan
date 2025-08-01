@@ -316,7 +316,7 @@ export const styles = {
 	bg-pong-dark-custom border border-pong-dark-highlight/30 
 	w-full max-w-5xl 
 	p-8 md:p-10 
-	rounded-2xl 
+	rounded-lg 
 	shadow-lg
   `,
   badgeStyle: `
