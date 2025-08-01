@@ -35,16 +35,13 @@ function pollForNewMatches() {
           if (maxGameId <= lastSentGameId) return;
 
           lastSentGameId = maxGameId; // update tracker
-
           const payload = rows.map((row) => ({
-            enemyId: row.enemy_id,
-            userId: row.user_id,
             leftPlayerScore: row.left_player_score,
             rightPlayerScore: row.right_player_score,
             playerId: row.player_id,
             gameEndResult: row.game_end_result,
           }));
-
+          // console.log("New matches found:", payload);
           for (const client of connectedClients) {
             try {
               client.send(JSON.stringify(payload));
