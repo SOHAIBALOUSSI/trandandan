@@ -9,6 +9,7 @@ export function createResponse(status, code, data) {
 import https from 'https'
 import fs from 'fs';
 import path from 'node:path';
+import { fetchAllProfiles } from '../models/profileDAO.js';
 
 export async function downloadAvatarUrl(avatar_url, userId) {
     const ext = path.extname(avatar_url);
@@ -39,4 +40,28 @@ export async function downloadAvatarUrl(avatar_url, userId) {
             fs.unlink(uploadPath, () => {reject(err)});
         });
     })
+}
+
+import WebSocket from 'ws';
+
+async function getOnlineStatuses(db, onlineUsers){
+
+    const profiles = await fetchAllProfiles(db);
+    console.log("FRIENDS IDS ==> ", profiles);
+    const actualProfiles = profiles.map(profile => {
+        console.log("Handling userId ", profile.userId)
+        if (!onlineUsers.has(profile.userId))
+            return { userId: profile.userId, isOnline: false };
+        return { userId: profile.userId, isOnline: true };
+    })
+    console.log(actualProfiles);
+    return actualProfiles;
+
+}
+
+export async function displayOnlineStatuses(db, socket, onlineUsers) {
+    const statuses = await getOnlineStatuses(db, onlineUsers);
+
+    if (socket.isAuthenticated && socket.readyState === WebSocket.OPEN)
+        socket.send(JSON.stringify({ userStatuses: statuses }));
 }

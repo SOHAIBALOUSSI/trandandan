@@ -1,8 +1,12 @@
-import { getAllProfiles, getAvatarUrl, getProfile, updateProfile, uploadAvatarUrl } from "../controllers/profileController.js";
+import { fetchOnlineStatuses, getAllProfiles, getAvatarUrl, getProfile, updateProfile, uploadAvatarUrl } from "../controllers/profileController.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 import { profileIdSchema, updateProfileSchema } from "../schemas/profileSchema.js";
 
 async function profileRoutes(fastify) {
+    fastify.get('/statuses', {
+        websocket: true,
+        handler: fetchOnlineStatuses
+    });
 
     fastify.get('/all', {
         preHandler: verifyToken,

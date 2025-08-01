@@ -38,6 +38,30 @@ The `profile-service` manages user profiles including avatar handling, username 
 
 ```
 
+
+## Online statuses
+
+**Endpoint: /profile/statuses**
+
+When a user connects, they continuously receive updates about other users's online/offline statuses. It's a global broadcast to all users about everyone based on the following format:
+
+```json
+  {
+    "userStatuses": [
+      {
+        "userId": 123,
+        "isOnline": true
+      },
+      {
+        "userId": 456,
+        "isOnline": false
+      }
+      , //...
+    ]
+  }
+```
+
+
 ## Response Codes
 
 - `/user/:id` (GET)
