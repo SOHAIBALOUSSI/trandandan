@@ -13,33 +13,30 @@ export function MatchHistory(props: { user: UserProfile }) {
         relative 
         bg-pong-dark-custom
         border border-pong-dark-highlight/30 
-        rounded-2xl shadow-xl 
+        rounded-lg shadow-xl 
         p-6 md:p-10 
         w-full
         backdrop-blur-md
       "
     >
-      <span className="absolute top-0 left-0 w-2.5 h-full bg-pong-accent rounded-l-2xl"></span>
+      <span className="absolute top-0 left-0 w-2 h-full bg-pong-dark-accent rounded-l-lg"></span>
 
       <h2
         className={`
           flex items-center gap-3
-          text-white font-extrabold mb-6 tracking-tight 
+          text-pong-dark-primary font-extrabold mb-6 tracking-tight 
           ${fontSizes.smallTitleFontSize}
         `}
       >
-        <i className="fa-solid fa-scroll text-pong-accent"></i>
+        <i className="fa-solid fa-scroll text-pong-dark-accent"></i>
         Chronicles of Play
       </h2>
 
       <ul
         id="match-history-list"
         className={`
-          space-y-6 
           ${fontSizes.bodyFontSize} 
-          max-h-[500px] overflow-y-auto pr-4 md:pr-8
-          custom-scrollbar
-		  py-4
+          max-h-[600px] overflow-y-auto pr-2 md:pr-4
         `}
       ></ul>
     </div>
