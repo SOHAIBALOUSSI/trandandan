@@ -68,7 +68,7 @@ function WinActivity(
 
   const scoreDiv = document.createElement("div");
   scoreDiv.className = `text-pong-dark-secondary font-semibold ${fontSizes.smallTextFontSize}`;
-  scoreDiv.textContent = `${activity.userScore} - ${activity.enemyScore}`;
+  scoreDiv.textContent = `${activity.leftPlayerScore} - ${activity.rightPlayerScore}`;
 
   li.appendChild(leftDiv);
   li.appendChild(scoreDiv);
@@ -100,7 +100,7 @@ function LossActivity(
 
   const scoreDiv = document.createElement("div");
   scoreDiv.className = `text-pong-dark-secondary font-semibold ${fontSizes.smallTextFontSize}`;
-  scoreDiv.textContent = `${activity.userScore} - ${activity.enemyScore}`;
+  scoreDiv.textContent = `${activity.leftPlayerScore} - ${activity.rightPlayerScore}`;
 
   li.appendChild(leftDiv);
   li.appendChild(scoreDiv);
@@ -109,8 +109,10 @@ function LossActivity(
 }
 
 async function renderActivity(activity: GameActivity) {
-  const user: UserProfile | null = await getUserById(activity.userId);
-  const targetUser: UserProfile | null = await getUserById(activity.enemyId);
+  const user: UserProfile | null = await getUserById(activity.leftPlayerId);
+  const targetUser: UserProfile | null = await getUserById(
+    activity.rightPlayerId
+  );
   if (!user || !targetUser) return null;
 
   switch (activity.gameEndResult) {
@@ -139,46 +141,46 @@ export function RecentActivityFeed() {
 
   const fakeData: GameActivity[] = [
     {
-      userId: 1,
-      enemyId: 2,
+      leftPlayerId: 1,
+      rightPlayerId: 2,
       gameEndResult: "WIN",
-      userScore: 5,
-      enemyScore: 2,
+      leftPlayerScore: 5,
+      rightPlayerScore: 2,
     },
     {
-      userId: 2,
-      enemyId: 1,
+      leftPlayerId: 2,
+      rightPlayerId: 1,
       gameEndResult: "LOSE",
-      userScore: 4,
-      enemyScore: 5,
+      leftPlayerScore: 4,
+      rightPlayerScore: 5,
     },
     {
-      userId: 3,
-      enemyId: 4,
+      leftPlayerId: 3,
+      rightPlayerId: 4,
       gameEndResult: "WIN",
-      userScore: 5,
-      enemyScore: 1,
+      leftPlayerScore: 5,
+      rightPlayerScore: 1,
     },
     {
-      userId: 4,
-      enemyId: 3,
+      leftPlayerId: 4,
+      rightPlayerId: 3,
       gameEndResult: "LOSE",
-      userScore: 3,
-      enemyScore: 5,
+      leftPlayerScore: 3,
+      rightPlayerScore: 5,
     },
     {
-      userId: 3,
-      enemyId: 4,
+      leftPlayerId: 3,
+      rightPlayerId: 4,
       gameEndResult: "WIN",
-      userScore: 5,
-      enemyScore: 1,
+      leftPlayerScore: 5,
+      rightPlayerScore: 1,
     },
     {
-      userId: 4,
-      enemyId: 3,
+      leftPlayerId: 4,
+      rightPlayerId: 3,
       gameEndResult: "LOSE",
-      userScore: 3,
-      enemyScore: 5,
+      leftPlayerScore: 3,
+      rightPlayerScore: 5,
     },
   ];
 
