@@ -5,8 +5,7 @@ import {
     rejectRequest,
     removeFriend,
     listFriends,
-    listRequests,
-    getFriendsStatus
+    listRequests
 } from '../controllers/friendsController.js';
 
 import { 
@@ -16,10 +15,6 @@ import {
 } from '../schemas/friendsSchema.js';
 
 async function friendsRoutes(fastify) {
-    fastify.get('/status', {
-        websocket: true,
-        handler: getFriendsStatus
-    });
     
     fastify.post('/request', {
         schema :{

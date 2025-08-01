@@ -12,6 +12,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@fastify/websocket": "^11.2.0",
     "@fastify/multipart": "^9.0.3",
     "amqplib": "^0.10.8",
     "cookie": "^1.0.2",

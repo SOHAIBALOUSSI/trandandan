@@ -5,10 +5,11 @@ import {
     updateAvatarUrlById, 
     updateProfileById 
 } from "../models/profileDAO.js";
-import { createResponse } from "../utils/utils.js";
+import { createResponse, displayOnlineStatuses } from "../utils/utils.js";
 import fs from 'node:fs';
 import { pipeline } from 'node:stream/promises';
 import path from 'node:path';
+import { verifyWSToken } from "../middleware/authMiddleware.js";
 
 export async function getProfile(request, reply) {
     try {
@@ -157,4 +158,43 @@ export async function getAllProfiles(request, reply) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
+}
+
+
+const onlineUsers = new Map();
+
+export async function fetchOnlineStatuses(socket, request) {
+    try {
+        socket.userId = null;
+        socket.isAuthenticated = false;
+        await verifyWSToken(socket, request, this.redis);
+        if (socket.userId) {
+            if (!onlineUsers.has(socket.userId))
+                onlineUsers.set(socket.userId, new Set());
+            onlineUsers.get(socket.userId).add(socket);
+            displayOnlineStatuses(this.db, socket, onlineUsers);
+        }
+        else {
+            socket.close(3000, 'Unauthorized');
+            return ;
+        }
+
+        setInterval(displayOnlineStatuses, 5000, this.db, socket, onlineUsers);
+
+        socket.on('error', (error) => {
+            console.error('FastifyWebSocket: Client error:', error);
+        });
+
+        socket.on('close', () => {
+            console.log('FastifyWebSocket: Client disconnected.');
+            if (socket.isAuthenticated && onlineUsers.has(socket.userId)) {
+            onlineUsers.get(socket.userId).delete(socket);
+            if (onlineUsers.get(socket.userId).size === 0) 
+                onlineUsers.delete(socket.userId);
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        socket.close(1008, 'Malformed payload');
+    }    
 }
