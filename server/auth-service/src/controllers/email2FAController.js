@@ -4,6 +4,7 @@ import {
 } from '../models/tokenDAO.js';
 import { 
     clearOtpCode,
+    findPrimaryTwoFaByUid,
     findTwoFaByUidAndType, 
     makeTwoFaPrimaryByUidAndType, 
     storeOtpCode,
@@ -67,7 +68,9 @@ export async function verify2FAEmailSetup(request, reply) {
 
         await clearOtpCode(this.db, user.id, twoFa.type);
         await updateUser2FA(this.db, user.id, 'email');
-        await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'email');
+        const hasPrimary = await findPrimaryTwoFaByUid(this.db, user.id);
+        if (!hasPrimary)
+            await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'email');
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {
         console.log(error);
