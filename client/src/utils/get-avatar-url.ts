@@ -2,8 +2,6 @@ import { UserProfile } from "types/types";
 import MaleAvatar from "@/assets/male-avatar.png";
 import FemaleAvatar from "@/assets/female-avatar.png";
 
-const BACKEND_URL = "http://localhost:3001";
-
 export function getAvatarUrl(user: UserProfile): string {
   if (!user.avatar_url || user.avatar_url === "") {
     return user.gender === "M" ? MaleAvatar : FemaleAvatar;
@@ -11,5 +9,5 @@ export function getAvatarUrl(user: UserProfile): string {
   if (user.avatar_url.startsWith("http") || user.avatar_url.startsWith("/")) {
     return user.avatar_url;
   }
-  return `${BACKEND_URL}/profile/avatar/${user.avatar_url}`;
+  return `/profile/avatar/${user.avatar_url}`;
 }

@@ -105,7 +105,7 @@ export function MemberProfile(id: number) {
         }
         if (inviteBtn) {
           inviteBtn.addEventListener("click", () => {
-            inviteFriend(me.id, user.id);
+            inviteFriend(user.id);
           });
         }
       } else {

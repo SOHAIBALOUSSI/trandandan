@@ -1,11 +1,12 @@
 import { displayToast } from "@/utils/display-toast";
+import { getCurrentUser } from "@/utils/user-store";
 
-export async function inviteFriend(senderId: number, receiverId: number) {
+export async function inviteFriend(inviteeId: number): Promise<Response> {
   try {
-    const res = await fetch("http://localhost:5000/invite", {
+    const res = await fetch("/game/invite", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ senderId, receiverId }),
+      body: JSON.stringify({ receiverId: inviteeId }),
     });
     if (res.ok) {
       displayToast("Challenge issued successfully", "success");
@@ -15,7 +16,9 @@ export async function inviteFriend(senderId: number, receiverId: number) {
         "error"
       );
     }
+    return res;
   } catch {
     displayToast("Connection lost. Challenge could not be sent.", "error");
+    throw new Error("Connection lost");
   }
 }

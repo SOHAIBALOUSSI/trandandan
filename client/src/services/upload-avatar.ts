@@ -1,12 +1,11 @@
 import { displayToast } from "@/utils/display-toast";
 import { UploadAvatarRes } from "@/utils/response-messages";
+import { getCurrentUser } from "@/utils/user-store";
 
-const BACKEND_URL = "http://localhost:3001";
-
-export function uploadAvatar() {
+export async function uploadAvatar(file: File): Promise<boolean> {
   const btn = document.getElementById("upload-avatar-btn") as HTMLButtonElement;
   const avatar = document.getElementById("member-avatar") as HTMLImageElement;
-  if (!btn || !avatar) return;
+  if (!btn || !avatar) return false;
 
   let fileInput = document.getElementById(
     "avatar-file-input"
@@ -42,7 +41,7 @@ export function uploadAvatar() {
       const data = await res.json();
       if (res.ok && data?.data?.avatar_url) {
         const fileName = data.data.avatar_url;
-        const avatarUrl = `${BACKEND_URL}/profile/avatar/${fileName}`;
+        const avatarUrl = `/profile/avatar/${fileName}`;
         avatar.src = avatarUrl;
         displayToast(UploadAvatarRes.AVATAR_UPLOADED, "success");
       } else {
@@ -57,4 +56,6 @@ export function uploadAvatar() {
       fileInput!.value = "";
     }
   });
+
+  return true;
 }

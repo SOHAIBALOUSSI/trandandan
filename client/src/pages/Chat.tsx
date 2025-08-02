@@ -122,7 +122,7 @@ export async function Chat(friendId: number) {
   if (challengeBtn) {
     challengeBtn.addEventListener("click", async () => {
       challengeBtn.disabled = true;
-      await inviteFriend(currentUser.id, friend.id);
+      await inviteFriend(friend.id);
       setTimeout(() => {
         challengeBtn.disabled = false;
       }, 3000);

@@ -8,8 +8,6 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3000:3000"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -23,8 +21,7 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3001:3001"
+
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -38,8 +35,7 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3002:3002"
+
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -53,8 +49,6 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3003:3003"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -68,8 +62,6 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3004:3004"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -83,8 +75,6 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3005:3005"
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -95,9 +85,6 @@ services:
     restart: always
     networks:
       - trandenden-net
-    expose:
-      - 6379
-
   game:
     container_name: game-service
     build: server/game-service
@@ -105,10 +92,9 @@ services:
     restart: always
     env_file:
       - ./server/.env
+      
     networks:
       - trandenden-net
-    ports:
-      - "5000:5000"
     volumes:
       - ./server/game-service/db/.gameData.db:/app/db/.gameData.db
     depends_on:
@@ -123,25 +109,21 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "15672:15672"
-      - "5672:5672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  frontend:
-    container_name: trandenden-frontend
-    build: client
-    image: trandenden-frontend
+  nginx:
+    container_name: nginx-gateway
+    build:
+      context: .
+      dockerfile: client/nginx/Dockerfile
+    image: nginx-gateway
     ports:
-      - "8080:5173"
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    working_dir: /app
+      - "8080:80"    # HTTP port
+      - "9090:443"   # HTTPS/SSL port
     depends_on:
       - auth
       - profile
@@ -151,12 +133,10 @@ services:
       - redis
       - rabbitmq
       - game
-    env_file:
-      - ./client/.env
+      - dashboard
     networks:
       - trandenden-net
     restart: always
-    command: npm run dev
 
 networks:
   trandenden-net:

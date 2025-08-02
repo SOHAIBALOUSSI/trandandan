@@ -68,7 +68,7 @@ export function showInviteModal(me: UserProfile) {
         );
         btn.setAttribute("disabled", "true");
         if (me) {
-          await inviteFriend(me.id, friendId);
+          await inviteFriend(friendId);
         }
         modal.remove();
       });

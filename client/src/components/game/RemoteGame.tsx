@@ -97,7 +97,7 @@ export function RemoteGame() {
   const userInfo = getCurrentUser();
 
   const getRoomIdByUserId = async (userId: number) => {
-    return fetch("http://localhost:5000/getRoomId", {
+    return fetch("/game/getRoomId", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -130,7 +130,7 @@ export function RemoteGame() {
     const roomdIdentif = await getRoomIdByUserId(userInfo?.id ?? 0);
 
     socket = new WebSocket(
-      `ws://localhost:5000/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
+      `wss://localhost:9090/game/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
     );
     exit.addEventListener("click", () => {
       socket.close();
@@ -312,7 +312,7 @@ class FlowField {
   }
 
   private sendPlayerData(playerData: PlayerData): void {
-    fetch("http://localhost:5000/storePlayerData", {
+    fetch("/game/storePlayerData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

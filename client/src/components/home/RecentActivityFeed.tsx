@@ -81,7 +81,7 @@ export function RecentActivityFeed() {
     if (elem) ul.appendChild(elem);
   });
 
-  const ws = new window.WebSocket("ws://localhost:5000/recent-activity");
+  const ws = new window.WebSocket("wss://localhost:9090/game/recent-activity");
 
   ws.onmessage = (event) => {
     try {
