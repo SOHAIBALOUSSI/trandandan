@@ -1,18 +1,18 @@
 
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
-import cors from "@fastify/cors";
+// import cors from "@fastify/cors";
 import redisPlugin from "./routes/redis.js";
 import { verifyToken, verifyWSToken } from "./routes/authMiddleware.js";
 
 const fastify = Fastify();
 
 fastify.register(redisPlugin);
-fastify.register(cors, {
-  origin: "*", // Allow all origins
-  methods: ["GET", "POST", "DELETE"], // Allow specific HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
-});
+// fastify.register(cors, {
+//   origin: "*", // Allow all origins
+//   methods: ["GET", "POST", "DELETE"], // Allow specific HTTP methods
+//   allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
+// });
 
 fastify.register(websocket);
 
@@ -24,10 +24,8 @@ fastify.register(async function (fastify) {
   });
 });
 
-// remote games route
-import { remoteGame } from "./routes/remoteGameRoute.js";
-fastify.register(async function (fastify) {
-  fastify.get("/game/remoteGame", { websocket: true }, async (connection, req) => {
+
+/*
     socket.userId = null;
     socket.isAuthenticated = false;
     await verifyWSToken(socket, request, this.redis);
@@ -41,6 +39,28 @@ fastify.register(async function (fastify) {
         socket.close(3000, 'Unauthorized');
         return ;
     }    
+
+*/
+
+// remote games route
+import { remoteGame } from "./routes/remoteGameRoute.js";
+fastify.register(async function (fastify) {
+  fastify.get("/game/remoteGame", { websocket: true }, async (connection, req) => {
+
+    // Authenticate the WebSocket connection
+    req.userId = null;
+    req.isAuthenticated = false;
+    
+    await verifyWSToken(connection, req, fastify.redis);
+    
+    if (!connection.userId) {
+      console.log("WebSocket: Authentication failed for remote game");
+      connection.close(3000, 'Unauthorized');
+      return;
+    }
+
+    console.log(`WebSocket: User ${req.query.token}`);
+    console.log(`WebSocket: room id ${req.query.roomId} authenticated for remote game`);
     remoteGame(connection, req);
   });
 });
