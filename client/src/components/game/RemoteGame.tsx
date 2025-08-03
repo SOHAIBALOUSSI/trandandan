@@ -3,7 +3,7 @@ import { getCurrentUser } from "@/utils/user-store";
 import { UserProfile } from "types/types";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { styles } from "@/styles/styles";
-
+let i = 0;
 export function RemoteGame() {
   setTimeout(() => {
     initGameThemeToggle();
@@ -289,29 +289,29 @@ interface CompactGameState {
 }
 function expandGameState(compact: CompactGameState): Partial<GameState> {
   return {
-    playerId: compact.p,
-    ballX: compact.bx,
-    ballY: compact.by,
+    playerId: compact.p || 1,
+    ballX: (compact.bx !== null && compact.bx !== undefined && !isNaN(compact.bx)) ? compact.bx : 500,
+    ballY: (compact.by !== null && compact.by !== undefined && !isNaN(compact.by)) ? compact.by : 300,
     flagX: compact.fx === 1,
     flagY: compact.fy === 1,
-    paddleLeftY: compact.pl,
-    paddelRightY: compact.pr,
-    keypressd: compact.kp,
+    paddleLeftY: (compact.pl !== null && compact.pl !== undefined && !isNaN(compact.pl)) ? compact.pl : 240,
+    paddelRightY: (compact.pr !== null && compact.pr !== undefined && !isNaN(compact.pr)) ? compact.pr : 240,
+    keypressd: compact.kp || "",
     disconnected: compact.dc === 1,
-    leftPlayerScore: compact.ls,
-    rightPlayerScore: compact.rs,
-    rounds: compact.rd,
-    ballSpeed: compact.bs,
+    leftPlayerScore: compact.ls || 0,
+    rightPlayerScore: compact.rs || 0,
+    rounds: compact.rd || 5,
+    ballSpeed: (compact.bs !== null && compact.bs !== undefined && !isNaN(compact.bs)) ? compact.bs : 5,
     // hitCount: compact.hc,
-    gameEndResult: compact.r,
+    gameEndResult: compact.r || "",
     endGame: compact.e === 1,
     alive: compact.al === 1,
-    leftPlayerBallHit: compact.lh,
-    rightPlayerBallHit: compact.rh,
-    startTime: compact.st,
-    endTime: compact.et,
-    enemyId: compact.ei,
-    matchId: compact.mi
+    leftPlayerBallHit: compact.lh || 0,
+    rightPlayerBallHit: compact.rh || 0,
+    startTime: compact.st || Date.now(),
+    endTime: compact.et || 0,
+    enemyId: compact.ei || 0,
+    matchId: compact.mi || ""
   };
 }
 interface FlowFieldDependencies {
@@ -475,24 +475,6 @@ class FlowField {
       this.deps.socket.send(JSON.stringify(this.gameState));
     }
   }
-  public normalizeUser(raw: UserProfile): UserProfile {
-    return {
-      id: raw.id,
-      userId: raw.userId,
-      username: raw.username,
-      email: raw.email,
-      gender: raw.gender,
-      avatar_url: raw.avatar_url,
-      status: raw.status,
-      solde: raw.solde,
-      rank: raw.rank,
-      level: raw.level,
-      created_at: raw.created_at,
-      matches_played: raw.matches_played ?? 0,
-      matches_won: raw.matches_won ?? 0,
-      matches_lost: raw.matches_lost ?? 0,
-    };
-  }
   public updateUser(currentUser: UserProfile, hasWon: boolean): void {
     const payload = {
       hasWon: hasWon,
@@ -515,6 +497,7 @@ class FlowField {
         console.error("Error updating user:", error);
       });
   }
+  
   public updateGameState(data: string | ArrayBuffer): void {
     try {
       let parsedData: GameState;
@@ -533,7 +516,8 @@ class FlowField {
         // Handle regular JSON string (fallback)
         parsedData = JSON.parse(data);
       }
-      console.log("Parsed Game State: ", parsedData);
+      if (i++ < 5)
+        console.log("Parsed Game State: ", parsedData);
       this.gameState = parsedData; this.gameState = parsedData;
       if (this.gameState.playerId === 1) {
         this.deps.playerSide.innerText = "YOU ARE ON THE LEFT SIDE";

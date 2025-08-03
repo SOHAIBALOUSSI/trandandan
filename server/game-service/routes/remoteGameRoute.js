@@ -81,44 +81,42 @@ function gameLogic(gameState) {
   }
   return gameState;
 }
+let i = 0;
+
 function serializeGameState(gameState) {
   // Convert to compact object with ALL game state properties
   const compact = {
     p: gameState.playerId,
-    bx: Math.round(gameState.ballX),
-    by: Math.round(gameState.ballY),
-    fx: gameState.flagX ? 1 : 0,
-    fy: gameState.flagY ? 1 : 0,
-    pl: Math.round(gameState.paddleLeftY),
-    pr: Math.round(gameState.paddelRightY),
-    kp: gameState.keypressd || "",
-    dc: gameState.disconnected ? 1 : 0,
+    bx: gameState.ballX,
+    by: gameState.ballY,
+    fx: gameState.flagX,
+    fy: gameState.flagY,
+    pl: gameState.paddleLeftY,
+    pr: gameState.paddelRightY,
+    kp: gameState.keypressd,
+    dc: gameState.disconnected,
     ls: gameState.leftPlayerScore,
     rs: gameState.rightPlayerScore,
     rd: gameState.rounds,
     bs: gameState.ballSpeed,
     hc: gameState.hitCount,
-    r: gameState.gameEndResult || "",
-    e: gameState.endGame ? 1 : 0,
-    al: gameState.alive ? 1 : 0,
+    r: gameState.gameEndResult,
+    e: gameState.endGame,
+    al: gameState.alive,
     lh: gameState.leftPlayerBallHit,
     rh: gameState.rightPlayerBallHit,
     st: gameState.startTime,
     et: gameState.endTime,
-    ei: gameState.enemyId || 0,
-    mi: gameState.matchId || ""
+    ei: gameState.enemyId,
+    mi: gameState.matchId
   };
-  
-  return JSON.stringify(compact);
+  return Buffer.from(JSON.stringify(compact));
 }
 const rooms = {};
-
 export function remoteGame(connection, req) {
   let roomId;
   const token = req.query.token;
-  console.log("token: ", token);
   const playerRoomdId = req.query.roomId;
-
   let joined = false;
 
   for (const [id] of Object.entries(rooms)) {
@@ -152,6 +150,8 @@ export function remoteGame(connection, req) {
     if (rooms[id].players.length < 2 && !joined) {
       if (playerRoomdId === id)
       {
+        console.log("user id = ", token);
+        console.log("roomId", roomId);
         rooms[id].players.push({ token: token, connection: connection });
         joined = true;
         roomId = id;
@@ -206,7 +206,7 @@ export function remoteGame(connection, req) {
       { token: token1, connection: player1 },
       { token: token2, connection: player2 },
     ] = rooms[roomId].players;
-
+    console.log(rooms[roomId].players);
     rooms[roomId].gameState.startTime = Date.now();
     
     const handleMessage = (playerId) => (msg) => {
@@ -222,15 +222,16 @@ export function remoteGame(connection, req) {
           return;
         }
         // check if the client reconnected so i will not give him the startUp game stat
-        if (!rooms[roomId].gameState.disconnected) {
-          rooms[roomId].gameState = gameState;
-        }
-        rooms[roomId].gameState.keypressd = gameState.keypressd;
-        rooms[roomId].gameState.playerId = playerId;
-        rooms[roomId].gameState.matchId = roomId;
+        // if (!rooms[roomId].gameState.disconnected) {
+        //   rooms[roomId].gameState = gameState;
+        // }
+        const serverGameState = rooms[roomId].gameState;
+        serverGameState.keypressd = gameState.keypressd;
+        serverGameState.playerId = playerId;
+        serverGameState.matchId = roomId;
         // game logic
-        const updatedState = gameLogic(rooms[roomId].gameState);
-        // console.log("Updated Game State: ", updatedState);
+        const updatedState = gameLogic(serverGameState);
+        
         // check score
         if (updatedState.rightPlayerScore === updatedState.rounds) {
           updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;

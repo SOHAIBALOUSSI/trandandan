@@ -44,6 +44,7 @@ fastify.register(async function (fastify) {
         console.log("Socket closed during verification");
         return;
       }
+      console.log("enterig remote games");
       remoteGame(socket, req);
       
     } catch (error) {
