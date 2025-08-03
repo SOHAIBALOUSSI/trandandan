@@ -28,19 +28,19 @@ fastify.register(async function (fastify) {
 import { remoteGame } from "./routes/remoteGameRoute.js";
 fastify.register(async function (fastify) {
   fastify.get("/game/remoteGame", { websocket: true }, async (connection, req) => {
-    socket.userId = null;
-    socket.isAuthenticated = false;
-    await verifyWSToken(socket, request, this.redis);
-    if (socket.userId) {
-        if (!onlineUsers.has(socket.userId))
-            onlineUsers.set(socket.userId, new Set());
-        onlineUsers.get(socket.userId).add(socket);
-        displayFriendsStatus(this.db, socket, onlineUsers);
-    }
-    else {
-        socket.close(3000, 'Unauthorized');
-        return ;
-    }    
+    // socket.userId = null;
+    // socket.isAuthenticated = false;
+    // await verifyWSToken(socket, request, this.redis);
+    // if (socket.userId) {
+    //     if (!onlineUsers.has(socket.userId))
+    //         onlineUsers.set(socket.userId, new Set());
+    //     onlineUsers.get(socket.userId).add(socket);
+    //     displayFriendsStatus(this.db, socket, onlineUsers);
+    // }
+    // else {
+    //     socket.close(3000, 'Unauthorized');
+    //     return ;
+    // }    
     remoteGame(connection, req);
   });
 });
