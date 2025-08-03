@@ -25,42 +25,27 @@ fastify.register(async function (fastify) {
 });
 
 
-/*
-    socket.userId = null;
-    socket.isAuthenticated = false;
-    await verifyWSToken(socket, request, this.redis);
-    if (socket.userId) {
-        if (!onlineUsers.has(socket.userId))
-            onlineUsers.set(socket.userId, new Set());
-        onlineUsers.get(socket.userId).add(socket);
-        displayFriendsStatus(this.db, socket, onlineUsers);
-    }
-    else {
-        socket.close(3000, 'Unauthorized');
-        return ;
-    }    
-
-*/
 
 // remote games route
 import { remoteGame } from "./routes/remoteGameRoute.js";
 fastify.register(async function (fastify) {
   fastify.get("/game/remoteGame", { websocket: true }, async (connection, req) => {
+    connection.userId = null;
+    connection.isAuthenticated = false;
+    console.log("verificatondone");
+    await verifyWSToken(connection, req, this.redis);
 
-    // Authenticate the WebSocket connection
-    req.userId = null;
-    req.isAuthenticated = false;
-    
-    await verifyWSToken(connection, req, fastify.redis);
-    
     if (!connection.userId) {
-      console.log("WebSocket: Authentication failed for remote game");
-      connection.close(3000, 'Unauthorized');
-      return;
+        // if (!onlineUsers.has(connection.userId))
+        connection.close(3000, 'Unauthorized');
+        console.log("Unauthorized");
+        //     onlineUsers.set(connection.userId, new Set());
+        return ;
+        // onlineUsers.get(connection.userId).add(connection);
+        // displayFriendsStatus(this.db, connection, onlineUsers);
     }
 
-    console.log(`WebSocket: User ${req.query.token}`);
-    console.log(`WebSocket: room id ${req.query.roomId} authenticated for remote game`);
+    // console.log(`WebSocket: User ${connection.userId} connected`);
     remoteGame(connection, req);
   });
 });
