@@ -81,12 +81,42 @@ function gameLogic(gameState) {
   }
   return gameState;
 }
-
+function serializeGameState(gameState) {
+  // Convert to compact object with ALL game state properties
+  const compact = {
+    p: gameState.playerId,
+    bx: Math.round(gameState.ballX),
+    by: Math.round(gameState.ballY),
+    fx: gameState.flagX ? 1 : 0,
+    fy: gameState.flagY ? 1 : 0,
+    pl: Math.round(gameState.paddleLeftY),
+    pr: Math.round(gameState.paddelRightY),
+    kp: gameState.keypressd || "",
+    dc: gameState.disconnected ? 1 : 0,
+    ls: gameState.leftPlayerScore,
+    rs: gameState.rightPlayerScore,
+    rd: gameState.rounds,
+    bs: gameState.ballSpeed,
+    hc: gameState.hitCount,
+    r: gameState.gameEndResult || "",
+    e: gameState.endGame ? 1 : 0,
+    al: gameState.alive ? 1 : 0,
+    lh: gameState.leftPlayerBallHit,
+    rh: gameState.rightPlayerBallHit,
+    st: gameState.startTime,
+    et: gameState.endTime,
+    ei: gameState.enemyId || 0,
+    mi: gameState.matchId || ""
+  };
+  
+  return JSON.stringify(compact);
+}
 const rooms = {};
 
 export function remoteGame(connection, req) {
   let roomId;
   const token = req.query.token;
+  console.log("token: ", token);
   const playerRoomdId = req.query.roomId;
 
   let joined = false;
@@ -200,6 +230,7 @@ export function remoteGame(connection, req) {
         rooms[roomId].gameState.matchId = roomId;
         // game logic
         const updatedState = gameLogic(rooms[roomId].gameState);
+        // console.log("Updated Game State: ", updatedState);
         // check score
         if (updatedState.rightPlayerScore === updatedState.rounds) {
           updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
@@ -207,13 +238,14 @@ export function remoteGame(connection, req) {
           updatedState.gameEndResult = "Lost";
           updatedState.playerId = 1;
           updatedState.enemyId = token2;
-          player1.send(JSON.stringify(updatedState));
+          
+          player1.send(serializeGameState(updatedState));
 
           //send data to second player
           updatedState.playerId = 2;
           updatedState.enemyId = token1;
           updatedState.gameEndResult = "Won";
-          player2.send(JSON.stringify(updatedState));
+          player2.send(serializeGameState(updatedState));
           return;
         }
         if (updatedState.leftPlayerScore === updatedState.rounds) {
@@ -221,18 +253,18 @@ export function remoteGame(connection, req) {
           updatedState.playerId = 1;
           updatedState.enemyId = token2;
           updatedState.gameEndResult = "Won";
-          player1.send(JSON.stringify(updatedState));
+          player1.send(serializeGameState(updatedState));
 
           updatedState.playerId = 2;
           updatedState.enemyId = token1;
           updatedState.gameEndResult = "Lost";
-          player2.send(JSON.stringify(updatedState));
+          player2.send(serializeGameState(updatedState));
           return;
         }
         updatedState.playerId = 1;
-        player1.send(JSON.stringify(updatedState));
+        player1.send(serializeGameState(updatedState));
         updatedState.playerId = 2;
-        player2.send(JSON.stringify(updatedState));
+        player2.send(serializeGameState(updatedState));
       } catch (error) {
         // console.error("Invalid JSON format", error);
       }

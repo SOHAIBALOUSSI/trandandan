@@ -129,8 +129,9 @@ export function RemoteGame() {
     const userName: string = userInfo?.username ?? "username";
     const roomdIdentif = await getRoomIdByUserId(userInfo?.id ?? 0);
 
+    console.log("host: ", window.location.host);
     socket = new WebSocket(
-      `wss://localhost:9090/game/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
+      `wss://${window.location.host}/game/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
     );
     exit.addEventListener("click", () => {
       socket.close();
@@ -172,7 +173,24 @@ export function RemoteGame() {
     };
 
     socket.onmessage = (event: MessageEvent) => {
-      flow.updateGameState(event.data);
+      // Handle both ArrayBuffer and string data
+      if (event.data instanceof ArrayBuffer) {
+        flow.updateGameState(event.data);
+      } else if (typeof event.data === 'string') {
+        // Handle string messages (like "disconnected.", etc.)
+        if (event.data === "disconnected." || event.data.includes("disconnected")) {
+          disconnectedResult.style.display = "block";
+          return;
+        }
+        flow.updateGameState(event.data);
+      } else {
+        // Handle Blob data (convert to ArrayBuffer)
+        if (event.data instanceof Blob) {
+          event.data.arrayBuffer().then((buffer: ArrayBuffer) => {
+            flow.updateGameState(buffer);
+          });
+        }
+      }
     };
 
     flow.animate();
@@ -243,6 +261,58 @@ interface LastMatchData {
   matchPlayed: number;
   matchWon: number;
   matchLost: number;
+}
+interface CompactGameState {
+  p: number;    // playerId
+  bx: number;   // ballX
+  by: number;   // ballY
+  fx: number;   // flagX (0 or 1)
+  fy: number;   // flagY (0 or 1)
+  pl: number;   // paddleLeftY
+  pr: number;   // paddelRightY
+  kp: string;   // keypressd
+  dc: number;   // disconnected (0 or 1)
+  ls: number;   // leftPlayerScore
+  rs: number;   // rightPlayerScore
+  rd: number;   // rounds
+  bs: number;   // ballSpeed
+  hc: number;   // hitCount
+  r: string;    // gameEndResult
+  e: number;    // endGame (0 or 1)
+  al: number;   // alive (0 or 1)
+  lh: number;   // leftPlayerBallHit
+  rh: number;   // rightPlayerBallHit
+  st: number;   // startTime
+  et: number;   // endTime
+  ei: number;   // enemyId
+  mi: string;   // matchId
+}
+function expandGameState(compact: CompactGameState): Partial<GameState> {
+  return {
+    playerId: compact.p,
+    ballX: compact.bx,
+    ballY: compact.by,
+    flagX: compact.fx === 1,
+    flagY: compact.fy === 1,
+    paddleLeftY: compact.pl,
+    paddelRightY: compact.pr,
+    keypressd: compact.kp,
+    disconnected: compact.dc === 1,
+    leftPlayerScore: compact.ls,
+    rightPlayerScore: compact.rs,
+    rounds: compact.rd,
+    ballSpeed: compact.bs,
+    // hitCount: compact.hc,
+    gameEndResult: compact.r,
+    endGame: compact.e === 1,
+    alive: compact.al === 1,
+    leftPlayerBallHit: compact.lh,
+    rightPlayerBallHit: compact.rh,
+    startTime: compact.st,
+    endTime: compact.et,
+    enemyId: compact.ei,
+    matchId: compact.mi
+  };
 }
 interface FlowFieldDependencies {
   rightPlayerScore: HTMLElement;
@@ -445,10 +515,26 @@ class FlowField {
         console.error("Error updating user:", error);
       });
   }
-  public updateGameState(data: string): void {
+  public updateGameState(data: string | ArrayBuffer): void {
     try {
-      const parsedData: GameState = JSON.parse(data);
-      this.gameState = parsedData;
+      let parsedData: GameState;
+
+      // Check if data is ArrayBuffer (from Buffer.from() on server)
+      if (data instanceof ArrayBuffer) {
+        // Convert ArrayBuffer to string
+        const decoder = new TextDecoder();
+        const jsonString = decoder.decode(data);
+        const compact: CompactGameState = JSON.parse(jsonString);
+        console.log("Compact Game State: ", compact);
+        // Expand compact state to full state
+        const expandedState = expandGameState(compact);
+        parsedData = { ...this.gameState, ...expandedState };
+      } else {
+        // Handle regular JSON string (fallback)
+        parsedData = JSON.parse(data);
+      }
+      console.log("Parsed Game State: ", parsedData);
+      this.gameState = parsedData; this.gameState = parsedData;
       if (this.gameState.playerId === 1) {
         this.deps.playerSide.innerText = "YOU ARE ON THE LEFT SIDE";
       } else if (this.gameState.playerId === 2) {
