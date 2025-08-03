@@ -639,6 +639,9 @@ class FlowField {
     } catch (err) {
       console.error("Error parsing game state:", err);
       this.deps.disconnectedResult.style.display = "block";
+      setTimeout(() => {
+        navigateTo("/arena");
+      }, 3000)
     }
   }
 
