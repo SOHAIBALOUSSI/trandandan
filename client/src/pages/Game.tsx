@@ -1,3 +1,4 @@
+
 import { NavBar } from "@/components/layout/NavBar";
 import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
@@ -59,11 +60,10 @@ export function Game() {
             subtitle="Pick your playstyle and step into the arena of champions."
           />
 
-          <div className="hidden lg:grid w-full max-w-6xl mx-auto grid-cols-3 rounded-3xl overflow-hidden min-h-[520px] max-h-[600px] shadow-2xl">
+          <div className="game-modes hidden lg:grid w-full max-w-6xl mx-auto grid-cols-3 rounded-lg overflow-hidden min-h-[520px] max-h-[600px] shadow-2xl shadow-white/5">
             {gameModes.map((mode, index) => (
               <div
                 key={index}
-                id={`game-mode-${index}`}
                 className="
         			relative flex flex-col items-center justify-center text-center px-8 py-16
         			bg-gradient-to-br from-black/70 via-pong-dark-custom/30 to-pong-accent/5

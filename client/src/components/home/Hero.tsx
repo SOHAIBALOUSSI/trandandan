@@ -14,7 +14,7 @@ export function Hero(props: { user: UserProfile }) {
   const { user } = props;
 
   return (
-    <div className="p-6 md:p-10 shadow-xl shadow-black/30 w-full max-w-5xl mx-auto rounded-2xl backdrop-blur-md">
+    <div className="p-6 md:p-10 shadow-xl shadow-black/50 w-full max-w-5xl mx-auto rounded-lg backdrop-blur-md">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
         <div className="w-28 h-28 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg hover:scale-105 transition-transform duration-300">
           <img
@@ -46,11 +46,11 @@ export function Hero(props: { user: UserProfile }) {
           <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 mb-4">
             <a
               href="/arena"
-              className={styles.darkPrimaryBtn + " flex items-center gap-2"}
+              className={styles.darkPrimaryBtn + " hidden md:flex items-center gap-2"}
               data-link
             >
               <i className="fa-solid fa-table-tennis-paddle-ball"></i>
-              <span className="f	ont-semibold">Enter the Arena</span>
+              <span className="font-semibold">Enter the Arena</span>
             </a>
             <a href="/my_profile" className={styles.darkPrimaryBtn} data-link>
               View Profile

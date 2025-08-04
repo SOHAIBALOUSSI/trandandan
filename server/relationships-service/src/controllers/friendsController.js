@@ -1,13 +1,13 @@
-import { verifyWSToken } from '../middleware/authMiddleware.js';
 import {
     addFriendRequest,
     updateFriendRequestStatus,
     deleteFriend,
     getFriendsByUserId,
     getPendingRequestsByUserId,
-    deleteFriendships
+    deleteFriendships,
+    getSentRequestsByUserId
   } from '../models/friendshipDAO.js';
-import { createResponse, displayFriendsStatus } from '../utils/utils.js';
+import { createResponse } from '../utils/utils.js';
   
 export async function sendRequest(request, reply) {
   try {
@@ -144,50 +144,12 @@ export async function listRequests(request, reply) {
   try {
       const userId = request.user.id;
 
-      const requests = await getPendingRequestsByUserId(this.db, userId);
+      const pendingRequests = await getPendingRequestsByUserId(this.db, userId);
+      const sentRequests = await getSentRequestsByUserId(this.db, userId);
 
-      return reply.code(200).send(createResponse(200, 'REQUESTS_LISTED', { requests: requests }));
+      return reply.code(200).send(createResponse(200, 'REQUESTS_LISTED', { pendingRequests: pendingRequests, sentRequests: sentRequests }));
     } catch (error) {
       console.log(error);
       return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
-}
-
-
-const onlineUsers = new Map();
-
-export async function getFriendsStatus(socket, request) {
-  try {
-    socket.userId = null;
-    socket.isAuthenticated = false;
-    await verifyWSToken(socket, request, this.redis);
-    if (socket.userId) {
-        if (!onlineUsers.has(socket.userId))
-            onlineUsers.set(socket.userId, new Set());
-        onlineUsers.get(socket.userId).add(socket);
-        displayFriendsStatus(this.db, socket, onlineUsers);
-    }
-    else {
-        socket.close(3000, 'Unauthorized');
-        return ;
-    }
-
-    setInterval(displayFriendsStatus, 5000, this.db, socket, onlineUsers);
-
-    socket.on('error', (error) => {
-        console.error('FastifyWebSocket: Client error:', error);
-    });
-
-    socket.on('close', () => {
-        console.log('FastifyWebSocket: Client disconnected.');
-        if (socket.isAuthenticated && onlineUsers.has(socket.userId)) {
-          onlineUsers.get(socket.userId).delete(socket);
-          if (onlineUsers.get(socket.userId).size === 0) 
-            onlineUsers.delete(socket.userId);
-        }
-    })
-} catch (error) {
-    console.log(error);
-    socket.close(1008, 'Malformed payload');
-}    
 }

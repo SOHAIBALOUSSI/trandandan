@@ -5,10 +5,9 @@ import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
 import { Loader } from "@/components/common/Loader";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
-import { fontSizes } from "@/styles/fontSizes";
 import { MatchHistory } from "@/components/profile/MatchHistory";
-import { showUserBadge } from "@/utils/show-user-badge";
-import { displayPerformanceMetrics } from "@/utils/display-metrics";
+import { PerformanceMetrics } from "@/components/profile/PerformanceMetrics";
+import { QuickLinks } from "@/components/profile/QuickLinks";
 
 export function Profile() {
   const user = getCurrentUser();
@@ -16,44 +15,29 @@ export function Profile() {
     return <Loader text="Preparing your club profile..." />;
   }
 
-  setTimeout(() => {
-    displayPerformanceMetrics(user);
-  }, 0);
-
   return (
     <section className={`${styles.pageLayoutDark} relative`}>
       <NavBar />
       <div className="w-full relative">
         <TopBar />
 
-        <main className={styles.pageContent + " !gap-10"}>
+        <main className={styles.pageContent}>
           <SecondaryHeader
             title="Member Profile"
-            subtitle="Review your identity, matches, and achievements."
+            subtitle="Your identity, matches & achievements in the BHV Club."
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full max-w-5xl mx-auto">
-            <div className="lg:col-span-2">
+          <div className="w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 items-center">
+            <div className="w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 flex 2xl:self-start flex-col xl:flex-row 2xl:flex-col items-center justify-center gap-6">
               <MemberCard user={user} showUpdateOptions={true} />
+              <QuickLinks />
             </div>
 
-            <div className="lg:col-span-1 flex items-center justify-center">
-              <div className="relative col-span-2 w-1/2 lg:w-full rounded-full overflow-hidden flex items-center justify-center">
-                <img
-                  src={showUserBadge(user.rank)}
-                  alt={`${user.username}'s badge`}
-                  className="object-cover drop-shadow-md rounded-xl"
-                />
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-black text-sm font-bold px-3 py-1 rounded-full shadow-md">
-                  {user.rank || 0}
-                </div>
-              </div>
+            <div className="flex-1 flex flex-col gap-8 w-full">
+              <PerformanceMetrics user={user} />
+              <MatchHistory user={user} />
             </div>
           </div>
-
-          <div id="performance-metrics" class="w-full max-w-5xl mx-auto"></div>
-
-          <MatchHistory user={user} />
         </main>
       </div>
     </section>

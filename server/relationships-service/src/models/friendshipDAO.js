@@ -75,6 +75,15 @@ export async function getPendingRequestsByUserId(db, userId) {
     return requests;
 }
 
+export async function getSentRequestsByUserId(db, userId) {
+    const requests = await db.all(
+        `SELECT addressee_id FROM friendships WHERE requester_id = ? AND status = 'pending'`,
+        [userId]
+    );
+
+    return requests;
+}
+
 
 export async function deleteFriendships(db, id) {
     const result = await db.run('DELETE FROM friendships WHERE requester_id = ? OR addressee_id = ?', [id, id]);

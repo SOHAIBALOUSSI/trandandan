@@ -18,8 +18,8 @@ export function Members() {
   }
 
   setTimeout(() => {
-    hydratePendingRequests();
-    hydrateFriends();
+    hydratePendingRequests(user);
+    hydrateFriends(user);
     hydrateAllMembers(user);
 
     const tabs = {

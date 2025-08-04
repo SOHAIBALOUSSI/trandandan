@@ -4,6 +4,7 @@ import { findUserById } from '../models/userDAO.js';
 import { addToken, findValidTokenByUid } from '../models/tokenDAO.js';
 import { createResponse } from '../utils/utils.js';
 import {
+    findPrimaryTwoFaByUid,
     findTwoFaByUidAndType,
     makeTwoFaPrimaryByUidAndType,
     storeTempSecret,
@@ -77,7 +78,9 @@ export async function verify2FAAppSetup(request, reply) {
         
         await updateUser2FA(this.db, user.id, 'app');
         await updateUserSecret(this.db, user.id);
-        await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'app');
+        const hasPrimary = await findPrimaryTwoFaByUid(this.db, user.id);
+        if (!hasPrimary)
+            await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'app');
 
         return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
     } catch (error) {   
