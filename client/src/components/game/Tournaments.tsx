@@ -209,6 +209,11 @@ export function Tournaments() {
     });
 
     addPlayerBtn.addEventListener("click", () => {
+      if (playerIdField.value.trim() === "") {
+        displayToast("Username cannot be empty!", "error");
+        playerIdField.focus();
+        return;
+      }
       if (!playerIdField.checkValidity()) {
         displayToast("Invalid username!", "error");
         playerIdField.value = "";
@@ -221,6 +226,7 @@ export function Tournaments() {
         playerIdField.focus();
         return;
       }
+      
       Players.push(playerIdField.value);
       playerIdField.value = "";
 
