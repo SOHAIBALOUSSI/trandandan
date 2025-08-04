@@ -3,7 +3,10 @@ import { getCurrentUser } from "@/utils/user-store";
 import { UserProfile } from "types/types";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { styles } from "@/styles/styles";
-let i = 0;
+
+
+
+// let countdownCounter = false;
 export function RemoteGame() {
   setTimeout(() => {
     initGameThemeToggle();
@@ -92,7 +95,7 @@ export function RemoteGame() {
   ) as HTMLElement;
   const exit = container.querySelector("#exit") as HTMLElement;
   const playerSide = container.querySelector("#playerSide") as HTMLElement;
-
+  
   // Utility functions
   const userInfo = getCurrentUser();
 
@@ -234,8 +237,9 @@ interface GameState {
   matchWon: number;
   matchLost: number;
   enemyId: number;
+  countdownActive?: boolean; // Add countdown state
+  countdownTime?: number;    // Add countdown time
 }
-
 interface PlayerData {
   userName: string;
   matchId: string;
@@ -286,6 +290,8 @@ interface CompactGameState {
   et: number;   // endTime
   ei: number;   // enemyId
   mi: string;   // matchId
+  ca: number;   // countdownActive (0 or 1)
+  ct: number;   // countdownTime
 }
 function expandGameState(compact: CompactGameState): Partial<GameState> {
   return {
@@ -311,7 +317,9 @@ function expandGameState(compact: CompactGameState): Partial<GameState> {
     startTime: compact.st || Date.now(),
     endTime: compact.et || 0,
     enemyId: compact.ei || 0,
-    matchId: compact.mi || ""
+    matchId: compact.mi || "",
+    countdownActive: compact.ca === 1, // Add countdown expansion
+    countdownTime: compact.ct || 0  
   };
 }
 interface FlowFieldDependencies {
@@ -374,6 +382,8 @@ class FlowField {
       matchWon: 0,
       matchLost: 0,
       enemyId: 0, // Added enemyId to track the opponent
+      countdownActive: false, // Initialize countdown state
+      countdownTime: 0, // Initialize countdown time
     };
 
     this.deps.restartButton.addEventListener("click", async () => {
@@ -400,11 +410,23 @@ class FlowField {
 
   private draw(): void {
     const isDark =
-      document.getElementById("game-screen")?.dataset.theme === "dark";
-
+    document.getElementById("game-screen")?.dataset.theme === "dark";
+    
     // console.log("ballX: ",this.gameState.ballX)
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-
+    if (this.gameState.countdownTime === 0 || 
+        this.gameState.countdownTime === 1 ||
+        this.gameState.countdownTime === 2 ||
+        this.gameState.countdownTime === 3
+    )
+      this.gameState.countdownActive = true;
+    else
+      this.gameState.countdownActive = false;
+    // console.log("Drawing game state: ", this.gameState.countdownTime, this.gameState.countdownActive);
+    if (this.gameState?.countdownActive && (this.gameState?.countdownTime ?? 0) > 0) {
+      this.drawCountdown();
+      return;
+    }
     // Left paddle
     this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
@@ -461,8 +483,46 @@ class FlowField {
     this.ctx.fill();
     this.ctx.globalAlpha = 1;
   }
-
+  private drawCountdown(): void {
+    const isDark = document.getElementById("game-screen")?.dataset.theme === "dark";
+    
+    // Draw semi-transparent overlay
+    // this.ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    // this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+    
+    // Draw countdown text
+    this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
+    this.ctx.font = "bold 120px 'Orbitron', monospace";
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+    
+    const countdownText =
+      this.gameState.countdownActive && this.gameState.countdownTime !== undefined && this.gameState.countdownTime > 0
+        ? this.gameState.countdownTime.toString()
+        : "GO!";
+    
+    // Add text shadow
+    this.ctx.shadowColor = isDark ? "#FFD700" : "#00B894";
+    this.ctx.shadowBlur = 20;
+    
+    this.ctx.fillText(countdownText, this.canvasWidth / 2, this.canvasHeight / 2);
+    
+    // Draw "Game Starting..." text
+    this.ctx.font = "bold 24px 'Orbitron', monospace";
+    this.ctx.fillStyle = isDark ? "#fff" : "#23272f";
+    this.ctx.shadowBlur = 10;
+    this.ctx.fillText("Game Starting...", this.canvasWidth / 2, this.canvasHeight / 2 + 80);
+    
+    // Reset shadow
+    this.ctx.shadowBlur = 0;
+    this.ctx.textAlign = "start";
+    this.ctx.textBaseline = "alphabetic";
+ 
+  }
   private keysFunction(): void {
+    // if (this.gameState.countdownActive) {
+    //   return;
+    // }
     if (this.keys["w"]) {
       this.gameState.keypressd = "w";
     } else if (this.keys["s"]) {
@@ -508,7 +568,6 @@ class FlowField {
         const decoder = new TextDecoder();
         const jsonString = decoder.decode(data);
         const compact: CompactGameState = JSON.parse(jsonString);
-        console.log("Compact Game State: ", compact);
         // Expand compact state to full state
         const expandedState = expandGameState(compact);
         parsedData = { ...this.gameState, ...expandedState };
@@ -516,8 +575,6 @@ class FlowField {
         // Handle regular JSON string (fallback)
         parsedData = JSON.parse(data);
       }
-      if (i++ < 5)
-        console.log("Parsed Game State: ", parsedData);
       this.gameState = parsedData; this.gameState = parsedData;
       if (this.gameState.playerId === 1) {
         this.deps.playerSide.innerText = "YOU ARE ON THE LEFT SIDE";

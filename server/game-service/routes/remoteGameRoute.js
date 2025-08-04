@@ -1,4 +1,9 @@
 function gameLogic(gameState) {
+  // Don't process game logic if countdown is active
+  if (gameState.countdownActive) {
+    return gameState;
+  }
+  
   let step = 8;
   if (
     gameState.keypressd === "w" &&
@@ -77,14 +82,12 @@ function gameLogic(gameState) {
     gameState.ballX = 1000 / 2;
     gameState.ballY = 300;
     gameState.ballSpeed = 5;
-    gameState.hitCount = 0; // Reset hit count when ball resets
+    gameState.hitCount = 0;
   }
   return gameState;
 }
-let i = 0;
 
 function serializeGameState(gameState) {
-  // Convert to compact object with ALL game state properties
   const compact = {
     p: gameState.playerId,
     bx: gameState.ballX,
@@ -108,11 +111,15 @@ function serializeGameState(gameState) {
     st: gameState.startTime,
     et: gameState.endTime,
     ei: gameState.enemyId,
-    mi: gameState.matchId
+    mi: gameState.matchId,
+    ca: gameState.countdownActive, // Add countdown active
+    ct: gameState.countdownTime     // Add countdown time
   };
   return Buffer.from(JSON.stringify(compact));
 }
+
 const rooms = {};
+
 export function remoteGame(connection, req) {
   let roomId;
   const token = req.query.token;
@@ -120,10 +127,8 @@ export function remoteGame(connection, req) {
   let joined = false;
 
   for (const [id] of Object.entries(rooms)) {
-
     if (id === playerRoomdId) {
       if (rooms[id].rateLimited >= 2) {
-        
         rooms[id].players.forEach((player) => {
           player.connection.send("disconnected.");
           player.connection.close();
@@ -136,9 +141,8 @@ export function remoteGame(connection, req) {
           if (rooms[id].player1Timeout) clearTimeout(rooms[id].player1Timeout);
           if (rooms[id].player2Timeout) clearTimeout(rooms[id].player2Timeout);
           rooms[id].gameState.alive = true;
-          rooms[id].gameState.disconnected = true; // reconnnected
+          rooms[id].gameState.disconnected = true;
           rooms[id].rateLimited++;
-          // Reset ball speed and hit count for reconnected player
           player.connection = connection;
           joined = true;
           roomId = id;
@@ -148,8 +152,7 @@ export function remoteGame(connection, req) {
     }
 
     if (rooms[id].players.length < 2 && !joined) {
-      if (playerRoomdId === id)
-      {
+      if (playerRoomdId === id) {
         console.log("user id = ", token);
         console.log("roomId", roomId);
         rooms[id].players.push({ token: token, connection: connection });
@@ -188,13 +191,15 @@ export function remoteGame(connection, req) {
         rightPlayerBallHit: 0,
         startTime: Date.now(),
         endTime: 0,
-        enemyId: 0, // Added enemyId
+        enemyId: 0,
+        countdownActive: false, // Add countdown state
+        countdownTime: 0        // Add countdown time
       },
     };
   }
+
   if (rooms[roomId].players.length === 2) {
-    if (!rooms[roomId].players.every((player) => player.connection.readyState === WebSocket.OPEN))
-    {
+    if (!rooms[roomId].players.every((player) => player.connection.readyState === WebSocket.OPEN)) {
       rooms[roomId].players.forEach((player) => {
         player.connection.send("One or both players are not connected.");
         player.connection.close();
@@ -202,53 +207,55 @@ export function remoteGame(connection, req) {
       delete rooms[roomId];
       return;
     }
+
     const [
       { token: token1, connection: player1 },
       { token: token2, connection: player2 },
     ] = rooms[roomId].players;
+
     console.log(rooms[roomId].players);
     rooms[roomId].gameState.startTime = Date.now();
-    
+
+    // Start countdown when both players are connected
+    startCountdown(roomId, player1, player2);
+
     const handleMessage = (playerId) => (msg) => {
       try {
-        // parse the game stat from the client
         const gameState = JSON.parse(msg);
 
-        // stop the game after it ends
         if (gameState.endGame) {
           delete rooms[roomId];
           player1.close();
           player2.close();
           return;
         }
-        // check if the client reconnected so i will not give him the startUp game stat
-        // if (!rooms[roomId].gameState.disconnected) {
-        //   rooms[roomId].gameState = gameState;
-        // }
+
         const serverGameState = rooms[roomId].gameState;
-        serverGameState.keypressd = gameState.keypressd;
+        
+        // Only process input if countdown is not active
+        if (!serverGameState.countdownActive) {
+          serverGameState.keypressd = gameState.keypressd;
+        }
+        
         serverGameState.playerId = playerId;
         serverGameState.matchId = roomId;
-        // game logic
+
         const updatedState = gameLogic(serverGameState);
-        
-        // check score
+
         if (updatedState.rightPlayerScore === updatedState.rounds) {
           updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
-          //send data to first player
           updatedState.gameEndResult = "Lost";
           updatedState.playerId = 1;
           updatedState.enemyId = token2;
-          
           player1.send(serializeGameState(updatedState));
 
-          //send data to second player
           updatedState.playerId = 2;
           updatedState.enemyId = token1;
           updatedState.gameEndResult = "Won";
           player2.send(serializeGameState(updatedState));
           return;
         }
+
         if (updatedState.leftPlayerScore === updatedState.rounds) {
           updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
           updatedState.playerId = 1;
@@ -262,6 +269,7 @@ export function remoteGame(connection, req) {
           player2.send(serializeGameState(updatedState));
           return;
         }
+
         updatedState.playerId = 1;
         player1.send(serializeGameState(updatedState));
         updatedState.playerId = 2;
@@ -271,16 +279,12 @@ export function remoteGame(connection, req) {
       }
     };
 
-    // socket message event
     player1.on("message", handleMessage(1));
     player2.on("message", handleMessage(2));
 
     player1.on("close", () => {
       if (!rooms[roomId]) return;
-
       rooms[roomId].gameState.alive = false;
-
-      // Store the timeout id on the room object so it can be cleared later
       rooms[roomId].player1Timeout = setTimeout(() => {
         if (rooms[roomId] && !rooms[roomId].gameState.alive) {
           player2.send("player 1 disconnected");
@@ -295,10 +299,7 @@ export function remoteGame(connection, req) {
 
     player2.on("close", () => {
       if (!rooms[roomId]) return;
-
       rooms[roomId].gameState.alive = false;
-      // Store the timeout id on the room object so it can be cleared later
-
       rooms[roomId].player2Timeout = setTimeout(() => {
         if (rooms[roomId] && !rooms[roomId].gameState.alive) {
           player1.send("player 2 disconnected");
@@ -311,4 +312,46 @@ export function remoteGame(connection, req) {
       player2.removeAllListeners();
     });
   }
+}
+
+// Add countdown function
+function startCountdown(roomId, player1, player2) {
+  if (!rooms[roomId]) return;
+  
+  rooms[roomId].gameState.countdownActive = true;
+  rooms[roomId].gameState.countdownTime = 3;
+
+  const countdownInterval = setInterval(() => {
+    if (!rooms[roomId]) {
+      clearInterval(countdownInterval);
+      return;
+    }
+
+    const gameState = rooms[roomId].gameState;
+    
+    if (gameState.countdownTime > 0) {
+      // Send countdown update to both players
+      gameState.playerId = 1;
+      player1.send(serializeGameState(gameState));
+      
+      gameState.playerId = 2;
+      player2.send(serializeGameState(gameState));
+      
+      gameState.countdownTime--;
+    } else {
+      // Countdown finished, start the game
+      gameState.countdownActive = false;
+      gameState.countdownTime = 0;
+      
+      // Send game start signal to both players
+      gameState.playerId = 1;
+      player1.send(serializeGameState(gameState));
+      
+      gameState.playerId = 2;
+      player2.send(serializeGameState(gameState));
+      
+      clearInterval(countdownInterval);
+      console.log(`Game started in room ${roomId}`);
+    }
+  }, 1000); // Update every second
 }
