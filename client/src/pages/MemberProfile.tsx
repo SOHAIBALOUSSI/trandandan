@@ -6,118 +6,313 @@ import { styles } from "@/styles/styles";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { removeFriend } from "@/services/remove-friend";
 import { blockFriend } from "@/services/block-friend";
+import { unblockFriend } from "@/services/unblock-friend";
 import { inviteFriend } from "@/services/invite-friend";
 import { sendFriendRequest } from "@/services/send-friend-request";
+import { cancelFriendRequest } from "@/services/cancel-friend-request";
+import { acceptFriend } from "@/services/accept-friend";
+import { rejectFriend } from "@/services/reject-friend";
 import { getFriends } from "@/services/get-friends";
+import { listPendingRequests } from "@/services/list-pending-requests";
+import { getBlockedUsers } from "@/services/get-blocked-users";
 import { getCurrentUser } from "@/utils/user-store";
+import { MatchHistory } from "@/components/profile/MatchHistory";
+import { PerformanceMetrics } from "@/components/profile/PerformanceMetrics";
+import { SecondaryHeader } from "@/components/common/SecondaryHeader";
+import { Loader } from "@/components/common/Loader";
 
-export function MemberProfile(id: number) {
+async function refreshMemberProfile(userId: number) {
+  const root = document.getElementById("app");
+  if (root) {
+    root.innerHTML =
+      '<div class="text-white text-center py-10">Loading profile...</div>';
+    const profile = await MemberProfile(userId);
+    root.innerHTML = "";
+    if (profile) {
+      root.appendChild(profile);
+    }
+  }
+}
+
+export async function MemberProfile(id: number) {
   const me = getCurrentUser();
-  if (!me) return;
-
   const container = document.createElement("section");
   container.className = styles.pageLayoutDark;
 
-  Promise.all([getUserById(id), getFriends()]).then(([user, friends]) => {
-    if (!user) {
-      container.innerHTML = `
-		<div class="flex flex-col items-center justify-center text-center text-white py-16 px-6 space-y-4">
-		  <i class="fa-solid fa-user-xmark text-5xl text-pong-error"></i>
-		  <h2 class="text-2xl md:text-3xl font-bold text-pong-error">Member Not Found</h2>
-		  <p class="text-sm md:text-base text-pong-dark-primary max-w-md">
-		  	Alas! The player you seek does not dwell in this hall. Perhaps they’ve chosen anonymity, or vanished into the shadows of unranked history.
-		  </p>
-		  <a href="/salon" data-link class="${styles.darkPrimaryBtn}">
-		  	<i class="fa-solid fa-arrow-left"></i> Return to Salon
-		  </a>
-		</div>
+  if (!me) {
+    container.appendChild(Loader({ text: "Preparing your club profile..." }));
+    return container;
+  }
+
+  const [user, friends, pending, blocked] = await Promise.all([
+    getUserById(id),
+    getFriends(),
+    listPendingRequests(),
+    getBlockedUsers(),
+  ]);
+
+  if (!user) {
+    container.innerHTML = `
+        <div class="flex flex-col items-center justify-center text-center text-white py-16 px-6 space-y-4">
+          <i class="fa-solid fa-user-xmark text-5xl text-pong-error"></i>
+          <h2 class="text-2xl md:text-3xl font-bold text-pong-error">Member Not Found</h2>
+          <p class="text-sm md:text-base text-pong-dark-primary max-w-md">
+              Alas! The player you seek does not dwell in this hall. Perhaps they’ve chosen anonymity, or vanished into the shadows of unranked history.
+          </p>
+          <a href="/salon" data-link class="${styles.darkPrimaryBtn}">
+              <i class="fa-solid fa-arrow-left"></i> Return to Salon
+          </a>
+        </div>
       `;
-      return;
-    }
+    return;
+  }
 
-    container.innerHTML = "";
-    container.appendChild(NavBar());
-    const wrapper = document.createElement("div");
-    wrapper.className = "w-full relative";
-    wrapper.appendChild(TopBar());
-    const main = document.createElement("main");
-    main.className = styles.pageContent;
+  container.innerHTML = "";
+  container.appendChild(NavBar());
+  const wrapper = document.createElement("div");
+  wrapper.className = "w-full relative";
+  wrapper.appendChild(TopBar());
 
-    main.appendChild(MemberCard({ user, showUpdateOptions: false }));
+  const main = document.createElement("main");
+  main.className = styles.pageContent;
 
-    const actions = document.createElement("div");
-    actions.className = "flex flex-wrap gap-3 mt-8 justify-center";
+  main.appendChild(
+    SecondaryHeader({
+      title: "Member Profile",
+      subtitle: "Identity, matches & achievements of this club member.",
+    })
+  );
 
-    const isFriend = friends.includes(user.id);
+  const layout = document.createElement("div");
+  layout.className =
+    "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 items-center";
 
-    if (isFriend) {
-      actions.innerHTML = `
+  const left = document.createElement("div");
+  left.className =
+    "w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 flex 2xl:self-start flex-col xl:flex-row 2xl:flex-col items-center justify-center gap-6";
+
+  left.appendChild(MemberCard({ user, showUpdateOptions: false }));
+
+  const actions = document.createElement("div");
+  actions.id = "quick-actions";
+  actions.className = "flex flex-wrap gap-3 mt-4 justify-center";
+
+  const isFriend = friends.includes(user.id);
+  const isPendingSent = pending.sent.includes(user.id);
+  const isPendingReceived = pending.received.includes(user.id);
+  const isBlocked = blocked.includes(user.id);
+
+  if (isBlocked) {
+    actions.innerHTML = `
         <div class="flex flex-wrap gap-3">
-          <button id="chat-btn" class="flex items-center gap-2 bg-pong-accent hover:bg-pong-accent/80 active:bg-pong-accent/70 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pong-accent/60" title="Chat">
-            <i class="fa-solid fa-comments"></i> Chat
-          </button>
-          <button id="invite-btn" class="flex items-center gap-2 bg-pong-highlight hover:bg-yellow-400 active:bg-yellow-300 text-black px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400/60" title="Invite to Match">
-            <i class="fa-solid fa-table-tennis-paddle-ball"></i> Invite to Match
-          </button>
-          <button id="unfriend-btn" class="flex items-center gap-2 bg-pong-dark-accent hover:bg-pong-accent active:bg-pong-accent/80 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pong-accent/40" title="Unfriend">
-            <i class="fa-solid fa-user-minus"></i> Unfriend
-          </button>
-          <button id="block-btn" class="flex items-center gap-2 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-600/40" title="Block">
-            <i class="fa-solid fa-ban"></i> Block
+          <button id="unblock-btn"
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full
+                   bg-pong-accent hover:bg-pong-dark-accent
+                   text-white text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]
+                   focus:outline-none focus:ring-2 focus:ring-pong-accent/60"
+            title="Unblock this member">
+            <i class="fa-solid fa-unlock"></i>
+            <span>Unblock</span>
           </button>
         </div>
       `;
-    } else {
-      actions.innerHTML = `
+  } else if (isFriend) {
+    actions.innerHTML = `
         <div class="flex flex-wrap gap-3">
-          <button id="add-friend-btn" class="flex items-center gap-2 bg-pong-accent hover:bg-pong-accent/80 active:bg-pong-accent/70 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pong-accent/60" title="Add Friend">
-            <i class="fa-solid fa-user-plus"></i> Add Friend
+          <button id="chat-btn" 
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full 
+                   bg-pong-accent hover:bg-pong-dark-accent
+                   text-white text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]
+                   focus:outline-none focus:ring-2 focus:ring-pong-accent/60"
+            title="Open a private chat with this member">
+            <i class="fa-solid fa-comments"></i> 
+            <span>Chat</span>
+          </button>
+
+          <button id="invite-btn" 
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full
+                   bg-pong-highlight hover:bg-yellow-400 active:bg-yellow-300
+                   text-black text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]
+                   focus:outline-none focus:ring-2 focus:ring-yellow-400/60"
+            title="Challenge to a match">
+            <i class="fa-solid fa-table-tennis-paddle-ball"></i> 
+            <span>Invite</span>
+          </button>
+
+          <button id="unfriend-btn"
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full
+                   bg-pong-dark-accent hover:bg-pong-accent active:bg-pong-accent/80
+                   text-white text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]
+                   focus:outline-none focus:ring-2 focus:ring-pong-accent/40"
+            title="Remove this user from your friends">
+            <i class="fa-solid fa-user-minus"></i>
+            <span>Unfriend</span>
+          </button>
+
+          <button id="block-btn"
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full
+                   bg-red-600 hover:bg-red-700 active:bg-red-800
+                   text-white text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]
+                   focus:outline-none focus:ring-2 focus:ring-red-600/40"
+            title="Block this member">
+            <i class="fa-solid fa-ban"></i>
+            <span>Block</span>
           </button>
         </div>
       `;
-    }
+  } else if (isPendingReceived) {
+    actions.innerHTML = `
+        <div class="flex flex-wrap gap-3">
+          <button id="accept-friend-btn"
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full
+                   bg-pong-success hover:bg-green-600
+                   text-white text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]"
+            title="Accept friend request">
+            <i class="fa-solid fa-user-check"></i>
+            <span>Accept</span>
+          </button>
+          <button id="decline-friend-btn"
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full
+                   bg-red-600 hover:bg-red-700
+                   text-white text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]"
+            title="Decline friend request">
+            <i class="fa-solid fa-user-xmark"></i>
+            <span>Decline</span>
+          </button>
+        </div>
+      `;
+  } else if (isPendingSent) {
+    actions.innerHTML = `
+        <div class="flex flex-wrap gap-3">
+          <button id="cancel-friend-btn"
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full
+                   bg-pong-dark-accent hover:bg-pong-accent
+                   text-white text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]"
+            title="Cancel friend request">
+            <i class="fa-solid fa-user-xmark"></i>
+            <span>Cancel Request</span>
+          </button>
+        </div>
+      `;
+  } else {
+    actions.innerHTML = `
+        <div class="flex flex-wrap gap-3">
+          <button id="add-friend-btn" 
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-full
+                   bg-pong-accent hover:bg-pong-dark-accent active:bg-pong-accent/70
+                   text-white text-sm font-semibold shadow-lg
+                   transition-transform transform hover:scale-[1.03] active:scale-[0.97]
+                   focus:outline-none focus:ring-2 focus:ring-pong-accent/60"
+            title="Send a friend request to this member">
+            <i class="fa-solid fa-user-plus"></i> 
+            <span>Add Friend</span>
+          </button>
+        </div>
+      `;
+  }
 
-    main.appendChild(actions);
-    wrapper.appendChild(main);
-    container.appendChild(wrapper);
+  left.appendChild(actions);
 
-    setTimeout(() => {
-      if (isFriend) {
-        const chatBtn = document.getElementById("chat-btn");
-        const blockBtn = document.getElementById("block-btn");
-        const unfriendBtn = document.getElementById("unfriend-btn");
-        const inviteBtn = document.getElementById("invite-btn");
+  const right = document.createElement("div");
+  right.className = "flex-1 flex flex-col gap-8 w-full";
 
-        if (chatBtn) {
-          chatBtn.addEventListener("click", () => {
-            navigateTo(`/lounge/${user.id}`);
-          });
-        }
-        if (blockBtn) {
-          blockBtn.addEventListener("click", () => {
-            blockFriend(user.id);
-          });
-        }
-        if (unfriendBtn) {
-          unfriendBtn.addEventListener("click", () => {
-            removeFriend(user.id);
-          });
-        }
-        if (inviteBtn) {
-          inviteBtn.addEventListener("click", () => {
-            inviteFriend(user.id);
-          });
-        }
-      } else {
-        const addFriendBtn = document.getElementById("add-friend-btn");
-        if (addFriendBtn) {
-          addFriendBtn.addEventListener("click", () => {
-            sendFriendRequest(user.id);
-          });
-        }
+  if (!isBlocked) {
+    right.appendChild(PerformanceMetrics({ user }));
+    right.appendChild(MatchHistory({ user }));
+  } else {
+    const blockedMsg = document.createElement("div");
+    blockedMsg.className =
+      "w-full text-center text-pong-error text-lg font-semibold py-10";
+    blockedMsg.innerHTML =
+      '<i class="fa-solid fa-ban mr-2"></i>This member is blocked. Unblock to view stats and history.';
+    right.appendChild(blockedMsg);
+  }
+
+  layout.appendChild(left);
+  layout.appendChild(right);
+
+  main.appendChild(layout);
+  wrapper.appendChild(main);
+  container.appendChild(wrapper);
+
+  setTimeout(() => {
+    if (isBlocked) {
+      const unblockBtn = document.getElementById("unblock-btn");
+      if (unblockBtn) {
+        unblockBtn.addEventListener("click", async () => {
+          await unblockFriend(user.id);
+          refreshMemberProfile(user.id);
+        });
       }
-    }, 0);
-  });
+    } else if (isFriend) {
+      const chatBtn = document.getElementById("chat-btn");
+      const blockBtn = document.getElementById("block-btn");
+      const unfriendBtn = document.getElementById("unfriend-btn");
+      const inviteBtn = document.getElementById("invite-btn");
+
+      if (chatBtn) {
+        chatBtn.addEventListener("click", () => {
+          navigateTo(`/lounge/${user.id}`);
+        });
+      }
+      if (blockBtn) {
+        blockBtn.addEventListener("click", async () => {
+          await blockFriend(user.id);
+          refreshMemberProfile(user.id);
+        });
+      }
+      if (unfriendBtn) {
+        unfriendBtn.addEventListener("click", async () => {
+          await removeFriend(user.id);
+          refreshMemberProfile(user.id);
+        });
+      }
+      if (inviteBtn) {
+        inviteBtn.addEventListener("click", async () => {
+          await inviteFriend(me.id, user.id);
+        });
+      }
+    } else if (isPendingReceived) {
+      const acceptBtn = document.getElementById("accept-friend-btn");
+      const declineBtn = document.getElementById("decline-friend-btn");
+      if (acceptBtn) {
+        acceptBtn.addEventListener("click", async () => {
+          await acceptFriend(user.id);
+          refreshMemberProfile(user.id);
+        });
+      }
+      if (declineBtn) {
+        declineBtn.addEventListener("click", async () => {
+          await rejectFriend(user.id);
+          refreshMemberProfile(user.id);
+        });
+      }
+    } else if (isPendingSent) {
+      const cancelBtn = document.getElementById("cancel-friend-btn");
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", async () => {
+          await cancelFriendRequest(user.id);
+          refreshMemberProfile(user.id);
+        });
+      }
+    } else {
+      const addFriendBtn = document.getElementById("add-friend-btn");
+      if (addFriendBtn) {
+        addFriendBtn.addEventListener("click", async () => {
+          await sendFriendRequest(user.id);
+          refreshMemberProfile(user.id);
+        });
+      }
+    }
+  }, 0);
 
   return container;
 }
