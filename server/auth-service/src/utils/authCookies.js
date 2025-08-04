@@ -2,7 +2,7 @@ import { serialize, parse} from 'cookie'
 
 const COOKIES_OPTS = {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: 'Lax',
     path: '/'
 }
