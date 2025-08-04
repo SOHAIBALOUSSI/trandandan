@@ -4,8 +4,6 @@ import { UserProfile } from "types/types";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { styles } from "@/styles/styles";
 
-
-
 // let countdownCounter = false;
 export function RemoteGame() {
   setTimeout(() => {
@@ -95,7 +93,7 @@ export function RemoteGame() {
   ) as HTMLElement;
   const exit = container.querySelector("#exit") as HTMLElement;
   const playerSide = container.querySelector("#playerSide") as HTMLElement;
-  
+
   // Utility functions
   const userInfo = getCurrentUser();
 
@@ -179,9 +177,12 @@ export function RemoteGame() {
       // Handle both ArrayBuffer and string data
       if (event.data instanceof ArrayBuffer) {
         flow.updateGameState(event.data);
-      } else if (typeof event.data === 'string') {
+      } else if (typeof event.data === "string") {
         // Handle string messages (like "disconnected.", etc.)
-        if (event.data === "disconnected." || event.data.includes("disconnected")) {
+        if (
+          event.data === "disconnected." ||
+          event.data.includes("disconnected")
+        ) {
           disconnectedResult.style.display = "block";
           return;
         }
@@ -238,7 +239,7 @@ interface GameState {
   matchLost: number;
   enemyId: number;
   countdownActive?: boolean; // Add countdown state
-  countdownTime?: number;    // Add countdown time
+  countdownTime?: number; // Add countdown time
 }
 interface PlayerData {
   userName: string;
@@ -267,47 +268,62 @@ interface LastMatchData {
   matchLost: number;
 }
 interface CompactGameState {
-  p: number;    // playerId
-  bx: number;   // ballX
-  by: number;   // ballY
-  fx: number;   // flagX (0 or 1)
-  fy: number;   // flagY (0 or 1)
-  pl: number;   // paddleLeftY
-  pr: number;   // paddelRightY
-  kp: string;   // keypressd
-  dc: number;   // disconnected (0 or 1)
-  ls: number;   // leftPlayerScore
-  rs: number;   // rightPlayerScore
-  rd: number;   // rounds
-  bs: number;   // ballSpeed
-  hc: number;   // hitCount
-  r: string;    // gameEndResult
-  e: number;    // endGame (0 or 1)
-  al: number;   // alive (0 or 1)
-  lh: number;   // leftPlayerBallHit
-  rh: number;   // rightPlayerBallHit
-  st: number;   // startTime
-  et: number;   // endTime
-  ei: number;   // enemyId
-  mi: string;   // matchId
-  ca: number;   // countdownActive (0 or 1)
-  ct: number;   // countdownTime
+  p: number; // playerId
+  bx: number; // ballX
+  by: number; // ballY
+  fx: number; // flagX (0 or 1)
+  fy: number; // flagY (0 or 1)
+  pl: number; // paddleLeftY
+  pr: number; // paddelRightY
+  kp: string; // keypressd
+  dc: number; // disconnected (0 or 1)
+  ls: number; // leftPlayerScore
+  rs: number; // rightPlayerScore
+  rd: number; // rounds
+  bs: number; // ballSpeed
+  hc: number; // hitCount
+  r: string; // gameEndResult
+  e: number; // endGame (0 or 1)
+  al: number; // alive (0 or 1)
+  lh: number; // leftPlayerBallHit
+  rh: number; // rightPlayerBallHit
+  st: number; // startTime
+  et: number; // endTime
+  ei: number; // enemyId
+  mi: string; // matchId
+  ca: number; // countdownActive (0 or 1)
+  ct: number; // countdownTime
 }
 function expandGameState(compact: CompactGameState): Partial<GameState> {
   return {
     playerId: compact.p || 1,
-    ballX: (compact.bx !== null && compact.bx !== undefined && !isNaN(compact.bx)) ? compact.bx : 500,
-    ballY: (compact.by !== null && compact.by !== undefined && !isNaN(compact.by)) ? compact.by : 300,
+    ballX:
+      compact.bx !== null && compact.bx !== undefined && !isNaN(compact.bx)
+        ? compact.bx
+        : 500,
+    ballY:
+      compact.by !== null && compact.by !== undefined && !isNaN(compact.by)
+        ? compact.by
+        : 300,
     flagX: compact.fx === 1,
     flagY: compact.fy === 1,
-    paddleLeftY: (compact.pl !== null && compact.pl !== undefined && !isNaN(compact.pl)) ? compact.pl : 240,
-    paddelRightY: (compact.pr !== null && compact.pr !== undefined && !isNaN(compact.pr)) ? compact.pr : 240,
+    paddleLeftY:
+      compact.pl !== null && compact.pl !== undefined && !isNaN(compact.pl)
+        ? compact.pl
+        : 240,
+    paddelRightY:
+      compact.pr !== null && compact.pr !== undefined && !isNaN(compact.pr)
+        ? compact.pr
+        : 240,
     keypressd: compact.kp || "",
     disconnected: compact.dc === 1,
     leftPlayerScore: compact.ls || 0,
     rightPlayerScore: compact.rs || 0,
     rounds: compact.rd || 5,
-    ballSpeed: (compact.bs !== null && compact.bs !== undefined && !isNaN(compact.bs)) ? compact.bs : 5,
+    ballSpeed:
+      compact.bs !== null && compact.bs !== undefined && !isNaN(compact.bs)
+        ? compact.bs
+        : 5,
     // hitCount: compact.hc,
     gameEndResult: compact.r || "",
     endGame: compact.e === 1,
@@ -319,7 +335,7 @@ function expandGameState(compact: CompactGameState): Partial<GameState> {
     enemyId: compact.ei || 0,
     matchId: compact.mi || "",
     countdownActive: compact.ca === 1, // Add countdown expansion
-    countdownTime: compact.ct || 0  
+    countdownTime: compact.ct || 0,
   };
 }
 interface FlowFieldDependencies {
@@ -410,20 +426,23 @@ class FlowField {
 
   private draw(): void {
     const isDark =
-    document.getElementById("game-screen")?.dataset.theme === "dark";
-    
+      document.getElementById("game-screen")?.dataset.theme === "dark";
+
     // console.log("ballX: ",this.gameState.ballX)
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    if (this.gameState.countdownTime === 0 || 
-        this.gameState.countdownTime === 1 ||
-        this.gameState.countdownTime === 2 ||
-        this.gameState.countdownTime === 3
+    if (
+      this.gameState.countdownTime === 0 ||
+      this.gameState.countdownTime === 1 ||
+      this.gameState.countdownTime === 2 ||
+      this.gameState.countdownTime === 3
     )
       this.gameState.countdownActive = true;
-    else
-      this.gameState.countdownActive = false;
+    else this.gameState.countdownActive = false;
     // console.log("Drawing game state: ", this.gameState.countdownTime, this.gameState.countdownActive);
-    if (this.gameState?.countdownActive && (this.gameState?.countdownTime ?? 0) > 0) {
+    if (
+      this.gameState?.countdownActive &&
+      (this.gameState?.countdownTime ?? 0) > 0
+    ) {
       this.drawCountdown();
       return;
     }
@@ -484,40 +503,55 @@ class FlowField {
     this.ctx.globalAlpha = 1;
   }
   private drawCountdown(): void {
-    const isDark = document.getElementById("game-screen")?.dataset.theme === "dark";
-    
-    // Draw semi-transparent overlay
-    // this.ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-    // this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-    
+    const isDark =
+      document.getElementById("game-screen")?.dataset.theme === "dark";
+
     // Draw countdown text
     this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
     this.ctx.font = "bold 120px 'Orbitron', monospace";
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
-    
+
     const countdownText =
-      this.gameState.countdownActive && this.gameState.countdownTime !== undefined && this.gameState.countdownTime > 0
+      this.gameState.countdownActive &&
+      this.gameState.countdownTime !== undefined &&
+      this.gameState.countdownTime > 0
         ? this.gameState.countdownTime.toString()
         : "GO!";
-    
+
     // Add text shadow
     this.ctx.shadowColor = isDark ? "#FFD700" : "#00B894";
     this.ctx.shadowBlur = 20;
-    
-    this.ctx.fillText(countdownText, this.canvasWidth / 2, this.canvasHeight / 2);
-    
-    // Draw "Game Starting..." text
+
+    this.ctx.fillText(
+      countdownText,
+      this.canvasWidth / 2,
+      this.canvasHeight / 2
+    );
+
+    // Dynamic subtitle based on scores
     this.ctx.font = "bold 24px 'Orbitron', monospace";
     this.ctx.fillStyle = isDark ? "#fff" : "#23272f";
     this.ctx.shadowBlur = 10;
-    this.ctx.fillText("Game Starting...", this.canvasWidth / 2, this.canvasHeight / 2 + 80);
-    
+
+    let subtitle = "Game Starting...";
+    if (
+      this.gameState.leftPlayerScore > 0 ||
+      this.gameState.rightPlayerScore > 0
+    ) {
+      subtitle = "Next Point Starting...";
+    }
+
+    this.ctx.fillText(
+      subtitle,
+      this.canvasWidth / 2,
+      this.canvasHeight / 2 + 80
+    );
+
     // Reset shadow
     this.ctx.shadowBlur = 0;
     this.ctx.textAlign = "start";
     this.ctx.textBaseline = "alphabetic";
- 
   }
   private keysFunction(): void {
     // if (this.gameState.countdownActive) {
@@ -557,7 +591,7 @@ class FlowField {
         console.error("Error updating user:", error);
       });
   }
-  
+
   public updateGameState(data: string | ArrayBuffer): void {
     try {
       let parsedData: GameState;
@@ -575,7 +609,8 @@ class FlowField {
         // Handle regular JSON string (fallback)
         parsedData = JSON.parse(data);
       }
-      this.gameState = parsedData; this.gameState = parsedData;
+      this.gameState = parsedData;
+      this.gameState = parsedData;
       if (this.gameState.playerId === 1) {
         this.deps.playerSide.innerText = "YOU ARE ON THE LEFT SIDE";
       } else if (this.gameState.playerId === 2) {
@@ -768,7 +803,7 @@ class FlowField {
       this.deps.disconnectedResult.style.display = "block";
       setTimeout(() => {
         navigateTo("/arena");
-      }, 3000)
+      }, 3000);
     }
   }
 

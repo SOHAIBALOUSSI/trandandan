@@ -73,6 +73,7 @@ function gameLogic(gameState) {
   if (gameState.ballY <= 0 || !gameState.flagY)
     (gameState.ballY += gameState.ballSpeed), (gameState.flagY = false);
 
+  // Check for scoring and trigger countdown
   if (gameState.ballX > 1000 || gameState.ballX <= 0) {
     if (gameState.ballX > 1000) gameState.leftPlayerScore += 1;
     if (gameState.ballX <= 0) gameState.rightPlayerScore += 1;
@@ -83,6 +84,13 @@ function gameLogic(gameState) {
     gameState.ballY = 300;
     gameState.ballSpeed = 5;
     gameState.hitCount = 0;
+    
+    // Start countdown after scoring (but not if game is over)
+    if (gameState.leftPlayerScore < gameState.rounds && gameState.rightPlayerScore < gameState.rounds) {
+      gameState.countdownActive = true;
+      gameState.countdownTime = 3;
+      gameState.needsCountdown = true; // Flag to trigger countdown in main handler
+    }
   }
   return gameState;
 }
@@ -193,7 +201,8 @@ export function remoteGame(connection, req) {
         endTime: 0,
         enemyId: 0,
         countdownActive: false, // Add countdown state
-        countdownTime: 0        // Add countdown time
+        countdownTime: 0,       // Add countdown time
+        needsCountdown: false // Add this flag
       },
     };
   }
@@ -241,6 +250,13 @@ export function remoteGame(connection, req) {
         serverGameState.matchId = roomId;
 
         const updatedState = gameLogic(serverGameState);
+        
+        // Check if we need to start a new countdown after scoring
+        if (updatedState.needsCountdown) {
+          updatedState.needsCountdown = false; // Reset the flag
+          startPointCountdown(roomId, player1, player2); // Start countdown for next point
+          return; // Don't send game state yet, countdown will handle it
+        }
 
         if (updatedState.rightPlayerScore === updatedState.rounds) {
           updatedState.endTime = (Date.now() - updatedState.startTime) / 1000;
@@ -261,6 +277,7 @@ export function remoteGame(connection, req) {
           updatedState.playerId = 1;
           updatedState.enemyId = token2;
           updatedState.gameEndResult = "Won";
+
           player1.send(serializeGameState(updatedState));
 
           updatedState.playerId = 2;
@@ -312,6 +329,61 @@ export function remoteGame(connection, req) {
       player2.removeAllListeners();
     });
   }
+}
+// Add countdown function for when someone scores
+function startPointCountdown(roomId, player1, player2) {
+  if (!rooms[roomId]) return;
+  
+  const gameState = rooms[roomId].gameState;
+  gameState.countdownActive = true;
+  gameState.countdownTime = 3;
+
+  console.log(`Starting point countdown for room ${roomId}`);
+
+  const countdownInterval = setInterval(() => {
+    if (!rooms[roomId]) {
+      clearInterval(countdownInterval);
+      return;
+    }
+
+    const currentGameState = rooms[roomId].gameState;
+    
+    console.log(`Point countdown: ${currentGameState.countdownTime}`);
+    
+    if (currentGameState.countdownTime > 0) {
+      // Send countdown update to both players
+      currentGameState.playerId = 1;
+      if (player1.readyState === WebSocket.OPEN) {
+        player1.send(serializeGameState(currentGameState));
+      }
+      
+      currentGameState.playerId = 2;
+      if (player2.readyState === WebSocket.OPEN) {
+        player2.send(serializeGameState(currentGameState));
+      }
+      
+      currentGameState.countdownTime--;
+    } else {
+      // Countdown finished, resume the game
+      currentGameState.countdownActive = false;
+      currentGameState.countdownTime = 0;
+      
+      console.log(`Point resumed in room ${roomId}`);
+      
+      // Send game resume signal to both players
+      currentGameState.playerId = 1;
+      if (player1.readyState === WebSocket.OPEN) {
+        player1.send(serializeGameState(currentGameState));
+      }
+      
+      currentGameState.playerId = 2;
+      if (player2.readyState === WebSocket.OPEN) {
+        player2.send(serializeGameState(currentGameState));
+      }
+      
+      clearInterval(countdownInterval);
+    }
+  }, 1000); // Update every second
 }
 
 // Add countdown function
