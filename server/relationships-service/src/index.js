@@ -8,12 +8,9 @@ import { deleteFriendships } from './models/friendshipDAO.js';
 import { createBlockTable } from './database/createBlockTable.js';
 import blockRoutes from './routes/blockRoutes.js';
 import redisPlugin from './plugins/redis-plugin.js';
-import websocket from "@fastify/websocket";
-
+dotenv.config();
 
 const server = fastify({ logger: true });
-
-dotenv.config();
 
 await server.register(sqlitePlugin);
 await createFriendshipTable(server.db);
@@ -21,7 +18,6 @@ await createBlockTable(server.db);
 
 await server.register(rabbitmqPlugin);
 await server.register(redisPlugin);
-await server.register(websocket);
 
 
 server.rabbit.consumeMessages(async (request) => {

@@ -3,6 +3,10 @@ import { getUserHistory } from "@/services/get-user-history";
 import { fontSizes } from "@/styles/fontSizes";
 import { UserHistory, UserProfile } from "types/types";
 import Chart from "chart.js/auto";
+import { getWelcomeTitle } from "@/components/home/Hero";
+import { getUserTitle } from "@/utils/get-user-title";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
+import { navigateTo } from "@/utils/navigate-to-link";
 
 export async function loadMatchHistory(user: UserProfile) {
   const matchHistoryList = document.getElementById(
@@ -19,7 +23,7 @@ export async function loadMatchHistory(user: UserProfile) {
       {
         id: 1,
         user_name: "Demo",
-        enemy_id: 101,
+        enemy_id: 2,
         user_id: user.id,
         left_player_score: 5,
         right_player_score: 3,
@@ -31,7 +35,7 @@ export async function loadMatchHistory(user: UserProfile) {
       {
         id: 2,
         user_name: "Demo",
-        enemy_id: 102,
+        enemy_id: 3,
         user_id: user.id,
         left_player_score: 4,
         right_player_score: 5,
@@ -43,7 +47,7 @@ export async function loadMatchHistory(user: UserProfile) {
       {
         id: 3,
         user_name: "Demo",
-        enemy_id: 103,
+        enemy_id: 4,
         user_id: user.id,
         left_player_score: 7,
         right_player_score: 1,
@@ -75,15 +79,16 @@ export async function loadMatchHistory(user: UserProfile) {
         : match.left_player_ball_hit;
 
     const enemyUser = await getUserById(match.enemy_id);
+    if (!enemyUser) return;
 
     const listItem = document.createElement("li");
     listItem.className = `
-    group border border-pong-dark-secondary/30 
-    rounded-xl p-5 m-4 shadow-md bg-gradient-to-br 
-    from-pong-dark-highlight/20 to-pong-dark-highlight/5 
-    transition hover:border-pong-accent/50 hover:shadow-lg hover:scale-[1.02]
-    flex flex-col gap-3 cursor-pointer
-  `;
+		group border border-pong-dark-secondary/30 
+		rounded-md p-5 m-4 shadow-md bg-gradient-to-br 
+		from-pong-dark-highlight/20 to-pong-dark-highlight/5 
+		transition hover:border-pong-accent/50 hover:shadow-lg hover:scale-[1.02]
+		flex flex-col gap-3
+  	`;
 
     const header = document.createElement("div");
     header.className = "flex justify-between items-center";
@@ -105,59 +110,110 @@ export async function loadMatchHistory(user: UserProfile) {
     scoreLine.className = "text-xl font-extrabold text-white tracking-tight";
     scoreLine.textContent = `${myScore} - ${enemyScore}`;
 
-    const enemy = document.createElement("p");
-    enemy.className = "text-sm text-gray-300 flex items-center gap-2";
-    enemy.innerHTML = `<i class="fa-solid fa-user text-pong-accent"></i> Opponent: <span class="font-semibold">${
-      enemyUser?.username || "Unknown"
-    }</span>`;
+    const enemy = document.createElement("div");
+    enemy.className =
+      "flex items-center gap-4 mt-2 cursor-pointer group/opp w-fit";
 
-    const hits = document.createElement("div");
-    hits.className = "w-full mt-1";
-    hits.innerHTML = `
-    <div class="text-xs text-gray-400 mb-1">Ball Hits</div>
-    <div class="bg-gray-700 h-2 rounded-full overflow-hidden mb-1">
-      <div class="h-2 bg-pong-success" style="width:${Math.min(
-        (myHits / (myHits + enemyHits)) * 100,
-        100
-      )}%;"></div>
-    </div>
-    <div class="flex justify-between text-xs text-gray-400">
-      <span>You: ${myHits}</span>
-      <span>Opponent: ${enemyHits}</span>
-    </div>
-  `;
+    const enemyAvatar = document.createElement("img");
+    if (enemyUser) enemyAvatar.src = getAvatarUrl(enemyUser);
+    enemyAvatar.alt = enemyUser?.username || "Unknown";
+    enemyAvatar.className = `
+		w-10 h-10 rounded-full object-cover border-2 border-pong-accent/40
+		shadow-sm transition-transform duration-300 group-hover/opp:scale-110
+	`;
 
-    listItem.appendChild(header);
-    listItem.appendChild(scoreLine);
-    listItem.appendChild(enemy);
-    listItem.appendChild(hits);
+    const enemyInfo = document.createElement("div");
+    enemyInfo.className = "flex flex-col";
 
-    listItem.addEventListener("click", () => {
+    const enemyName = document.createElement("span");
+    enemyName.className =
+      "text-sm text-white font-semibold flex items-center gap-2";
+    enemyName.innerHTML = `<i class="fa-solid fa-user text-pong-accent"></i> ${getWelcomeTitle(
+      enemyUser
+    )} ${enemyUser?.username || "Unknown"} (Level ${enemyUser?.level || 0})`;
+
+    const enemyTitle = document.createElement("span");
+    enemyTitle.className = "text-xs text-pong-dark-secondary";
+    enemyTitle.textContent = getUserTitle(enemyUser?.rank || 0);
+
+    enemyInfo.appendChild(enemyName);
+    enemyInfo.appendChild(enemyTitle);
+
+    enemy.appendChild(enemyAvatar);
+    enemy.appendChild(enemyInfo);
+
+    enemy.addEventListener("click", (e) =>
+      navigateTo(`/members/${match.enemy_id}`)
+    );
+
+    const chartButton = document.createElement("button");
+    chartButton.textContent = "View Details";
+    chartButton.className = `
+      mt-2 self-end px-4 py-2 bg-pong-accent hover:bg-pong-dark-accent
+      text-white rounded-lg text-sm font-semibold shadow
+      transition hover:scale-105
+    `;
+
+    chartButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+
       const oldModal = document.getElementById("match-history-modal");
       if (oldModal) oldModal.remove();
 
       const modal = document.createElement("div");
       modal.id = "match-history-modal";
       modal.className =
-        "fixed inset-0 z-50 flex items-center justify-center bg-black/60";
+        "fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm";
 
       modal.innerHTML = `
-        <div class="relative bg-pong-dark-bg rounded-2xl shadow-2xl p-8 max-w-lg w-full flex flex-col items-center">
-          <button id="close-history-modal" class="absolute top-3 right-3 text-2xl text-pong-accent hover:text-pong-error transition" title="Close">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-          <h2 class="text-xl font-bold mb-2 text-white">Match Details</h2>
-          <div class="mb-2 text-white font-semibold">${myScore} - ${enemyScore} vs ${
-        enemyUser?.username || "Unknown"
-      }</div>
-          <div class="mb-4 text-gray-300">${
-            isWin ? "🏆 You Won!" : "❌ You Lost"
-          }</div>
-          <div class="w-full bg-black/40 rounded-xl border border-pong-dark-highlight/30 p-4">
-            <canvas id="chart-${match.id}" class="w-full h-40"></canvas>
-          </div>
-        </div>
-      `;
+  		<div class="relative bg-gradient-to-br from-[#1d1f27]/80 to-[#2c2e36]/80 rounded-2xl shadow-2xl p-8 max-w-2xl w-full mx-4 flex flex-col items-center border border-white/10 backdrop-blur-2xl">
+    		<button id="close-history-modal" class="absolute top-4 right-4 text-2xl text-pong-accent hover:text-pong-error transition transform hover:scale-110" title="Close">
+    		  <i class="fa-solid fa-xmark"></i>
+    		</button>
+
+		    <h2 class="text-2xl font-bold mb-6 text-pong-accent tracking-wide">Match Details</h2>
+
+		    <div class="bg-black/30 rounded-xl px-6 py-4 w-full max-w-md mb-6 flex flex-col items-center shadow-lg border border-white/10">
+      		  <div class="flex items-center gap-6 mb-4">
+                <div class="flex flex-col items-center">
+          		  <img src="${getAvatarUrl(
+                  user
+                )}" class="w-14 h-14 rounded-full border-2 border-pong-accent/60 shadow" />
+          		  <span class="mt-1 text-xs text-gray-300">You</span>
+        		</div>
+        		<span class="text-xl font-bold text-white">vs</span>
+        		<div class="flex flex-col items-center">
+          		  <img src="${getAvatarUrl(
+                  enemyUser
+                )}" class="w-14 h-14 rounded-full border-2 border-pong-accent/60 shadow" />
+          		  <span class="mt-1 text-xs text-gray-300">${
+                  enemyUser?.username || "Opponent"
+                }</span>
+        		</div>
+    		  </div>
+      		  <p class="text-4xl font-extrabold text-white drop-shadow-md mb-2">${myScore} - ${enemyScore}</p>
+      		  <p class="text-white font-semibold text-center">${
+              isWin
+                ? "🏆 You secured the victory!"
+                : "❌ Tough luck, you lost this time."
+            }
+			  </p>
+    		</div>
+
+    		<p class="text-pong-dark-secondary text-center mb-6 max-w-md leading-relaxed">
+    		  Below is the breakdown of <span class="text-white font-medium">ball hits</span>, showing how active each player was throughout the match.
+    		</p>
+
+    		<div class="w-full bg-black/40 rounded-xl border border-white/10 p-5 shadow-lg">
+    		  <canvas id="chart-${match.id}" class="w-full h-44"></canvas>
+    		</div>
+
+    		<p class="mt-5 text-sm text-gray-400 text-center">
+    		  Ball hits reflect the number of times each player successfully hit the ball during the match.
+    		</p>
+  		</div>
+	`;
+
       document.body.appendChild(modal);
 
       modal
@@ -180,7 +236,7 @@ export async function loadMatchHistory(user: UserProfile) {
               {
                 label: "Ball Hits",
                 data: [myHits, enemyHits],
-                backgroundColor: ["#22c55e", "#ef4444"],
+                backgroundColor: ["#C45E37", "#C44537"],
                 borderRadius: 6,
               },
             ],
@@ -213,6 +269,11 @@ export async function loadMatchHistory(user: UserProfile) {
         });
       }, 50);
     });
+
+    listItem.appendChild(header);
+    listItem.appendChild(scoreLine);
+    listItem.appendChild(enemy);
+    listItem.appendChild(chartButton);
 
     matchHistoryList.appendChild(listItem);
   }

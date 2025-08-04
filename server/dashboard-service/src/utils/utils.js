@@ -51,8 +51,9 @@ function sortPlayers(player1, player2) {
 }
 
 export async function displayDashBoard(redis, socket, rabbit) {
-    const players = await getPlayersData(redis, rabbit);
     
-    if (socket.isAuthenticated && socket.readyState === WebSocket.OPEN)
+    if (socket.isAuthenticated && socket.readyState === WebSocket.OPEN) {
+        const players = await getPlayersData(redis, rabbit);
         socket.send(JSON.stringify(players));
+    }
 } 

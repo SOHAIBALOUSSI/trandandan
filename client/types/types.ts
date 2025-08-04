@@ -5,7 +5,7 @@ export type UserProfile = {
   email: string;
   gender: string | null;
   avatar_url: string;
-  status: string;
+  status: "online" | "offline";
   solde: number;
   rank: number;
   level: number;
@@ -72,8 +72,19 @@ export type MessageRead = {
   message_id: number;
 };
 
+// export type GameActivity = {
+//   enemyId: number;
+//   userId: number;
+//   gameEndResult: "WIN" | "LOSE";
+//   leftPlayerScore: number;
+//   rightPlayerScore: number;
+//   playerId: 1 | 2; // 1 for left player, 2 for right player
+// };
+
 export type GameActivity = {
-  enemyId: string;
-  userId: string;
+  leftPlayerId: number;
+  rightPlayerId: number;
   gameEndResult: "WIN" | "LOSE";
+  leftPlayerScore: number;
+  rightPlayerScore: number;
 };

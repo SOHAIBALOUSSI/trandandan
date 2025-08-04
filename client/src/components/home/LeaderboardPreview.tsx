@@ -21,7 +21,7 @@ export function LeaderboardPreview(props: { user: UserProfile }) {
   const { user } = props;
 
   return (
-    <div className="bg-pong-secondary/10 rounded-xl shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto">
+    <div className="bg-pong-secondary/10 rounded-lg shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto border border-pong-dark-secondary/10">
       <h2
         className={`text-pong-dark-primary font-bold mb-8 tracking-tight ${fontSizes.smallTitleFontSize}`}
       >
@@ -35,7 +35,7 @@ export function LeaderboardPreview(props: { user: UserProfile }) {
 
       <div className="flex items-center justify-between mt-8 gap-4">
         <div className="bg-pong-dark-bg/50 rounded-xl px-4 py-3 border border-white/10 text-white/70">
-          <span className="block text-sm">{getTagline(user.rank)}</span>
+          <span className="block text-xs md:text-sm">{getTagline(user.rank)}</span>
         </div>
 
         <a href="/chamber" className={styles.darkPrimaryBtn} data-link>

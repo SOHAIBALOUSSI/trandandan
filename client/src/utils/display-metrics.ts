@@ -72,6 +72,7 @@ export async function displayPerformanceMetrics(user: UserProfile) {
   metricsContainer.innerHTML = "";
 
   let history: UserHistory[] = await getUserHistory(user.id);
+  history.length = 0;
   if (!history || history.length === 0) {
     // metricsContainer.innerHTML = `
     //   <p class="bg-pong-dark-custom border border-pong-highlight/30 rounded-xl text-pong-dark-secondary text-center py-8 ${fontSizes.bodyFontSize} px-8 md:px-24">No performance data available yet. Start playing and defeat your friends to build your stats!</p>`;
@@ -107,9 +108,9 @@ export async function displayPerformanceMetrics(user: UserProfile) {
   const dashOffset = circleCircumference * (1 - wins / totalMatches);
 
   metricsContainer.innerHTML = `
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full animate-fade-in">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 w-full">
 
-      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-2xl shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
+      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-md shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
         <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Win / Loss</h3>
         <div class="relative w-28 h-28">
           <svg class="transform -rotate-90 w-full h-full">
@@ -136,13 +137,13 @@ export async function displayPerformanceMetrics(user: UserProfile) {
         <p class="mt-3 text-sm text-white/70">${wins} Wins • ${losses} Losses</p>
       </div>
 
-      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-2xl shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
+      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-md shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
         <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Avg Match Duration</h3>
-        <div class="text-5xl font-extrabold text-pong-dark-primary drop-shadow-lg">${avgDuration}m</div>
+        <div class="text-3xl md:text-5xl font-extrabold text-pong-dark-primary drop-shadow-lg">${avgDuration}m</div>
         <p class="mt-2 text-gray-300 text-sm">Per Match</p>
       </div>
 
-      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-2xl shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
+      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-md shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
         <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Points Scored vs Conceded</h3>
         <div class="w-full space-y-4">
           <div>
@@ -167,7 +168,7 @@ export async function displayPerformanceMetrics(user: UserProfile) {
         </div>
       </div>
 
-      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-2xl shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02] md:col-span-3">
+      <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-md shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02] lg:col-span-3">
         <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Last 5 Matches</h3>
         <canvas id="mini-bar-chart" class="w-full h-40"></canvas>
       </div>

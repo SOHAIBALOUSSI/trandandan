@@ -130,7 +130,7 @@ export function MemberCard(props: {
   }, 0);
 
   return (
-    <div className="relative flex flex-col gap-6 p-6 md:p-8 bg-pong-dark-custom rounded-3xl w-full max-w-2xl mx-auto border border-pong-dark-highlight/30 shadow-lg backdrop-blur-xl">
+    <div className="relative flex flex-col gap-6 p-6 md:p-8 bg-pong-dark-custom rounded-2xl w-full max-w-2xl mx-auto border border-pong-dark-highlight/30 shadow-lg backdrop-blur-xl">
       <h2 className="text-center text-2xl md:text-3xl font-extrabold text-pong-accent tracking-tight">
         BHV Member Card
       </h2>
@@ -159,14 +159,6 @@ export function MemberCard(props: {
               <br className="hidden" />
             )}
           </div>
-
-          {/* <div className="border border-pong-accent/40 user-badge mt-2 w-16 h-16 relative overflow-hidden	">
-            <img
-              src={showUserBadge(user.rank)}
-              alt={`${user.username}'s badge`}
-              className="w-full h-full object-cover drop-shadow-lg"
-            />
-          </div> */}
         </div>
 
         <div className="flex flex-col gap-3 flex-1 w-full">

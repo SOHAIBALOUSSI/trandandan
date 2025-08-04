@@ -9,7 +9,7 @@ function Card(props: {
 }) {
   return (
     <div
-      className={`${props.bgColor} rounded-xl shadow-md px-4 py-2 flex flex-col items-center transform hover:scale-[1.02] transition-all duration-300`}
+      className={`${props.bgColor} rounded-lg shadow-md px-4 py-2 flex flex-col items-center transform hover:scale-[1.02] transition-all duration-300`}
     >
       <span
         className={`${props.textColor} ${fontSizes.bodyFontSize} font-bold`}

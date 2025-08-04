@@ -1,18 +1,23 @@
+import { getWelcomeTitle } from "@/components/home/Hero";
 import { getFriends } from "@/services/get-friends";
 import { getUserById } from "@/services/get-user-by-id";
 import { removeFriend } from "@/services/remove-friend";
 import { styles } from "@/styles/styles";
 import { getAvatarUrl } from "@/utils/get-avatar-url";
+import { getUserTitle } from "@/utils/get-user-title";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { UserProfile } from "types/types";
+import { hydrateAllMembers } from "./hydrate-all-members";
+import { fontSizes } from "@/styles/fontSizes";
 
-export async function hydrateFriends() {
+export async function hydrateFriends(me: UserProfile) {
   const list = document.getElementById("friends-list") as HTMLUListElement;
   if (!list) return;
 
   const friends = await getFriends();
 
   if (!friends.length) {
-    list.innerHTML = `<li class="text-pong-dark-secondary text-center">No friends found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">No friends found.</li>`;
     return;
   }
 
@@ -23,36 +28,43 @@ export async function hydrateFriends() {
     if (!user) return;
 
     const li = document.createElement("li");
-    li.className = `
-        flex items-center justify-between gap-4 p-4 mb-3 
-        bg-pong-dark-highlight/5 rounded-xl border border-pong-dark-highlight/30
-        shadow-md hover:shadow-lg transition-all duration-300
-        cursor-default
-      `;
+    li.className = styles.friendsListItemStyle;
+
+    const left = document.createElement("div");
+    left.className = "flex items-center gap-4 cursor-pointer group";
+    left.onclick = () => navigateTo(`/members/${user.id}`);
 
     const avatar = document.createElement("img");
     avatar.src = getAvatarUrl(user);
     avatar.alt = `${user.username}'s avatar`;
-    avatar.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
+    avatar.className = styles.friendsAvatarStyle;
+
+    const nameWrapper = document.createElement("div");
+    nameWrapper.className = "flex flex-col";
 
     const name = document.createElement("span");
-    name.className = "text-lg font-semibold text-white normal-case";
-    name.textContent = user.username;
+    name.className = `${fontSizes.bodyFontSize} font-semibold text-white normal-case group-hover:underline`;
+    name.textContent = `${getWelcomeTitle(user)} ${user.username}`;
 
-    const left = document.createElement("div");
-    left.className = "flex items-center gap-4 cursor-pointer";
-    left.onclick = () => {
-      navigateTo(`/members/${user.id}`);
-    };
+    const subtitle = document.createElement("span");
+    subtitle.className = "text-xs md:text-sm text-pong-dark-secondary";
+    subtitle.textContent = getUserTitle(user.rank);
+
+    nameWrapper.appendChild(name);
+    nameWrapper.appendChild(subtitle);
+
     left.appendChild(avatar);
-    left.appendChild(name);
+    left.appendChild(nameWrapper);
 
     const unfriendBtn = document.createElement("button");
-    unfriendBtn.className = styles.darkPrimaryBtn;
-    unfriendBtn.innerHTML = `<i class="fa-solid fa-user-minus"></i>`;
+    unfriendBtn.className =
+      "p-2 rounded-full hover:bg-pong-dark-highlight/20 transition-all duration-200 text-pong-dark-primary hover:text-pong-accent";
+    unfriendBtn.innerHTML = `<i class="fa-solid fa-user-minus text-base md:text-lg"></i>`;
     unfriendBtn.onclick = async () => {
       unfriendBtn.disabled = true;
       await removeFriend(user.id);
+      await hydrateFriends(me);
+      await hydrateAllMembers(me);
     };
 
     li.appendChild(left);

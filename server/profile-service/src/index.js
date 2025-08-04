@@ -8,7 +8,7 @@ import { addProfile, deleteProfile, getProfileById, updateProfileEmailById, upda
 import redisPlugin from './plugins/redis-plugin.js';
 import multipart from '@fastify/multipart'
 import { downloadAvatarUrl } from './utils/utils.js';
-
+import websocket from "@fastify/websocket";
 
 const server = fastify({ logger: true });
 await server.register(multipart, {
@@ -22,6 +22,7 @@ dotenv.config();
 
 await server.register(sqlitePlugin);
 await server.register(rabbitmqPlugin);
+await server.register(websocket);
 
 await createProfileTable(server.db);
 

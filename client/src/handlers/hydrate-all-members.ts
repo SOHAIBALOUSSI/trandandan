@@ -6,6 +6,9 @@ import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { getFriends } from "@/services/get-friends";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { cancelFriendRequest } from "@/services/cancel-friend-request";
+import { getWelcomeTitle } from "@/components/home/Hero";
+import { getUserTitle } from "@/utils/get-user-title";
+import { fontSizes } from "@/styles/fontSizes";
 
 export async function hydrateAllMembers(currentUser: UserProfile) {
   const list = document.getElementById("all-members-list") as HTMLUListElement;
@@ -15,7 +18,7 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
   const friends = await getFriends();
 
   if (!users.length || users.length === 1) {
-    list.innerHTML = `<li class="text-pong-dark-secondary text-center">No members found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">No members found.</li>`;
     return;
   }
 
@@ -24,35 +27,39 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
   users.forEach((user: UserProfile) => {
     if (user.id !== currentUser.id && !friends.includes(user.id)) {
       const li = document.createElement("li");
-      li.className = `
-        flex items-center justify-between gap-4 p-4 mb-3 
-        bg-pong-dark-highlight/5 rounded-xl border border-pong-dark-highlight/30
-        shadow-md hover:shadow-lg transition-all duration-300
-        cursor-default
-      `;
+      li.className = styles.friendsListItemStyle;
 
       const left = document.createElement("div");
-      left.className = "flex items-center gap-4 cursor-pointer";
+      left.className = "flex items-center gap-4 cursor-pointer group";
       left.onclick = () => navigateTo(`/members/${user.id}`);
 
       const avatar = document.createElement("img");
       avatar.src = getAvatarUrl(user);
       avatar.alt = `${user.username}'s avatar`;
-      avatar.className =
-        "w-12 h-12 rounded-full object-cover ring-2 ring-pong-accent/40";
+      avatar.className = styles.friendsAvatarStyle;
+
+      const nameWrapper = document.createElement("div");
+      nameWrapper.className = "flex flex-col";
 
       const name = document.createElement("span");
-      name.className =
-        "text-lg font-semibold text-white normal-case hover:underline";
-      name.textContent = user.username;
+      name.className = `${fontSizes.bodyFontSize} font-semibold text-white normal-case group-hover:underline`;
+      name.textContent = `${getWelcomeTitle(user)} ${user.username}`;
+
+      const subtitle = document.createElement("span");
+      subtitle.className = "text-xs md:text-sm text-pong-dark-secondary";
+      subtitle.textContent = getUserTitle(user.rank);
+
+      nameWrapper.appendChild(name);
+      nameWrapper.appendChild(subtitle);
 
       left.appendChild(avatar);
-      left.appendChild(name);
+      left.appendChild(nameWrapper);
 
       const addBtn = document.createElement("button");
-      addBtn.className = styles.darkPrimaryBtn;
+      addBtn.className =
+        "p-2 rounded-full hover:bg-pong-dark-highlight/20 transition-all duration-200 text-pong-dark-primary hover:text-pong-accent";
       addBtn.setAttribute("aria-label", "Send friend request");
-      addBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i>`;
+      addBtn.innerHTML = `<i class="fa-solid fa-user-plus text-base md:text-lg"></i>`;
 
       let requestSent = false;
 
@@ -63,16 +70,16 @@ export async function hydrateAllMembers(currentUser: UserProfile) {
         if (!requestSent) {
           await sendFriendRequest(user.id);
           requestSent = true;
-          addBtn.innerHTML = `<i class="fa-solid fa-circle-xmark"></i>`;
+          addBtn.innerHTML = `<i class="fa-solid fa-circle-xmark text-base md:text-lg"></i>`;
           addBtn.className =
-            styles.darkPrimaryBtn +
-            " bg-transparent border border-pong-dark-primary/40 hover:bg-pong-dark-highlight/20";
+            "p-2 rounded-full hover:bg-red-500/10 text-red-500 transition-all duration-200";
           addBtn.setAttribute("aria-label", "Cancel friend request");
         } else {
           await cancelFriendRequest(user.id);
           requestSent = false;
-          addBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i>`;
-          addBtn.className = styles.darkPrimaryBtn;
+          addBtn.innerHTML = `<i class="fa-solid fa-user-plus text-base md:text-lg"></i>`;
+          addBtn.className =
+            "p-2 rounded-full hover:bg-pong-dark-highlight/20 transition-all duration-200 text-pong-dark-primary hover:text-pong-accent";
           addBtn.setAttribute("aria-label", "Send friend request");
         }
 
