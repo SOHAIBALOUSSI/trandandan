@@ -4,7 +4,8 @@ import {
     deleteFriend,
     getFriendsByUserId,
     getPendingRequestsByUserId,
-    deleteFriendships
+    deleteFriendships,
+    getSentRequestsByUserId
   } from '../models/friendshipDAO.js';
 import { createResponse } from '../utils/utils.js';
   
@@ -143,12 +144,12 @@ export async function listRequests(request, reply) {
   try {
       const userId = request.user.id;
 
-      const requests = await getPendingRequestsByUserId(this.db, userId);
+      const pendingRequests = await getPendingRequestsByUserId(this.db, userId);
+      const sentRequests = await getSentRequestsByUserId(this.db, userId);
 
-      return reply.code(200).send(createResponse(200, 'REQUESTS_LISTED', { requests: requests }));
+      return reply.code(200).send(createResponse(200, 'REQUESTS_LISTED', { pendingRequests: pendingRequests, sentRequests: sentRequests }));
     } catch (error) {
       console.log(error);
       return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
     }
 }
-
