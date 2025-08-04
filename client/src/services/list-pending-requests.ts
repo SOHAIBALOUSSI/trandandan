@@ -1,17 +1,20 @@
-export async function listPendingRequests(): Promise<number[]> {
+export async function listPendingRequests(): Promise<{ received: number[]; sent: number[] }> {
   try {
     const res = await fetch("/friends/requests", {
       credentials: "include",
     });
 
-    if (!res.ok) return [];
+    if (!res.ok) return { received: [], sent: [] };
 
     const data = await res.json();
-    const requesterIds = data.data.requests.map(
+    const received = data.data.pendingRequests.map(
       (r: { requester_id: number }) => r.requester_id
     );
-    return requesterIds;
+    const sent = data.data.sentRequests.map(
+      (r: { addressee_id: number }) => r.addressee_id
+    );
+    return { received, sent };
   } catch {
-    return [];
+    return { received: [], sent: [] };
   }
 }

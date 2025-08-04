@@ -18,7 +18,7 @@ export async function hydratePendingRequests(me: UserProfile) {
   ) as HTMLUListElement;
   if (!list) return;
 
-  const pending = await listPendingRequests();
+  const pending = (await listPendingRequests()).received;
 
   if (!pending.length) {
     list.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">No pending requests found.</li>`;
