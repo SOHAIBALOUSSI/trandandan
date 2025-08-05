@@ -121,6 +121,12 @@ fastify.register(async function (fastify) {
      recentAtivity(connection, req, fastify.db);
   });
 });
+import playAgain from "./routes/playAgain.js";
+fastify.register(async function (fastify) {
+  fastify.post("/game/restart-match", (req, reply) => {
+    return playAgain(req, reply);
+  });
+});
 fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {
   if (err) {
     console.error(err);
