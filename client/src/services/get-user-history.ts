@@ -5,6 +5,7 @@ export async function getUserHistory(userId: number): Promise<UserHistory[]> {
     const response = await fetch("/game/user-history", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+	  credentials: "include",
       body: JSON.stringify({ userId }),
     });
 

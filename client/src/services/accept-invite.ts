@@ -6,6 +6,7 @@ export async function acceptInvite(roomId: string, senderId?: number, receiverId
     const res = await fetch("/game/accept", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+	  credentials: "include",
       body: JSON.stringify({ 
         roomId, 
         senderId: senderId || currentUser?.id, 

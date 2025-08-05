@@ -11,8 +11,8 @@ const playAgain = async (req, reply) => {
     await rabbitMQ.connect();
     const message = {
       type: "PLAY_AGAIN",
-      sender_id: senderId,
-      recipient_id: receiverId,
+      sender_id: receiverId,
+      recipient_id: senderId,
       roomId,
     };
     await rabbitMQ.produceMessage(message, "notifications.game.playAgain");

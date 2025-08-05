@@ -49,7 +49,8 @@ export type Notification = {
     | "FRIEND_REQUEST_REJECTED"
     | "MESSAGE_RECEIVED"
     | "INVITE_SENT"
-    | "INVITE_ACCEPTED";
+    | "INVITE_ACCEPTED"
+    | "PLAY_AGAIN";
   recipient_id?: number;
   sender_id?: number;
   notifications_count?: number;

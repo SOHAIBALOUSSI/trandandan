@@ -117,6 +117,33 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
       }, 2000);
       break;
 
+    case "PLAY_AGAIN":
+      console.log("Play again request received:", notif);
+      displayToast("You have a new play again request.", "success");
+      setTimeout(() => {
+        console.log("Play again request received:", notif);
+        showInviteNotification(
+          sender?.username || "Unknown",
+          async () => {
+            const roomId = await getRoomId(notif.sender_id || 0);
+            if (roomId) {
+              await acceptInvite(
+                roomId,
+                notif.sender_id || 0,
+                notif.recipient_id || 0
+              );
+              markNotificationsAsRead([notif.notification_id]);
+              navigateTo(`/remote?roomId=${roomId}`);
+            }
+          },
+          () => {
+            markNotificationsAsRead([notif.notification_id]);
+            displayToast("Invite declined.", "error");
+          }
+        );
+      }, 0);
+      break;
+
     default:
       label = `
         <div class="flex items-center gap-2">
@@ -197,6 +224,8 @@ export function startNotificationListener() {
   ws.onmessage = async (event: MessageEvent) => {
     try {
       const notif = JSON.parse(event.data);
+
+      console.log("Notification received:", notif);
 
       if (
         typeof notif.notifications_count === "number" &&
@@ -282,10 +311,34 @@ export function startNotificationListener() {
         return;
       }
 
-      if (notif.notification_id && !seenIds.has(notif.notification_id)) {
-        unseenCount++;
-        updateCounter();
+      if (notif.type === "PLAY_AGAIN") {
+        console.log("Play again request received:", notif);
+        displayToast("You have a new play again request.", "success");
+        setTimeout(() => {
+          console.log("Play again request received:", notif);
+          showInviteNotification(
+            notif.sender_id ? notif.sender_id.toString() : "Unknown",
+            async () => {
+              const roomId = await getRoomId(notif.sender_id || 0);
+              if (roomId) {
+                await acceptInvite(
+                  roomId,
+                  notif.sender_id || 0,
+                  notif.recipient_id || 0
+                );
+                markNotificationsAsRead([notif.notification_id]);
+                navigateTo(`/remote?roomId=${roomId}`);
+              }
+            },
+            () => {
+              markNotificationsAsRead([notif.notification_id]);
+              displayToast("Invite declined.", "error");
+            }
+          );
+        }, 0);
+        return;
       }
+
       const notifList = document.getElementById("notif-list");
       if (notifList) {
         notifList.prepend(await renderNotification(notif));

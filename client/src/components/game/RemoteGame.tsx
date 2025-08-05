@@ -100,9 +100,8 @@ export function RemoteGame() {
   const getRoomIdByUserId = async (userId: number) => {
     return fetch("/game/getRoomId", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ userId }), // send { userId: someNumber }
     })
       .then((response) => {
@@ -405,9 +404,8 @@ class FlowField {
         try {
           await fetch("/game/restart-match", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({
               roomId: this.gameState.matchId,
               senderId: this.gameState.playerId,
@@ -427,6 +425,7 @@ class FlowField {
   private sendPlayerData(playerData: PlayerData): void {
     fetch("/game/storePlayerData", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
