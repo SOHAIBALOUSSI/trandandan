@@ -505,6 +505,7 @@ class FlowField {
   private drawCountdown(): void {
     const isDark =
       document.getElementById("game-screen")?.dataset.theme === "dark";
+    this.drawGameElements(isDark);
 
     // Draw countdown text
     this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
@@ -552,6 +553,31 @@ class FlowField {
     this.ctx.shadowBlur = 0;
     this.ctx.textAlign = "start";
     this.ctx.textBaseline = "alphabetic";
+  }
+  private drawGameElements(isDark: boolean): void {
+    // Left paddle
+    this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
+    this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.strokeRect(
+      10,
+      this.gameState.paddleLeftY,
+      this.width,
+      this.height
+    );
+
+    // Right paddle
+    this.ctx.fillRect(
+      980,
+      this.gameState.paddelRightY,
+      this.width,
+      this.height
+    );
+    this.ctx.strokeRect(
+      980,
+      this.gameState.paddelRightY,
+      this.width,
+      this.height
+    );
   }
   private keysFunction(): void {
     // if (this.gameState.countdownActive) {
