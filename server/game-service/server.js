@@ -5,19 +5,17 @@ import websocket from "@fastify/websocket";
 import redisPlugin from "./tools/redis.js";
 import { verifyToken, verifyWSToken } from "./tools/authMiddleware.js";
 import sqlitePlugin, { createGamesTable } from "./tools/sqlite-plugin.js";
+import { pollForNewMatches } from "./routes/recentActivity.js"; // Import the polling function
 const fastify = Fastify();
 
 await fastify.register(redisPlugin);
 await fastify.register(sqlitePlugin);
 await createGamesTable(fastify.db);
-
-// fastify.register(cors, {
-//   origin: "*", // Allow all origins
-//   methods: ["GET", "POST", "DELETE"], // Allow specific HTTP methods
-//   allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
-// });
-
+setInterval(() => {
+  pollForNewMatches(fastify.db);
+}, 2000);
 fastify.register(websocket);
+
 
 // local games
 import { localGame } from "./routes/localGameRoute.js";
@@ -26,8 +24,6 @@ fastify.register(async function (fastify) {
     localGame(connection)
   });
 });
-
-
 
 // remote games route
 import { remoteGame } from "./routes/remoteGameRoute.js";

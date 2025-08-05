@@ -37,7 +37,6 @@ export default async function savePlayerData(req, reply, db) {
       data.matchWon,
       data.matchLost,
     ];
-
     await new Promise((resolve, reject) => {
       db.run(insertQuery, values, function (err) {
         if (err) {

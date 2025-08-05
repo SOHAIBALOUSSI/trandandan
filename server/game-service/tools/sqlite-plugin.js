@@ -7,14 +7,12 @@ async function sqlitePlugin(fastify, options) {
     filename: "/app/db/game.db.sqlite",
     driver: sqlite3.Database,
   });
-  console.log("DEEEBEE : ", db);
   fastify.decorate("db", db);
 }
 
 export default fp(sqlitePlugin);
 
 export async function createGamesTable(db) {
-	console.log("Appah");
   try {
     await db.exec(
       `CREATE TABLE IF NOT EXISTS games (
