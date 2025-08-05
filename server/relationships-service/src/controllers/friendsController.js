@@ -95,7 +95,15 @@ export async function rejectRequest(request, reply) {
         let isValid = await deleteFriendships(this.db, addresseeId);
         if (!isValid)
           return reply.code(400).send(createResponse(400, 'FRIEND_REQUEST_INVALID'));
-
+        
+        this.rabbit.produceMessage(
+          { 
+            type: 'FRIEND_REQUEST_CANCELED',
+            sender_id: addresseeId, 
+            recipient_id: requesterId 
+          },
+          'notifications.friend_request.canceled'
+        );
         return reply.code(200).send(createResponse(200, 'FRIEND_REQUEST_REJECTED'));
     } catch (error) {
       console.log(error);

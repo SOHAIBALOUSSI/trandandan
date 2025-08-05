@@ -26,6 +26,8 @@ import { getUserProfile } from "@/services/get-user-profile";
 import { startNotificationListener } from "@/services/notifications-service";
 import { stopDashboardListener } from "@/services/dashboard-service";
 import { stopChatListener } from "@/services/chat-service";
+import { getCurrentUser } from "@/utils/user-store";
+import { navigateTo } from "@/utils/navigate-to-link";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
@@ -137,7 +139,12 @@ export async function router(): Promise<void> {
     const chatView = await Chat(chatRoom);
     app.appendChild(chatView);
   } else if (path === "member-profile" && memberId) {
-    const memberProfileElem = MemberProfile(memberId);
+    const currentUser = getCurrentUser();
+    if (currentUser && currentUser.id === memberId) {
+      navigateTo("/my_profile");
+      return;
+    }
+    const memberProfileElem = await MemberProfile(memberId);
     memberProfileElem && app.appendChild(memberProfileElem);
   } else {
     app.appendChild(render());
