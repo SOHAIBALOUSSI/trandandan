@@ -173,7 +173,7 @@ export function Tournaments() {
   });
 
   function init() {
-    socketLocal = new WebSocket("ws://localhost:5000/ws");
+    socketLocal = new WebSocket("ws://localhost:9090/game/ws");
     const keys: { [key: string]: boolean } = {};
 
     window.addEventListener("keydown", (event: KeyboardEvent) => {
@@ -359,7 +359,7 @@ class FlowFieldLocal {
 
     // Draw middle separator line (dashed)
     this.ctx.save();
-    this.ctx.strokeStyle = isDark ? "#FFD700" : "#00B894";
+    this.ctx.strokeStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.lineWidth = 2;
     this.ctx.setLineDash([18, 18]);
     this.ctx.beginPath();
@@ -428,13 +428,13 @@ class FlowFieldLocal {
     // --- Display usernames in corners ---
     if (this.deps.Players && this.deps.Players.length >= 2) {
       this.ctx.save();
-      this.ctx.font = "bold 22px Arial";
-      this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
+      this.ctx.font = "bold 22px Orbitron, sans-serif";
+      this.ctx.fillStyle = isDark ? "#FFF" : "#000";
       this.ctx.textAlign = "left";
-      this.ctx.fillText(this.deps.Players[0], 20, 40); // Top-left corner for left player
+      this.ctx.fillText(this.deps.Players[0], 20, 40);
 
       this.ctx.textAlign = "right";
-      this.ctx.fillText(this.deps.Players[1], this.canvasWidth - 20, 40); // Top-right corner for right player
+      this.ctx.fillText(this.deps.Players[1], this.canvasWidth - 20, 40);
       this.ctx.restore();
     }
   }
