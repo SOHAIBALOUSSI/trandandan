@@ -243,6 +243,18 @@ class FlowFieldLocal {
     // console.log("ballX: ",this.gameState.ballX)
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
+    // Draw middle separator line (dashed)
+    this.ctx.save();
+    this.ctx.strokeStyle = isDark ? "#00B894" : "#FFD700";
+    this.ctx.lineWidth = 2;
+    this.ctx.setLineDash([18, 18]);
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.canvasWidth / 2, 0);
+    this.ctx.lineTo(this.canvasWidth / 2, this.canvasHeight);
+    this.ctx.stroke();
+    this.ctx.setLineDash([]);
+    this.ctx.restore();
+
     // Left paddle
     this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
@@ -298,6 +310,16 @@ class FlowFieldLocal {
     this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
     this.ctx.fill();
     this.ctx.globalAlpha = 1;
+
+    this.ctx.save();
+    this.ctx.font = "bold 22px Orbitron, sans-serif";
+    this.ctx.fillStyle = isDark ? "#FFF" : "#000";
+    this.ctx.textAlign = "left";
+    this.ctx.fillText("Left Player", 20, 40);
+
+    this.ctx.textAlign = "right";
+    this.ctx.fillText("Right Player", this.canvasWidth - 20, 40);
+    this.ctx.restore();
   }
 
   private keysFunction(): void {

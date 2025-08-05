@@ -384,7 +384,6 @@ export const styles = {
   	w-full min-h-screen
   	overflow-hidden
   	relative
-	transition-all duration-300 ease-in-out
   `,
   gameExitBtn: `
   	fixed top-5 left-5

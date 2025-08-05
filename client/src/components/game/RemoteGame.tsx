@@ -426,6 +426,19 @@ class FlowField {
 
     // console.log("ballX: ",this.gameState.ballX)
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+    // Draw middle separator line (dashed)
+    this.ctx.save();
+    this.ctx.strokeStyle = isDark ? "#00B894" : "#FFD700";
+    this.ctx.lineWidth = 2;
+    this.ctx.setLineDash([18, 18]);
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.canvasWidth / 2, 0);
+    this.ctx.lineTo(this.canvasWidth / 2, this.canvasHeight);
+    this.ctx.stroke();
+    this.ctx.setLineDash([]);
+    this.ctx.restore();
+
     if (
       this.gameState.countdownTime === 0 ||
       this.gameState.countdownTime === 1 ||
@@ -527,7 +540,7 @@ class FlowField {
     );
 
     // Dynamic subtitle based on scores
-    this.ctx.font = "bold 24px 'Orbitron', monospace";
+    this.ctx.font = "bold 22px Orbitron, sans-serif";
     this.ctx.fillStyle = isDark ? "#fff" : "#23272f";
     this.ctx.shadowBlur = 10;
 

@@ -29,7 +29,7 @@ export function QuickStatsCards(props: { user: UserProfile }) {
   const { user } = props;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-5xl mx-auto">
+    <div className="grid grid-cols-3 gap-2 md:gap-4 w-full max-w-5xl mx-auto">
       <Card
         value={user.matches_played}
         label="Matches"

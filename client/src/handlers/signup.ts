@@ -126,7 +126,10 @@ export function handleSignUp() {
         }, feedbackDelay);
       } else if (response.status === 429) {
         setTimeout(() => {
-          displayToast("Rate limit error", "error");
+          displayToast(
+            "Easy, champ! Let’s give it a second to catch up.",
+            "error"
+          );
         }, feedbackDelay);
       } else {
         setTimeout(() => {

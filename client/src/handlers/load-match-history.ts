@@ -19,6 +19,11 @@ export async function loadMatchHistory(user: UserProfile) {
   let history: UserHistory[] = await getUserHistory(user.id);
   history.length = 0;
   if (!history || history.length === 0) {
+    const li = document.createElement("li");
+    li.className = "text-center text-pong-dark-secondary p-4";
+    li.textContent = "No match history available.";
+    matchHistoryList.appendChild(li);
+    return;
     history = [
       {
         id: 1,

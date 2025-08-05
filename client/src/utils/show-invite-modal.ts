@@ -4,6 +4,7 @@ import { inviteFriend } from "@/services/invite-friend";
 import { UserProfile } from "types/types";
 import { getAvatarUrl } from "./get-avatar-url";
 import { getWelcomeTitle } from "@/components/home/Hero";
+import { navigateTo } from "./navigate-to-link";
 
 export async function showInviteModal(me: UserProfile) {
   const oldModal = document.getElementById("remote-invite-modal");
@@ -89,13 +90,16 @@ export async function showInviteModal(me: UserProfile) {
         border border-pong-accent/10
         transition-all duration-300 hover:-translate-y-0.5
       ">
-        <div class="flex items-center gap-4">
+        <div class="player-invite-profile flex items-center gap-4 cursor-pointer group" data-id="${
+          profile.id
+        }">
           <div class="relative">
             <img src="${getAvatarUrl(profile)}"
                 alt="${profile.username}"
                 class="
                   w-12 h-12 rounded-full object-cover
                   border-2 border-pong-accent/50 shadow-sm
+				  group-hover:scale-110 transition-transform duration-300
                 " />
           </div>
           <div class="flex flex-col">
@@ -130,6 +134,17 @@ export async function showInviteModal(me: UserProfile) {
     })
     .join("");
 
+  list.querySelectorAll(".player-invite-profile").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      const target = e.currentTarget as HTMLElement;
+      const userId = target.getAttribute("data-id");
+      if (userId) {
+        navigateTo(`/members/${userId}`);
+		document.getElementById("remote-invite-modal")?.remove();
+      }
+    });
+  });
+
   list.querySelectorAll(".invite-btn").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       const friendId = Number(
@@ -142,7 +157,7 @@ export async function showInviteModal(me: UserProfile) {
       (btn as HTMLElement).innerHTML = `<i class="fa-solid fa-check"></i>`;
       (btn as HTMLElement).classList.add("bg-green-500");
 
-      setTimeout(() => modal.remove(), 800);
+      //   setTimeout(() => modal.remove(), 800);
     });
   });
 }

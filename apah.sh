@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in $(seq 1 100); do
+for i in $(seq 1 50); do
   username="user$i"
   email="user$i@example.com"
   password="Password123."

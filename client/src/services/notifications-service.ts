@@ -110,6 +110,7 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
 
     case "INVITE_ACCEPTED":
       setTimeout(() => {
+        document.getElementById("remote-invite-modal")?.remove();
         navigateTo(`/remote?roomId=${notif.roomId}`);
         markNotificationsAsRead([notif.notification_id]);
         li.remove();
