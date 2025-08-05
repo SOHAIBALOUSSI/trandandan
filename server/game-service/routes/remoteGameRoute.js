@@ -242,9 +242,9 @@ export function remoteGame(connection, req) {
         const serverGameState = rooms[roomId].gameState;
         
         // Only process input if countdown is not active
-        if (!serverGameState.countdownActive) {
+        // if (!serverGameState.countdownActive) {
           serverGameState.keypressd = gameState.keypressd;
-        }
+        // }
         
         serverGameState.playerId = playerId;
         serverGameState.matchId = roomId;
