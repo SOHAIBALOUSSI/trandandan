@@ -398,8 +398,29 @@ class FlowField {
       countdownTime: 0, // Initialize countdown time
     };
 
-    this.deps.restartButton.addEventListener("click", async () => {
-      window.location.reload();
+    this.deps.restartButton.addEventListener("click", async (event) => {
+      event.preventDefault(); // Prevent default behavior
+      if (!this.deps.restartButton.disabled) {
+        this.deps.restartButton.disabled = true; // Disable button to prevent multiple clicks
+        try {
+          await fetch("/game/restart-match", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              roomId: this.gameState.matchId,
+              senderId: this.gameState.playerId,
+              receiverId: this.gameState.enemyId,
+            }),
+          });
+        } catch (error) {
+          console.error("Error sending restart request:", error);
+        } finally {
+          this.deps.restartButton.disabled = false; // Re-enable button
+        }
+        window.location.reload();
+      }
     });
   }
 
