@@ -1,26 +1,26 @@
-import sqlite3 from "sqlite3";
+// import sqlite3 from "sqlite3";
 
-const db = new sqlite3.Database("/app/db/.gameData.db", (err) => {
-  if (err) console.error("DB Error:", err.message);
-  else console.log("Connected to SQLite.");
-});
+// const db = new sqlite3.Database("/app/db/game.db.sqlite", (err) => {
+//   if (err) console.error("DB Error:", err.message);
+//   else console.log("Connected to SQLite.");
+// });
 
 const connectedClients = [];
 let lastSentGameId = 0; // replaces lastMatchId
 
-function pollForNewMatches() {
+async function pollForNewMatches(db) {
   // Get the latest game row
-  db.get(
+  await db.get(
     `SELECT match_id FROM games ORDER BY id DESC LIMIT 1`,
     [],
-    (err, latestRow) => {
+    async (err, latestRow) => {
       if (err) return console.error("DB Error:", err.message);
       if (!latestRow) return;
 
       const latestMatchId = latestRow.match_id;
 
       // Get last two games with that match_id
-      db.all(
+      await db.all(
         `SELECT id, enemy_id, user_id, left_player_score, right_player_score, player_id, game_end_result
          FROM games
          WHERE match_id = ?
@@ -59,27 +59,24 @@ function pollForNewMatches() {
 }
 
 
-setInterval(pollForNewMatches, 2000);
-
 // This is the function you will import
-export default function recentActivity(connection, req) {
+export default function recentActivity(connection, req, db) {
+	connectedClients.push(connection);
+	
+	console.log("Recent activity client connected");
+	
+	connection.on("message", (msg) => {
+		console.log("Message from client:", msg.toString());
+	});
+	
+	connection.on("close", () => {
+		console.log("Recent activity client disconnected");
+		const idx = connectedClients.indexOf(connection);
+		if (idx !== -1) connectedClients.splice(idx, 1);
+	});
+	setInterval(pollForNewMatches, 2000, db);
 
-  connectedClients.push(connection);
-
-    console.log("Recent activity client connected");
-
-
-    connection.on("message", (msg) => {
-      console.log("Message from client:", msg.toString());
-    });
-
-    connection.on("close", () => {
-      console.log("Recent activity client disconnected");
-        const idx = connectedClients.indexOf(connection);
-        if (idx !== -1) connectedClients.splice(idx, 1);
-    });
-
-    connection.on("error", (err) => {
-      console.error("Webconnection error:", err);
-    });
+  connection.on("error", (err) => {
+    console.error("Webconnection error:", err);
+  });
 }

@@ -297,8 +297,7 @@ export function Tournaments() {
         // Optionally, reset the game state for a rematch
         gameTab.style.display = "none";
         // You may want to reset scores or re-initialize the game here
-        const newSocket = new WebSocket("ws://localhost:5000/ws");
-        flow.setSocketLocal(newSocket);
+        const newSocket = new WebSocket("wss://localhost:9090/game/ws");
         newSocket.onmessage = (event: MessageEvent) => {
           flow.updateGameState(event.data);
         };

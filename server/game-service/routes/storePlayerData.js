@@ -1,17 +1,5 @@
-import sqlite3 from "sqlite3";
 
-const db = new sqlite3.Database(
-  "/app/db/.gameData.db",
-  (err) => {
-    if (err) {
-      console.error("Error connecting to the database:", err.message);
-    } else {
-      console.log("Connected to the SQLite database.");
-    }
-  }
-);
-
-export default function savePlayerData(req, reply) {
+export default async function savePlayerData(req, reply, db) {
   try {
     const data = req.body;
     
@@ -31,7 +19,6 @@ export default function savePlayerData(req, reply) {
         left_player_ball_hit INTEGER NOT NULL,
         right_player_ball_hit INTEGER NOT NULL,
         level REAL NOT NULL DEFAULT 0,
-        Solde INTEGER NOT NULL,
         matchPlayed INTEGER NOT NULL,
         matchWon INTEGER NOT NULL,
         matchLost INTEGER NOT NULL,
@@ -40,7 +27,7 @@ export default function savePlayerData(req, reply) {
       )
     `;
     
-    db.run(createTableQuery, (err) => {
+    await db.run(createTableQuery, async (err) => {
       if (err) {
         console.error("Error creating table:", err.message);
         return reply.status(500).send({ error: "Database error" });
@@ -61,7 +48,6 @@ export default function savePlayerData(req, reply) {
           left_player_ball_hit,
           right_player_ball_hit,
           level,
-          Solde,
           matchPlayed,
           matchWon,
           matchLost
@@ -81,7 +67,6 @@ export default function savePlayerData(req, reply) {
         data.leftPlayerBallHit,
         data.rightPlayerBallHit,
         data.level,
-        data.Solde,
         data.matchPlayed,
         data.matchWon,
         data.matchLost
@@ -89,7 +74,7 @@ export default function savePlayerData(req, reply) {
 
       // console.log("Inserting values:", values); // Debug log
 
-      db.run(insertQuery, values, function (err) {
+      await db.run(insertQuery, values, function (err) {
         return reply.status(200).send({ 
           message: "Player data saved successfully",
           id: this.lastID 

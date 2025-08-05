@@ -21,7 +21,6 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-
     depends_on:
       rabbitmq:
         condition: service_healthy

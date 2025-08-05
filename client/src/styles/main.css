@@ -30,7 +30,7 @@
   padding: 0;
   text-transform: capitalize;
   font-family: var(--font-body);
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;

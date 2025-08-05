@@ -6,7 +6,6 @@ export type UserProfile = {
   gender: string | null;
   avatar_url: string;
   status: "online" | "offline";
-  solde: number;
   rank: number;
   level: number;
   created_at: string;

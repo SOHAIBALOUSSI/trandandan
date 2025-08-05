@@ -232,7 +232,6 @@ interface GameState {
   rightPlayerBallHit: number;
   startTime: number;
   endTime: number;
-  solde: number;
   level: number;
   matchPlayed: number;
   matchWon: number;
@@ -251,7 +250,6 @@ interface PlayerData {
   gameEndResult: string;
   leftPlayerBallHit: number;
   rightPlayerBallHit: number;
-  Solde: number;
   level: number;
   matchPlayed: number;
   matchWon: number;
@@ -262,7 +260,6 @@ interface PlayerData {
 
 interface LastMatchData {
   level: number;
-  Solde: number;
   matchPlayed: number;
   matchWon: number;
   matchLost: number;
@@ -392,7 +389,6 @@ class FlowField {
       rightPlayerBallHit: 0,
       startTime: Date.now(),
       endTime: 0,
-      solde: 5,
       level: 0,
       matchPlayed: 0,
       matchWon: 0,
@@ -673,7 +669,6 @@ class FlowField {
               leftPlayerBallHit: this.gameState.leftPlayerBallHit,
               rightPlayerBallHit: this.gameState.rightPlayerBallHit,
               level: 5,
-              Solde: 5,
               matchPlayed: 1,
               matchWon: this.gameState.gameEndResult === "Won" ? 1 : 0,
               matchLost: this.gameState.gameEndResult === "Lost" ? 1 : 0,
@@ -683,7 +678,6 @@ class FlowField {
 
             const currentUser = getCurrentUser();
             if (currentUser) {
-              currentUser.solde = 5;
               currentUser.level = 5;
               currentUser.matches_played = 1;
               currentUser.matches_won =
@@ -717,10 +711,6 @@ class FlowField {
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
               hasWonPlayerOne = true;
-              this.gameState.solde = Math.max(
-                0,
-                5 + getOldDataOfCurrentUserData.solde
-              );
               this.gameState.level +=
                 getOldDataOfCurrentUserData.level + 1 + levelGain; // 1 is the win bonus
               this.gameState.matchLost =
@@ -729,10 +719,6 @@ class FlowField {
                 getOldDataOfCurrentUserData.matches_won + 1;
             } else if (this.gameState.gameEndResult === "Lost") {
               hasWonPlayerOne = false;
-              this.gameState.solde = Math.max(
-                0,
-                getOldDataOfCurrentUserData.solde - 5
-              );
               if (getOldDataOfCurrentUserData.level - 1 < 0) {
                 this.gameState.level = 0; // Ensure level never goes negative
               } else
@@ -753,10 +739,6 @@ class FlowField {
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
               hasWonPlayerTwo = true;
-              this.gameState.solde = Math.max(
-                0,
-                5 + getOldDataOfCurrentUserData.solde
-              );
               this.gameState.level =
                 getOldDataOfCurrentUserData.level + 1 + levelGain; // 1 is the win bonus
               console.log("level", this.gameState.level);
@@ -766,10 +748,6 @@ class FlowField {
                 getOldDataOfCurrentUserData.matches_lost;
             } else if (this.gameState.gameEndResult === "Lost") {
               hasWonPlayerTwo = false;
-              this.gameState.solde = Math.max(
-                0,
-                getOldDataOfCurrentUserData.solde - 5
-              );
               if (getOldDataOfCurrentUserData.level - 1 < 0) {
                 this.gameState.level = 0; // Ensure level never goes negative
               } else
@@ -793,7 +771,6 @@ class FlowField {
             leftPlayerBallHit: this.gameState.leftPlayerBallHit,
             rightPlayerBallHit: this.gameState.rightPlayerBallHit,
             level: this.gameState.level,
-            Solde: this.gameState.solde,
             matchPlayed: this.gameState.matchPlayed,
             matchWon: this.gameState.matchWon,
             matchLost: this.gameState.matchLost,
@@ -803,7 +780,6 @@ class FlowField {
           this.sendPlayerData(playerData);
 
           if (currentUser) {
-            currentUser.solde = this.gameState.solde;
             currentUser.level = this.gameState.level;
             currentUser.matches_played = this.gameState.matchPlayed;
             currentUser.matches_won = this.gameState.matchWon;

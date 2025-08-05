@@ -124,6 +124,10 @@ export function handleSignUp() {
             navigateTo("/login");
           }, redirectDelay);
         }, feedbackDelay);
+      } else if (response.status === 429) {
+        setTimeout(() => {
+          displayToast("Rate limit error", "error");
+        }, feedbackDelay);
       } else {
         setTimeout(() => {
           const errorMsg =

@@ -4,10 +4,14 @@ import websocket from "@fastify/websocket";
 // import cors from "@fastify/cors";
 import redisPlugin from "./routes/redis.js";
 import { verifyToken, verifyWSToken } from "./routes/authMiddleware.js";
-
+import sqlitePlugin, { createGamesTable } from "./routes/sqlite-plugin.js";
 const fastify = Fastify();
 
-fastify.register(redisPlugin);
+await fastify.register(redisPlugin);
+await fastify.register(sqlitePlugin);
+console.log("----------------<>", fastify.db);
+await createGamesTable(fastify.db);
+
 // fastify.register(cors, {
 //   origin: "*", // Allow all origins
 //   methods: ["GET", "POST", "DELETE"], // Allow specific HTTP methods
@@ -59,8 +63,8 @@ fastify.register(async function (fastify) {
 // route to store the game stats
 import savePlayerData  from "./routes/storePlayerData.js";
 fastify.register(async function name(fastify) {
-  fastify.post("/game/storePlayerData", { preHandler: [verifyToken] },(req, reply) => {
-    savePlayerData(req, reply);
+  fastify.post("/game/storePlayerData", { preHandler: [verifyToken] }, async (req, reply) => {
+    await savePlayerData(req, reply, fastify.db);
   });
 });
 
@@ -88,34 +92,34 @@ fastify.register(async function name(req, reply) {
 import getUserHistory from "./routes/getUserHistory.js";
 fastify.register(async function name(fastify) {
   fastify.post("/game/user-history", { preHandler: [verifyToken] },async (req, reply) => {
-    return getUserHistory(req, reply);
+    return getUserHistory(req, reply, fastify.db);
   });
 });
 
 import getData  from "./routes/gethistroy.js";
 fastify.register(async function name(fastify) {
   fastify.get("/game/getData", { preHandler: [verifyToken] },async (req, reply) => {
-    return getData(req, reply);
+    return getData(req, reply, fastify.db);
   });
 });
 
 import getLastMatchByUser from "./routes/getLastMatch.js";
 fastify.register(async function name(fastify) {
   fastify.get("/game/last-match/:userName", { preHandler: [verifyToken] }, async (req, reply) => {
-    return getLastMatchByUser(req, reply);
+    return getLastMatchByUser(req, reply, fastify.db);
   });
 });
 
 import getCount from "./routes/getCount.js";
 fastify.register(async function name(fastify) {
   fastify.get("/game/user-stats/:userName", { preHandler: [verifyToken] },async (req, reply) => {
-    return getCount(req, reply);
+    return getCount(req, reply, fastify.db);
   });
 });
 import recentAtivity from "./routes/recentActivity.js";
 fastify.register(async function (fastify) {
   fastify.get("/game/recent-activity", { websocket: true }, (connection, req) => {
-     recentAtivity(connection, req);
+     recentAtivity(connection, req, fastify.db);
   });
 });
 fastify.listen({ port: 5000 , host: '0.0.0.0'}, (err) => {

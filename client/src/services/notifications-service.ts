@@ -113,7 +113,7 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
         navigateTo(`/remote?roomId=${notif.roomId}`);
         markNotificationsAsRead([notif.notification_id]);
         li.remove();
-      }, 500);
+      }, 2000);
       break;
 
     default:

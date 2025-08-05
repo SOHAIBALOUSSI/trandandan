@@ -132,6 +132,7 @@ export function remoteGame(connection, req) {
   let roomId;
   const token = req.query.token;
   const playerRoomdId = req.query.roomId;
+  console.log(playerRoomdId)
   let joined = false;
 
   for (const [id] of Object.entries(rooms)) {
@@ -172,6 +173,7 @@ export function remoteGame(connection, req) {
   }
 
   if (!joined) {
+	console.log("userId token: ", token);
     roomId = playerRoomdId;
     rooms[roomId] = {
       players: [{ token: token, connection: connection }],

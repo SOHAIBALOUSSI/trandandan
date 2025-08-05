@@ -209,9 +209,6 @@ export function MemberCard(props: {
           </div>
 
           <div className="flex flex-wrap gap-3 mt-4">
-            <span className="bg-pong-secondary/20 text-pong-secondary px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              💰 Solde: {user.solde}
-            </span>
             <span className="bg-pong-highlight/20 text-pong-highlight px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">
               🎯 Level: {user.level}
             </span>

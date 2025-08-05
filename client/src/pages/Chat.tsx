@@ -58,7 +58,8 @@ export async function Chat(friendId: number) {
 
   function renderMessages() {
     chatMessages.innerHTML = "";
-    messages.forEach((msg) => {
+    const last = messages.slice(-50);
+    last.forEach((msg) => {
       const isMe = msg.sender_id === currentUser?.id;
       const msgDiv = document.createElement("div");
       msgDiv.className = `flex flex-col ${isMe ? "items-end" : "items-start"}`;

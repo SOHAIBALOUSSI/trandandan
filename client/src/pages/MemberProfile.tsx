@@ -277,7 +277,7 @@ export async function MemberProfile(id: number) {
       }
       if (inviteBtn) {
         inviteBtn.addEventListener("click", async () => {
-          await inviteFriend(me.id, user.id);
+          await inviteFriend(user.id);
         });
       }
     } else if (isPendingReceived) {

@@ -56,4 +56,4 @@ export async function displayDashBoard(redis, socket, rabbit) {
         const players = await getPlayersData(redis, rabbit);
         socket.send(JSON.stringify(players));
     }
-} 
+}  	
