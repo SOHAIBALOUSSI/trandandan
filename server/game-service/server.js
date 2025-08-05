@@ -2,14 +2,13 @@
 import Fastify from "fastify";
 import websocket from "@fastify/websocket";
 // import cors from "@fastify/cors";
-import redisPlugin from "./routes/redis.js";
-import { verifyToken, verifyWSToken } from "./routes/authMiddleware.js";
-import sqlitePlugin, { createGamesTable } from "./routes/sqlite-plugin.js";
+import redisPlugin from "./tools/redis.js";
+import { verifyToken, verifyWSToken } from "./tools/authMiddleware.js";
+import sqlitePlugin, { createGamesTable } from "./tools/sqlite-plugin.js";
 const fastify = Fastify();
 
 await fastify.register(redisPlugin);
 await fastify.register(sqlitePlugin);
-console.log("----------------<>", fastify.db);
 await createGamesTable(fastify.db);
 
 // fastify.register(cors, {
