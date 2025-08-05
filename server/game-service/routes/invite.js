@@ -1,4 +1,4 @@
-import  RabbitMGame  from "./RabbitMGame.js"
+import  RabbitMGame  from "../tools/RabbitMGame.js"
 
 const invitePlayer = async (req, reply, fastify) => {
     const { receiverId } = req.body;

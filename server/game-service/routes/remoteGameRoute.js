@@ -132,7 +132,6 @@ export function remoteGame(connection, req) {
   let roomId;
   const token = req.query.token;
   const playerRoomdId = req.query.roomId;
-  console.log(playerRoomdId)
   let joined = false;
 
   for (const [id] of Object.entries(rooms)) {
@@ -162,8 +161,6 @@ export function remoteGame(connection, req) {
 
     if (rooms[id].players.length < 2 && !joined) {
       if (playerRoomdId === id) {
-        console.log("user id = ", token);
-        console.log("roomId", roomId);
         rooms[id].players.push({ token: token, connection: connection });
         joined = true;
         roomId = id;
@@ -173,7 +170,6 @@ export function remoteGame(connection, req) {
   }
 
   if (!joined) {
-	console.log("userId token: ", token);
     roomId = playerRoomdId;
     rooms[roomId] = {
       players: [{ token: token, connection: connection }],
@@ -224,7 +220,7 @@ export function remoteGame(connection, req) {
       { token: token2, connection: player2 },
     ] = rooms[roomId].players;
 
-    console.log(rooms[roomId].players);
+    // console.log(rooms[roomId].players);
     rooms[roomId].gameState.startTime = Date.now();
 
     // Start countdown when both players are connected
@@ -340,7 +336,7 @@ function startPointCountdown(roomId, player1, player2) {
   gameState.countdownActive = true;
   gameState.countdownTime = 3;
 
-  console.log(`Starting point countdown for room ${roomId}`);
+  // console.log(`Starting point countdown for room ${roomId}`);
 
   const countdownInterval = setInterval(() => {
     if (!rooms[roomId]) {
@@ -350,7 +346,7 @@ function startPointCountdown(roomId, player1, player2) {
 
     const currentGameState = rooms[roomId].gameState;
     
-    console.log(`Point countdown: ${currentGameState.countdownTime}`);
+    // console.log(`Point countdown: ${currentGameState.countdownTime}`);
     
     if (currentGameState.countdownTime > 0) {
       // Send countdown update to both players
@@ -370,7 +366,6 @@ function startPointCountdown(roomId, player1, player2) {
       currentGameState.countdownActive = false;
       currentGameState.countdownTime = 0;
       
-      console.log(`Point resumed in room ${roomId}`);
       
       // Send game resume signal to both players
       currentGameState.playerId = 1;
