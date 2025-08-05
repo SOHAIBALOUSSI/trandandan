@@ -2,4 +2,5 @@
 - correct the recent activity 
 - users status (online / offline)
 - handle responsivness in games
-- friend list in chat 
+- if user blocked remove from dash and chat and search 
+- ws message on cancel request

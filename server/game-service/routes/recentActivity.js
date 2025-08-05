@@ -9,72 +9,74 @@ const connectedClients = [];
 let lastSentGameId = 0; // replaces lastMatchId
 
 async function pollForNewMatches(db) {
-  // Get the latest game row
-  await db.get(
-    `SELECT match_id FROM games ORDER BY id DESC LIMIT 1`,
-    [],
-    async (err, latestRow) => {
-      if (err) return console.error("DB Error:", err.message);
-      if (!latestRow) return;
+  try {
+    const latestRow = await new Promise((resolve, reject) => {
+      db.get(
+        `SELECT match_id FROM games ORDER BY id DESC LIMIT 1`,
+        [],
+        (err, row) => (err ? reject(err) : resolve(row))
+      );
+    });
 
-      const latestMatchId = latestRow.match_id;
+    if (!latestRow) return;
 
-      // Get last two games with that match_id
-      await db.all(
+    const latestMatchId = latestRow.match_id;
+
+    const rows = await new Promise((resolve, reject) => {
+      db.all(
         `SELECT id, enemy_id, user_id, left_player_score, right_player_score, player_id, game_end_result
          FROM games
          WHERE match_id = ?
          ORDER BY id DESC LIMIT 2`,
         [latestMatchId],
-        (err, rows) => {
-          if (err) return console.error("DB Query Error:", err.message);
-          if (!rows || rows.length === 0) return;
-
-          // Check if the most recent game was already sent
-          const maxGameId = rows[0].id;
-          if (maxGameId <= lastSentGameId) return;
-
-          lastSentGameId = maxGameId; // update tracker
-
-          const payload = rows.map((row) => ({
-            enemyId: row.enemy_id,
-            userId: row.user_id,
-            leftPlayerScore: row.left_player_score,
-            rightPlayerScore: row.right_player_score,
-            playerId: row.player_id,
-            gameEndResult: row.game_end_result,
-          }));
-
-          for (const client of connectedClients) {
-            try {
-              client.send(JSON.stringify(payload));
-            } catch (err) {
-              console.error("WebSocket send error:", err.message);
-            }
-          }
-        }
+        (err, rows) => (err ? reject(err) : resolve(rows))
       );
-    }
-  );
-}
+    });
 
+    if (!rows || rows.length === 0) return;
+
+    const maxGameId = rows[0].id;
+    if (maxGameId <= lastSentGameId) return;
+
+    lastSentGameId = maxGameId;
+
+    const payload = rows.map((row) => ({
+      enemyId: row.enemy_id,
+      userId: row.user_id,
+      leftPlayerScore: row.left_player_score,
+      rightPlayerScore: row.right_player_score,
+      playerId: row.player_id,
+      gameEndResult: row.game_end_result,
+    }));
+
+    for (const client of connectedClients) {
+      try {
+        client.send(JSON.stringify(payload));
+      } catch (err) {
+        console.error("WebSocket send error:", err.message);
+      }
+    }
+  } catch (err) {
+    console.error("Polling error:", err.message);
+  }
+}
 
 // This is the function you will import
 export default function recentActivity(connection, req, db) {
-	connectedClients.push(connection);
-	
-	console.log("Recent activity client connected");
-	
-	connection.on("message", (msg) => {
-		console.log("Message from client:", msg.toString());
-	});
-	
-	connection.on("close", () => {
-		console.log("Recent activity client disconnected");
-		const idx = connectedClients.indexOf(connection);
-		if (idx !== -1) connectedClients.splice(idx, 1);
-	});
-	setInterval(pollForNewMatches, 2000, db);
+  connectedClients.push(connection);
+
+  console.log("Recent activity client connected");
+
+  connection.on("message", (msg) => {
+    console.log("Message from client:", msg.toString());
+  });
+
+  connection.on("close", () => {
+    console.log("Recent activity client disconnected");
+    const idx = connectedClients.indexOf(connection);
+    if (idx !== -1) connectedClients.splice(idx, 1);
+  });
+  setInterval(pollForNewMatches, 2000, db);
 
   connection.on("error", (err) => {
     console.error("Webconnection error:", err);

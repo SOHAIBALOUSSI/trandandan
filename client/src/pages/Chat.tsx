@@ -2,7 +2,7 @@ import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { startChatListener, sendChatMessage } from "@/services/chat-service";
 import { getCurrentUser } from "@/utils/user-store";
-import { MessageSent } from "types/types";
+import { MessageSent, UserProfile } from "types/types";
 import { getUserById } from "@/services/get-user-by-id";
 import { Loader } from "@/components/common/Loader";
 import { ChatBlock } from "@/components/chat/ChatBlock";
@@ -10,6 +10,8 @@ import { NavBar } from "@/components/layout/NavBar";
 import { inviteFriend } from "@/services/invite-friend";
 import { getFriends } from "@/services/get-friends";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { getAllUsers } from "@/services/get-all-users";
+import { getAvatarUrl } from "@/utils/get-avatar-url";
 
 export async function Chat(friendId: number) {
   const friend = await getUserById(friendId);
@@ -35,26 +37,29 @@ export async function Chat(friendId: number) {
   const container = document.createElement("div");
   container.className = "w-full relative flex";
 
-  const friendsSidebar = document.createElement("aside");
-  friendsSidebar.className =
+  const usersSideBar = document.createElement("aside");
+  usersSideBar.className =
     "hidden md:flex flex-col w-56 min-w-44 max-w-xs bg-pong-dark-custom border-l border-pong-dark-accent/30 h-[calc(100vh-4rem)] overflow-y-auto py-4 px-2 gap-2 mt-16";
 
   (async () => {
-    const friendIds = await getFriends();
-    for (const id of friendIds) {
-      const user = await getUserById(id);
-      if (!user) continue;
-      const friendBtn = document.createElement("button");
-      friendBtn.className =
+    const allUsers = await getAllUsers();
+    const hydratedUsers = allUsers.filter(
+      (user: UserProfile) => user.id !== currentUser.id
+    );
+    for (const user of hydratedUsers) {
+      const userBtn = document.createElement("button");
+      userBtn.className =
         "flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-pong-dark-accent/20 transition-colors";
-      friendBtn.innerHTML = `
-        <img src="${user.avatar_url}" alt="${user.username}" class="w-8 h-8 rounded-full object-cover" />
+      userBtn.innerHTML = `
+        <img src="${getAvatarUrl(user.id)}" alt="${
+        user.username
+      }" class="w-8 h-8 rounded-full object-cover" />
         <span class="text-white font-medium">${user.username}</span>
       `;
-      friendBtn.onclick = () => {
+      userBtn.onclick = () => {
         navigateTo(`/lounge/${user.id}`);
       };
-      friendsSidebar.appendChild(friendBtn);
+      usersSideBar.appendChild(userBtn);
     }
   })();
 
@@ -75,7 +80,7 @@ export async function Chat(friendId: number) {
   mainArea.appendChild(main);
 
   container.appendChild(mainArea);
-  container.appendChild(friendsSidebar);
+  container.appendChild(usersSideBar);
   section.appendChild(container);
 
   const messages: MessageSent[] = [];
@@ -164,7 +169,7 @@ export async function Chat(friendId: number) {
     if (challengeBtn) {
       challengeBtn.addEventListener("click", async () => {
         challengeBtn.disabled = true;
-        await inviteFriend(currentUser.id, friend.id);
+        await inviteFriend(friend.id);
         setTimeout(() => {
           challengeBtn.disabled = false;
         }, 3000);
