@@ -8,7 +8,7 @@ async function pollForNewMatches(db) {
     const latestRow = await db.get(`SELECT match_id FROM games ORDER BY id DESC LIMIT 1`);
     
     if (!latestRow) {
-      console.log("No games found in database");
+      // console.log("No games found in database");
       return;
     }
 
@@ -34,7 +34,7 @@ async function pollForNewMatches(db) {
     // Check if the most recent game was already sent
     const maxGameId = rows[0].id;
     if (maxGameId <= lastSentGameId) {
-      console.log("Game already sent, skipping...");
+      // console.log("Game already sent, skipping...");
       return;
     }
 
