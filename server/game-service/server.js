@@ -91,26 +91,6 @@ fastify.register(async function name(fastify) {
   });
 });
 
-import getData  from "./routes/gethistroy.js";
-fastify.register(async function name(fastify) {
-  fastify.get("/game/getData", { preHandler: [verifyToken] },async (req, reply) => {
-    return getData(req, reply, fastify.db);
-  });
-});
-
-import getLastMatchByUser from "./routes/getLastMatch.js";
-fastify.register(async function name(fastify) {
-  fastify.get("/game/last-match/:userName", { preHandler: [verifyToken] }, async (req, reply) => {
-    return getLastMatchByUser(req, reply, fastify.db);
-  });
-});
-
-import getCount from "./routes/getCount.js";
-fastify.register(async function name(fastify) {
-  fastify.get("/game/user-stats/:userName", { preHandler: [verifyToken] },async (req, reply) => {
-    return getCount(req, reply, fastify.db);
-  });
-});
 import recentAtivity from "./routes/recentActivity.js";
 fastify.register(async function (fastify) {
   fastify.get("/game/recent-activity", { websocket: true }, (connection, req) => {
