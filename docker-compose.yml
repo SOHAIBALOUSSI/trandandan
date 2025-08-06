@@ -8,6 +8,10 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/auth-service/:/usr/src/app/
+      - /usr/src/app/node_modules
+
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -21,6 +25,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/profile-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -34,6 +41,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/relationships-service/:/usr/src/app/
+      - /usr/src/app/node_modules
 
     depends_on:
       rabbitmq:
@@ -74,6 +84,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/dashboard-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -84,6 +97,8 @@ services:
     restart: always
     networks:
       - trandenden-net
+    volumes:
+      - /data
   game:
     container_name: game-service
     build: server/game-service
@@ -91,7 +106,6 @@ services:
     restart: always
     env_file:
       - ./server/.env
-      
     networks:
       - trandenden-net
     volumes:

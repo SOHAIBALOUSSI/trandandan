@@ -3,6 +3,11 @@ let lastSentGameId = 0; // replaces lastMatchId
 
 async function pollForNewMatches(db) {
   try {
+    // console.log("Polling for new matches...");
+    
+    // First, let's check if we can query the database at all
+    const countResult = await db.get(`SELECT COUNT(*) as total FROM games`);
+    // console.log("Total games in database:", countResult.total);
     
     // Use Promise-based API instead of callback-based
     const latestRow = await db.get(`SELECT match_id FROM games ORDER BY id DESC LIMIT 1`);
@@ -25,7 +30,7 @@ async function pollForNewMatches(db) {
     );
 
     if (!rows || rows.length === 0) {
-      console.log("No games found for match ID:", latestMatchId);
+      // console.log("No games found for match ID:", latestMatchId);
       return;
     }
 
@@ -56,7 +61,7 @@ async function pollForNewMatches(db) {
     for (const client of connectedClients) {
       try {
         client.send(JSON.stringify(payload));
-        console.log("Sent data to client");
+        // console.log("Sent data to client");
       } catch (err) {
         console.error("WebSocket send error:", err.message);
       }
@@ -67,22 +72,23 @@ async function pollForNewMatches(db) {
 }
 
 // This is the function you will import
-export default function recentActivity(connection, req) {
+export default function recentActivity(connection, req, db) {
+  // console.log("Initializing recentActivity function..."); // Log initialization
   connectedClients.push(connection);
 
-  console.log("Recent activity client connected");
+  // console.log("Recent activity client connected");
 
   connection.on("message", (msg) => {
-    console.log("Message from client:", msg.toString());
+    // console.log("Message from client:", msg.toString());
   });
 
   connection.on("close", () => {
-    console.log("Recent activity client disconnected");
+    // console.log("Recent activity client disconnected");
     const idx = connectedClients.indexOf(connection);
     if (idx !== -1) connectedClients.splice(idx, 1);
   });
 
-  console.log("Setting up polling interval..."); // Log setInterval setup
+  // console.log("Setting up polling interval..."); // Log setInterval setup
 
   connection.on("error", (err) => {
     console.error("Webconnection error:", err);

@@ -132,7 +132,16 @@ rabbit.consumeMessages(async (notification) =>{
     console.log('sIdExist value: ', sIdExist, 'rIdExist value: ', rIdExist);
     if (!sIdExist || !rIdExist)
       return ;
-    await deleteFriendRequestNotification(db, senderId, notification.recipient_id);
+    const notificationId = await deleteFriendRequestNotification(db, senderId, notification.recipient_id);
+    notification.notification_id = notificationId;
+    const connections = users.get(senderId);
+      if (connections) {
+        const message = JSON.stringify(notification);
+        for (const conn of connections) {
+          if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
+            conn.send(message);
+        }
+      }
   }
   else {
     console.log('RabbitMQ: notification received: ', notification);
