@@ -3,11 +3,6 @@ let lastSentGameId = 0; // replaces lastMatchId
 
 async function pollForNewMatches(db) {
   try {
-    console.log("Polling for new matches...");
-    
-    // First, let's check if we can query the database at all
-    const countResult = await db.get(`SELECT COUNT(*) as total FROM games`);
-    console.log("Total games in database:", countResult.total);
     
     // Use Promise-based API instead of callback-based
     const latestRow = await db.get(`SELECT match_id FROM games ORDER BY id DESC LIMIT 1`);
@@ -18,7 +13,7 @@ async function pollForNewMatches(db) {
     }
 
     const latestMatchId = latestRow.match_id;
-    console.log("Latest match ID:", latestMatchId);
+    // console.log("Latest match ID:", latestMatchId);
     
     // Get last two games with that match_id
     const rows = await db.all(
@@ -34,7 +29,7 @@ async function pollForNewMatches(db) {
       return;
     }
 
-    console.log("Found", rows.length, "games for match ID:", latestMatchId);
+    // console.log("Found", rows.length, "games for match ID:", latestMatchId);
 
     // Check if the most recent game was already sent
     const maxGameId = rows[0].id;
@@ -44,7 +39,7 @@ async function pollForNewMatches(db) {
     }
 
     lastSentGameId = maxGameId; // update tracker
-    console.log("Sending new game data, game ID:", maxGameId);
+    // console.log("Sending new game data, game ID:", maxGameId);
 
     const payload = rows.map((row) => ({
       enemyId: row.enemy_id,
@@ -55,8 +50,8 @@ async function pollForNewMatches(db) {
       gameEndResult: row.game_end_result,
     }));
 
-    console.log("Payload to send:", payload);
-    console.log("Connected clients:", connectedClients.length);
+    // console.log("Payload to send:", payload);
+    // console.log("Connected clients:", connectedClients.length);
 
     for (const client of connectedClients) {
       try {
@@ -72,8 +67,7 @@ async function pollForNewMatches(db) {
 }
 
 // This is the function you will import
-export default function recentActivity(connection, req, db) {
-  console.log("Initializing recentActivity function..."); // Log initialization
+export default function recentActivity(connection, req) {
   connectedClients.push(connection);
 
   console.log("Recent activity client connected");
