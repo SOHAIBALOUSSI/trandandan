@@ -5,26 +5,20 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { fontSizes } from "@/styles/fontSizes";
 import { getUserTitle } from "@/utils/get-user-title";
 import { getWelcomeTitle } from "@/components/home/Hero";
+import { displayToast } from "@/utils/display-toast";
 
-export async function loadChatList() {
+let onlineStatusMap: Record<number, boolean> = {};
+let ws: WebSocket | null = null;
+
+function renderChatList(profiles: any[]) {
   const chatListElement = document.getElementById("chat-list");
   if (!chatListElement) return;
-
-  const friendIds = await getFriends();
-
-  if (!friendIds.length) {
-    chatListElement.innerHTML =
-      '<li class="text-pong-dark-secondary text-center py-4 text-sm md:text-lg">No friends found.</li>';
-    return;
-  }
-
-  const profiles = await Promise.all(friendIds.map((id) => getUserById(id)));
 
   chatListElement.innerHTML = profiles
     .map((profile) => {
       if (!profile) return "";
 
-      const isOnline = profile.status === "online";
+      const isOnline = !!onlineStatusMap[profile.id];
 
       return `
       <li class="${styles.friendsListItemStyle}">
@@ -78,4 +72,55 @@ export async function loadChatList() {
       });
     }
   );
+}
+
+export async function loadChatList() {
+  const chatListElement = document.getElementById("chat-list");
+  if (!chatListElement) return;
+
+  const friendIds = await getFriends();
+
+  if (!friendIds.length) {
+    chatListElement.innerHTML =
+      '<li class="text-pong-dark-secondary text-center py-4 text-sm md:text-lg">No friends found.</li>';
+    return;
+  }
+
+  const profiles = await Promise.all(friendIds.map((id) => getUserById(id)));
+
+  renderChatList(profiles);
+
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    ws = new WebSocket("wss://profile:3001/profile/statuses");
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log(data);
+        if (data.userStatuses) {
+          onlineStatusMap = {};
+          data.userStatuses.forEach(
+            (u: { userId: number; isOnline: boolean }) => {
+              onlineStatusMap[u.userId] = u.isOnline;
+            }
+          );
+          renderChatList(profiles);
+        }
+      } catch (error) {
+        displayToast(
+          "The club’s lights are out at the moment. Try again shortly.",
+          "error"
+        );
+      }
+    };
+    ws.onerror = () => {
+      displayToast(
+        "The club’s lights are out at the moment. Try again shortly.",
+        "error"
+      );
+      console.error("error in profiles status");
+    };
+    ws.onclose = () => {
+		console.log("connection to status service ws clodsed");
+	};
+  }
 }

@@ -8,10 +8,11 @@ import { Loader } from "@/components/common/Loader";
 import { ChatBlock } from "@/components/chat/ChatBlock";
 import { NavBar } from "@/components/layout/NavBar";
 import { inviteFriend } from "@/services/invite-friend";
-import { getFriends } from "@/services/get-friends";
 import { navigateTo } from "@/utils/navigate-to-link";
-import { getAllUsers } from "@/services/get-all-users";
+import { getFriends } from "@/services/get-friends";
 import { getAvatarUrl } from "@/utils/get-avatar-url";
+import { getWelcomeTitle } from "@/components/home/Hero";
+import { FriendsList } from "@/components/friends/FriendsList";
 
 export async function Chat(friendId: number) {
   const friend = await getUserById(friendId);
@@ -38,23 +39,50 @@ export async function Chat(friendId: number) {
   container.className = "w-full relative flex";
 
   const usersSideBar = document.createElement("aside");
-  usersSideBar.className =
-    "hidden md:flex flex-col w-56 min-w-44 max-w-xs bg-pong-dark-custom border-l border-pong-dark-accent/30 h-[calc(100vh-4rem)] overflow-y-auto py-4 px-2 gap-2 mt-16";
+  usersSideBar.className = `
+    hidden md:flex flex-col
+    w-64 min-w-48 max-w-xs
+    bg-pong-dark-custom border-l border-pong-dark-accent/30
+    h-[calc(100vh-4rem)]
+    overflow-y-auto
+    py-6 px-4 gap-3 mt-16
+    rounded-l-xl shadow-inner
+    custom-scrollbar
+  `;
 
   (async () => {
-    const allUsers = await getAllUsers();
-    const hydratedUsers = allUsers.filter(
-      (user: UserProfile) => user.id !== currentUser.id
-    );
-    for (const user of hydratedUsers) {
+    const friendIds = await getFriends();
+    const friendProfiles: UserProfile[] = [];
+
+    if (friendIds.length === 0) {
+      const noFriendsMessage = document.createElement("div");
+      noFriendsMessage.className = "text-white text-center py-10";
+      noFriendsMessage.innerHTML = `				
+			<i class="fa-solid fa-users-slash text-4xl mb-4"></i>
+			<p class="text-lg">You have no friends yet.</p>
+			<p class="text-sm text-gray-400">Add friends to start chatting!</p
+		`;
+      usersSideBar.appendChild(noFriendsMessage);
+      return;
+    }
+
+    for (const id of friendIds) {
+      if (id !== currentUser.id) {
+        const user = await getUserById(id);
+        if (user) friendProfiles.push(user);
+      }
+    }
+    for (const user of friendProfiles) {
       const userBtn = document.createElement("button");
       userBtn.className =
         "flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-pong-dark-accent/20 transition-colors";
       userBtn.innerHTML = `
-        <img src="${getAvatarUrl(user.id)}" alt="${
+        <img src="${getAvatarUrl(user)}" alt="${
         user.username
       }" class="w-8 h-8 rounded-full object-cover" />
-        <span class="text-white font-medium">${user.username}</span>
+        <span class="text-white font-medium">${getWelcomeTitle(user)} ${
+        user.username
+      }</span>
       `;
       userBtn.onclick = () => {
         navigateTo(`/lounge/${user.id}`);
@@ -85,9 +113,16 @@ export async function Chat(friendId: number) {
 
   const messages: MessageSent[] = [];
 
-  setTimeout(() => {
+  setTimeout(async () => {
     main.removeChild(loadingDiv);
-    const chatBlock = ChatBlock(friend);
+
+    const friendIds = await getFriends();
+    const isFriend = friendIds.includes(friend.id);
+
+    const chatBlock = ChatBlock({
+      ...friend,
+      isFriend,
+    });
     main.appendChild(chatBlock);
 
     const chatMessages = section.querySelector(
@@ -98,36 +133,55 @@ export async function Chat(friendId: number) {
     ) as HTMLFormElement;
     const chatInput = section.querySelector("#chat-input") as HTMLInputElement;
 
-    function renderMessages() {
+    let renderCount = 15;
+    const renderStep = 10;
+
+    function renderMessages(keepScroll = false) {
       if (!chatMessages) return;
       chatMessages.innerHTML = "";
-      messages.forEach((msg) => {
+
+      const totalMessages = messages.length;
+      const startIndex = Math.max(0, totalMessages - renderCount);
+      const visibleMessages = messages.slice(startIndex, totalMessages);
+
+      visibleMessages.forEach((msg) => {
         const isMe = msg.sender_id === currentUser?.id;
         const msgDiv = document.createElement("div");
         msgDiv.className = `flex flex-col ${
           isMe ? "items-end" : "items-start"
         }`;
         msgDiv.innerHTML = `
-          <span class="${
-            isMe ? "bg-pong-dark-primary" : "bg-[#BFBEAE]"
-          } text-black px-4 py-2 rounded-lg shadow-sm max-w-[70%]">
-            ${msg.content}
-          </span>
-          <span class="text-xs text-pong-highlight ${
-            isMe ? "mr-2" : "ml-2"
-          } mt-1">
-            ${
-              isMe ? "You" : friend?.username
-            } • ${new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
-          </span>
-        `;
+      <span class="${isMe ? "bg-pong-dark-primary" : "bg-[#BFBEAE]"} 
+                      text-black px-4 py-2 rounded-lg shadow-sm max-w-[70%]">
+        ${msg.content}
+      </span>
+      <span class="text-xs text-pong-highlight ${isMe ? "mr-2" : "ml-2"} mt-1">
+        ${isMe ? "You" : friend?.username} • ${new Date().toLocaleTimeString(
+          "en-US",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        )}
+      </span>
+    `;
         chatMessages.appendChild(msgDiv);
       });
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      if (!keepScroll) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
     }
+
+    chatMessages.addEventListener("scroll", async () => {
+      if (chatMessages.scrollTop === 0) {
+        const prevHeight = chatMessages.scrollHeight;
+        renderCount += renderStep;
+        renderMessages(true);
+        const newHeight = chatMessages.scrollHeight;
+        chatMessages.scrollTop = newHeight - prevHeight;
+      }
+    });
 
     renderMessages();
 

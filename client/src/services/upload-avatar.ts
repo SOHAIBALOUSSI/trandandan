@@ -2,7 +2,7 @@ import { displayToast } from "@/utils/display-toast";
 import { UploadAvatarRes } from "@/utils/response-messages";
 import { getCurrentUser } from "@/utils/user-store";
 
-export async function uploadAvatar(file: File): Promise<boolean> {
+export async function uploadAvatar(): Promise<boolean> {
   const btn = document.getElementById("upload-avatar-btn") as HTMLButtonElement;
   const avatar = document.getElementById("member-avatar") as HTMLImageElement;
   if (!btn || !avatar) return false;

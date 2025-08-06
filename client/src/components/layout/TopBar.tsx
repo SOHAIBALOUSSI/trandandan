@@ -1,7 +1,6 @@
 import { styles } from "@/styles/styles";
 import { clearNotificationCounter } from "@/services/notifications-service";
 import { handleSearchMembers } from "@/handlers/search-members";
-import { useRef } from "react";
 
 export function TopBar() {
   setTimeout(() => {

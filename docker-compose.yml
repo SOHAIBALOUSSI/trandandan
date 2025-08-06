@@ -91,7 +91,7 @@ services:
     restart: always
     env_file:
       - ./server/.env
-      
+
     networks:
       - trandenden-net
     volumes:
@@ -114,28 +114,45 @@ services:
       timeout: 5s
       retries: 5
 
-  nginx:
-    container_name: nginx-gateway
+  # nginx:
+  #   container_name: nginx-gateway
+  #   build:
+  #     context: .
+  #     dockerfile: client/nginx/Dockerfile
+  #   image: nginx-gateway
+  #   ports:
+  #     - "8080:80" # HTTP port
+  #     - "9090:443" # HTTPS/SSL port
+  #   depends_on:
+  #     - auth
+  #     - profile
+  #     - friends
+  #     - notifications
+  #     - chat
+  #     - redis
+  #     - rabbitmq
+  #     - game
+  #     - dashboard
+  #   networks:
+  #     - trandenden-net
+  #   restart: always
+
+  client-dev:
+    container_name: client-dev
     build:
-      context: .
-      dockerfile: client/nginx/Dockerfile
-    image: nginx-gateway
+      context: ./client
+      dockerfile: Dockerfile
+    working_dir: /app
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
     ports:
-      - "8080:80"    # HTTP port
-      - "9090:443"   # HTTPS/SSL port
-    depends_on:
-      - auth
-      - profile
-      - friends
-      - notifications
-      - chat
-      - redis
-      - rabbitmq
-      - game
-      - dashboard
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=1
     networks:
       - trandenden-net
-    restart: always
 
 networks:
   trandenden-net:
