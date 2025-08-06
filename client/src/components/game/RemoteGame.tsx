@@ -774,7 +774,6 @@ class FlowField {
               hasWonPlayerTwo = true;
               this.gameState.level =
                 getOldDataOfCurrentUserData.level + 1 + levelGain; // 1 is the win bonus
-              console.log("level", this.gameState.level);
               this.gameState.matchWon =
                 getOldDataOfCurrentUserData.matches_won + 1;
               this.gameState.matchLost =
@@ -819,11 +818,9 @@ class FlowField {
             currentUser.matches_lost = this.gameState.matchLost;
             if (this.gameState.playerId === 1 && flag_update === true) {
               flag_update = false;
-              console.log("level", this.gameState.level);
               this.updateUser(currentUser, hasWonPlayerOne);
             } else if (this.gameState.playerId === 2 && flag_update === true) {
               flag_update = false;
-              console.log("level", this.gameState.level);
               this.updateUser(currentUser, hasWonPlayerTwo);
             }
           }

@@ -72,7 +72,7 @@ server.rabbit.consumeMessages(async(request) => {
     } else if (request.type === 'DELETE') {
         const userId = request.userId;
         await deleteProfile(server.db, userId);
-        await await server.redis.sendCommand([
+        await server.redis.sendCommand([
             'JSON.DEL',
             `player:${userId}`,
             '$'

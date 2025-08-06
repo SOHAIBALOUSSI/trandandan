@@ -1,5 +1,4 @@
-function getUserHistory(req, reply, db) {
-  //
+async function getUserHistory(req, reply, db) {
   const userId = req.body.userId;
 
   console.log("Fetching history for user ID:", userId);
@@ -14,15 +13,12 @@ function getUserHistory(req, reply, db) {
     ORDER BY created_at DESC
   `;
 
-  // Use a Promise to wait for thisdb.all() properly
   try {
-    const rows = new Promise((resolve, reject) => {
-      db.all(query, [userId], (err, rows) => {
-        if (err) return reject(err);
-        resolve(rows);
-      });
-    });
-
+    // Use the Promise-based API from your SQLite plugin
+    const rows = await db.all(query, [userId]);
+    
+    console.log(`Found ${rows.length} games for user ${userId}`);
+    
     return reply.send(rows);
   } catch (err) {
     console.error("Error fetching user history:", err.message);

@@ -3,7 +3,7 @@ function gameLogic(gameState) {
   if (gameState.countdownActive) {
     return gameState;
   }
-  
+
   let step = 8;
   if (
     gameState.keypressd === "w" &&
@@ -84,9 +84,12 @@ function gameLogic(gameState) {
     gameState.ballY = 300;
     gameState.ballSpeed = 5;
     gameState.hitCount = 0;
-    
+
     // Start countdown after scoring (but not if game is over)
-    if (gameState.leftPlayerScore < gameState.rounds && gameState.rightPlayerScore < gameState.rounds) {
+    if (
+      gameState.leftPlayerScore < gameState.rounds &&
+      gameState.rightPlayerScore < gameState.rounds
+    ) {
       gameState.countdownActive = true;
       gameState.countdownTime = 3;
       gameState.needsCountdown = true; // Flag to trigger countdown in main handler
@@ -121,7 +124,7 @@ function serializeGameState(gameState) {
     ei: gameState.enemyId,
     mi: gameState.matchId,
     ca: gameState.countdownActive, // Add countdown active
-    ct: gameState.countdownTime     // Add countdown time
+    ct: gameState.countdownTime, // Add countdown time
   };
   return Buffer.from(JSON.stringify(compact));
 }
@@ -134,41 +137,61 @@ export function remoteGame(connection, req) {
   const playerRoomdId = req.query.roomId;
   let joined = false;
 
-  for (const [id] of Object.entries(rooms)) {
-    if (id === playerRoomdId) {
-      if (rooms[id].rateLimited >= 2) {
-        rooms[id].players.forEach((player) => {
+  console.log("Remote game connection established with userId:", token);
+  console.log("Player room ID:", playerRoomdId);
+
+  // First, check if this is a reconnection to an existing room
+  if (rooms[playerRoomdId]) {
+    // Check if this player is reconnecting
+    const existingPlayer = rooms[playerRoomdId].players.find(
+      (player) => player.token === token
+    );
+
+    if (existingPlayer) {
+      // Player is reconnecting
+      if (rooms[playerRoomdId].rateLimited >= 2) {
+        rooms[playerRoomdId].players.forEach((player) => {
           player.connection.send("disconnected.");
           player.connection.close();
         });
-        delete rooms[id];
+        delete rooms[playerRoomdId];
         return;
       }
-      rooms[id].players.forEach((player) => {
-        if (player.token === token) {
-          if (rooms[id].player1Timeout) clearTimeout(rooms[id].player1Timeout);
-          if (rooms[id].player2Timeout) clearTimeout(rooms[id].player2Timeout);
-          rooms[id].gameState.alive = true;
-          rooms[id].gameState.disconnected = true;
-          rooms[id].rateLimited++;
-          player.connection = connection;
-          joined = true;
-          roomId = id;
-          return true;
-        }
-      });
-    }
 
-    if (rooms[id].players.length < 2 && !joined) {
-      if (playerRoomdId === id) {
-        rooms[id].players.push({ token: token, connection: connection });
-        joined = true;
-        roomId = id;
-      }
-      break;
+      // Clear timeouts and update connection
+      if (rooms[playerRoomdId].player1Timeout)
+        clearTimeout(rooms[playerRoomdId].player1Timeout);
+      if (rooms[playerRoomdId].player2Timeout)
+        clearTimeout(rooms[playerRoomdId].player2Timeout);
+
+      rooms[playerRoomdId].gameState.alive = true;
+      rooms[playerRoomdId].gameState.disconnected = true;
+      rooms[playerRoomdId].rateLimited++;
+      existingPlayer.connection = connection;
+      joined = true;
+      roomId = playerRoomdId;
+
+      console.log(`Player ${token} reconnected to room ${roomId}`);
+    } else if (rooms[playerRoomdId].players.length < 2) {
+      // New player joining existing room
+      rooms[playerRoomdId].players.push({
+        token: token,
+        connection: connection,
+      });
+      joined = true;
+      roomId = playerRoomdId;
+
+      console.log(
+        `Player ${token} joined existing room ${roomId}. Players: ${rooms[roomId].players.length}/2`
+      );
+    } else {
+      // Room is full
+      connection.send("Room is full");
+      connection.close();
+      return;
     }
   }
-
+  
   if (!joined) {
     roomId = playerRoomdId;
     rooms[roomId] = {
@@ -199,14 +222,18 @@ export function remoteGame(connection, req) {
         endTime: 0,
         enemyId: 0,
         countdownActive: false, // Add countdown state
-        countdownTime: 0,       // Add countdown time
-        needsCountdown: false // Add this flag
+        countdownTime: 0, // Add countdown time
+        needsCountdown: false, // Add this flag
       },
     };
   }
 
   if (rooms[roomId].players.length === 2) {
-    if (!rooms[roomId].players.every((player) => player.connection.readyState === WebSocket.OPEN)) {
+    if (
+      !rooms[roomId].players.every(
+        (player) => player.connection.readyState === WebSocket.OPEN
+      )
+    ) {
       rooms[roomId].players.forEach((player) => {
         player.connection.send("One or both players are not connected.");
         player.connection.close();
@@ -238,17 +265,17 @@ export function remoteGame(connection, req) {
         }
 
         const serverGameState = rooms[roomId].gameState;
-        
+
         // Only process input if countdown is not active
         // if (!serverGameState.countdownActive) {
-          serverGameState.keypressd = gameState.keypressd;
+        serverGameState.keypressd = gameState.keypressd;
         // }
-        
+
         serverGameState.playerId = playerId;
         serverGameState.matchId = roomId;
 
         const updatedState = gameLogic(serverGameState);
-        
+
         // Check if we need to start a new countdown after scoring
         if (updatedState.needsCountdown) {
           updatedState.needsCountdown = false; // Reset the flag
@@ -331,7 +358,7 @@ export function remoteGame(connection, req) {
 // Add countdown function for when someone scores
 function startPointCountdown(roomId, player1, player2) {
   if (!rooms[roomId]) return;
-  
+
   const gameState = rooms[roomId].gameState;
   gameState.countdownActive = true;
   gameState.countdownTime = 3;
@@ -345,39 +372,38 @@ function startPointCountdown(roomId, player1, player2) {
     }
 
     const currentGameState = rooms[roomId].gameState;
-    
+
     // console.log(`Point countdown: ${currentGameState.countdownTime}`);
-    
+
     if (currentGameState.countdownTime > 0) {
       // Send countdown update to both players
       currentGameState.playerId = 1;
       if (player1.readyState === WebSocket.OPEN) {
         player1.send(serializeGameState(currentGameState));
       }
-      
+
       currentGameState.playerId = 2;
       if (player2.readyState === WebSocket.OPEN) {
         player2.send(serializeGameState(currentGameState));
       }
-      
+
       currentGameState.countdownTime--;
     } else {
       // Countdown finished, resume the game
       currentGameState.countdownActive = false;
       currentGameState.countdownTime = 0;
-      
-      
+
       // Send game resume signal to both players
       currentGameState.playerId = 1;
       if (player1.readyState === WebSocket.OPEN) {
         player1.send(serializeGameState(currentGameState));
       }
-      
+
       currentGameState.playerId = 2;
       if (player2.readyState === WebSocket.OPEN) {
         player2.send(serializeGameState(currentGameState));
       }
-      
+
       clearInterval(countdownInterval);
     }
   }, 1000); // Update every second
@@ -386,7 +412,7 @@ function startPointCountdown(roomId, player1, player2) {
 // Add countdown function
 function startCountdown(roomId, player1, player2) {
   if (!rooms[roomId]) return;
-  
+
   rooms[roomId].gameState.countdownActive = true;
   rooms[roomId].gameState.countdownTime = 3;
 
@@ -397,28 +423,28 @@ function startCountdown(roomId, player1, player2) {
     }
 
     const gameState = rooms[roomId].gameState;
-    
+
     if (gameState.countdownTime > 0) {
       // Send countdown update to both players
       gameState.playerId = 1;
       player1.send(serializeGameState(gameState));
-      
+
       gameState.playerId = 2;
       player2.send(serializeGameState(gameState));
-      
+
       gameState.countdownTime--;
     } else {
       // Countdown finished, start the game
       gameState.countdownActive = false;
       gameState.countdownTime = 0;
-      
+
       // Send game start signal to both players
       gameState.playerId = 1;
       player1.send(serializeGameState(gameState));
-      
+
       gameState.playerId = 2;
       player2.send(serializeGameState(gameState));
-      
+
       clearInterval(countdownInterval);
       console.log(`Game started in room ${roomId}`);
     }

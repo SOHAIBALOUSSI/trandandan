@@ -63,13 +63,21 @@ function WinActivity(
     `<span class="text-pong-dark-primary"> won a match against </span>`
   );
   textDiv.appendChild(createUserLink(targetUser));
-
   leftDiv.appendChild(textDiv);
 
   const scoreDiv = document.createElement("div");
   scoreDiv.className = `text-pong-dark-secondary font-semibold ${fontSizes.smallTextFontSize}`;
-  scoreDiv.textContent = `${activity.leftPlayerScore} - ${activity.rightPlayerScore}`;
 
+  const userScore =
+    activity.playerId === 1
+      ? activity.leftPlayerScore
+      : activity.rightPlayerScore;
+  const enemyScore =
+    activity.playerId === 1
+      ? activity.rightPlayerScore
+      : activity.leftPlayerScore;
+
+  scoreDiv.textContent = `${userScore} - ${enemyScore}`;
   li.appendChild(leftDiv);
   li.appendChild(scoreDiv);
 
@@ -95,13 +103,21 @@ function LossActivity(
     `<span class="text-pong-dark-primary"> lost a match to </span>`
   );
   textDiv.appendChild(createUserLink(targetUser));
-
   leftDiv.appendChild(textDiv);
 
   const scoreDiv = document.createElement("div");
   scoreDiv.className = `text-pong-dark-secondary font-semibold ${fontSizes.smallTextFontSize}`;
-  scoreDiv.textContent = `${activity.leftPlayerScore} - ${activity.rightPlayerScore}`;
 
+  const userScore =
+    activity.playerId === 1
+      ? activity.leftPlayerScore
+      : activity.rightPlayerScore;
+  const enemyScore =
+    activity.playerId === 1
+      ? activity.rightPlayerScore
+      : activity.leftPlayerScore;
+
+  scoreDiv.textContent = `${userScore} - ${enemyScore}`;
   li.appendChild(leftDiv);
   li.appendChild(scoreDiv);
 
@@ -109,16 +125,14 @@ function LossActivity(
 }
 
 async function renderActivity(activity: GameActivity) {
-  const user: UserProfile | null = await getUserById(activity.leftPlayerId);
-  const targetUser: UserProfile | null = await getUserById(
-    activity.rightPlayerId
-  );
+  const user: UserProfile | null = await getUserById(activity.userId);
+  const targetUser: UserProfile | null = await getUserById(activity.enemyId);
   if (!user || !targetUser) return null;
 
   switch (activity.gameEndResult) {
-    case "WIN":
+    case "Won":
       return WinActivity(user, targetUser, activity);
-    case "LOSE":
+    case "Lost":
       return LossActivity(user, targetUser, activity);
     default:
       return null;
@@ -139,77 +153,34 @@ export function RecentActivityFeed() {
   ul.className = `space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`;
   wrapper.appendChild(ul);
 
-  const fakeData: GameActivity[] = [
-    {
-      leftPlayerId: 1,
-      rightPlayerId: 2,
-      gameEndResult: "WIN",
-      leftPlayerScore: 5,
-      rightPlayerScore: 2,
-    },
-    {
-      leftPlayerId: 2,
-      rightPlayerId: 1,
-      gameEndResult: "LOSE",
-      leftPlayerScore: 4,
-      rightPlayerScore: 5,
-    },
-    {
-      leftPlayerId: 3,
-      rightPlayerId: 4,
-      gameEndResult: "WIN",
-      leftPlayerScore: 5,
-      rightPlayerScore: 1,
-    },
-    {
-      leftPlayerId: 4,
-      rightPlayerId: 3,
-      gameEndResult: "LOSE",
-      leftPlayerScore: 3,
-      rightPlayerScore: 5,
-    },
-    {
-      leftPlayerId: 3,
-      rightPlayerId: 4,
-      gameEndResult: "WIN",
-      leftPlayerScore: 5,
-      rightPlayerScore: 1,
-    },
-    {
-      leftPlayerId: 4,
-      rightPlayerId: 3,
-      gameEndResult: "LOSE",
-      leftPlayerScore: 3,
-      rightPlayerScore: 5,
-    },
-  ];
-
-  let activities: GameActivity[] = [...fakeData];
-
-  ul.innerHTML = "";
-  activities.forEach(async (activity) => {
-    const elem = await renderActivity(activity);
-    if (elem) ul.appendChild(elem);
-  });
+  let activities: GameActivity[] = [];
 
   const ws = new window.WebSocket("wss://localhost:9090/game/recent-activity");
 
+  ws.onopen = () => {
+    console.log("WebSocket connection established for recent activity feed.");
+  };
+
   ws.onmessage = (event) => {
     try {
-      const data = JSON.parse(event.data);
-      if (Array.isArray(data)) {
-        activities = [...data, ...activities].slice(0, 20);
-        ul.innerHTML = "";
-        activities.forEach(async (activity) => {
+      activities = JSON.parse(event.data);
+      console.log("Received activity data:", activities);
+
+      activities = [...activities].slice(0, 20);
+      ul.innerHTML = "";
+      (async () => {
+        for (const activity of activities) {
+          console.log("Processing activity:", activity);
           const elem = await renderActivity(activity);
           if (elem) ul.appendChild(elem);
-        });
-      }
+        }
+        if (activities.length === 0) {
+          ul.innerHTML = `<li class="text-pong-dark-secondary text-center">No recent activity.</li>`;
+        }
+      })();
     } catch (err) {
-      displayToast(
-        "The club’s lights are out at the moment. Try again shortly.",
-        "error"
-      );
+      ul.innerHTML = `<li class="text-pong-error text-center">Unable to load activity feed.</li>`;
+      console.error("Error parsing activity data:", err);
     }
   };
 

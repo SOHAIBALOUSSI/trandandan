@@ -8,6 +8,10 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/auth-service/:/usr/src/app/
+      - /usr/src/app/node_modules
+
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -21,6 +25,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/profile-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -34,6 +41,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/relationships-service/:/usr/src/app/
+      - /usr/src/app/node_modules
 
     depends_on:
       rabbitmq:
@@ -74,6 +84,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/dashboard-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -84,6 +97,8 @@ services:
     restart: always
     networks:
       - trandenden-net
+    volumes:
+      - /data
   game:
     container_name: game-service
     build: server/game-service
@@ -91,7 +106,6 @@ services:
     restart: always
     env_file:
       - ./server/.env
-
     networks:
       - trandenden-net
     volumes:
@@ -114,45 +128,45 @@ services:
       timeout: 5s
       retries: 5
 
-  # nginx:
-  #   container_name: nginx-gateway
-  #   build:
-  #     context: .
-  #     dockerfile: client/nginx/Dockerfile
-  #   image: nginx-gateway
-  #   ports:
-  #     - "8080:80" # HTTP port
-  #     - "9090:443" # HTTPS/SSL port
-  #   depends_on:
-  #     - auth
-  #     - profile
-  #     - friends
-  #     - notifications
-  #     - chat
-  #     - redis
-  #     - rabbitmq
-  #     - game
-  #     - dashboard
-  #   networks:
-  #     - trandenden-net
-  #   restart: always
-
-  client-dev:
-    container_name: client-dev
+  nginx:
+    container_name: nginx-gateway
     build:
-      context: ./client
-      dockerfile: Dockerfile
-    working_dir: /app
-    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+      context: .
+      dockerfile: client/nginx/Dockerfile
+    image: nginx-gateway
     ports:
-      - "5173:5173"
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=1
+      - "8080:80" # HTTP port
+      - "9090:443" # HTTPS/SSL port
+    depends_on:
+      - auth
+      - profile
+      - friends
+      - notifications
+      - chat
+      - redis
+      - rabbitmq
+      - game
+      - dashboard
     networks:
       - trandenden-net
+    restart: always
+
+  # client-dev:
+  #   container_name: client-dev
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   working_dir: /app
+  #   command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+  #   ports:
+  #     - "5173:5173"
+  #   volumes:
+  #     - ./client:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=1
+  #   networks:
+  #     - trandenden-net
 
 networks:
   trandenden-net:

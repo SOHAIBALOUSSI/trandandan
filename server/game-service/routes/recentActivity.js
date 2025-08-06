@@ -3,22 +3,22 @@ let lastSentGameId = 0; // replaces lastMatchId
 
 async function pollForNewMatches(db) {
   try {
-    console.log("Polling for new matches...");
+    // console.log("Polling for new matches...");
     
     // First, let's check if we can query the database at all
     const countResult = await db.get(`SELECT COUNT(*) as total FROM games`);
-    console.log("Total games in database:", countResult.total);
+    // console.log("Total games in database:", countResult.total);
     
     // Use Promise-based API instead of callback-based
     const latestRow = await db.get(`SELECT match_id FROM games ORDER BY id DESC LIMIT 1`);
     
     if (!latestRow) {
-      console.log("No games found in database");
+      // console.log("No games found in database");
       return;
     }
 
     const latestMatchId = latestRow.match_id;
-    console.log("Latest match ID:", latestMatchId);
+    // console.log("Latest match ID:", latestMatchId);
     
     // Get last two games with that match_id
     const rows = await db.all(
@@ -30,21 +30,21 @@ async function pollForNewMatches(db) {
     );
 
     if (!rows || rows.length === 0) {
-      console.log("No games found for match ID:", latestMatchId);
+      // console.log("No games found for match ID:", latestMatchId);
       return;
     }
 
-    console.log("Found", rows.length, "games for match ID:", latestMatchId);
+    // console.log("Found", rows.length, "games for match ID:", latestMatchId);
 
     // Check if the most recent game was already sent
     const maxGameId = rows[0].id;
     if (maxGameId <= lastSentGameId) {
-      console.log("Game already sent, skipping...");
+      // console.log("Game already sent, skipping...");
       return;
     }
 
     lastSentGameId = maxGameId; // update tracker
-    console.log("Sending new game data, game ID:", maxGameId);
+    // console.log("Sending new game data, game ID:", maxGameId);
 
     const payload = rows.map((row) => ({
       enemyId: row.enemy_id,
@@ -55,13 +55,13 @@ async function pollForNewMatches(db) {
       gameEndResult: row.game_end_result,
     }));
 
-    console.log("Payload to send:", payload);
-    console.log("Connected clients:", connectedClients.length);
+    // console.log("Payload to send:", payload);
+    // console.log("Connected clients:", connectedClients.length);
 
     for (const client of connectedClients) {
       try {
         client.send(JSON.stringify(payload));
-        console.log("Sent data to client");
+        // console.log("Sent data to client");
       } catch (err) {
         console.error("WebSocket send error:", err.message);
       }
@@ -73,22 +73,22 @@ async function pollForNewMatches(db) {
 
 // This is the function you will import
 export default function recentActivity(connection, req, db) {
-  console.log("Initializing recentActivity function..."); // Log initialization
+  // console.log("Initializing recentActivity function..."); // Log initialization
   connectedClients.push(connection);
 
-  console.log("Recent activity client connected");
+  // console.log("Recent activity client connected");
 
   connection.on("message", (msg) => {
-    console.log("Message from client:", msg.toString());
+    // console.log("Message from client:", msg.toString());
   });
 
   connection.on("close", () => {
-    console.log("Recent activity client disconnected");
+    // console.log("Recent activity client disconnected");
     const idx = connectedClients.indexOf(connection);
     if (idx !== -1) connectedClients.splice(idx, 1);
   });
 
-  console.log("Setting up polling interval..."); // Log setInterval setup
+  // console.log("Setting up polling interval..."); // Log setInterval setup
 
   connection.on("error", (err) => {
     console.error("Webconnection error:", err);

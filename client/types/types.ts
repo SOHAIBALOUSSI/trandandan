@@ -72,19 +72,11 @@ export type MessageRead = {
   message_id: number;
 };
 
-// export type GameActivity = {
-//   enemyId: number;
-//   userId: number;
-//   gameEndResult: "WIN" | "LOSE";
-//   leftPlayerScore: number;
-//   rightPlayerScore: number;
-//   playerId: 1 | 2; // 1 for left player, 2 for right player
-// };
-
 export type GameActivity = {
-  leftPlayerId: number;
-  rightPlayerId: number;
-  gameEndResult: "WIN" | "LOSE";
+  enemyId: number;
+  userId: number;
+  gameEndResult: "Lost" | "Won";
   leftPlayerScore: number;
   rightPlayerScore: number;
+  playerId: 1 | 2; // 1 for left player, 2 for right player
 };

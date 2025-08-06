@@ -15,12 +15,14 @@ export async function addProfile(db, id, username, email, avatar_url, gender) {
   let result;
   if (avatar_url) {
     result = await db.run(
-      "INSERT INTO profile (userId, username, email, avatar_url, rank) VALUES (?, ?, ?, ?, ?)",
+      `INSERT INTO profile (userId, username, email, avatar_url, rank) VALUES (?, ?, ?, ?, 
+        (SELECT COUNT(*) + 1 FROM profile WHERE profile.userId < ?))`,
       [id, username, email, avatar_url, id]
     );	
   } else {
     result = await db.run(
-      "INSERT INTO profile (userId, username, email, gender, rank) VALUES (?, ?, ?, ?, ?)",
+      `INSERT INTO profile (userId, username, email, gender, rank) VALUES (?, ?, ?, ?, 
+        (SELECT COUNT(*) + 1 FROM profile WHERE profile.userId < ?))`,
       [id, username, email, gender, id]
     );
   }
