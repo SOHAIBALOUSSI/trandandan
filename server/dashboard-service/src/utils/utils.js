@@ -34,8 +34,6 @@ async function getPlayersData(redis, rabbit, socket) {
         }
         
         finalPlayers.sort(sortPlayers);
-        
-        
         console.log("Players from dashboard-service", finalPlayers);
 
         finalPlayers.forEach((player, rank) => {

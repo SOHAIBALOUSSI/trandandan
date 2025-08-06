@@ -97,6 +97,8 @@ services:
     restart: always
     networks:
       - trandenden-net
+    volumes:
+      - /data
   game:
     container_name: game-service
     build: server/game-service
@@ -104,7 +106,6 @@ services:
     restart: always
     env_file:
       - ./server/.env
-      
     networks:
       - trandenden-net
     volumes:
