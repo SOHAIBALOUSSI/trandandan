@@ -58,6 +58,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/notifications-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -71,6 +74,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
+    volumes:
+      - ./server/chat-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
