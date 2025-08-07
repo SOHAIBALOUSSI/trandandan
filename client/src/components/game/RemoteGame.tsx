@@ -444,7 +444,6 @@ class FlowField {
     const isDark =
       document.getElementById("game-screen")?.dataset.theme === "dark";
 
-    // console.log("ballX: ",this.gameState.ballX)
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
     // Draw middle separator line (dashed)
@@ -459,6 +458,17 @@ class FlowField {
     this.ctx.setLineDash([]);
     this.ctx.restore();
 
+    // player names
+    this.ctx.save();
+    this.ctx.font = "bold 22px Orbitron, sans-serif";
+    this.ctx.fillStyle = "#00B894";
+    this.ctx.textAlign = "left";
+    this.ctx.fillText(this.deps.userName || "Left Player", 20, 30);
+    this.ctx.fillStyle = "#FFD700";
+    this.ctx.textAlign = "right";
+    this.ctx.fillText(`Enemy`, this.canvasWidth - 20, 30);
+    this.ctx.restore();
+
     if (
       this.gameState.countdownTime === 0 ||
       this.gameState.countdownTime === 1 ||
@@ -467,7 +477,7 @@ class FlowField {
     )
       this.gameState.countdownActive = true;
     else this.gameState.countdownActive = false;
-    // console.log("Drawing game state: ", this.gameState.countdownTime, this.gameState.countdownActive);
+
     if (
       this.gameState?.countdownActive &&
       (this.gameState?.countdownTime ?? 0) > 0
@@ -475,9 +485,11 @@ class FlowField {
       this.drawCountdown();
       return;
     }
+
     // Left paddle
-    this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
+    this.ctx.fillStyle = "#00B894";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.strokeStyle = "#00B894";
     this.ctx.strokeRect(
       10,
       this.gameState.paddleLeftY,
@@ -486,12 +498,14 @@ class FlowField {
     );
 
     // Right paddle
+    this.ctx.fillStyle = "#FFD700";
     this.ctx.fillRect(
       980,
       this.gameState.paddelRightY,
       this.width,
       this.height
     );
+    this.ctx.strokeStyle = "#FFD700";
     this.ctx.strokeRect(
       980,
       this.gameState.paddelRightY,
@@ -667,9 +681,11 @@ class FlowField {
       this.gameState = parsedData;
       this.gameState = parsedData;
       if (this.gameState.playerId === 1) {
-        this.deps.playerSide.innerText = "YOU ARE ON THE LEFT SIDE";
+        this.deps.playerSide.innerText =
+          "YOU ARE ON THE LEFT SIDE - BLUE PADDLE";
       } else if (this.gameState.playerId === 2) {
-        this.deps.playerSide.innerText = "YOU ARE ON THE RIGHT SIDE";
+        this.deps.playerSide.innerText =
+          "YOU ARE ON THE RIGHT SIDE - YELLOW PADDLE";
       }
       this.deps.rightPlayerScore.textContent = String(
         this.gameState.rightPlayerScore

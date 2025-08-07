@@ -17,6 +17,17 @@ function saveSeen() {
 }
 
 function updateCounter() {
+  const badge = document.getElementById("notif-badge") as HTMLSpanElement;
+  if (badge) {
+    badge.textContent = unseenCount > 0 ? String(unseenCount) : "0";
+    if (unseenCount > 0) {
+      badge.classList.remove("text-black", "bg-pong-dark-primary");
+      badge.classList.add("text-white", "bg-pong-accent");
+    } else {
+      badge.classList.add("text-black", "bg-pong-dark-primary");
+      badge.classList.remove("text-white", "bg-pong-accent");
+    }
+  }
   window.dispatchEvent(
     new CustomEvent("notification-count", { detail: unseenCount })
   );
@@ -80,7 +91,6 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
           </span>
         </div>
       `;
-      // show it only if the user is connected in the app
       if (!groupedIds) {
         setTimeout(() => {
           showInviteNotification(
@@ -121,9 +131,8 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
       console.log("Play again request received:", notif);
       displayToast("You have a new play again request.", "success");
       setTimeout(() => {
-        console.log("Play again request received:", notif);
         showInviteNotification(
-          sender?.username || "Unknown",
+          notif.sender_id ? notif.sender_id.toString() : "Unknown",
           async () => {
             const roomId = await getRoomId(notif.sender_id || 0);
             if (roomId) {
@@ -132,12 +141,16 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
                 notif.sender_id || 0,
                 notif.recipient_id || 0
               );
-              markNotificationsAsRead([notif.notification_id]);
+              if (notif.notification_id) {
+                markNotificationsAsRead([notif.notification_id]);
+              }
               navigateTo(`/remote?roomId=${roomId}`);
             }
           },
           () => {
-            markNotificationsAsRead([notif.notification_id]);
+            if (notif.notification_id) {
+              markNotificationsAsRead([notif.notification_id]);
+            }
             displayToast("Invite declined.", "error");
           }
         );
@@ -227,40 +240,48 @@ export function startNotificationListener() {
 
       console.log("Notification received:", notif);
 
+      if (notif.type === "FRIEND_REQUEST_CANCELED" && notif.sender_id) {
+        const notifList = document.getElementById("notif-list");
+        if (notifList) {
+          Array.from(notifList.children).forEach((li) => {
+            if (
+              li instanceof HTMLElement &&
+              li.innerHTML.includes("fa-user-plus") &&
+              li.innerHTML.includes(`>${notif.sender_id}<`)
+            ) {
+              li.remove();
+            }
+          });
+        }
+        updateCounter();
+        return;
+      }
+
       if (
         typeof notif.notifications_count === "number" &&
         Array.isArray(notif.notification_ids) &&
         notif.notification_ids.length > 0
       ) {
-        if (notif.type === "MESSAGE_RECEIVED") {
+        if (notif.type === "MESSAGE_RECEIVED" || notif.type === "INVITE_SENT") {
           const notifList = document.getElementById("notif-list");
           if (notifList) {
-            const oldLi = document.getElementById(
-              `msg-group-${notif.sender_id}`
-            );
-            if (oldLi) oldLi.remove();
-            notifList.prepend(
-              await renderGroupedMessageNotification(
-                notif,
-                notif.notifications_count,
-                notif.notification_ids
-              )
-            );
-          }
-          notif.notification_ids.forEach((id: number) => {
-            if (!seenIds.has(id)) {
-              unseenCount++;
+            if (notif.type === "MESSAGE_RECEIVED") {
+              const oldLi = document.getElementById(
+                `msg-group-${notif.sender_id}`
+              );
+              if (oldLi) oldLi.remove();
+              notifList.prepend(
+                await renderGroupedMessageNotification(
+                  notif,
+                  notif.notifications_count,
+                  notif.notification_ids
+                )
+              );
+            } else {
+              notifList.prepend(
+                await renderNotification(notif, notif.notification_ids)
+              );
             }
-          });
-          updateCounter();
-          return;
-        }
-        if (notif.type === "INVITE_SENT") {
-          const notifList = document.getElementById("notif-list");
-          if (notifList) {
-            notifList.prepend(
-              await renderNotification(notif, notif.notification_ids)
-            );
           }
           notif.notification_ids.forEach((id: number) => {
             if (!seenIds.has(id)) {
@@ -315,7 +336,6 @@ export function startNotificationListener() {
         console.log("Play again request received:", notif);
         displayToast("You have a new play again request.", "success");
         setTimeout(() => {
-          console.log("Play again request received:", notif);
           showInviteNotification(
             notif.sender_id ? notif.sender_id.toString() : "Unknown",
             async () => {
@@ -326,12 +346,16 @@ export function startNotificationListener() {
                   notif.sender_id || 0,
                   notif.recipient_id || 0
                 );
-                markNotificationsAsRead([notif.notification_id]);
+                if (notif.notification_id) {
+                  markNotificationsAsRead([notif.notification_id]);
+                }
                 navigateTo(`/remote?roomId=${roomId}`);
               }
             },
             () => {
-              markNotificationsAsRead([notif.notification_id]);
+              if (notif.notification_id) {
+                markNotificationsAsRead([notif.notification_id]);
+              }
               displayToast("Invite declined.", "error");
             }
           );
@@ -345,6 +369,10 @@ export function startNotificationListener() {
         while (notifList.children.length > 20) {
           notifList.removeChild(notifList.lastChild!);
         }
+      }
+      if (notif.notification_id && !seenIds.has(notif.notification_id)) {
+        unseenCount++;
+        updateCounter();
       }
     } catch (err) {
       displayToast(

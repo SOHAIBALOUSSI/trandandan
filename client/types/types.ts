@@ -46,6 +46,7 @@ export type Notification = {
   type:
     | "FRIEND_REQUEST_SENT"
     | "FRIEND_REQUEST_ACCEPTED"
+    | "FRIEND_REQUEST_CANCELED"
     | "FRIEND_REQUEST_REJECTED"
     | "MESSAGE_RECEIVED"
     | "INVITE_SENT"
