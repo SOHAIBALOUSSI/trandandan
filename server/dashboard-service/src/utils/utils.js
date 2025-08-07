@@ -14,7 +14,7 @@ async function getPlayersData(redis, rabbit, socket) {
             '$'
         ])
         console.log("HAHOMA PLAYERS: ", players);
-        const filteredPlayers = await Promise.all(players
+        finalPlayers = await Promise.all(players
             .map(jsonPlayer => {
                 const player = JSON.parse(jsonPlayer);
                 if (player && player[0])
@@ -22,16 +22,6 @@ async function getPlayersData(redis, rabbit, socket) {
 
             })
         );
-        
-        for (const player of filteredPlayers) {
-            if (player !== null && player !== undefined) {
-                let blockExist = await redis.sIsMember(`blocker:${socket.userId}`, `${player.userId}`);
-                if (!blockExist)
-                    blockExist = await redis.sIsMember(`blocker:${player.userId}`, `${socket.userId}`);
-                if (!blockExist)
-                    finalPlayers.push(player);
-            }
-        }
         
         finalPlayers.sort(sortPlayers);
         console.log("Players from dashboard-service", finalPlayers);

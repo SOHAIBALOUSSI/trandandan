@@ -130,7 +130,28 @@ function serializeGameState(gameState) {
 }
 
 const rooms = {};
-
+function startSinglePlayerTimeout(roomId, playerId) {
+  if (!rooms[roomId]) return;
+  
+  
+  const timeoutId = setTimeout(() => {
+    if (!rooms[roomId]) return;
+    
+    if (rooms[roomId].players.length === 1) {
+      console.log(`Timeout reached. Removing player ${playerId} from room ${roomId}`);
+      
+      const player = rooms[roomId].players[0];
+      if (player.connection.readyState === WebSocket.OPEN) {
+        player.connection.send("No opponent found. Returning to lobby.");
+        player.connection.close();
+      }
+      
+      delete rooms[roomId];
+    }
+  }, 10000); 
+  
+  rooms[roomId].singlePlayerTimeout = timeoutId;
+}
 export function remoteGame(connection, req) {
   let roomId;
   const token = req.query.token;
@@ -163,6 +184,8 @@ export function remoteGame(connection, req) {
         clearTimeout(rooms[playerRoomdId].player1Timeout);
       if (rooms[playerRoomdId].player2Timeout)
         clearTimeout(rooms[playerRoomdId].player2Timeout);
+      if (rooms[playerRoomdId].singlePlayerTimeout)
+        clearTimeout(rooms[playerRoomdId].singlePlayerTimeout);
 
       rooms[playerRoomdId].gameState.alive = true;
       rooms[playerRoomdId].gameState.disconnected = true;
@@ -173,7 +196,6 @@ export function remoteGame(connection, req) {
 
       console.log(`Player ${token} reconnected to room ${roomId}`);
     } else if (rooms[playerRoomdId].players.length < 2) {
-      // New player joining existing room
       rooms[playerRoomdId].players.push({
         token: token,
         connection: connection,
@@ -226,6 +248,7 @@ export function remoteGame(connection, req) {
         needsCountdown: false, // Add this flag
       },
     };
+    startSinglePlayerTimeout(roomId, token);
   }
 
   if (rooms[roomId].players.length === 2) {
@@ -326,6 +349,9 @@ export function remoteGame(connection, req) {
 
     player1.on("close", () => {
       if (!rooms[roomId]) return;
+      if (rooms[roomId].singlePlayerTimeout) {
+        clearTimeout(rooms[roomId].singlePlayerTimeout);
+      }
       rooms[roomId].gameState.alive = false;
       rooms[roomId].player1Timeout = setTimeout(() => {
         if (rooms[roomId] && !rooms[roomId].gameState.alive) {
@@ -341,6 +367,9 @@ export function remoteGame(connection, req) {
 
     player2.on("close", () => {
       if (!rooms[roomId]) return;
+      if (rooms[roomId].singlePlayerTimeout) {
+        clearTimeout(rooms[roomId].singlePlayerTimeout);
+      }
       rooms[roomId].gameState.alive = false;
       rooms[roomId].player2Timeout = setTimeout(() => {
         if (rooms[roomId] && !rooms[roomId].gameState.alive) {
