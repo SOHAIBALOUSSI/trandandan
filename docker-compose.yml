@@ -98,7 +98,7 @@ services:
     networks:
       - trandenden-net
     volumes:
-      - /data
+      - redis-data:/data
   game:
     container_name: game-service
     build: server/game-service
@@ -155,3 +155,7 @@ networks:
   trandenden-net:
     name: trandenden-net
     driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
