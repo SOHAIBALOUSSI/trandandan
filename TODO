@@ -1,6 +1,3 @@
-- Token Authorization for game service endpoints
 - correct the recent activity 
 - users status (online / offline)
-- handle responsivness in games
-- if user blocked remove from dash and chat and search 
-- ws message on cancel request
+- primary 2fa method set

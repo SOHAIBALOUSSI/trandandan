@@ -42,7 +42,7 @@ export function RemoteGame() {
   	<h1 id="title" class="${styles.gameTitle}">
       BHV <span class="text-pong-dark-accent font-orbitron">PONG</span>
   	</h1>
-    <h2 class="text-center font-orbitron text-lg mb-8 font-bold" id="playerSide">YOU ARE LEFT PLAYER</h2>
+    <h2 class="text-center font-orbitron text-2xl my-8 font-bold" id="playerSide"></h2>
 
 	<div class="flex items-center justify-center flex-col w-full" style="min-height:${canvasHeight}px;">
       <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4 transition-all duration-300">
@@ -59,14 +59,14 @@ export function RemoteGame() {
       </div>
   	</div>
 
-    <div id="gameTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+    <div id="gameTab" class="game-tab ${styles.gameTab} hidden">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
         <h1 id="result" class="text-2xl mt-2 text-amber-50">WON</h1>
         <button id="restartButton" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
       </div>
     </div>
-    <div id="disconnected" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+    <div id="disconnected" class="game-tab ${styles.gameTab} hidden">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
         <h1 class="text-2xl mt-2 text-amber-50"> DISCONNECTED</h1>
@@ -426,9 +426,7 @@ class FlowField {
     fetch("/game/storePlayerData", {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(playerData),
     })
       .then((response) => response.json())
@@ -459,15 +457,15 @@ class FlowField {
     this.ctx.restore();
 
     // player names
-    this.ctx.save();
-    this.ctx.font = "bold 22px Orbitron, sans-serif";
-    this.ctx.fillStyle = "#00B894";
-    this.ctx.textAlign = "left";
-    this.ctx.fillText(this.deps.userName || "Left Player", 20, 30);
-    this.ctx.fillStyle = "#FFD700";
-    this.ctx.textAlign = "right";
-    this.ctx.fillText(`Enemy`, this.canvasWidth - 20, 30);
-    this.ctx.restore();
+    // this.ctx.save();
+    // this.ctx.font = "bold 22px Orbitron, sans-serif";
+    // this.ctx.fillStyle = "#AEBABF";
+    // this.ctx.textAlign = "left";
+    // this.ctx.fillText("Left Player", 20, 30);
+    // this.ctx.fillStyle = "#E05E4B";
+    // this.ctx.textAlign = "right";
+    // this.ctx.fillText("Right Player", this.canvasWidth - 20, 30);
+    // this.ctx.restore();
 
     if (
       this.gameState.countdownTime === 0 ||
@@ -487,9 +485,9 @@ class FlowField {
     }
 
     // Left paddle
-    this.ctx.fillStyle = "#00B894";
+    this.ctx.fillStyle = "#AEBABF";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
-    this.ctx.strokeStyle = "#00B894";
+    this.ctx.strokeStyle = "#AEBABF";
     this.ctx.strokeRect(
       10,
       this.gameState.paddleLeftY,
@@ -498,14 +496,14 @@ class FlowField {
     );
 
     // Right paddle
-    this.ctx.fillStyle = "#FFD700";
+    this.ctx.fillStyle = "#E05E4B";
     this.ctx.fillRect(
       980,
       this.gameState.paddelRightY,
       this.width,
       this.height
     );
-    this.ctx.strokeStyle = "#FFD700";
+    this.ctx.strokeStyle = "#E05E4B";
     this.ctx.strokeRect(
       980,
       this.gameState.paddelRightY,
@@ -599,8 +597,9 @@ class FlowField {
   }
   private drawGameElements(isDark: boolean): void {
     // Left paddle
-    this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
+    this.ctx.fillStyle = "#AEBABF";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.strokeStyle = "#AEBABF";
     this.ctx.strokeRect(
       10,
       this.gameState.paddleLeftY,
@@ -609,12 +608,14 @@ class FlowField {
     );
 
     // Right paddle
+    this.ctx.fillStyle = "#E05E4B";
     this.ctx.fillRect(
       980,
       this.gameState.paddelRightY,
       this.width,
       this.height
     );
+    this.ctx.strokeStyle = "#E05E4B";
     this.ctx.strokeRect(
       980,
       this.gameState.paddelRightY,
@@ -682,10 +683,10 @@ class FlowField {
       this.gameState = parsedData;
       if (this.gameState.playerId === 1) {
         this.deps.playerSide.innerText =
-          "YOU ARE ON THE LEFT SIDE - BLUE PADDLE";
+          "YOU ARE ON THE LEFT SIDE - GRAY PADDLE";
       } else if (this.gameState.playerId === 2) {
         this.deps.playerSide.innerText =
-          "YOU ARE ON THE RIGHT SIDE - YELLOW PADDLE";
+          "YOU ARE ON THE RIGHT SIDE - RED PADDLE";
       }
       this.deps.rightPlayerScore.textContent = String(
         this.gameState.rightPlayerScore

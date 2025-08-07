@@ -311,15 +311,16 @@ class FlowFieldLocal {
     this.ctx.fill();
     this.ctx.globalAlpha = 1;
 
-    this.ctx.save();
-    this.ctx.font = "bold 22px Orbitron, sans-serif";
-    this.ctx.fillStyle = isDark ? "#FFF" : "#000";
-    this.ctx.textAlign = "left";
-    this.ctx.fillText("Left Player", 20, 40);
+    // names
+    // this.ctx.save();
+    // this.ctx.font = "bold 22px Orbitron, sans-serif";
+    // this.ctx.fillStyle = isDark ? "#FFF" : "#000";
+    // this.ctx.textAlign = "left";
+    // this.ctx.fillText("Left Player", 20, 40);
 
-    this.ctx.textAlign = "right";
-    this.ctx.fillText("Right Player", this.canvasWidth - 20, 40);
-    this.ctx.restore();
+    // this.ctx.textAlign = "right";
+    // this.ctx.fillText("Right Player", this.canvasWidth - 20, 40);
+    // this.ctx.restore();
   }
 
   private keysFunction(): void {
