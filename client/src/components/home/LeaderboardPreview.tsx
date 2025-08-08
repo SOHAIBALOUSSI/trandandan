@@ -23,9 +23,14 @@ export function LeaderboardPreview(props: { user: UserProfile }) {
   return (
     <div className="bg-pong-secondary/10 rounded-lg shadow-md p-6 md:p-10 w-full max-w-5xl mx-auto border border-pong-dark-secondary/10">
       <h2
-        className={`text-pong-dark-primary font-bold mb-8 tracking-tight ${fontSizes.smallTitleFontSize}`}
+        className={`
+          flex items-center gap-3
+          text-pong-dark-primary font-bold mb-6 tracking-tight 
+          ${fontSizes.smallTitleFontSize}
+        `}
       >
-        BHV Club’s Elite
+        <i className="fa-solid fa-trophy text-pong-dark-accent"></i>
+        <span>BHV Club’s Elite</span>
       </h2>
 
       <ol
@@ -35,7 +40,9 @@ export function LeaderboardPreview(props: { user: UserProfile }) {
 
       <div className="flex items-center justify-between mt-8 gap-4">
         <div className="bg-pong-dark-bg/50 rounded-xl px-4 py-3 border border-white/10 text-white/70">
-          <span className="block text-xs md:text-sm">{getTagline(user.rank)}</span>
+          <span className="block text-xs md:text-sm">
+            {getTagline(user.rank)}
+          </span>
         </div>
 
         <a href="/chamber" className={styles.darkPrimaryBtn} data-link>

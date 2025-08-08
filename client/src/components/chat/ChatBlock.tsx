@@ -18,7 +18,7 @@ export function ChatBlock(friend: UserProfile & { isFriend?: boolean }) {
           />
         </a>
         <div className="flex flex-col justify-center">
-          <h3 className="w-fit text-base md:text-xl font-semibold text-pong-dark-accent tracking-wide cursor-pointer">
+          <h3 className="w-fit text-base md:text-xl font-semibold text-white tracking-wide cursor-pointer">
             <a href={`/members/${friend.id}`} data-link>
               {getWelcomeTitle(friend)} {friend.username}
             </a>
@@ -39,7 +39,6 @@ export function ChatBlock(friend: UserProfile & { isFriend?: boolean }) {
           <button
             id="challenge-button"
             className="relative bg-pong-dark-accent text-white hover:bg-pong-accent/90 px-3 py-2 md:px-4 md:py-2 rounded-lg shadow-md transition group"
-            title="Challenge to Match"
           >
             <span className="normal-case w-24 absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
               Challenge {friend.username} to a match

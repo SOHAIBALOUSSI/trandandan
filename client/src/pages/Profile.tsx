@@ -27,7 +27,7 @@ export function Profile() {
             subtitle="Your identity, matches & achievements in the BHV Club."
           />
 
-          <div className="w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 items-center">
+          <div className="w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 xl:gap-12">
             <div className="w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 flex 2xl:self-start flex-col 2xl:flex-col items-center justify-center gap-6">
               <MemberCard user={user} showUpdateOptions={true} />
               <QuickLinks />

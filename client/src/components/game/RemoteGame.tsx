@@ -63,13 +63,13 @@ export function RemoteGame() {
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
         <h1 id="result" class="text-2xl mt-2 text-amber-50">WON</h1>
-        <button id="restartButton" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
+        <button id="restartButton" class="game-btn text-white mt-6 font-bold py-3 px-8 rounded-xl text-lg md:text-xl shadow-md tracking-wide transition-all duration-300">PLAY AGAIN</button>
       </div>
     </div>
     <div id="disconnected" class="game-tab ${styles.gameTab} hidden">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
-        <h1 class="text-2xl mt-2 text-amber-50"> DISCONNECTED</h1>
+        <h1 id="disconnected" class="text-2xl mt-2"> DISCONNECTED</h1>
       </div>
     </div>
   `;
@@ -319,7 +319,7 @@ function expandGameState(compact: CompactGameState): Partial<GameState> {
     ballSpeed:
       compact.bs !== null && compact.bs !== undefined && !isNaN(compact.bs)
         ? compact.bs
-        : 5,
+        : 3,
     // hitCount: compact.hc,
     gameEndResult: compact.r || "",
     endGame: compact.e === 1,
@@ -372,7 +372,7 @@ class FlowField {
       playerId: 0,
       ballX: 500,
       ballY: 300,
-      ballSpeed: 5,
+      ballSpeed: 3,
       flagX: false,
       flagY: false,
       paddleLeftY: 240,
@@ -398,13 +398,11 @@ class FlowField {
     };
 
     this.deps.restartButton.addEventListener("click", async (event) => {
+      console.log("Restart button clicked");
       event.preventDefault(); // Prevent default behavior
       if (!this.deps.restartButton.disabled) {
         this.deps.restartButton.disabled = true; // Disable button to prevent multiple clicks
         console.log("Restarting match...");
-        console.log("userId: ", getCurrentUser()?.userId);
-        console.log("roomId: ", this.gameState.matchId);
-        console.log("enemyId: ", this.gameState.enemyId);
         try {
           await fetch("/game/restart-match", {
             method: "POST",
@@ -420,8 +418,8 @@ class FlowField {
           console.error("Error sending restart request:", error);
         } finally {
           this.deps.restartButton.disabled = false; // Re-enable button
+		  window.location.reload();
         }
-        window.location.reload();
       }
     });
   }

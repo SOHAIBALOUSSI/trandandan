@@ -90,7 +90,7 @@ export async function uploadAvatarUrl(request, reply) {
         const userId = request.user?.id;
         const data = await request.file();
         data.file.on('limit' , () => {
-            return reply.code(400).send(createResponse(400, 'FILE_TOO_LARGE'));
+            return reply.code(413).send(createResponse(400, 'FILE_TOO_LARGE'));
         })
         console.log('DATA received: ', data);
         if (!data)
