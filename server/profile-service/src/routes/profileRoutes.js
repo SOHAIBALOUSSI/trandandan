@@ -3,7 +3,7 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 import { profileIdSchema, updateProfileSchema } from "../schemas/profileSchema.js";
 
 async function profileRoutes(fastify) {
-    fastify.get('/statuses', { // statuses
+    fastify.get('/statuses', {
         websocket: true,
         handler: fetchOnlineStatuses
     });
