@@ -1,2 +1,8 @@
 node_modules
 server/profile-service/uploads/avatars
+server/auth-service/auth.db.sqlite
+server/relationships-service/relationships.db.sqlite
+server/profile-service/profile.db.sqlite
+server/notifications-service/notifications.db.sqlite
+server/chat-service/messages.db.sqlite
+    

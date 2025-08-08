@@ -26,14 +26,9 @@ export async function markAsDelivered(db, id) {
 }
 
 export async function getAllNotifications(db, recipientId) {
-    const result = await db.all(`SELECT sender_id,
-        COUNT(id) as notifications_count,
-        MAX(created_at) as last_notification_at,
-        type,
-        json_group_array(id ORDER BY created_at) AS notification_ids FROM notifications
+    const result = await db.all(`SELECT id, sender_id, type FROM notifications
         WHERE recipient_id = ? AND (read = 0 OR delivered = 0)
-        GROUP BY sender_id, type
-        ORDER BY last_notification_at DESC`,
+        ORDER BY created_at`,
         [recipientId]
     );
     // console.log('Fetching all notifications: ', result);
@@ -43,6 +38,7 @@ export async function getAllNotifications(db, recipientId) {
 export async function deleteNotifications(db, id) {
     await db.run('DELETE FROM notifications WHERE recipient_id = ? OR sender_id = ?', [id, id]);
 }
+
 
 export async function findNotification(db, notificationId) {
     return await db.get('SELECT * FROM notifications WHERE id = ?', 
