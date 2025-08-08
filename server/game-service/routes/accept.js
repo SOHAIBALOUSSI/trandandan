@@ -2,9 +2,15 @@ import RabbitMGame from "../tools/RabbitMGame.js";
 const Accept = async (req, reply, fastify) => {
   try {
     const { roomId, senderId, receiverId } = req.body;
+
     if (!roomId || !senderId || !receiverId)
       return reply.code(400).send({ error: "Missing fields" });
 
+    console.log("Accepting invite:", {
+      roomId,
+      senderId,
+      receiverId,
+    });
     const redis = fastify.redis; // Access the Redis client from Fastify instance
     if (!redis) {
       console.error("Redis client is not available");
