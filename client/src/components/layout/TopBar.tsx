@@ -1,8 +1,5 @@
 import { styles } from "@/styles/styles";
-import {
-  clearNotificationCounter,
-  clearAllNotifications,
-} from "@/services/notifications-service";
+import { clearAllNotifications } from "@/services/notifications-service";
 import { handleSearchMembers } from "@/handlers/search-members";
 
 export function TopBar() {
@@ -39,7 +36,7 @@ export function TopBar() {
 
     btn.addEventListener("click", () => {
       notifContainer.classList.toggle("hidden");
-      clearNotificationCounter();
+      //   clearNotificationCounter();
     });
 
     const searchBar = document.getElementById("search-bar") as HTMLInputElement;

@@ -6,14 +6,12 @@ import { showInviteNotification } from "@/utils/show-invite-notif";
 import { getRoomId } from "@/services/get-room-id";
 import { acceptInvite } from "@/services/accept-invite";
 
-// --- WebSocket and Notification State ---
 let ws: WebSocket | null = null;
 let unseenCount = 0;
 const seenIds = new Set<number>(
   JSON.parse(localStorage.getItem("seenNotifs") || "[]")
 );
 
-// --- Utility Functions ---
 function saveSeen() {
   localStorage.setItem("seenNotifs", JSON.stringify(Array.from(seenIds)));
 }
@@ -33,7 +31,6 @@ function updateCounter() {
   window.dispatchEvent(
     new CustomEvent("notification-count", { detail: unseenCount })
   );
-  console.log("[Notif] Counter updated:", unseenCount);
 }
 
 // --- Render Single Notification ---
@@ -44,6 +41,7 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
     bg-pong-dark-bg hover:bg-pong-dark-primary/10 transition-all duration-200 cursor-pointer
   `;
   li.setAttribute("data-id", String(notif.notification_id));
+  li.setAttribute("data-sender", String(notif.sender_id));
 
   let route = "";
   let label = "";
@@ -183,10 +181,15 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
     } else if (notif.notification_id) {
       ids = [notif.notification_id];
     }
-    markNotificationsAsRead(ids);
+
+    if (ids.length > 0) {
+      markNotificationsAsRead(ids);
+      unseenCount = Math.max(0, unseenCount - ids.length);
+      updateCounter();
+    }
+
     if (route) navigateTo(route);
     li.remove();
-    console.log("[Notif] Notification clicked:", notif.type, ids);
   };
 
   return li;
@@ -204,7 +207,8 @@ async function renderGroupedMessageNotification(
     bg-pong-dark-bg hover:bg-pong-dark-primary/10 transition-all duration-200 cursor-pointer flex items-center justify-between
   `;
   li.id = `msg-group-${notif.sender_id}`;
-  li.setAttribute("data-id", String(notif.notification_id));
+  li.setAttribute("data-sender", String(notif.sender_id));
+  li.dataset.groupedIds = JSON.stringify(groupedIds); // store all IDs here
 
   const sender = await getUserById(notif.sender_id || 0);
 
@@ -219,168 +223,107 @@ async function renderGroupedMessageNotification(
   `;
 
   li.onclick = () => {
-    li.style.pointerEvents = "none";
-    li.style.opacity = "0.5";
-    li.classList.add("line-through");
-    li.setAttribute("aria-disabled", "true");
-    navigateTo(`/lounge/${notif.sender_id}`);
-    setTimeout(() => li.remove(), 400);
+    const ids = JSON.parse(li.dataset.groupedIds || "[]");
 
-    if (groupedIds.length > 0) {
-      markNotificationsAsRead(groupedIds);
-    }
-    console.log("[Notif] Grouped message notification clicked:", groupedIds);
+    markNotificationsAsRead(ids); // mark all in group
+    unseenCount = Math.max(0, unseenCount - ids.length);
+    updateCounter();
+
+    navigateTo(`/lounge/${notif.sender_id}`);
+    li.remove();
   };
 
   return li;
 }
 
-// --- Notification Listener ---
+// --- Start Notification Listener ---
 export function startNotificationListener() {
-  if (ws && ws.readyState === WebSocket.OPEN) return;
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    return;
+  }
 
   ws = new WebSocket("/notifications");
 
-  ws.onopen = () => {
-    console.log("[Notif] WebSocket connection established.");
-  };
+  ws.onopen = () => {};
 
   ws.onmessage = async (event: MessageEvent) => {
     try {
-      const notif = JSON.parse(event.data);
+      const data = JSON.parse(event.data);
 
-      console.log("[Notif] Notification received:", notif);
+      // Handle unread count update
+      if (data.type === "UNREAD_COUNT") {
+        unseenCount = data.count;
+        updateCounter();
+        return;
+      }
 
-      // --- Handle Friend Request Cancel ---
-      if (notif.type === "FRIEND_REQUEST_CANCELED" && notif.sender_id) {
+      // Handle friend request cancellation
+      if (data.type === "FRIEND_REQUEST_CANCELED") {
         const notifList = document.getElementById("notif-list");
         if (notifList) {
           Array.from(notifList.children).forEach((li) => {
             if (
               li instanceof HTMLElement &&
-              li.innerHTML.includes("fa-user-plus")
+              li.innerHTML.includes("fa-user-plus") &&
+              li.getAttribute("data-sender") === String(data.sender_id)
             ) {
               li.remove();
-              console.log(
-                "[Notif] Friend request canceled removed:",
-                notif.sender_id
-              );
             }
           });
         }
+        unseenCount = Math.max(0, unseenCount - 1);
         updateCounter();
         return;
       }
 
-      // --- Handle Grouped Notifications ---
-      if (
-        typeof notif.notifications_count === "number" &&
-        Array.isArray(notif.notification_ids) &&
-        notif.notification_ids.length > 0
-      ) {
-        if (notif.type === "MESSAGE_RECEIVED") {
-          const notifList = document.getElementById("notif-list");
-          if (notifList) {
-            if (notif.type === "MESSAGE_RECEIVED") {
-              const oldLi = document.getElementById(
-                `msg-group-${notif.sender_id}`
-              );
-              if (oldLi) oldLi.remove();
-              notifList.prepend(
-                await renderGroupedMessageNotification(
-                  notif,
-                  notif.notifications_count,
-                  notif.notification_ids
-                )
-              );
-              console.log("[Notif] Grouped message notification rendered.");
-            } else {
-              notifList.prepend(
-                await renderNotification(notif, notif.notification_ids)
-              );
-              console.log("[Notif] Grouped invite notification rendered.");
-            }
-          }
-          notif.notification_ids.forEach((id: number) => {
-            if (!seenIds.has(id)) {
-              unseenCount++;
-            }
-          });
-          updateCounter();
-          return;
-        }
-      }
-
-      // --- Handle Single Message Received ---
-      if (notif.type === "MESSAGE_RECEIVED") {
-        if (notif.notification_id && !seenIds.has(notif.notification_id)) {
-          unseenCount++;
-          updateCounter();
-        }
-        const notifList = document.getElementById("notif-list");
-        if (notifList) {
-          const groupLi = document.getElementById(
-            `msg-group-${notif.sender_id}`
-          );
-          if (groupLi) {
-            const badge = groupLi.querySelector(
-              ".msg-count"
-            ) as HTMLSpanElement;
-            if (badge)
-              badge.textContent = String(Number(badge.textContent) + 1);
-            console.log("[Notif] Message count badge updated.");
-          } else {
-            notifList.prepend(
-              await renderGroupedMessageNotification(notif, 1, [
-                notif.notification_id,
-              ])
-            );
-            console.log("[Notif] Single message notification rendered.");
-          }
-        }
-        return;
-      }
-
-      // --- Handle Invite Sent ---
-      if (notif.type === "INVITE_SENT") {
-        if (notif.notification_id && !seenIds.has(notif.notification_id)) {
-          unseenCount++;
-          updateCounter();
-        }
-        const notifList = document.getElementById("notif-list");
-        if (notifList) {
-          notifList.prepend(await renderNotification(notif));
-          console.log("[Notif] Invite sent notification rendered.");
-        }
-        return;
-      }
-
-      // --- Handle Play Again ---
-      if (notif.type === "PLAY_AGAIN") {
-        const notifList = document.getElementById("notif-list");
-        if (notifList) {
-          notifList.prepend(await renderNotification(notif));
-          console.log("[Notif] Play again notification rendered.");
-        }
-        return;
-      }
-
-      // --- Handle Other Notifications ---
-      const notifList = document.getElementById("notif-list");
-      if (notifList) {
-        notifList.prepend(await renderNotification(notif));
-        while (notifList.children.length > 20) {
-          notifList.removeChild(notifList.lastChild!);
-        }
-        console.log("[Notif] Other notification rendered.");
-      }
-      if (notif.notification_id && !seenIds.has(notif.notification_id)) {
+      // Increment unseen count only for *new* notification IDs
+      if (data.notification_id && !seenIds.has(data.notification_id)) {
+        seenIds.add(data.notification_id); // mark as seen first
         unseenCount++;
         updateCounter();
       }
+
+      // Handle rendering notifications
+      if (data.notification_id || data.sender_id) {
+        const notifList = document.getElementById("notif-list");
+        if (notifList) {
+          if (data.type === "MESSAGE_RECEIVED") {
+            const existingGroup = document.getElementById(
+              `msg-group-${data.sender_id}`
+            );
+            if (existingGroup) {
+              const badge = existingGroup.querySelector(
+                ".msg-count"
+              ) as HTMLSpanElement;
+              if (badge) {
+                const currentCount = parseInt(badge.textContent || "0");
+                badge.textContent = String(currentCount + 1);
+              }
+
+              // Append new ID to stored groupedIds
+              const ids = JSON.parse(existingGroup.dataset.groupedIds || "[]");
+              ids.push(data.notification_id);
+              existingGroup.dataset.groupedIds = JSON.stringify(ids);
+            } else {
+              notifList.prepend(
+                await renderGroupedMessageNotification(data, 1, [
+                  data.notification_id,
+                ])
+              );
+            }
+          } else {
+            notifList.prepend(await renderNotification(data));
+          }
+
+          // Limit displayed notifications
+          while (notifList.children.length > 20) {
+            notifList.removeChild(notifList.lastChild!);
+          }
+        }
+      }
     } catch (err) {
       displayToast(
-        "The club’s lights are out at the moment. Try again shortly.",
+        "The club's lights are out at the moment. Try again shortly.",
         "error"
       );
       console.error("[Notif] Error handling notification:", err);
@@ -392,7 +335,6 @@ export function startNotificationListener() {
     setTimeout(() => {
       startNotificationListener();
     }, 5000);
-    console.log("[Notif] WebSocket connection closed. Reconnecting...");
   };
 }
 
@@ -401,46 +343,64 @@ export function stopNotificationListener() {
   if (ws) {
     ws.close();
     ws = null;
-    console.log("[Notif] Notification WebSocket connection stopped.");
   }
   localStorage.removeItem("seenNotifs");
   unseenCount = 0;
   updateCounter();
   seenIds.clear();
-  console.log("[Notif] Notification listener stopped and state cleared.");
   window.dispatchEvent(new CustomEvent("notification-count", { detail: 0 }));
-}
-
-// --- Clear Notification Counter ---
-export function clearNotificationCounter() {
-  unseenCount = 0;
-  updateCounter();
-  console.log("[Notif] Notification counter cleared.");
 }
 
 // --- Clear All Notifications ---
 export function clearAllNotifications() {
   const notifList = document.getElementById("notif-list");
   if (notifList) {
+    // Get all notification IDs from current displayed notifications
+    const allNotifIds: number[] = [];
+    Array.from(notifList.children).forEach((li) => {
+      if (li instanceof HTMLElement) {
+        const notifId = li.getAttribute("data-id");
+        if (notifId) {
+          allNotifIds.push(parseInt(notifId));
+        }
+        // Handle grouped notifications
+        if (li.id.startsWith("msg-group-")) {
+          const groupedIdsStr = li.getAttribute("data-grouped-ids");
+          if (groupedIdsStr) {
+            try {
+              const groupedIds = JSON.parse(groupedIdsStr);
+              allNotifIds.push(...groupedIds);
+            } catch (e) {
+              console.warn("[Notif] Failed to parse grouped IDs");
+            }
+          }
+        }
+      }
+    });
+
     notifList.innerHTML = "";
+
+    // Mark all notifications as read if we have any
+    if (allNotifIds.length > 0) {
+      markNotificationsAsRead(allNotifIds);
+    }
   }
+
   unseenCount = 0;
   updateCounter();
   seenIds.clear();
   saveSeen();
-  console.log("[Notif] All notifications cleared.");
   window.dispatchEvent(new CustomEvent("notification-count", { detail: 0 }));
 }
 
 // --- Mark Notifications As Read ---
-function markNotificationsAsRead(ids: (number | null | undefined)[]) {
+export function markNotificationsAsRead(ids: (number | null | undefined)[]) {
   const cleanIds = ids.filter((id): id is number => typeof id === "number");
   if (cleanIds.length === 0) return;
+
   if (ws && ws.readyState === WebSocket.OPEN) {
     cleanIds.forEach((id) => seenIds.add(id));
     saveSeen();
-    unseenCount = Math.max(0, unseenCount - cleanIds.length);
-    updateCounter();
 
     ws.send(
       JSON.stringify({
@@ -448,6 +408,5 @@ function markNotificationsAsRead(ids: (number | null | undefined)[]) {
         notification_ids: cleanIds,
       })
     );
-    console.log("[Notif] Marked notifications as read:", cleanIds);
   }
 }
