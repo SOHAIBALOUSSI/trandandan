@@ -24,7 +24,7 @@ export function MatchHistory(props: { user: UserProfile }) {
       <h2
         className={`
           flex items-center gap-3
-          text-pong-dark-primary font-extrabold mb-6 tracking-tight 
+          text-pong-dark-primary font-bold mb-6 tracking-tight 
           ${fontSizes.smallTitleFontSize}
         `}
       >

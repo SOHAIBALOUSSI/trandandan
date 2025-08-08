@@ -11,7 +11,7 @@ export async function displayPerformanceMetrics(user: UserProfile) {
   let history: UserHistory[] = await getUserHistory(user.id);
   if (!history || history.length === 0) {
     metricsContainer.innerHTML = `
-      <p class="bg-pong-dark-custom border border-pong-highlight/30 rounded-xl text-pong-dark-secondary text-center py-8 ${fontSizes.bodyFontSize} px-8 md:px-24">No performance data available yet. Start playing and defeat your friends to build your stats!</p>`;
+      <p class="bg-pong-dark-custom border border-pong-highlight/30 rounded-xl text-pong-dark-secondary ${fontSizes.bodyFontSize} p-10">No performance data available yet. Start playing and defeat your friends to build your stats!</p>`;
     return;
   }
 

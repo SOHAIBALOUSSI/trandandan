@@ -20,7 +20,7 @@ export async function loadMatchHistory(user: UserProfile) {
 
   if (!history || history.length === 0) {
     const li = document.createElement("li");
-    li.className = "text-center text-pong-dark-secondary p-4";
+    li.className = `text-pong-dark-secondary p-4 ${fontSizes.bodyFontSize}`;
     li.textContent = "No match history available.";
     matchHistoryList.appendChild(li);
     return;

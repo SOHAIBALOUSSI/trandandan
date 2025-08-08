@@ -398,10 +398,11 @@ class FlowField {
     };
 
     this.deps.restartButton.addEventListener("click", async (event) => {
+      console.log("Restart button clicked");
       event.preventDefault(); // Prevent default behavior
       if (!this.deps.restartButton.disabled) {
         this.deps.restartButton.disabled = true; // Disable button to prevent multiple clicks
-		console.log("Restarting match...");
+        console.log("Restarting match...");
         try {
           await fetch("/game/restart-match", {
             method: "POST",
@@ -409,7 +410,7 @@ class FlowField {
             credentials: "include",
             body: JSON.stringify({
               roomId: this.gameState.matchId,
-              sender_id: this.gameState.playerId,
+              sender_id: getCurrentUser()?.userId,
               recipient_id: this.gameState.enemyId,
             }),
           });
@@ -417,8 +418,8 @@ class FlowField {
           console.error("Error sending restart request:", error);
         } finally {
           this.deps.restartButton.disabled = false; // Re-enable button
+		  window.location.reload();
         }
-        window.location.reload();
       }
     });
   }

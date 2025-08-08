@@ -36,7 +36,7 @@ export async function getAllNotifications(db, recipientId) {
         ORDER BY last_notification_at DESC`,
         [recipientId]
     );
-    console.log('Fetching all notifications: ', result);
+    // console.log('Fetching all notifications: ', result);
     return (result);
 }
 
