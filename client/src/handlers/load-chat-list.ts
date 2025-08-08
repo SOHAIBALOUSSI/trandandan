@@ -91,7 +91,7 @@ export async function loadChatList() {
   renderChatList(profiles);
 
   if (!ws || ws.readyState !== WebSocket.OPEN) {
-    ws = new WebSocket("wss://profile:3001/profile/statuses");
+    ws = new WebSocket(`wss://${window.location.host}/profile/statuses`);
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
