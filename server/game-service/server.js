@@ -99,7 +99,7 @@ fastify.register(async function (fastify) {
 });
 import playAgain from "./routes/playAgain.js";
 fastify.register(async function (fastify) {
-  fastify.post("/game/restart-match", (req, reply) => {
+  fastify.post("/game/restart-match", { preHandler: [verifyToken] }, async (req, reply) => {
     return playAgain(req, reply);
   });
 });

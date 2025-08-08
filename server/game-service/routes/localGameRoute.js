@@ -67,7 +67,7 @@ export function localGame(connection) {
       ) {
         rooms[roomId].count++;
         if (rooms[roomId].count === 2) {
-          rooms[roomId].ballSpeed += 2;
+          rooms[roomId].ballSpeed += 1;
           rooms[roomId].count = 0;
         }
       }

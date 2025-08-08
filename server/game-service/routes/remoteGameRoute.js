@@ -82,7 +82,7 @@ function gameLogic(gameState) {
     gameState.paddelRightY = 240;
     gameState.ballX = 1000 / 2;
     gameState.ballY = 300;
-    gameState.ballSpeed = 5;
+    gameState.ballSpeed = 3;
     gameState.hitCount = 0;
 
     // Start countdown after scoring (but not if game is over)
@@ -233,7 +233,7 @@ export function remoteGame(connection, req) {
         leftPlayerScore: 0,
         rightPlayerScore: 0,
         rounds: 5,
-        ballSpeed: 5,
+        ballSpeed: 3,
         hitCount: 0,
         gameEndResult: "",
         endGame: false,
