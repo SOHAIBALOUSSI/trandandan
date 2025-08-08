@@ -39,9 +39,9 @@ export async function uploadAvatar(): Promise<boolean> {
       });
 
       const data = await res.json();
-      if (res.status === 415) {
-        displayToast(UploadAvatarRes.FILE_TOO_LARGE, "error");
-      }
+    //   if (res.status === 413) {
+    //     displayToast(UploadAvatarRes.FILE_TOO_LARGE, "error");
+    //   }
       if (res.ok && data?.data?.avatar_url) {
         const fileName = data.data.avatar_url;
         const avatarUrl = `/profile/avatar/${fileName}`;

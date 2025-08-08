@@ -27,9 +27,14 @@ export async function displayPerformanceMetrics(user: UserProfile) {
   let pointsConceded = 0;
   history.forEach((h) => {
     h.game_end_result === "Won"
-      ? (pointsScored += 5)
-      : (pointsConceded +=
-          h.player_id === 1 ? h.right_player_score : h.left_player_score);
+      ? ((pointsScored +=
+          h.player_id === 1 ? h.left_player_score : h.right_player_score),
+        (pointsConceded +=
+          h.player_id === 1 ? h.right_player_score : h.left_player_score))
+      : ((pointsScored +=
+          h.player_id === 1 ? h.left_player_score : h.right_player_score),
+        (pointsConceded +=
+          h.player_id === 1 ? h.right_player_score : h.left_player_score));
   });
 
   const winRate = Math.round((wins / totalMatches) * 100);
@@ -38,8 +43,12 @@ export async function displayPerformanceMetrics(user: UserProfile) {
   const labels = recentMatches.map(
     (_, i) => `Match ${totalMatches - (recentMatches.length - 1 - i)}`
   );
-  const scoredData = recentMatches.map((h) => h.player_id === 1 ? h.left_player_score : h.right_player_score);
-  const concededData = recentMatches.map((h) => h.player_id === 1 ? h.right_player_score : h.left_player_score);
+  const scoredData = recentMatches.map((h) =>
+    h.player_id === 1 ? h.left_player_score : h.right_player_score
+  );
+  const concededData = recentMatches.map((h) =>
+    h.player_id === 1 ? h.right_player_score : h.left_player_score
+  );
 
   const circleCircumference = 2 * Math.PI * 36;
   const dashOffset = circleCircumference * (1 - wins / totalMatches);

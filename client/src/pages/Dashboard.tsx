@@ -67,6 +67,20 @@ export function Dashboard() {
 		</tbody>
       `;
     });
+
+    const width =
+      user.matches_played > 0
+        ? user.matches_won > 0
+          ? (user.matches_won / user.matches_played) * 100
+          : 0
+        : 0;
+
+    const progressBar = document.getElementById(
+      "progress-bar"
+    ) as HTMLDivElement;
+    if (progressBar) {
+      progressBar.style.width = `${width}%`;
+    }
   }, 0);
 
   return (
@@ -140,11 +154,8 @@ export function Dashboard() {
               <div className="mt-4">
                 <div className="w-full bg-gray-700 h-3 rounded-full overflow-hidden">
                   <div
-                    className={`bg-gradient-to-r from-pong-accent to-pong-dark-accent h-3 rounded-full transition-all duration-500 w-[${
-                      user.matches_played > 0
-                        ? (user.matches_won / user.matches_played) * 100
-                        : 0
-                    }%]`}
+                    id="progress-bar"
+                    className={`bg-gradient-to-r from-pong-accent to-pong-dark-accent h-3 rounded-full transition-all duration-500`}
                   ></div>
                 </div>
               </div>

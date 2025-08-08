@@ -162,8 +162,6 @@ async function renderActivity(
 }
 
 export async function startRecentActivityListener(): Promise<void> {
-  // assume `ws` is declared in outer scope if you want shared access, otherwise use a local variable:
-  // let ws: WebSocket | null = null;
   ws = new WebSocket("wss://localhost:9090/game/recent-activity");
 
   const ul = document.getElementById("recent-activity-list");
@@ -187,7 +185,7 @@ export async function startRecentActivityListener(): Promise<void> {
 
   // Helper to save (and cap) stored activities
   function saveStoredActivities(activities: GameActivity[]) {
-    const CAP = 20; // keep most recent 26 items
+    const CAP = 20;
     const sliced = activities.slice(-CAP);
     try {
       localStorage.setItem("recent-activity", JSON.stringify(sliced));
@@ -282,7 +280,6 @@ export async function startRecentActivityListener(): Promise<void> {
   ws.onclose = () => {
     ws = null;
     console.log("WebSocket connection closed, attempting to reconnect...");
-    // simple reconnect; you might want exponential backoff in production
     setTimeout(() => {
       startRecentActivityListener();
     }, 5000);
