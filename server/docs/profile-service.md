@@ -91,6 +91,7 @@ When a user connects, they continuously receive updates about other users's onli
 
 - `/upload` 
 ```yaml
+  413: FILE_TOO_LARGE
   401: UNAUTHORIZED,
   400: FILE_REQUIRED,
   200: AVATAR_UPLOADED,

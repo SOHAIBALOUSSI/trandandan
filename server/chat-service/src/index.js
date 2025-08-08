@@ -52,7 +52,7 @@ let redis;
 
 const users = new Map();
 
-const wss = new WebSocketServer({ port: 3004 });
+const wss = new WebSocketServer({ port: 3004, maxPayload: 25000000 });
 
 const rabbit = new RabbitMQClient(process.env.RABBITMQ_CHAT_QUEUE);
 
