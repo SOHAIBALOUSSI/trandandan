@@ -28,7 +28,7 @@ export async function fortyTwoLoginHandler(request, reply) {
     
     const { code } = request.query;
     if (!code)
-        return reply.code(400).send(createResponse(400, 'AUTH_CODE_REQUIRED'));
+        return reply.redirect(process.env.FRONT_END_URL);
     try {
         const tokens = await fetch('https://api.intra.42.fr/oauth/token', {
             method: 'POST',
@@ -47,7 +47,7 @@ export async function fortyTwoLoginHandler(request, reply) {
         {
             const errorText = await tokens.text();
             console.log('42 tokens error: ', errorText);
-            return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+            return reply.redirect(process.env.FRONT_END_URL);
         }
 
         const { access_token } = await tokens.json();
@@ -118,7 +118,7 @@ export async function fortyTwoLoginHandler(request, reply) {
         return reply.redirect(process.env.FRONT_END_URL);
     } catch (error) {
         console.log(error);
-        return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
+        return reply.redirect(process.env.FRONT_END_URL);;
     }
 }
 
