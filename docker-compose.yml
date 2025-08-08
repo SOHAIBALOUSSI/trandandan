@@ -8,8 +8,10 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3000:3000"
+    volumes:
+      - ./server/auth-service/:/usr/src/app/
+      - /usr/src/app/node_modules
+
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -23,8 +25,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3001:3001"
+    volumes:
+      - ./server/profile-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -38,8 +41,10 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3002:3002"
+    volumes:
+      - ./server/relationships-service/:/usr/src/app/
+      - /usr/src/app/node_modules
+
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -53,8 +58,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3003:3003"
+    volumes:
+      - ./server/notifications-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -68,8 +74,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3004:3004"
+    volumes:
+      - ./server/chat-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -83,8 +90,9 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "3005:3005"
+    volumes:
+      - ./server/dashboard-service/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -95,9 +103,8 @@ services:
     restart: always
     networks:
       - trandenden-net
-    expose:
-      - 6379
-
+    volumes:
+      - redis-data:/data
   game:
     container_name: game-service
     build: server/game-service
@@ -107,8 +114,6 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "5000:5000"
     volumes:
       - ./server/game-service/db/.gameData.db:/app/db/.gameData.db
     depends_on:
@@ -123,25 +128,21 @@ services:
       - ./server/.env
     networks:
       - trandenden-net
-    ports:
-      - "15672:15672"
-      - "5672:5672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  frontend:
-    container_name: trandenden-frontend
-    build: client
-    image: trandenden-frontend
+  nginx:
+    container_name: nginx-gateway
+    build:
+      context: .
+      dockerfile: client/nginx/Dockerfile
+    image: nginx-gateway
     ports:
-      - "8080:5173"
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    working_dir: /app
+      - "8080:80" # HTTP port
+      - "9090:443" # HTTPS/SSL port
     depends_on:
       - auth
       - profile
@@ -151,14 +152,33 @@ services:
       - redis
       - rabbitmq
       - game
-    env_file:
-      - ./client/.env
+      - dashboard
     networks:
       - trandenden-net
     restart: always
-    command: npm run dev
+
+  # client-dev:
+  #   container_name: client-dev
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   working_dir: /app
+  #   command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+  #   ports:
+  #     - "5173:5173"
+  #   volumes:
+  #     - ./client:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=1
+  #   networks:
+  #     - trandenden-net
 
 networks:
   trandenden-net:
     name: trandenden-net
     driver: bridge
+
+volumes:
+  redis-data:
+    driver: local

@@ -382,9 +382,7 @@ export const styles = {
   gameContainer: `
   	flex flex-col items-center justify-center
   	w-full min-h-screen
-  	overflow-hidden
-  	relative
-	transition-all duration-300 ease-in-out
+
   `,
   gameExitBtn: `
   	fixed top-5 left-5

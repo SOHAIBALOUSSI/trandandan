@@ -1,9 +1,10 @@
-import  RabbitMGame  from "./RabbitMGame.js"
+import  RabbitMGame  from "../tools/RabbitMGame.js"
 
 const invitePlayer = async (req, reply, fastify) => {
-    const { senderId, receiverId } = req.body;
+    const { receiverId } = req.body;
+    const senderId = req.user.id; // Get the sender ID from the authenticated user
     const roomId = Math.random().toString(36).substr(2, 9);
-    console.log(roomId);
+    console.log("Invite details:", { senderId, receiverId, roomId });
     
     if (!roomId || !senderId || !receiverId)
       return reply.code(400).send({ error: "Missing fields" });

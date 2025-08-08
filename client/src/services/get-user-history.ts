@@ -2,9 +2,10 @@ import { UserHistory } from "types/types";
 
 export async function getUserHistory(userId: number): Promise<UserHistory[]> {
   try {
-    const response = await fetch("http://localhost:5000/user-history", {
+    const response = await fetch("/game/user-history", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+	  credentials: "include",
       body: JSON.stringify({ userId }),
     });
 

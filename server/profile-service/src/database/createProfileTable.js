@@ -9,8 +9,6 @@ export async function createProfileTable(db){
             email TEXT NOT NULL UNIQUE,
             gender TEXT CHECK(gender IN ('F', 'M')),
             avatar_url TEXT DEFAULT '',
-            status TEXT DEFAULT 'offline',
-            solde INTEGER DEFAULT 5,
             level REAL NOT NULL DEFAULT 0,
             rank INTEGER DEFAULT 0,
             matches_played INTEGER DEFAULT 0,

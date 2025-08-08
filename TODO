@@ -1,4 +1,3 @@
-- Token Authorization for game service endpoints
 - correct the recent activity 
 - users status (online / offline)
-- handle responsivness in games
+- primary 2fa method set

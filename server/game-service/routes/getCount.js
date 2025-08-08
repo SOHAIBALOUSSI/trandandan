@@ -1,19 +1,6 @@
-import sqlite3 from "sqlite3";
-
-const db = new sqlite3.Database(
-  "/app/db/.gameData.db",
-  (err) => {
-    if (err) {
-      console.error("Error connecting to the database:", err.message);
-    } else {
-      console.log("Connected to the SQLite database.");
-    }
-  }
-);
-
-export default function getCount(req, reply) {
-  return new Promise((resolve, reject) => {
-    const userName = req.params.userName;
+export default  function getCount(req, reply, db) {
+  return new Promise( (resolve, reject) => {
+    const userName =  req.params.userName;
 
     const query = `
       SELECT

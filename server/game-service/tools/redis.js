@@ -9,7 +9,7 @@ async function redisPlugin(fastify, options) {
     })
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
-    console.log('Redis is connected...', redis);
+    // console.log('Redis is connected...', redis);
 
     fastify.decorate('redis', redis);
 };

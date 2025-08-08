@@ -49,3 +49,10 @@ export async function findNotification(db, notificationId) {
         [notificationId]
     );
 }
+
+export async function deleteFriendRequestNotification(db, senderId, recipientId) {
+    const notificationId = await db.get(`SELECT id FROM notifications WHERE recipient_id = ? AND sender_id = ? AND type = 'FRIEND_REQUEST_SENT'`, [recipientId, senderId]);
+    if (notificationId) 
+        await db.run(`DELETE FROM notifications WHERE recipient_id = ? AND sender_id = ? AND type = 'FRIEND_REQUEST_SENT'`, [recipientId, senderId]);
+    return notificationId;
+}

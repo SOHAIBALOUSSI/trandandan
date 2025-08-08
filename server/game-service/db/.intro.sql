@@ -15,7 +15,6 @@
         left_player_ball_hit INTEGER NOT NULL,
         right_player_ball_hit INTEGER NOT NULL,
         level REAL NOT NULL DEFAULT 0,
-        Solde INTEGER NOT NULL,
         matchPlayed INTEGER NOT NULL,
         matchWon INTEGER NOT NULL,
         matchLost INTEGER NOT NULL,

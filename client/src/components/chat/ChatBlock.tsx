@@ -1,7 +1,8 @@
 import { UserProfile } from "types/types";
 import { getUserTitle } from "@/utils/get-user-title";
+import { getWelcomeTitle } from "../home/Hero";
 
-export function ChatBlock(friend: UserProfile) {
+export function ChatBlock(friend: UserProfile & { isFriend?: boolean }) {
   return (
     <div className="relative flex flex-col w-full max-w-5xl h-full max-h-[100vh] min-h-[600px] md:rounded-2xl overflow-hidden bg-gradient-to-br from-[#1e1f24] to-[#252830] backdrop-blur-xl border border-pong-accent/20 shadow-[0_4px_30px_rgba(0,0,0,0.35)] transition-all duration-500">
       <div className="sticky top-0 z-10 flex items-center gap-4 bg-gradient-to-br from-[#2b2e34]/80 to-[#363a43]/60 backdrop-blur-md p-4 md:p-6 border-b border-pong-secondary/40">
@@ -18,8 +19,8 @@ export function ChatBlock(friend: UserProfile) {
         </a>
         <div className="flex flex-col justify-center">
           <h3 className="w-fit text-base md:text-xl font-semibold text-pong-dark-accent tracking-wide cursor-pointer">
-            <a href={`members/${friend.id}`} className="normal-case" data-link>
-              {friend.username}
+            <a href={`/members/${friend.id}`} data-link>
+              {getWelcomeTitle(friend)} {friend.username}
             </a>
           </h3>
           <div className="flex gap-2 mt-1">
@@ -28,6 +29,9 @@ export function ChatBlock(friend: UserProfile) {
             </span>
             <span className="bg-yellow-400/10 text-yellow-300 px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-xs font-semibold shadow-sm">
               {getUserTitle(friend.level)}
+            </span>
+            <span className="bg-pong-accent/10 text-pong-accent px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-xs font-semibold shadow-sm">
+              {friend.isFriend ? "Friend" : "Club Member"}
             </span>
           </div>
         </div>

@@ -55,13 +55,11 @@ export async function updateProfile(request, reply) {
             updatedFields.matches_won = matches_won;
             updatedFields.matches_played = profile.matches_lost + matches_won;
             updatedFields.level = (matches_won * 100 + profile.matches_lost * 50) / 500;
-            updatedFields.solde = profile.solde + 5;
         } 
         if (matches_lost !== undefined && !hasWon) {
             updatedFields.matches_lost = matches_lost;
             updatedFields.matches_played = profile.matches_won + matches_lost;
             updatedFields.level = (matches_lost * 50 + profile.matches_won * 100) / 500;
-            updatedFields.solde = profile.solde + 1;
         } 
 
 

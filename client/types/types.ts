@@ -6,7 +6,6 @@ export type UserProfile = {
   gender: string | null;
   avatar_url: string;
   status: "online" | "offline";
-  solde: number;
   rank: number;
   level: number;
   created_at: string;
@@ -28,6 +27,7 @@ export type UserHistory = {
   user_name: string;
   enemy_id: number;
   user_id: number;
+  player_id: 1 | 2; // 1 for left player, 2 for right player
   left_player_score: number; // my score
   right_player_score: number; // my enemy's score
   game_duration: number;
@@ -47,10 +47,12 @@ export type Notification = {
   type:
     | "FRIEND_REQUEST_SENT"
     | "FRIEND_REQUEST_ACCEPTED"
+    | "FRIEND_REQUEST_CANCELED"
     | "FRIEND_REQUEST_REJECTED"
     | "MESSAGE_RECEIVED"
     | "INVITE_SENT"
-    | "INVITE_ACCEPTED";
+    | "INVITE_ACCEPTED"
+    | "PLAY_AGAIN";
   recipient_id?: number;
   sender_id?: number;
   notifications_count?: number;
@@ -72,19 +74,11 @@ export type MessageRead = {
   message_id: number;
 };
 
-// export type GameActivity = {
-//   enemyId: number;
-//   userId: number;
-//   gameEndResult: "WIN" | "LOSE";
-//   leftPlayerScore: number;
-//   rightPlayerScore: number;
-//   playerId: 1 | 2; // 1 for left player, 2 for right player
-// };
-
 export type GameActivity = {
-  leftPlayerId: number;
-  rightPlayerId: number;
-  gameEndResult: "WIN" | "LOSE";
+  enemyId: number;
+  userId: number;
+  gameEndResult: "Lost" | "Won";
   leftPlayerScore: number;
   rightPlayerScore: number;
+  playerId: 1 | 2; // 1 for left player, 2 for right player
 };

@@ -173,7 +173,7 @@ export function Tournaments() {
   });
 
   function init() {
-    socketLocal = new WebSocket("ws://localhost:5000/ws");
+    socketLocal = new WebSocket("wss://localhost:9090/game/ws");
     const keys: { [key: string]: boolean } = {};
 
     window.addEventListener("keydown", (event: KeyboardEvent) => {
@@ -247,7 +247,7 @@ export function Tournaments() {
       }
       enteredList.innerHTML = Players.map(
         (name, idx) =>
-          `<li class="entered-players px-3 py-1 rounded-lg font-semibold">${
+          `<li class="entered-players px-3 py-1 rounded-lg font-semibold text-lg">${
             idx + 1
           }. ${name}</li>`
       ).join("");
@@ -297,7 +297,7 @@ export function Tournaments() {
         // Optionally, reset the game state for a rematch
         gameTab.style.display = "none";
         // You may want to reset scores or re-initialize the game here
-        const newSocket = new WebSocket("ws://localhost:5000/ws");
+        const newSocket = new WebSocket("wss://localhost:9090/game/ws");
         flow.setSocketLocal(newSocket);
         newSocket.onmessage = (event: MessageEvent) => {
           flow.updateGameState(event.data);
@@ -359,7 +359,7 @@ class FlowFieldLocal {
 
     // Draw middle separator line (dashed)
     this.ctx.save();
-    this.ctx.strokeStyle = isDark ? "#FFD700" : "#00B894";
+    this.ctx.strokeStyle = isDark ? "#00B894" : "#FFD700";
     this.ctx.lineWidth = 2;
     this.ctx.setLineDash([18, 18]);
     this.ctx.beginPath();
@@ -428,13 +428,13 @@ class FlowFieldLocal {
     // --- Display usernames in corners ---
     if (this.deps.Players && this.deps.Players.length >= 2) {
       this.ctx.save();
-      this.ctx.font = "bold 22px Arial";
-      this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
+      this.ctx.font = "bold 22px Orbitron, sans-serif";
+      this.ctx.fillStyle = isDark ? "#FFF" : "#000";
       this.ctx.textAlign = "left";
-      this.ctx.fillText(this.deps.Players[0], 20, 40); // Top-left corner for left player
+      this.ctx.fillText(this.deps.Players[0], 20, 40);
 
       this.ctx.textAlign = "right";
-      this.ctx.fillText(this.deps.Players[1], this.canvasWidth - 20, 40); // Top-right corner for right player
+      this.ctx.fillText(this.deps.Players[1], this.canvasWidth - 20, 40);
       this.ctx.restore();
     }
   }

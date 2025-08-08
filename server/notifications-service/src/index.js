@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import sqlite3 from 'sqlite3';
 import dotenv from 'dotenv';
 import { open } from 'sqlite';
-import { addNotification, deleteNotifications, findNotification, getAllNotifications, markAsDelivered, markAsRead } from "./database/notificationsDAO.js";
+import { addNotification, deleteFriendRequestNotification, deleteNotifications, findNotification, getAllNotifications, markAsDelivered, markAsRead } from "./database/notificationsDAO.js";
 import { verifyToken } from "./middleware/authMiddleware.js";
 import { createClient } from 'redis';
 
@@ -124,6 +124,24 @@ rabbit.consumeMessages(async (notification) =>{
     users.get(userId)?.forEach((ws) => {
       ws.close(1010, 'Mandatory exit');
     });
+  } else if (notification.type === 'FRIEND_REQUEST_CANCELED') {
+    const senderId = notification.sender_id;
+    const recipientId = notification.recipient_id;
+    const sIdExist = await redis.sIsMember('userIds', `${senderId}`);
+    const rIdExist = await redis.sIsMember('userIds', `${recipientId}`);
+    console.log('sIdExist value: ', sIdExist, 'rIdExist value: ', rIdExist);
+    if (!sIdExist || !rIdExist)
+      return ;
+    const notificationId = await deleteFriendRequestNotification(db, senderId, notification.recipient_id);
+    notification.notification_id = notificationId;
+    const connections = users.get(senderId);
+      if (connections) {
+        const message = JSON.stringify(notification);
+        for (const conn of connections) {
+          if (conn.isAuthenticated && conn.readyState === WebSocket.OPEN)
+            conn.send(message);
+        }
+      }
   }
   else {
     console.log('RabbitMQ: notification received: ', notification);

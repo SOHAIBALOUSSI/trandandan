@@ -25,7 +25,6 @@ import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
 import { startNotificationListener } from "@/services/notifications-service";
 import { stopDashboardListener } from "@/services/dashboard-service";
-import { stopChatListener } from "@/services/chat-service";
 import { getCurrentUser } from "@/utils/user-store";
 import { navigateTo } from "@/utils/navigate-to-link";
 

@@ -4,6 +4,7 @@ import { displayToast } from "@/utils/display-toast";
 import { stopNotificationListener } from "../services/notifications-service";
 import { stopChatListener } from "@/services/chat-service";
 import { stopDashboardListener } from "@/services/dashboard-service";
+import { stopRecentActivityListener } from "@/services/recent-activity-service";
 
 export async function handleLogout(): Promise<void> {
   try {
@@ -20,6 +21,8 @@ export async function handleLogout(): Promise<void> {
     clearCurrentUser();
     stopNotificationListener();
     stopChatListener();
+    stopRecentActivityListener();
+    stopDashboardListener();
     history.replaceState(null, "", "/welcome");
     await router();
   }

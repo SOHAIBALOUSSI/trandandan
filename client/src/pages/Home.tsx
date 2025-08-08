@@ -7,8 +7,13 @@ import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
 import { Loader } from "@/components/common/Loader";
 import { QuickStatsCards } from "@/components/home/QuickStatsCards";
+import { startRecentActivityListener } from "@/services/recent-activity-service";
 
 export function Home() {
+  //   setTimeout(() => {
+  //     startRecentActivityListener();
+  //   }, 0);
+
   const user = getCurrentUser();
   if (!user) {
     return <Loader text="Preparing your club profile..." />;
@@ -21,7 +26,7 @@ export function Home() {
         <TopBar />
         <main className={styles.pageContent}>
           <Hero user={user} />
-		  <QuickStatsCards user={user} />
+          <QuickStatsCards user={user} />
           <RecentActivityFeed />
           <LeaderboardPreview user={user} />
         </main>

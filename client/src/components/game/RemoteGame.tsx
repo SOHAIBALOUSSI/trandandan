@@ -4,6 +4,7 @@ import { UserProfile } from "types/types";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { styles } from "@/styles/styles";
 
+// let countdownCounter = false;
 export function RemoteGame() {
   setTimeout(() => {
     initGameThemeToggle();
@@ -41,7 +42,7 @@ export function RemoteGame() {
   	<h1 id="title" class="${styles.gameTitle}">
       BHV <span class="text-pong-dark-accent font-orbitron">PONG</span>
   	</h1>
-    <h2 class="text-center font-orbitron text-lg mb-8 font-bold" id="playerSide">YOU ARE LEFT PLAYER</h2>
+    <h2 class="text-center font-orbitron text-2xl my-8 font-bold" id="playerSide"></h2>
 
 	<div class="flex items-center justify-center flex-col w-full" style="min-height:${canvasHeight}px;">
       <div class="score flex justify-center gap-20 md:gap-60 w-full mb-4 transition-all duration-300">
@@ -58,14 +59,14 @@ export function RemoteGame() {
       </div>
   	</div>
 
-    <div id="gameTab" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+    <div id="gameTab" class="game-tab ${styles.gameTab} hidden">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
         <h1 id="result" class="text-2xl mt-2 text-amber-50">WON</h1>
         <button id="restartButton" class="cursor-pointer bg-pong-dark-secondary text-pong-dark-bg py-5 px-10 mt-5 rounded-2xl glow-animation">PLAY AGAIN</button>
       </div>
     </div>
-    <div id="disconnected" class="h-80 w-150 bg-pong-dark-bg border-2 border-pong-dark-secondary rounded-2xl absolute top-1/2 left-1/2 translate-y-[-20%] translate-x-[-50%] hidden z-20">
+    <div id="disconnected" class="game-tab ${styles.gameTab} hidden">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
         <h1 class="text-5xl font-bold text-pong-dark-secondary">GAME OVER</h1>
         <h1 class="text-2xl mt-2 text-amber-50"> DISCONNECTED</h1>
@@ -97,11 +98,10 @@ export function RemoteGame() {
   const userInfo = getCurrentUser();
 
   const getRoomIdByUserId = async (userId: number) => {
-    return fetch("http://localhost:5000/getRoomId", {
+    return fetch("/game/getRoomId", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ userId }), // send { userId: someNumber }
     })
       .then((response) => {
@@ -129,8 +129,9 @@ export function RemoteGame() {
     const userName: string = userInfo?.username ?? "username";
     const roomdIdentif = await getRoomIdByUserId(userInfo?.id ?? 0);
 
+    console.log("host: ", window.location.host);
     socket = new WebSocket(
-      `ws://localhost:5000/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
+      `wss://${window.location.host}/game/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
     );
     exit.addEventListener("click", () => {
       socket.close();
@@ -172,7 +173,27 @@ export function RemoteGame() {
     };
 
     socket.onmessage = (event: MessageEvent) => {
-      flow.updateGameState(event.data);
+      // Handle both ArrayBuffer and string data
+      if (event.data instanceof ArrayBuffer) {
+        flow.updateGameState(event.data);
+      } else if (typeof event.data === "string") {
+        // Handle string messages (like "disconnected.", etc.)
+        if (
+          event.data === "disconnected." ||
+          event.data.includes("disconnected")
+        ) {
+          disconnectedResult.style.display = "block";
+          return;
+        }
+        flow.updateGameState(event.data);
+      } else {
+        // Handle Blob data (convert to ArrayBuffer)
+        if (event.data instanceof Blob) {
+          event.data.arrayBuffer().then((buffer: ArrayBuffer) => {
+            flow.updateGameState(buffer);
+          });
+        }
+      }
     };
 
     flow.animate();
@@ -210,14 +231,14 @@ interface GameState {
   rightPlayerBallHit: number;
   startTime: number;
   endTime: number;
-  solde: number;
   level: number;
   matchPlayed: number;
   matchWon: number;
   matchLost: number;
   enemyId: number;
+  countdownActive?: boolean; // Add countdown state
+  countdownTime?: number; // Add countdown time
 }
-
 interface PlayerData {
   userName: string;
   matchId: string;
@@ -228,7 +249,6 @@ interface PlayerData {
   gameEndResult: string;
   leftPlayerBallHit: number;
   rightPlayerBallHit: number;
-  Solde: number;
   level: number;
   matchPlayed: number;
   matchWon: number;
@@ -239,10 +259,80 @@ interface PlayerData {
 
 interface LastMatchData {
   level: number;
-  Solde: number;
   matchPlayed: number;
   matchWon: number;
   matchLost: number;
+}
+interface CompactGameState {
+  p: number; // playerId
+  bx: number; // ballX
+  by: number; // ballY
+  fx: number; // flagX (0 or 1)
+  fy: number; // flagY (0 or 1)
+  pl: number; // paddleLeftY
+  pr: number; // paddelRightY
+  kp: string; // keypressd
+  dc: number; // disconnected (0 or 1)
+  ls: number; // leftPlayerScore
+  rs: number; // rightPlayerScore
+  rd: number; // rounds
+  bs: number; // ballSpeed
+  hc: number; // hitCount
+  r: string; // gameEndResult
+  e: number; // endGame (0 or 1)
+  al: number; // alive (0 or 1)
+  lh: number; // leftPlayerBallHit
+  rh: number; // rightPlayerBallHit
+  st: number; // startTime
+  et: number; // endTime
+  ei: number; // enemyId
+  mi: string; // matchId
+  ca: number; // countdownActive (0 or 1)
+  ct: number; // countdownTime
+}
+function expandGameState(compact: CompactGameState): Partial<GameState> {
+  return {
+    playerId: compact.p || 1,
+    ballX:
+      compact.bx !== null && compact.bx !== undefined && !isNaN(compact.bx)
+        ? compact.bx
+        : 500,
+    ballY:
+      compact.by !== null && compact.by !== undefined && !isNaN(compact.by)
+        ? compact.by
+        : 300,
+    flagX: compact.fx === 1,
+    flagY: compact.fy === 1,
+    paddleLeftY:
+      compact.pl !== null && compact.pl !== undefined && !isNaN(compact.pl)
+        ? compact.pl
+        : 240,
+    paddelRightY:
+      compact.pr !== null && compact.pr !== undefined && !isNaN(compact.pr)
+        ? compact.pr
+        : 240,
+    keypressd: compact.kp || "",
+    disconnected: compact.dc === 1,
+    leftPlayerScore: compact.ls || 0,
+    rightPlayerScore: compact.rs || 0,
+    rounds: compact.rd || 5,
+    ballSpeed:
+      compact.bs !== null && compact.bs !== undefined && !isNaN(compact.bs)
+        ? compact.bs
+        : 5,
+    // hitCount: compact.hc,
+    gameEndResult: compact.r || "",
+    endGame: compact.e === 1,
+    alive: compact.al === 1,
+    leftPlayerBallHit: compact.lh || 0,
+    rightPlayerBallHit: compact.rh || 0,
+    startTime: compact.st || Date.now(),
+    endTime: compact.et || 0,
+    enemyId: compact.ei || 0,
+    matchId: compact.mi || "",
+    countdownActive: compact.ca === 1, // Add countdown expansion
+    countdownTime: compact.ct || 0,
+  };
 }
 interface FlowFieldDependencies {
   rightPlayerScore: HTMLElement;
@@ -298,25 +388,46 @@ class FlowField {
       rightPlayerBallHit: 0,
       startTime: Date.now(),
       endTime: 0,
-      solde: 5,
       level: 0,
       matchPlayed: 0,
       matchWon: 0,
       matchLost: 0,
       enemyId: 0, // Added enemyId to track the opponent
+      countdownActive: false, // Initialize countdown state
+      countdownTime: 0, // Initialize countdown time
     };
 
-    this.deps.restartButton.addEventListener("click", async () => {
-      window.location.reload();
+    this.deps.restartButton.addEventListener("click", async (event) => {
+      event.preventDefault(); // Prevent default behavior
+      if (!this.deps.restartButton.disabled) {
+        this.deps.restartButton.disabled = true; // Disable button to prevent multiple clicks
+		console.log("Restarting match...");
+        try {
+          await fetch("/game/restart-match", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              roomId: this.gameState.matchId,
+              sender_id: this.gameState.playerId,
+              recipient_id: this.gameState.enemyId,
+            }),
+          });
+        } catch (error) {
+          console.error("Error sending restart request:", error);
+        } finally {
+          this.deps.restartButton.disabled = false; // Re-enable button
+        }
+        window.location.reload();
+      }
     });
   }
 
   private sendPlayerData(playerData: PlayerData): void {
-    fetch("http://localhost:5000/storePlayerData", {
+    fetch("/game/storePlayerData", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(playerData),
     })
       .then((response) => response.json())
@@ -332,12 +443,52 @@ class FlowField {
     const isDark =
       document.getElementById("game-screen")?.dataset.theme === "dark";
 
-    // console.log("ballX: ",this.gameState.ballX)
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
+    // Draw middle separator line (dashed)
+    this.ctx.save();
+    this.ctx.strokeStyle = isDark ? "#00B894" : "#FFD700";
+    this.ctx.lineWidth = 2;
+    this.ctx.setLineDash([18, 18]);
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.canvasWidth / 2, 0);
+    this.ctx.lineTo(this.canvasWidth / 2, this.canvasHeight);
+    this.ctx.stroke();
+    this.ctx.setLineDash([]);
+    this.ctx.restore();
+
+    // player names
+    // this.ctx.save();
+    // this.ctx.font = "bold 22px Orbitron, sans-serif";
+    // this.ctx.fillStyle = "#AEBABF";
+    // this.ctx.textAlign = "left";
+    // this.ctx.fillText("Left Player", 20, 30);
+    // this.ctx.fillStyle = "#E05E4B";
+    // this.ctx.textAlign = "right";
+    // this.ctx.fillText("Right Player", this.canvasWidth - 20, 30);
+    // this.ctx.restore();
+
+    if (
+      this.gameState.countdownTime === 0 ||
+      this.gameState.countdownTime === 1 ||
+      this.gameState.countdownTime === 2 ||
+      this.gameState.countdownTime === 3
+    )
+      this.gameState.countdownActive = true;
+    else this.gameState.countdownActive = false;
+
+    if (
+      this.gameState?.countdownActive &&
+      (this.gameState?.countdownTime ?? 0) > 0
+    ) {
+      this.drawCountdown();
+      return;
+    }
+
     // Left paddle
-    this.ctx.fillStyle = isDark ? "#00B894" : "#FFD700";
+    this.ctx.fillStyle = "#AEBABF";
     this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.strokeStyle = "#AEBABF";
     this.ctx.strokeRect(
       10,
       this.gameState.paddleLeftY,
@@ -346,12 +497,14 @@ class FlowField {
     );
 
     // Right paddle
+    this.ctx.fillStyle = "#E05E4B";
     this.ctx.fillRect(
       980,
       this.gameState.paddelRightY,
       this.width,
       this.height
     );
+    this.ctx.strokeStyle = "#E05E4B";
     this.ctx.strokeRect(
       980,
       this.gameState.paddelRightY,
@@ -391,8 +544,90 @@ class FlowField {
     this.ctx.fill();
     this.ctx.globalAlpha = 1;
   }
+  private drawCountdown(): void {
+    const isDark =
+      document.getElementById("game-screen")?.dataset.theme === "dark";
+    this.drawGameElements(isDark);
 
+    // Draw countdown text
+    this.ctx.fillStyle = isDark ? "#FFD700" : "#00B894";
+    this.ctx.font = "bold 120px 'Orbitron', monospace";
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+
+    const countdownText =
+      this.gameState.countdownActive &&
+      this.gameState.countdownTime !== undefined &&
+      this.gameState.countdownTime > 0
+        ? this.gameState.countdownTime.toString()
+        : "GO!";
+
+    // Add text shadow
+    this.ctx.shadowColor = isDark ? "#FFD700" : "#00B894";
+    this.ctx.shadowBlur = 20;
+
+    this.ctx.fillText(
+      countdownText,
+      this.canvasWidth / 2,
+      this.canvasHeight / 2
+    );
+
+    // Dynamic subtitle based on scores
+    this.ctx.font = "bold 22px Orbitron, sans-serif";
+    this.ctx.fillStyle = isDark ? "#fff" : "#23272f";
+    this.ctx.shadowBlur = 10;
+
+    let subtitle = "Game Starting...";
+    if (
+      this.gameState.leftPlayerScore > 0 ||
+      this.gameState.rightPlayerScore > 0
+    ) {
+      subtitle = "Next Point Starting...";
+    }
+
+    this.ctx.fillText(
+      subtitle,
+      this.canvasWidth / 2,
+      this.canvasHeight / 2 + 80
+    );
+
+    // Reset shadow
+    this.ctx.shadowBlur = 0;
+    this.ctx.textAlign = "start";
+    this.ctx.textBaseline = "alphabetic";
+  }
+  private drawGameElements(isDark: boolean): void {
+    // Left paddle
+    this.ctx.fillStyle = "#AEBABF";
+    this.ctx.fillRect(10, this.gameState.paddleLeftY, this.width, this.height);
+    this.ctx.strokeStyle = "#AEBABF";
+    this.ctx.strokeRect(
+      10,
+      this.gameState.paddleLeftY,
+      this.width,
+      this.height
+    );
+
+    // Right paddle
+    this.ctx.fillStyle = "#E05E4B";
+    this.ctx.fillRect(
+      980,
+      this.gameState.paddelRightY,
+      this.width,
+      this.height
+    );
+    this.ctx.strokeStyle = "#E05E4B";
+    this.ctx.strokeRect(
+      980,
+      this.gameState.paddelRightY,
+      this.width,
+      this.height
+    );
+  }
   private keysFunction(): void {
+    // if (this.gameState.countdownActive) {
+    //   return;
+    // }
     if (this.keys["w"]) {
       this.gameState.keypressd = "w";
     } else if (this.keys["s"]) {
@@ -404,24 +639,6 @@ class FlowField {
     if (this.deps.socket.readyState === WebSocket.OPEN) {
       this.deps.socket.send(JSON.stringify(this.gameState));
     }
-  }
-  public normalizeUser(raw: UserProfile): UserProfile {
-    return {
-      id: raw.id,
-      userId: raw.userId,
-      username: raw.username,
-      email: raw.email,
-      gender: raw.gender,
-      avatar_url: raw.avatar_url,
-      status: raw.status,
-      solde: raw.solde,
-      rank: raw.rank,
-      level: raw.level,
-      created_at: raw.created_at,
-      matches_played: raw.matches_played ?? 0,
-      matches_won: raw.matches_won ?? 0,
-      matches_lost: raw.matches_lost ?? 0,
-    };
   }
   public updateUser(currentUser: UserProfile, hasWon: boolean): void {
     const payload = {
@@ -445,14 +662,32 @@ class FlowField {
         console.error("Error updating user:", error);
       });
   }
-  public updateGameState(data: string): void {
+
+  public updateGameState(data: string | ArrayBuffer): void {
     try {
-      const parsedData: GameState = JSON.parse(data);
+      let parsedData: GameState;
+
+      // Check if data is ArrayBuffer (from Buffer.from() on server)
+      if (data instanceof ArrayBuffer) {
+        // Convert ArrayBuffer to string
+        const decoder = new TextDecoder();
+        const jsonString = decoder.decode(data);
+        const compact: CompactGameState = JSON.parse(jsonString);
+        // Expand compact state to full state
+        const expandedState = expandGameState(compact);
+        parsedData = { ...this.gameState, ...expandedState };
+      } else {
+        // Handle regular JSON string (fallback)
+        parsedData = JSON.parse(data);
+      }
+      this.gameState = parsedData;
       this.gameState = parsedData;
       if (this.gameState.playerId === 1) {
-        this.deps.playerSide.innerText = "YOU ARE ON THE LEFT SIDE";
+        this.deps.playerSide.innerText =
+          "YOU ARE ON THE LEFT SIDE - GRAY PADDLE";
       } else if (this.gameState.playerId === 2) {
-        this.deps.playerSide.innerText = "YOU ARE ON THE RIGHT SIDE";
+        this.deps.playerSide.innerText =
+          "YOU ARE ON THE RIGHT SIDE - RED PADDLE";
       }
       this.deps.rightPlayerScore.textContent = String(
         this.gameState.rightPlayerScore
@@ -485,7 +720,6 @@ class FlowField {
               leftPlayerBallHit: this.gameState.leftPlayerBallHit,
               rightPlayerBallHit: this.gameState.rightPlayerBallHit,
               level: 5,
-              Solde: 5,
               matchPlayed: 1,
               matchWon: this.gameState.gameEndResult === "Won" ? 1 : 0,
               matchLost: this.gameState.gameEndResult === "Lost" ? 1 : 0,
@@ -495,7 +729,6 @@ class FlowField {
 
             const currentUser = getCurrentUser();
             if (currentUser) {
-              currentUser.solde = 5;
               currentUser.level = 5;
               currentUser.matches_played = 1;
               currentUser.matches_won =
@@ -529,10 +762,6 @@ class FlowField {
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
               hasWonPlayerOne = true;
-              this.gameState.solde = Math.max(
-                0,
-                5 + getOldDataOfCurrentUserData.solde
-              );
               this.gameState.level +=
                 getOldDataOfCurrentUserData.level + 1 + levelGain; // 1 is the win bonus
               this.gameState.matchLost =
@@ -541,10 +770,6 @@ class FlowField {
                 getOldDataOfCurrentUserData.matches_won + 1;
             } else if (this.gameState.gameEndResult === "Lost") {
               hasWonPlayerOne = false;
-              this.gameState.solde = Math.max(
-                0,
-                getOldDataOfCurrentUserData.solde - 5
-              );
               if (getOldDataOfCurrentUserData.level - 1 < 0) {
                 this.gameState.level = 0; // Ensure level never goes negative
               } else
@@ -565,23 +790,14 @@ class FlowField {
               getOldDataOfCurrentUserData.matches_played + 1;
             if (this.gameState.gameEndResult === "Won") {
               hasWonPlayerTwo = true;
-              this.gameState.solde = Math.max(
-                0,
-                5 + getOldDataOfCurrentUserData.solde
-              );
               this.gameState.level =
                 getOldDataOfCurrentUserData.level + 1 + levelGain; // 1 is the win bonus
-              console.log("level", this.gameState.level);
               this.gameState.matchWon =
                 getOldDataOfCurrentUserData.matches_won + 1;
               this.gameState.matchLost =
                 getOldDataOfCurrentUserData.matches_lost;
             } else if (this.gameState.gameEndResult === "Lost") {
               hasWonPlayerTwo = false;
-              this.gameState.solde = Math.max(
-                0,
-                getOldDataOfCurrentUserData.solde - 5
-              );
               if (getOldDataOfCurrentUserData.level - 1 < 0) {
                 this.gameState.level = 0; // Ensure level never goes negative
               } else
@@ -605,7 +821,6 @@ class FlowField {
             leftPlayerBallHit: this.gameState.leftPlayerBallHit,
             rightPlayerBallHit: this.gameState.rightPlayerBallHit,
             level: this.gameState.level,
-            Solde: this.gameState.solde,
             matchPlayed: this.gameState.matchPlayed,
             matchWon: this.gameState.matchWon,
             matchLost: this.gameState.matchLost,
@@ -615,18 +830,15 @@ class FlowField {
           this.sendPlayerData(playerData);
 
           if (currentUser) {
-            currentUser.solde = this.gameState.solde;
             currentUser.level = this.gameState.level;
             currentUser.matches_played = this.gameState.matchPlayed;
             currentUser.matches_won = this.gameState.matchWon;
             currentUser.matches_lost = this.gameState.matchLost;
             if (this.gameState.playerId === 1 && flag_update === true) {
               flag_update = false;
-              console.log("level", this.gameState.level);
               this.updateUser(currentUser, hasWonPlayerOne);
             } else if (this.gameState.playerId === 2 && flag_update === true) {
               flag_update = false;
-              console.log("level", this.gameState.level);
               this.updateUser(currentUser, hasWonPlayerTwo);
             }
           }
@@ -639,6 +851,9 @@ class FlowField {
     } catch (err) {
       console.error("Error parsing game state:", err);
       this.deps.disconnectedResult.style.display = "block";
+      setTimeout(() => {
+        navigateTo("/arena");
+      }, 3000);
     }
   }
 

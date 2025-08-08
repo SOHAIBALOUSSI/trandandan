@@ -1,4 +1,4 @@
-import RabbitMGame from "./RabbitMGame.js";
+import RabbitMGame from "../tools/RabbitMGame.js";
 const Accept = async (req, reply, fastify) => {
   try {
     const { roomId, senderId, receiverId } = req.body;
