@@ -1,9 +1,13 @@
 import RabbitMGame from "../tools/RabbitMGame.js";
 
 const playAgain = async (req, reply) => {
-
-  const { roomId, senderId, receiverId } = req.body;
-  if (!roomId || !senderId || !receiverId) {
+  const { roomId, sender_id, recipient_id } = req.body;
+  console.log("Play again request received:", {
+    roomId,
+    sender_id,
+    recipient_id,
+  });
+  if (!roomId || !sender_id || !recipient_id) {
     return reply.code(400).send({ error: "Missing required fields" });
   }
   try {
@@ -11,8 +15,8 @@ const playAgain = async (req, reply) => {
     await rabbitMQ.connect();
     const message = {
       type: "PLAY_AGAIN",
-      sender_id: receiverId,
-      recipient_id: senderId,
+      sender_id,
+      recipient_id,
       roomId,
     };
     await rabbitMQ.produceMessage(message, "notifications.game.playAgain");

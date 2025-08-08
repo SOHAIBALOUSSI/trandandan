@@ -3,81 +3,16 @@ import { fontSizes } from "@/styles/fontSizes";
 import { UserProfile, UserHistory } from "types/types";
 import Chart from "chart.js/auto";
 
-const fakeHistory: UserHistory[] = [
-  {
-    id: 1,
-    user_name: "demo",
-    enemy_id: 2,
-    user_id: 1,
-    left_player_score: 11,
-    right_player_score: 7,
-    game_duration: 5.2,
-    game_end_result: "Won",
-    left_player_ball_hit: 45,
-    right_player_ball_hit: 32,
-  },
-  {
-    id: 2,
-    user_name: "demo",
-    enemy_id: 3,
-    user_id: 1,
-    left_player_score: 8,
-    right_player_score: 11,
-    game_duration: 6.5,
-    game_end_result: "Lost",
-    left_player_ball_hit: 40,
-    right_player_ball_hit: 50,
-  },
-  {
-    id: 3,
-    user_name: "demo",
-    enemy_id: 4,
-    user_id: 1,
-    left_player_score: 11,
-    right_player_score: 9,
-    game_duration: 7.8,
-    game_end_result: "Won",
-    left_player_ball_hit: 55,
-    right_player_ball_hit: 42,
-  },
-  {
-    id: 4,
-    user_name: "demo",
-    enemy_id: 5,
-    user_id: 1,
-    left_player_score: 11,
-    right_player_score: 4,
-    game_duration: 4.4,
-    game_end_result: "Won",
-    left_player_ball_hit: 38,
-    right_player_ball_hit: 20,
-  },
-  {
-    id: 5,
-    user_name: "demo",
-    enemy_id: 6,
-    user_id: 1,
-    left_player_score: 9,
-    right_player_score: 11,
-    game_duration: 8.2,
-    game_end_result: "Lost",
-    left_player_ball_hit: 50,
-    right_player_ball_hit: 55,
-  },
-];
-
 export async function displayPerformanceMetrics(user: UserProfile) {
   const metricsContainer = document.getElementById("performance-metrics");
   if (!metricsContainer) return;
   metricsContainer.innerHTML = "";
 
   let history: UserHistory[] = await getUserHistory(user.id);
-  history.length = 0;
   if (!history || history.length === 0) {
-    // metricsContainer.innerHTML = `
-    //   <p class="bg-pong-dark-custom border border-pong-highlight/30 rounded-xl text-pong-dark-secondary text-center py-8 ${fontSizes.bodyFontSize} px-8 md:px-24">No performance data available yet. Start playing and defeat your friends to build your stats!</p>`;
-    // return;
-    history = fakeHistory;
+    metricsContainer.innerHTML = `
+      <p class="bg-pong-dark-custom border border-pong-highlight/30 rounded-xl text-pong-dark-secondary text-center py-8 ${fontSizes.bodyFontSize} px-8 md:px-24">No performance data available yet. Start playing and defeat your friends to build your stats!</p>`;
+    return;
   }
 
   const totalMatches = history.length;
@@ -91,8 +26,10 @@ export async function displayPerformanceMetrics(user: UserProfile) {
   let pointsScored = 0;
   let pointsConceded = 0;
   history.forEach((h) => {
-    pointsScored += h.left_player_score;
-    pointsConceded += h.right_player_score;
+    h.game_end_result === "Won"
+      ? (pointsScored += 5)
+      : (pointsConceded +=
+          h.player_id === 1 ? h.right_player_score : h.left_player_score);
   });
 
   const winRate = Math.round((wins / totalMatches) * 100);
@@ -101,8 +38,8 @@ export async function displayPerformanceMetrics(user: UserProfile) {
   const labels = recentMatches.map(
     (_, i) => `Match ${totalMatches - (recentMatches.length - 1 - i)}`
   );
-  const scoredData = recentMatches.map((h) => h.left_player_score);
-  const concededData = recentMatches.map((h) => h.right_player_score);
+  const scoredData = recentMatches.map((h) => h.player_id === 1 ? h.left_player_score : h.right_player_score);
+  const concededData = recentMatches.map((h) => h.player_id === 1 ? h.right_player_score : h.left_player_score);
 
   const circleCircumference = 2 * Math.PI * 36;
   const dashOffset = circleCircumference * (1 - wins / totalMatches);
@@ -139,7 +76,7 @@ export async function displayPerformanceMetrics(user: UserProfile) {
 
       <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-md shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
         <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Avg Match Duration</h3>
-        <div class="text-3xl md:text-5xl font-extrabold text-pong-dark-primary drop-shadow-lg">${avgDuration}m</div>
+        <div class="text-3xl md:text-5xl font-extrabold text-pong-dark-primary drop-shadow-lg">${avgDuration}s</div>
         <p class="mt-2 text-gray-300 text-sm">Per Match</p>
       </div>
 

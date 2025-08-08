@@ -1,8 +1,5 @@
 import { fontSizes } from "@/styles/fontSizes";
-import {
-  startRecentActivityListener,
-  stopRecentActivityListener,
-} from "@/services/recent-activity-service";
+import { startRecentActivityListener } from "@/services/recent-activity-service";
 
 export function RecentActivityFeed(): HTMLDivElement {
   const wrapper = document.createElement("div");
@@ -17,12 +14,12 @@ export function RecentActivityFeed(): HTMLDivElement {
   const ul = document.createElement("ul");
   ul.id = "recent-activity-list";
   ul.className = `space-y-6 ${fontSizes.bodyFontSize} max-h-[340px] overflow-y-auto pr-2`;
-  ul.innerHTML = `<li class="text-pong-dark-secondary text-center">No recent activity.</li>`;
+
   wrapper.appendChild(ul);
 
-  startRecentActivityListener();
-
-  window.addEventListener("beforeunload", stopRecentActivityListener);
+  setTimeout(() => {
+    startRecentActivityListener();
+  }, 100);
 
   return wrapper;
 }

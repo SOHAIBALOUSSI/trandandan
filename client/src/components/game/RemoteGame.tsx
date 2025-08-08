@@ -401,6 +401,7 @@ class FlowField {
       event.preventDefault(); // Prevent default behavior
       if (!this.deps.restartButton.disabled) {
         this.deps.restartButton.disabled = true; // Disable button to prevent multiple clicks
+		console.log("Restarting match...");
         try {
           await fetch("/game/restart-match", {
             method: "POST",
@@ -408,8 +409,8 @@ class FlowField {
             credentials: "include",
             body: JSON.stringify({
               roomId: this.gameState.matchId,
-              senderId: this.gameState.playerId,
-              receiverId: this.gameState.enemyId,
+              sender_id: this.gameState.playerId,
+              recipient_id: this.gameState.enemyId,
             }),
           });
         } catch (error) {

@@ -9,7 +9,7 @@ async function getUserHistory(req, reply, db) {
 
   const query = `
     SELECT * FROM games
-    WHERE player_id = ?
+    WHERE user_id = ?
     ORDER BY created_at DESC
   `;
 

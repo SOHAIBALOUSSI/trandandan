@@ -17,69 +17,31 @@ export async function loadMatchHistory(user: UserProfile) {
   matchHistoryList.innerHTML = "";
 
   let history: UserHistory[] = await getUserHistory(user.id);
-  history.length = 0;
+
   if (!history || history.length === 0) {
     const li = document.createElement("li");
     li.className = "text-center text-pong-dark-secondary p-4";
     li.textContent = "No match history available.";
     matchHistoryList.appendChild(li);
     return;
-    history = [
-      {
-        id: 1,
-        user_name: "Demo",
-        enemy_id: 2,
-        user_id: user.id,
-        left_player_score: 5,
-        right_player_score: 3,
-        game_duration: 6,
-        game_end_result: "Won",
-        left_player_ball_hit: 45,
-        right_player_ball_hit: 38,
-      },
-      {
-        id: 2,
-        user_name: "Demo",
-        enemy_id: 3,
-        user_id: user.id,
-        left_player_score: 4,
-        right_player_score: 5,
-        game_duration: 8,
-        game_end_result: "Lost",
-        left_player_ball_hit: 50,
-        right_player_ball_hit: 54,
-      },
-      {
-        id: 3,
-        user_name: "Demo",
-        enemy_id: 4,
-        user_id: user.id,
-        left_player_score: 7,
-        right_player_score: 1,
-        game_duration: 5,
-        game_end_result: "Won",
-        left_player_ball_hit: 60,
-        right_player_ball_hit: 25,
-      },
-    ];
   }
 
   for (const match of history) {
     const isWin = match.game_end_result === "Won";
     const enemyScore =
-      user.id === match.user_id
+      match.player_id === 1
         ? match.right_player_score
         : match.left_player_score;
     const myScore =
-      user.id === match.user_id
+      match.player_id === 1
         ? match.left_player_score
         : match.right_player_score;
     const myHits =
-      user.id === match.user_id
+      match.player_id === 1
         ? match.left_player_ball_hit
         : match.right_player_ball_hit;
     const enemyHits =
-      user.id === match.user_id
+      match.player_id === 1
         ? match.right_player_ball_hit
         : match.left_player_ball_hit;
 
@@ -105,7 +67,7 @@ export async function loadMatchHistory(user: UserProfile) {
     }`;
 
     const duration = document.createElement("span");
-    duration.textContent = `⏱ ${match.game_duration} min`;
+    duration.textContent = `⏱ ${match.game_duration} seconds`;
     duration.className = "text-sm text-pong-dark-secondary";
 
     header.appendChild(resultBadge);

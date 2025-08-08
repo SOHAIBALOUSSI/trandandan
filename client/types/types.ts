@@ -27,6 +27,7 @@ export type UserHistory = {
   user_name: string;
   enemy_id: number;
   user_id: number;
+  player_id: 1 | 2; // 1 for left player, 2 for right player
   left_player_score: number; // my score
   right_player_score: number; // my enemy's score
   game_duration: number;

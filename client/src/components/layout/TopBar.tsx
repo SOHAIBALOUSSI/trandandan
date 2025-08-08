@@ -1,5 +1,8 @@
 import { styles } from "@/styles/styles";
-import { clearNotificationCounter } from "@/services/notifications-service";
+import {
+  clearNotificationCounter,
+  clearAllNotifications,
+} from "@/services/notifications-service";
 import { handleSearchMembers } from "@/handlers/search-members";
 
 export function TopBar() {
@@ -25,12 +28,18 @@ export function TopBar() {
     const btn = document.getElementById("bell-btn") as HTMLButtonElement;
     if (!notifContainer || !btn) return;
 
+    const clearAllBtn = document.getElementById(
+      "clear-all-notifs"
+    ) as HTMLButtonElement;
+    if (clearAllBtn) {
+      clearAllBtn.addEventListener("click", () => {
+        clearAllNotifications();
+      });
+    }
+
     btn.addEventListener("click", () => {
       notifContainer.classList.toggle("hidden");
       clearNotificationCounter();
-    });
-    btn.addEventListener("blur", () => {
-      notifContainer.classList.add("hidden");
     });
 
     const searchBar = document.getElementById("search-bar") as HTMLInputElement;
@@ -104,9 +113,19 @@ export function TopBar() {
             id="notif-container"
             className="animate-fadeInUp absolute bg-pong-dark-bg text-pong-dark-primary w-[300px] md:w-[450px] max-h-[480px] hidden right-0 shadow-2xl rounded-xl p-4 mt-2 z-50 border border-pong-dark-primary"
           >
-            <h3 className="font-semibold mb-3 text-lg text-pong-accent flex items-center gap-2">
-              <i className="fa-regular fa-bell"></i> Club Updates
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-lg lg:text-xl text-pong-secondary flex items-center gap-2">
+                <i className="fa-regular fa-bell"></i> Club Updates
+              </h3>
+              <button
+                id="clear-all-notifs"
+                type="button"
+                className="px-3 py-1 rounded bg-pong-dark-accent text-white hover:bg-pong-accent text-xs"
+                aria-label="Clear all notifications"
+              >
+                Clear All
+              </button>
+            </div>
             <ul
               id="notif-list"
               className="list-none p-0 m-0 space-y-2 max-h-[220px] overflow-y-auto"
