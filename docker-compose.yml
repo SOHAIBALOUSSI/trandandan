@@ -116,7 +116,7 @@ services:
     networks:
       - trandenden-net
     volumes:
-      - ./server/game-service/db/.gameData.db:/app/db/.gameData.db
+      - ./server/game-service/db/:/app/db/
     depends_on:
       rabbitmq:
         condition: service_healthy

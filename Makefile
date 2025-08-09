@@ -8,7 +8,7 @@ fclean:
 	@docker system prune -af
 
 re :
-	docker compose down -v && docker compose up --build -d
+	docker compose down -v && docker compose up --build
 
 logs-%:
 	@docker compose logs -f $*

@@ -20,7 +20,7 @@ import { ChangePassword } from "@/pages/ChangePassword";
 import { ChangeEmail } from "@/pages/ChangeEmail";
 import { VerifyChangeCredentials } from "@/pages/VerifyChangeCredentials";
 import { LocalGame } from "@/components/game/LocalGame";
-import { RemoteGame } from "@/components/game/RemoteGame";
+import { closeRemoteWebSocket, RemoteGame } from "@/components/game/RemoteGame";
 import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
 import { startNotificationListener } from "@/services/notifications-service";
@@ -170,5 +170,11 @@ export async function router(): Promise<void> {
 
   if (window.location.pathname !== "/dashboard") {
     stopDashboardListener();
+  }
+
+  const remoteMatch = window.location.pathname.match(/^\/?remote\/(\d+)$/);
+
+  if (!remoteMatch) {
+    closeRemoteWebSocket();
   }
 }

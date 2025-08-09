@@ -5,6 +5,8 @@ import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { styles } from "@/styles/styles";
 import { inviteFriend } from "@/services/invite-friend";
 
+let socket: WebSocket | null = null;
+
 // let countdownCounter = false;
 export function RemoteGame() {
   setTimeout(() => {
@@ -131,8 +133,6 @@ export function RemoteGame() {
       });
   };
 
-  let socket: WebSocket;
-
   // Initialize the game
   async function init() {
     const userName: string = userInfo?.username ?? "username";
@@ -142,8 +142,9 @@ export function RemoteGame() {
     socket = new WebSocket(
       `wss://${window.location.host}/game/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
     );
+
     exit.addEventListener("click", () => {
-      socket.close();
+      socket?.close();
       navigateTo("/arena");
     });
     let keys: Record<string, boolean> = {};
@@ -170,7 +171,10 @@ export function RemoteGame() {
     });
 
     socket.onopen = () => {
-      console.log("connected");
+      console.log(
+        "Connecting to WebSocket for remote game with roomId:",
+        roomdIdentif
+      );
     };
 
     socket.onclose = () => {
@@ -873,5 +877,14 @@ class FlowField {
     this.keysFunction();
     this.ballPositionUpdate();
     requestAnimationFrame(this.animate.bind(this));
+  }
+}
+
+export function closeRemoteWebSocket() {
+  console.log("trying to close web socket");
+  if (socket) {
+    socket.close();
+    socket = null;
+    console.log("remote socket closed");
   }
 }

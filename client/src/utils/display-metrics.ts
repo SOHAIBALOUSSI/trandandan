@@ -15,9 +15,9 @@ export async function displayPerformanceMetrics(user: UserProfile) {
     return;
   }
 
-  const totalMatches = history.length;
-  const wins = history.filter((h) => h.game_end_result === "Won").length;
-  const losses = totalMatches - wins;
+  const totalMatches = user.matches_played;
+  const wins = user.matches_won;
+  const losses = user.matches_lost;
 
   const avgDuration = (
     history.reduce((acc, h) => acc + h.game_duration, 0) / totalMatches
