@@ -19,7 +19,7 @@ export function Profile() {
     <section className={`${styles.pageLayoutDark} relative`}>
       <NavBar />
       <div className="w-full relative">
-        <TopBar />
+        {/* <TopBar /> */}
 
         <main className={styles.pageContent}>
           <SecondaryHeader

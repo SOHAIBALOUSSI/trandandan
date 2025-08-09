@@ -16,6 +16,13 @@ function saveSeen() {
   localStorage.setItem("seenNotifs", JSON.stringify(Array.from(seenIds)));
 }
 
+const received = new Set<number>(
+  JSON.parse(localStorage.getItem("receivedNotifs") || "[]")
+);
+function saveReceived() {
+  localStorage.setItem("receivedNotifs", JSON.stringify(Array.from(received)));
+}
+
 function updateCounter() {
   const badge = document.getElementById("notif-badge") as HTMLSpanElement;
   if (badge) {
@@ -47,10 +54,8 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
   let label = "";
   const sender = await getUserById(notif.sender_id || 0);
 
-  // --- Notification Type Switch ---
   switch (notif.type) {
     case "FRIEND_REQUEST_SENT":
-      // Friend request sent notification
       label = `
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-user-plus text-pong-accent text-base"></i>
@@ -63,7 +68,6 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
       break;
 
     case "FRIEND_REQUEST_ACCEPTED":
-      // Friend request accepted notification
       label = `
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-user-check text-pong-success text-base"></i>
@@ -76,7 +80,6 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
       break;
 
     case "MESSAGE_RECEIVED":
-      // Message received notification
       label = `
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-message text-pong-accent text-base"></i>
@@ -89,7 +92,6 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
       break;
 
     case "INVITE_SENT":
-      // Game invite notification
       label = `
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
@@ -118,51 +120,25 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
             () => {
               markNotificationsAsRead([notif.notification_id]);
               li.remove();
-              displayToast("Invite declined.", "error");
+              displayToast("Invitation declined — match cancelled.", "warning");
             }
           );
         }, 0);
       }
+      route = `/members/${notif.sender_id}`;
       break;
 
     case "INVITE_ACCEPTED":
-      // Invite accepted notification
-      displayToast("Invite accepted. Redirecting to game...", "success");
+      displayToast("Match confirmed — preparing the arena...", "success");
+      document.getElementById("remote-invite-modal")?.remove();
       setTimeout(() => {
-        document.getElementById("remote-invite-modal")?.remove();
         navigateTo(`/remote?roomId=${notif.roomId}`);
         markNotificationsAsRead([notif.notification_id]);
         li.remove();
-      }, 3000);
-      break;
-
-    case "PLAY_AGAIN":
-      // Play again notification
-      setTimeout(() => {
-        showInviteNotification(
-          sender?.username || "Unknown",
-          async () => {
-            const roomId = await getRoomId(notif.sender_id || 0);
-            if (roomId) {
-              await acceptInvite(
-                roomId,
-                notif.sender_id || 0,
-                notif.recipient_id || 0
-              );
-              markNotificationsAsRead([notif.notification_id]);
-              navigateTo(`/remote?roomId=${roomId}`);
-            }
-          },
-          () => {
-            markNotificationsAsRead([notif.notification_id]);
-            displayToast("Invite declined.", "error");
-          }
-        );
-      }, 0);
+      }, 2000);
       break;
 
     default:
-      // Default notification
       label = `
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-bell text-pong-accent text-base"></i>
@@ -175,12 +151,7 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
   li.innerHTML = label;
 
   li.onclick = () => {
-    let ids: number[] = [];
-    if (groupedIds && groupedIds.length) {
-      ids = groupedIds;
-    } else if (notif.notification_id) {
-      ids = [notif.notification_id];
-    }
+    const ids = groupedIds?.length ? groupedIds : [notif.notification_id];
 
     if (ids.length > 0) {
       markNotificationsAsRead(ids);
@@ -188,8 +159,26 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
       updateCounter();
     }
 
-    if (route) navigateTo(route);
-    li.remove();
+    // Store route before DOM manipulation
+    const routeToNavigate = route;
+
+    // Remove the clicked notification immediately
+    const notifList = document.getElementById("notif-list");
+    if (notifList && notifList.contains(li)) {
+      try {
+        notifList.removeChild(li);
+      } catch (e) {
+        // Element might have been removed already
+        console.warn("Element already removed from DOM");
+      }
+    }
+
+    // Navigate after DOM update using requestAnimationFrame to ensure DOM changes are processed
+    if (routeToNavigate) {
+      requestAnimationFrame(() => {
+        navigateTo(routeToNavigate);
+      });
+    }
   };
 
   return li;
@@ -224,13 +213,28 @@ async function renderGroupedMessageNotification(
 
   li.onclick = () => {
     const ids = JSON.parse(li.dataset.groupedIds || "[]");
-
-    markNotificationsAsRead(ids); // mark all in group
+    markNotificationsAsRead(ids);
     unseenCount = Math.max(0, unseenCount - ids.length);
     updateCounter();
 
-    navigateTo(`/lounge/${notif.sender_id}`);
-    li.remove();
+    // Store the sender_id before DOM manipulation
+    const senderIdToNavigate = notif.sender_id;
+
+    // Remove only the clicked grouped notification
+    const notifList = document.getElementById("notif-list");
+    if (notifList && notifList.contains(li)) {
+      try {
+        notifList.removeChild(li);
+      } catch (e) {
+        // Element might have been removed already
+        console.warn("Element already removed from DOM");
+      }
+    }
+
+    // Navigate after DOM update using requestAnimationFrame
+    requestAnimationFrame(() => {
+      navigateTo(`/lounge/${senderIdToNavigate}`);
+    });
   };
 
   return li;
@@ -244,11 +248,15 @@ export function startNotificationListener() {
 
   ws = new WebSocket("/notifications");
 
-  ws.onopen = () => {};
+  ws.onopen = () => {
+    console.log("[Notif] WebSocket connection established.");
+  };
 
   ws.onmessage = async (event: MessageEvent) => {
     try {
       const data = JSON.parse(event.data);
+
+      console.log("notif received: ", data);
 
       // Handle unread count update
       if (data.type === "UNREAD_COUNT") {
@@ -277,14 +285,18 @@ export function startNotificationListener() {
       }
 
       // Increment unseen count only for *new* notification IDs
-      if (data.notification_id && !seenIds.has(data.notification_id)) {
-        seenIds.add(data.notification_id); // mark as seen first
+      if (
+        data.notification_id &&
+        !received.has(data.notification_id) // Ensure the notification ID is not already processed
+      ) {
+        received.add(data.notification_id); // Mark the notification as processed
+        saveReceived(); // Save the updated set to localStorage
         unseenCount++;
         updateCounter();
       }
 
       // Handle rendering notifications
-      if (data.notification_id || data.sender_id) {
+      if (data.notification_id) {
         const notifList = document.getElementById("notif-list");
         if (notifList) {
           if (data.type === "MESSAGE_RECEIVED") {
@@ -305,6 +317,7 @@ export function startNotificationListener() {
               ids.push(data.notification_id);
               existingGroup.dataset.groupedIds = JSON.stringify(ids);
             } else {
+              console.log("Creating new message group for:", data.sender_id);
               notifList.prepend(
                 await renderGroupedMessageNotification(data, 1, [
                   data.notification_id,
@@ -312,6 +325,7 @@ export function startNotificationListener() {
               );
             }
           } else {
+            console.log("Rendering single notification:", data);
             notifList.prepend(await renderNotification(data));
           }
 
@@ -335,6 +349,7 @@ export function startNotificationListener() {
     setTimeout(() => {
       startNotificationListener();
     }, 5000);
+    console.log("[Notif] WebSocket connection closed. Reconnecting...");
   };
 }
 

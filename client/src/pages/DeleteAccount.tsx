@@ -14,7 +14,7 @@ export function DeleteAccount() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        <TopBar />
+        {/* <TopBar /> */}
 
         <main
           className={`${styles.pageContent} flex flex-col items-center gap-10`}

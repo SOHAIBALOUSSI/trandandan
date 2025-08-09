@@ -81,8 +81,7 @@ export async function loadChatList() {
   const friendIds = await getFriends();
 
   if (!friendIds.length) {
-    chatListElement.innerHTML =
-      '<li class="text-pong-dark-secondary text-center py-4 text-sm md:text-lg">No friends found.</li>';
+    chatListElement.innerHTML = `<li class="text-pong-dark-secondary text-center py-4 ${fontSizes.bodyFontSize}">No friends found.</li>`;
     return;
   }
 
@@ -95,7 +94,6 @@ export async function loadChatList() {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log(data);
         if (data.userStatuses) {
           onlineStatusMap = {};
           data.userStatuses.forEach(
@@ -120,7 +118,7 @@ export async function loadChatList() {
       console.error("error in profiles status");
     };
     ws.onclose = () => {
-		console.log("connection to status service ws clodsed");
-	};
+      console.log("connection to status service ws clodsed");
+    };
   }
 }

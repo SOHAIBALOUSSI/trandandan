@@ -240,7 +240,6 @@ class FlowFieldLocal {
     const isDark =
       document.getElementById("game-screen")?.dataset.theme === "dark";
 
-    // console.log("ballX: ",this.gameState.ballX)
     this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
     // Draw middle separator line (dashed)

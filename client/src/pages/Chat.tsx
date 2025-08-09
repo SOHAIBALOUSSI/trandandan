@@ -22,7 +22,7 @@ export async function Chat(friendId: number) {
   section.className = styles.pageLayoutDark;
 
   if (!friend || !currentUser) {
-    section.appendChild(TopBar());
+    // section.appendChild(TopBar());
     section.appendChild(
       Loader({
         text: friend
@@ -94,7 +94,7 @@ export async function Chat(friendId: number) {
   const mainArea = document.createElement("div");
   mainArea.className = "flex-1 flex flex-col";
 
-  mainArea.appendChild(TopBar());
+//   mainArea.appendChild(TopBar());
 
   const main = document.createElement("main");
   main.className =

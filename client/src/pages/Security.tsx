@@ -20,7 +20,7 @@ export function Security() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        <TopBar />
+        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Security & Access"

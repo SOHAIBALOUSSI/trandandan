@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/utils/user-store";
 import { UserProfile } from "types/types";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { styles } from "@/styles/styles";
+import { inviteFriend } from "@/services/invite-friend";
 
 // let countdownCounter = false;
 export function RemoteGame() {
@@ -58,6 +59,14 @@ export function RemoteGame() {
       	</canvas>
       </div>
   	</div>
+
+    <div id="controls-guide" class="flex flex-col items-center justify-center mt-4">
+      <h3 class="text-lg font-bold mb-2">Controls</h3>
+      <ul class="text-base space-y-1 font-orbitron">
+        <li><strong>W</strong>: Move Paddle Up</li>
+        <li><strong>S</strong>: Move Paddle Down</li>
+      </ul>
+    </div>
 
     <div id="gameTab" class="game-tab ${styles.gameTab} hidden">
       <div class="flex flex-col items-center justify-center h-full px-20 py-4">
@@ -403,23 +412,16 @@ class FlowField {
       if (!this.deps.restartButton.disabled) {
         this.deps.restartButton.disabled = true; // Disable button to prevent multiple clicks
         console.log("Restarting match...");
-        try {
-          await fetch("/game/restart-match", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-              roomId: this.gameState.matchId,
-              sender_id: getCurrentUser()?.userId,
-              recipient_id: this.gameState.enemyId,
-            }),
-          });
-        } catch (error) {
-          console.error("Error sending restart request:", error);
-        } finally {
-          this.deps.restartButton.disabled = false; // Re-enable button
-		  window.location.reload();
-        }
+		window.location.reload();
+		this.deps.restartButton.disabled = false; // Re-enable button
+        // try {
+        //   console.log("sift invite 3wtani");
+        //   console.log("enemy id is: ", this.gameState.enemyId);
+        //   await inviteFriend(this.gameState.enemyId);
+        // } catch (error) {
+        //   console.error("Error sending restart request:", error);
+        // } finally {
+        // }
       }
     });
   }

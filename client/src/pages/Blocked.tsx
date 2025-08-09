@@ -14,7 +14,7 @@ export function Blocked() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        <TopBar />
+        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Silenced Opponents"

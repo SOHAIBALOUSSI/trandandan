@@ -27,6 +27,7 @@ import { startNotificationListener } from "@/services/notifications-service";
 import { stopDashboardListener } from "@/services/dashboard-service";
 import { getCurrentUser } from "@/utils/user-store";
 import { navigateTo } from "@/utils/navigate-to-link";
+import { TopBar } from "@/components/layout/TopBar";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
@@ -65,6 +66,9 @@ const publicRoutes: string[] = [
   "verify_login",
 ];
 
+// Game routes that should not display the TopBar
+const gameRoutes: string[] = ["duel", "remote", "tournament", "checkout"];
+
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
@@ -74,8 +78,9 @@ async function isAuthenticated(): Promise<boolean> {
 
 // Router function to handle navigation and rendering
 export async function router(): Promise<void> {
-  const app = document.getElementById("app") as HTMLDivElement;
-  if (!app) return;
+  const appContent = document.getElementById("app-content") as HTMLDivElement;
+  const topBarContainer = document.getElementById("top-bar") as HTMLDivElement;
+  if (!appContent || !topBarContainer) return;
 
   let path = location.pathname.slice(1);
 
@@ -96,13 +101,21 @@ export async function router(): Promise<void> {
     path = "member-profile";
   }
 
+  // Detect /remote with query parameters
+  const remoteMatch = path.match(/^remote(\?.*)?$/);
+  if (remoteMatch) {
+    path = "remote";
+  }
+
   const isPublic = publicRoutes.includes(path);
+  const isGameRoute = gameRoutes.includes(path);
   const render = routes[path];
 
   let authed = false;
   if (!isPublic) {
     authed = await isAuthenticated();
     if (authed) {
+      console.log("helloooooo");
       startNotificationListener();
     }
     if (!authed) {
@@ -128,15 +141,22 @@ export async function router(): Promise<void> {
     return;
   }
 
-  // Clear the existing app content
-  while (app.firstChild) {
-    app.removeChild(app.firstChild);
+  // Conditionally render the TopBar for private non-game routes
+  if (!isPublic && !isGameRoute && !topBarContainer.hasChildNodes()) {
+    topBarContainer.appendChild(TopBar());
+  } else if ((isPublic || isGameRoute) && topBarContainer.hasChildNodes()) {
+    topBarContainer.innerHTML = ""; // Remove the TopBar for public or game routes
+  }
+
+  // Clear the existing app content (excluding the TopBar)
+  while (appContent.firstChild) {
+    appContent.removeChild(appContent.firstChild);
   }
 
   // Render the current route's component
   if (path === "chat-room" && chatRoom) {
     const chatView = await Chat(chatRoom);
-    app.appendChild(chatView);
+    appContent.appendChild(chatView);
   } else if (path === "member-profile" && memberId) {
     const currentUser = getCurrentUser();
     if (currentUser && currentUser.id === memberId) {
@@ -144,9 +164,9 @@ export async function router(): Promise<void> {
       return;
     }
     const memberProfileElem = await MemberProfile(memberId);
-    memberProfileElem && app.appendChild(memberProfileElem);
+    memberProfileElem && appContent.appendChild(memberProfileElem);
   } else {
-    app.appendChild(render());
+    appContent.appendChild(render());
   }
 
   if (window.location.pathname !== "/dashboard") {

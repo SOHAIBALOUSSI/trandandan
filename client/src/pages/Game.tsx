@@ -53,7 +53,7 @@ export function Game() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        <TopBar />
+        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Choose Your Game Mode"

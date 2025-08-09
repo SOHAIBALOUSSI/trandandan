@@ -1,5 +1,4 @@
 import { NavBar } from "@/components/layout/NavBar";
-import { TopBar } from "@/components/layout/TopBar";
 import { Hero } from "@/components/home/Hero";
 import { RecentActivityFeed } from "@/components/home/RecentActivityFeed";
 import { LeaderboardPreview } from "@/components/home/LeaderboardPreview";
@@ -23,7 +22,7 @@ export function Home() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        <TopBar />
+        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <Hero user={user} />
           <QuickStatsCards user={user} />

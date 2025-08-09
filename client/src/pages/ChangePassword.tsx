@@ -24,7 +24,7 @@ export function ChangePassword() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        <TopBar />
+        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <div className={styles.darkForm}>
             <h2

@@ -382,7 +382,7 @@ export const styles = {
   gameContainer: `
   	flex flex-col items-center justify-center
   	w-full min-h-screen
-
+	py-10
   `,
   gameExitBtn: `
   	fixed top-5 left-5

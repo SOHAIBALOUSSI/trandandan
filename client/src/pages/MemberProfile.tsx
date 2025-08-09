@@ -258,7 +258,7 @@ export async function MemberProfile(id: number) {
   container.appendChild(NavBar());
   const wrapper = document.createElement("div");
   wrapper.className = "w-full relative";
-  wrapper.appendChild(TopBar());
+//   wrapper.appendChild(TopBar());
 
   const main = document.createElement("main");
   main.className = styles.pageContent;

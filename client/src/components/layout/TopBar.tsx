@@ -17,6 +17,12 @@ export function TopBar() {
         badge.classList.add("text-black", "bg-pong-dark-primary");
         badge.classList.remove("text-white", "bg-pong-accent");
       }
+
+      // Toggle "Clear All" button visibility
+      const clearAllBtn = document.getElementById("clear-all-notifs");
+      if (clearAllBtn) {
+        clearAllBtn.style.display = count > 0 ? "block" : "none";
+      }
     }
 
     window.addEventListener("notification-count", updateBadge as EventListener);
@@ -32,11 +38,16 @@ export function TopBar() {
       clearAllBtn.addEventListener("click", () => {
         clearAllNotifications();
       });
+
+      // Initially hide the "Clear All" button if there are no notifications
+      const notifList = document.getElementById("notif-list");
+      if (notifList && notifList.children.length === 0) {
+        clearAllBtn.style.display = "none";
+      }
     }
 
     btn.addEventListener("click", () => {
       notifContainer.classList.toggle("hidden");
-      //   clearNotificationCounter();
     });
 
     const searchBar = document.getElementById("search-bar") as HTMLInputElement;

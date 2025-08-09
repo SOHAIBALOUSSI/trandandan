@@ -85,8 +85,6 @@ function WinActivity(
   li.appendChild(leftDiv);
   li.appendChild(scoreDiv);
 
-  console.log("win activity list: ", li);
-
   return li;
 }
 
@@ -128,8 +126,6 @@ function LossActivity(
 
   li.appendChild(leftDiv);
   li.appendChild(scoreDiv);
-
-  console.log("lost activity list: ", li);
 
   return li;
 }
