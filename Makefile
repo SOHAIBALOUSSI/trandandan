@@ -3,12 +3,15 @@ up:
 
 down:
 	@docker compose down
+	./rm.sh
 
 fclean:
 	@docker system prune -af
+	./rm.sh
 
 re :
-	docker compose down -v && docker compose up --build -d
+	./rm.sh
+	docker compose down -v && docker compose up --build
 
 logs-%:
 	@docker compose logs -f $*
