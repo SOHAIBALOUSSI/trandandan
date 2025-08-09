@@ -3,7 +3,6 @@ import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { NavBar } from "@/components/layout/NavBar";
 import { showPasswordToggle } from "@/utils/show-password-toggle";
-import { TopBar } from "@/components/layout/TopBar";
 
 export function ChangePassword() {
   const currentPasswordId = "old-password";
@@ -24,7 +23,6 @@ export function ChangePassword() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <div className={styles.darkForm}>
             <h2

@@ -74,7 +74,7 @@ export async function loadMatchHistory(user: UserProfile) {
     header.appendChild(duration);
 
     const scoreLine = document.createElement("p");
-    scoreLine.className = "text-xl font-extrabold text-white tracking-tight";
+    scoreLine.className = "text-xl font-bold text-white tracking-tight";
     scoreLine.textContent = `${myScore} - ${enemyScore}`;
 
     const enemy = document.createElement("div");
@@ -158,7 +158,7 @@ export async function loadMatchHistory(user: UserProfile) {
                 }</span>
         		</div>
     		  </div>
-      		  <p class="text-4xl font-extrabold text-white drop-shadow-md mb-2">${myScore} - ${enemyScore}</p>
+      		  <p class="text-4xl font-bold text-white drop-shadow-md mb-2">${myScore} - ${enemyScore}</p>
       		  <p class="text-white font-semibold text-center">${
               isWin
                 ? "🏆 You secured the victory!"

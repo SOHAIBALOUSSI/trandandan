@@ -2,7 +2,6 @@ import { handleChangeEmail } from "@/handlers/change-email";
 import { styles } from "@/styles/styles";
 import { NavBar } from "@/components/layout/NavBar";
 import { fontSizes } from "@/styles/fontSizes";
-import { TopBar } from "@/components/layout/TopBar";
 
 export function ChangeEmail() {
   setTimeout(() => {
@@ -13,7 +12,6 @@ export function ChangeEmail() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <div className={styles.darkForm}>
             <h2

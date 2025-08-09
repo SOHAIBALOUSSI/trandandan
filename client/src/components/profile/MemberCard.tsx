@@ -131,7 +131,7 @@ export function MemberCard(props: {
 
   return (
     <div className="relative flex flex-col gap-6 p-6 md:p-8 bg-pong-dark-custom rounded-2xl w-full max-w-2xl mx-auto border border-pong-dark-highlight/30 shadow-lg backdrop-blur-xl">
-      <h2 className="text-center text-2xl md:text-3xl font-extrabold text-pong-accent tracking-tight">
+      <h2 className="text-center text-2xl md:text-3xl font-bold text-pong-accent tracking-tight">
         BHV Member Card
       </h2>
 

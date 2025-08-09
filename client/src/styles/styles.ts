@@ -26,7 +26,7 @@ export const styles = {
   `,
   pageContent: `
     animate-fadeInUp
-	px-6 md:pl-16 md:pr-14 pt-20 md:pt-24 pb-8 md:pb-12 
+	px-6 md:pl-16 lg:pl-24 md:pr-14 pt-20 md:pt-24 pb-8 md:pb-12 
 	h-[calc(100vh-2rem)] 
 	overflow-y-auto
 	flex flex-col items-center gap-8

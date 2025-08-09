@@ -77,7 +77,7 @@ export async function displayPerformanceMetrics(user: UserProfile) {
             </defs>
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-xl font-extrabold text-white drop-shadow">${winRate}%</span>
+            <span class="text-xl font-bold text-white drop-shadow">${winRate}%</span>
           </div>
         </div>
         <p class="mt-3 text-sm text-white/70">${wins} Wins • ${losses} Losses</p>
@@ -85,7 +85,7 @@ export async function displayPerformanceMetrics(user: UserProfile) {
 
       <div class="bg-pong-dark-custom border border-pong-dark-highlight/30 p-6 rounded-md shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-[1.02]">
         <h3 class="${fontSizes.bodyFontSize} font-bold mb-4 text-pong-accent text-center tracking-wide">Avg Match Duration</h3>
-        <div class="text-3xl md:text-5xl font-extrabold text-pong-dark-primary drop-shadow-lg">${avgDuration}s</div>
+        <div class="text-3xl md:text-5xl font-bold text-pong-dark-primary drop-shadow-lg">${avgDuration}s</div>
         <p class="mt-2 text-gray-300 text-sm">Per Match</p>
       </div>
 

@@ -145,7 +145,7 @@ export async function router(): Promise<void> {
   if (!isPublic && !isGameRoute && !topBarContainer.hasChildNodes()) {
     topBarContainer.appendChild(TopBar());
   } else if ((isPublic || isGameRoute) && topBarContainer.hasChildNodes()) {
-    topBarContainer.innerHTML = ""; // Remove the TopBar for public or game routes
+    topBarContainer.innerHTML = "";
   }
 
   // Clear the existing app content (excluding the TopBar)

@@ -1,5 +1,4 @@
 import { NavBar } from "@/components/layout/NavBar";
-import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { TwoFa } from "@/components/settings/TwoFa";
 import { ChangePassword } from "@/components/settings/ChangePassword";
@@ -20,7 +19,6 @@ export function Security() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Security & Access"

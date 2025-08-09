@@ -2,7 +2,6 @@ import { styles } from "@/styles/styles";
 import { handleVerifyCredentials } from "@/handlers/verify-update-credentials";
 import { NavBar } from "@/components/layout/NavBar";
 import { fontSizes } from "@/styles/fontSizes";
-import { TopBar } from "@/components/layout/TopBar";
 
 export function VerifyChangeCredentials() {
   setTimeout(() => {
@@ -20,7 +19,6 @@ export function VerifyChangeCredentials() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <div className={styles.darkForm}>
             <h2

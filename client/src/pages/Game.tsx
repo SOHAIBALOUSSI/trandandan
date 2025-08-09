@@ -1,6 +1,4 @@
-
 import { NavBar } from "@/components/layout/NavBar";
-import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { fontSizes } from "@/styles/fontSizes";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
@@ -53,14 +51,13 @@ export function Game() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Choose Your Game Mode"
             subtitle="Pick your playstyle and step into the arena of champions."
           />
 
-          <div className="game-modes hidden lg:grid w-full max-w-6xl mx-auto grid-cols-3 rounded-lg overflow-hidden min-h-[520px] max-h-[600px] shadow-2xl shadow-white/5">
+          <div className="game-modes hidden lg:grid w-full max-w-7xl mx-auto grid-cols-3 rounded-lg overflow-hidden min-h-[570px] border border-collapse border-pong-dark-accent/20">
             {gameModes.map((mode, index) => (
               <div
                 key={index}
@@ -82,12 +79,13 @@ export function Game() {
         			rounded-3xl shadow-xl
         			bg-gradient-to-br from-black/70 via-pong-dark-custom/40 to-pong-accent/10
         			backdrop-blur-md
+					border border-collapse border-pong-dark-accent/20
         			w-full h-full
         			transition-all duration-500 ease-in-out
       			"
                 >
                   <h2
-                    className={`${fontSizes.smallTitleFontSize} font-extrabold text-white drop-shadow-lg tracking-tight`}
+                    className={`${fontSizes.smallTitleFontSize} font-bold text-white drop-shadow-lg tracking-tight`}
                   >
                     {mode.title}
                   </h2>

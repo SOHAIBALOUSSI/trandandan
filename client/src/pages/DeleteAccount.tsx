@@ -1,5 +1,4 @@
 import { NavBar } from "@/components/layout/NavBar";
-import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { deleteAccount } from "@/handlers/delete-account";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
@@ -14,8 +13,6 @@ export function DeleteAccount() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        {/* <TopBar /> */}
-
         <main
           className={`${styles.pageContent} flex flex-col items-center gap-10`}
         >

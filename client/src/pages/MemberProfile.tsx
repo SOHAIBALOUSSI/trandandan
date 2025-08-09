@@ -1,5 +1,4 @@
 import { NavBar } from "@/components/layout/NavBar";
-import { TopBar } from "@/components/layout/TopBar";
 import { MemberCard } from "@/components/profile/MemberCard";
 import { getUserById } from "@/services/get-user-by-id";
 import { styles } from "@/styles/styles";
@@ -258,7 +257,6 @@ export async function MemberProfile(id: number) {
   container.appendChild(NavBar());
   const wrapper = document.createElement("div");
   wrapper.className = "w-full relative";
-//   wrapper.appendChild(TopBar());
 
   const main = document.createElement("main");
   main.className = styles.pageContent;

@@ -1,4 +1,3 @@
-import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { startChatListener, sendChatMessage } from "@/services/chat-service";
 import { getCurrentUser } from "@/utils/user-store";
@@ -22,7 +21,6 @@ export async function Chat(friendId: number) {
   section.className = styles.pageLayoutDark;
 
   if (!friend || !currentUser) {
-    // section.appendChild(TopBar());
     section.appendChild(
       Loader({
         text: friend
@@ -93,8 +91,6 @@ export async function Chat(friendId: number) {
 
   const mainArea = document.createElement("div");
   mainArea.className = "flex-1 flex flex-col";
-
-//   mainArea.appendChild(TopBar());
 
   const main = document.createElement("main");
   main.className =

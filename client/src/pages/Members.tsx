@@ -1,5 +1,4 @@
 import { NavBar } from "@/components/layout/NavBar";
-import { TopBar } from "@/components/layout/TopBar";
 import { styles } from "@/styles/styles";
 import { hydrateAllMembers } from "@/handlers/hydrate-all-members";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
@@ -68,7 +67,6 @@ export function Members() {
     <section className={styles.pageLayoutDark}>
       <NavBar />
       <div className="w-full relative">
-        {/* <TopBar /> */}
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Meet the Members"
@@ -88,7 +86,7 @@ export function Members() {
           </ul>
 
           <div id="pending-container" className={styles.membersListStyle}>
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+            <h2 className="text-white text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-3 mb-8">
               <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
               Incoming Connections
             </h2>
@@ -100,7 +98,7 @@ export function Members() {
           </div>
 
           <div id="friends-container" className={styles.membersListStyle}>
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+            <h2 className="text-white text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-3 mb-8">
               <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
               Trusted Allies
             </h2>
@@ -112,7 +110,7 @@ export function Members() {
           </div>
 
           <div id="members-container" className={styles.membersListStyle}>
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight flex items-center gap-3 mb-8">
+            <h2 className="text-white text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-3 mb-8">
               <span className="inline-block w-1.5 h-8 bg-pong-accent rounded-sm"></span>
               The Club Directory
             </h2>

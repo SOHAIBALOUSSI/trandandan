@@ -1,5 +1,4 @@
 import { NavBar } from "@/components/layout/NavBar";
-import { TopBar } from "@/components/layout/TopBar";
 import { MemberCard } from "@/components/profile/MemberCard";
 import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
@@ -19,8 +18,6 @@ export function Profile() {
     <section className={`${styles.pageLayoutDark} relative`}>
       <NavBar />
       <div className="w-full relative">
-        {/* <TopBar /> */}
-
         <main className={styles.pageContent}>
           <SecondaryHeader
             title="Member Profile"

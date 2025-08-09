@@ -25,7 +25,6 @@ export async function showInviteModal(me: UserProfile) {
       animate-fade-in
     " style="max-height: 90vh; overflow-y: auto;">
       
-      <!-- Close Icon -->
       <button
         id="close-remote-invite"
         class="
