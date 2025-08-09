@@ -86,8 +86,20 @@ export async function getSentRequestsByUserId(db, userId) {
 
 
 export async function deleteFriendships(db, id) {
-    const result = await db.run('DELETE FROM friendships WHERE requester_id = ? OR addressee_id = ?', [id, id]);
-    if (result.changes === 0)
-        return false;
-    return true;
+	const result = await db.run('DELETE FROM friendships WHERE requester_id = ? OR addressee_id = ?', [id, id]);
+	if (result.changes === 0)
+		return false;
+	return true;
+}
+
+export async function deleteFriendship(db, addresseeId, requesterId) {
+	const result = await db.run(
+		`DELETE FROM friendships WHERE (requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?)`,
+		[requesterId, addresseeId, addresseeId, requesterId]
+	);
+
+	if (result.changes === 0) {
+		return false;
+	}
+	return true;
 }

@@ -4,7 +4,7 @@ import {
     deleteFriend,
     getFriendsByUserId,
     getPendingRequestsByUserId,
-    deleteFriendships,
+    deleteFriendship,
     getSentRequestsByUserId
   } from '../models/friendshipDAO.js';
 import { createResponse } from '../utils/utils.js';
@@ -91,8 +91,8 @@ export async function rejectRequest(request, reply) {
         console.log('idExist value: ', idExist);
         if (!idExist || addresseeId === requesterId)
           return reply.code(400).send(createResponse(400, 'REQUESTER_INVALID'));
-        
-        let isValid = await deleteFriendships(this.db, addresseeId);
+
+        let isValid = await deleteFriendship(this.db, addresseeId, requesterId);
         if (!isValid)
           return reply.code(400).send(createResponse(400, 'FRIEND_REQUEST_INVALID'));
         

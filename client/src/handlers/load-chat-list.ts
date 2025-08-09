@@ -5,20 +5,19 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { fontSizes } from "@/styles/fontSizes";
 import { getUserTitle } from "@/utils/get-user-title";
 import { getWelcomeTitle } from "@/components/home/Hero";
-import { displayToast } from "@/utils/display-toast";
+import { getUserStatus, startStatusListener } from "@/services/status-service";
 
-let onlineStatusMap: Record<number, boolean> = {};
-let ws: WebSocket | null = null;
+let profilesCache: any[] = [];
 
-function renderChatList(profiles: any[]) {
+async function renderChatList() {
   const chatListElement = document.getElementById("chat-list");
   if (!chatListElement) return;
 
-  chatListElement.innerHTML = profiles
+  chatListElement.innerHTML = profilesCache
     .map((profile) => {
       if (!profile) return "";
 
-      const isOnline = !!onlineStatusMap[profile.id];
+      const isOnline = getUserStatus(profile.id);
 
       return `
       <li class="${styles.friendsListItemStyle}">
@@ -81,44 +80,17 @@ export async function loadChatList() {
   const friendIds = await getFriends();
 
   if (!friendIds.length) {
-    chatListElement.innerHTML = `<li class="text-pong-dark-secondary text-center py-4 ${fontSizes.bodyFontSize}">No friends found.</li>`;
+    chatListElement.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">No clubmates to chat with yet — send a friend request to start the rally!</li>`;
     return;
   }
 
-  const profiles = await Promise.all(friendIds.map((id) => getUserById(id)));
+  profilesCache = await Promise.all(friendIds.map((id) => getUserById(id)));
 
-  renderChatList(profiles);
+  await renderChatList();
 
-  if (!ws || ws.readyState !== WebSocket.OPEN) {
-    ws = new WebSocket(`wss://${window.location.host}/profile/statuses`);
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.userStatuses) {
-          onlineStatusMap = {};
-          data.userStatuses.forEach(
-            (u: { userId: number; isOnline: boolean }) => {
-              onlineStatusMap[u.userId] = u.isOnline;
-            }
-          );
-          renderChatList(profiles);
-        }
-      } catch (error) {
-        displayToast(
-          "The club’s lights are out at the moment. Try again shortly.",
-          "error"
-        );
-      }
-    };
-    ws.onerror = () => {
-      displayToast(
-        "The club’s lights are out at the moment. Try again shortly.",
-        "error"
-      );
-      console.error("error in profiles status");
-    };
-    ws.onclose = () => {
-      console.log("connection to status service ws clodsed");
-    };
-  }
+  startStatusListener();
+
+  window.addEventListener("status-updated", async () => {
+    await renderChatList();
+  });
 }

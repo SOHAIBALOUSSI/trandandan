@@ -25,6 +25,7 @@ export function Dashboard() {
       .map((p: UserProfile) => {
         const winRate =
           Math.round((p.matches_won / p.matches_played) * 100) || 0;
+
         const rankIcon =
           p.rank === 1
             ? "🥇"
@@ -40,14 +41,14 @@ export function Dashboard() {
           ? "font-bold bg-pong-dark-highlight/10 ring-1 ring-pong-gold"
           : ""
       }">
-				<td class="px-4 py-4 flex items-center gap-3">
+				<td class="p-4 flex items-center gap-3">
                   <img src="${getAvatarUrl(p)}" alt="${p.username}"
                     class="w-10 h-10 rounded-full object-cover border border-pong-accent/40" />
-                  <span class="font-semibold normal-case">${getWelcomeTitle(
+                  <span class="font-semibold text-pong-dark-secondary">${getWelcomeTitle(
                     p
                   )} <a href="${
           user.id === p.id ? "/my_profile" : `/members/${p.id}`
-        }" data-link class="text-pong-dark-accent font-semibold hover:underline cursor-pointer">${
+        }" data-link class="text-pong-dark-primary font-semibold hover:underline cursor-pointer">${
           p.username
         }</a></span>
                 </td>
@@ -104,10 +105,9 @@ export function Dashboard() {
             <div className="flex-1 w-full">
               <div className="flex flex-col md:flex-row justify-between items-center gap-2">
                 <h2 className="text-xl md:text-2xl font-bold">
-                  {getWelcomeTitle(user)}{" "}
-                  <span className="text-pong-dark-accent">{user.username}</span>
+                  {getWelcomeTitle(user)} {user.username}
                 </h2>
-                <span className="inline-block text-sm bg-pong-dark-accent/50 text-white px-3 py-1 rounded-full shadow">
+                <span className="inline-block text-sm bg-pong-dark-accent/50 text-pong-dark-primary px-3 py-1 rounded-full shadow">
                   Level {user.level}
                 </span>
               </div>
@@ -161,7 +161,7 @@ export function Dashboard() {
           </div>
 
           <div className="w-full max-w-5xl mx-auto rounded-md shadow-xl bg-pong-dark-bg/80 border border-pong-dark-highlight/30 backdrop-blur-md">
-            <div className="px-6 py-4 border-b border-pong-dark-highlight/40 flex justify-between items-center">
+            <div className="p-4 border-b border-pong-dark-highlight/40 flex justify-between items-center">
               <h2 className="text-xl md:text-2xl font-bold text-pong-dark-secondary">
                 Honor Board
               </h2>
@@ -171,24 +171,14 @@ export function Dashboard() {
             </div>
 
             <div className="overflow-x-auto overflow-y-auto max-h-[500px] custom-scrollbar">
-              <table className="min-w-full text-white text-sm md:text-base">
-                <thead className="sticky top-0 z-10 bg-pong-dark-highlight/90 backdrop-blur-lg">
+              <table className="min-w-full text-pong-dark-primary text-sm md:text-base">
+                <thead className="sticky top-0 z-10 bg-pong-dark-bg/90 border-b border-pong-dark-highlight/30 text-pong-dark-primary backdrop-blur-2xl">
                   <tr>
-                    <th className="px-4 py-4 text-left font-semibold text-pong-primary">
-                      Player
-                    </th>
-                    <th className="px-4 py-4 text-left font-semibold text-pong-primary">
-                      Rank
-                    </th>
-                    <th className="px-4 py-4 text-left font-semibold text-pong-primary">
-                      Level
-                    </th>
-                    <th className="px-4 py-4 text-left font-semibold text-pong-primary">
-                      Win Rate
-                    </th>
-                    <th className="px-4 py-4 text-left font-semibold text-pong-primary">
-                      Matches
-                    </th>
+                    <th className="p-4 text-left font-semibold ">Player</th>
+                    <th className="p-4 text-left font-semibold">Rank</th>
+                    <th className="p-4 text-left font-semibold">Level</th>
+                    <th className="p-4 text-left font-semibold">Win Rate</th>
+                    <th className="p-4 text-left font-semibold">Matches</th>
                   </tr>
                 </thead>
                 <tbody
@@ -207,26 +197,6 @@ export function Dashboard() {
               </table>
             </div>
           </div>
-
-          <style jsx>{`
-            .custom-scrollbar::-webkit-scrollbar {
-              width: 6px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-              background: transparent;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-              background: rgba(255, 255, 255, 0.15);
-              border-radius: 10px;
-              background-clip: padding-box;
-              border: 2px solid transparent;
-              transition: all 0.3s ease;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-              background: rgba(255, 255, 255, 0.3);
-              opacity: 0.8;
-            }
-          `}</style>
         </main>
       </div>
     </section>

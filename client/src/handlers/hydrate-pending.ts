@@ -21,7 +21,7 @@ export async function hydratePendingRequests(me: UserProfile) {
   const pending = (await listPendingRequests()).received;
 
   if (!pending.length) {
-    list.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">No pending requests found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">No pending friend requests — time to serve up some invites!</li>`;
     return;
   }
 
@@ -47,7 +47,7 @@ export async function hydratePendingRequests(me: UserProfile) {
     nameWrapper.className = "flex flex-col";
 
     const name = document.createElement("span");
-    name.className = `${fontSizes.bodyFontSize} font-semibold text-white normal-case group-hover:underline`;
+    name.className = `${fontSizes.bodyFontSize} font-semibold text-white group-hover:underline`;
     name.textContent = `${getWelcomeTitle(user)} ${user.username}`;
 
     const subtitle = document.createElement("span");
@@ -61,12 +61,12 @@ export async function hydratePendingRequests(me: UserProfile) {
     left.appendChild(nameWrapper);
 
     const buttons = document.createElement("div");
-    buttons.className = "flex flex-row items-center gap-3";
+    buttons.className = "flex flex-row items-center gap-2 md:gap-3";
 
     const acceptBtn = document.createElement("button");
-    acceptBtn.innerHTML = `<i class="fa-solid fa-circle-check text-base md:text-lg"></i>`;
+    acceptBtn.innerHTML = `<i class="fa-solid fa-circle-check text-base md:text-xl"></i>`;
     acceptBtn.className = `
-      p-2 rounded-full bg-green-500/80 text-white
+      p-2 md:px-4 rounded-full bg-green-500/80 text-white
       hover:bg-green-500 transition-all duration-200
       shadow-sm hover:shadow-md
     `;
@@ -79,9 +79,9 @@ export async function hydratePendingRequests(me: UserProfile) {
     };
 
     const rejectBtn = document.createElement("button");
-    rejectBtn.innerHTML = `<i class="fa-solid fa-circle-xmark text-base md:text-lg"></i>`;
+    rejectBtn.innerHTML = `<i class="fa-solid fa-circle-xmark text-base md:text-xl"></i>`;
     rejectBtn.className = `
-      p-2 rounded-full bg-red-500/80 text-white
+      p-2 md:px-4 rounded-full bg-red-500/80 text-white
       hover:bg-red-500 transition-all duration-200
       shadow-sm hover:shadow-md
     `;

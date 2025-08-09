@@ -5,6 +5,7 @@ import { getUserById } from "@/services/get-user-by-id";
 import { showInviteNotification } from "@/utils/show-invite-notif";
 import { getRoomId } from "@/services/get-room-id";
 import { acceptInvite } from "@/services/accept-invite";
+import { getWelcomeTitle } from "@/components/home/Hero";
 
 let ws: WebSocket | null = null;
 let unseenCount = 0;
@@ -53,6 +54,9 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
   let route = "";
   let label = "";
   const sender = await getUserById(notif.sender_id || 0);
+  if (!sender) {
+    return li;
+  }
 
   switch (notif.type) {
     case "FRIEND_REQUEST_SENT":
@@ -60,7 +64,9 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-user-plus text-pong-accent text-base"></i>
           <span>
-            <span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> sent you a friend request.
+            <span class="text-pong-accent font-semibold">${getWelcomeTitle(
+              sender
+            )} ${sender.username}</span> served you a friend request.
           </span>
         </div>
       `;
@@ -72,7 +78,11 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-user-check text-pong-success text-base"></i>
           <span>
-            <span class="text-pong-success font-semibold normal-case">${sender?.username}</span> accepted your friend request.
+            <span class="text-pong-success font-semibold">${getWelcomeTitle(
+              sender
+            )} ${
+        sender.username
+      }</span> returned your serve and is now your friend!
           </span>
         </div>
       `;
@@ -84,7 +94,11 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-message text-pong-accent text-base"></i>
           <span>
-            New message from <span class="font-semibold text-pong-accent">${sender?.username}</span>.
+            <span class="font-semibold text-pong-accent">${getWelcomeTitle(
+              sender
+            )} ${
+        sender.username
+      }</span> lobbed you a new message — time to return it!
           </span>
         </div>
       `;
@@ -96,7 +110,11 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
           <span>
-            <span class="text-pong-accent font-semibold normal-case">${sender?.username}</span> invited you to a game.
+            <span class="text-pong-accent font-semibold">${getWelcomeTitle(
+              sender
+            )} ${
+        sender.username
+      }</span> challenged you to a match — ready to play?
           </span>
         </div>
       `;
@@ -105,17 +123,17 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
           showInviteNotification(
             sender?.username || "Unknown",
             async () => {
-              const roomId = await getRoomId(notif.sender_id || 0);
-              if (roomId) {
-                await acceptInvite(
-                  roomId,
-                  notif.sender_id || 0,
-                  notif.recipient_id || 0
-                );
-                markNotificationsAsRead([notif.notification_id]);
-                li.remove();
-                navigateTo(`/remote?roomId=${roomId}`);
-              }
+              //   const roomId = await getRoomId(notif.sender_id || 0);
+              //   if (roomId) {
+              await acceptInvite(
+                notif.roomId || "",
+                notif.sender_id || 0,
+                notif.recipient_id || 0
+              );
+              markNotificationsAsRead([notif.notification_id]);
+              li.remove();
+              navigateTo(`/remote?roomId=${notif.roomId}`);
+              //   }
             },
             () => {
               markNotificationsAsRead([notif.notification_id]);
@@ -128,6 +146,26 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
       route = `/members/${notif.sender_id}`;
       break;
 
+    case "PLAY_AGAIN":
+      label = `
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-gamepad text-pong-accent text-base"></i>
+          <span>
+            <span class="text-pong-accent font-semibold">${getWelcomeTitle(
+              sender
+            )} ${sender.username}</span> want to play again
+          </span>
+        </div>
+      `;
+      if (!groupedIds) {
+        setTimeout(() => {
+          displayToast("player want to play again", "success");
+          markNotificationsAsRead([notif.notification_id]);
+        }, 0);
+      }
+      route = `/members/${notif.sender_id}`;
+      break;
+
     case "INVITE_ACCEPTED":
       displayToast("Match confirmed — preparing the arena...", "success");
       document.getElementById("remote-invite-modal")?.remove();
@@ -135,7 +173,7 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
         navigateTo(`/remote?roomId=${notif.roomId}`);
         markNotificationsAsRead([notif.notification_id]);
         li.remove();
-      }, 2000);
+      }, 1200);
       break;
 
     default:
@@ -300,6 +338,7 @@ export function startNotificationListener() {
         const notifList = document.getElementById("notif-list");
         if (notifList) {
           if (data.type === "MESSAGE_RECEIVED") {
+            console.log("dkholt hna");
             const existingGroup = document.getElementById(
               `msg-group-${data.sender_id}`
             );
@@ -317,7 +356,6 @@ export function startNotificationListener() {
               ids.push(data.notification_id);
               existingGroup.dataset.groupedIds = JSON.stringify(ids);
             } else {
-              console.log("Creating new message group for:", data.sender_id);
               notifList.prepend(
                 await renderGroupedMessageNotification(data, 1, [
                   data.notification_id,
@@ -325,7 +363,7 @@ export function startNotificationListener() {
               );
             }
           } else {
-            console.log("Rendering single notification:", data);
+            console.log("rendering .....");
             notifList.prepend(await renderNotification(data));
           }
 

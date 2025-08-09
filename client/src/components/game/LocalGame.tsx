@@ -112,7 +112,7 @@ export function LocalGame() {
 
   // Function to start the game
   function startGame() {
-    socketLocal = new WebSocket("wss://localhost:9090/game/ws");
+    socketLocal = new WebSocket(`wss://${window.location.host}/game/ws`);
 
     window.addEventListener("keydown", (event: KeyboardEvent) => {
       keys[event.key] = true;
@@ -373,7 +373,7 @@ class FlowFieldLocal {
 
     this.domElements.restart.addEventListener("click", () => {
       this.domElements.gameTab.style.display = "none";
-      const newSocket = new WebSocket("wss://localhost:9090/game/ws");
+      const newSocket = new WebSocket(`wss://${window.location.host}/game/ws`);
       this.domElements.socketLocal = newSocket;
       newSocket.onmessage = (event: MessageEvent) => {
         this.updateGameState(event.data);

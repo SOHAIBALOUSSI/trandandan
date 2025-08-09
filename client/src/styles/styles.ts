@@ -261,9 +261,8 @@ export const styles = {
   searchBarStyle: `
   	input-field-dark
 	bg-pong-dark-primary/10 text-white placeholder:text-pong-dark-primary/70
-	px-4 py-2 rounded-lg outline-none  
+	px-4 py-3 rounded-lg outline-none  
 	focus:ring-2 focus:ring-pong-dark-accent 
-	placeholder:text-xs placeholder:lg:text-base
 	text-sm lg:text-base
 	normal-case 
 	w-full
@@ -343,7 +342,7 @@ export const styles = {
   `,
   membersListStyle: `
 	bg-pong-dark-bg/70
-	rounded-2xl
+	rounded-lg
 	border border-pong-dark-highlight/30
 	shadow-md backdrop-blur-md
 	p-6 md:p-10
@@ -382,17 +381,17 @@ export const styles = {
   gameContainer: `
   	flex flex-col items-center justify-center
   	w-full min-h-screen
-	py-10
+	pt-20 md:pt-24 pb-8 md:pb-12
   `,
   gameExitBtn: `
-  	fixed top-5 left-5
+  	fixed top-16 md:top-20 left-5
 	text-2xl md:text-3xl
   	p-2 rounded-full shadow-md
   	backdrop-blur-md
   	transition-all duration-300 ease-in-out
   `,
   gameThemeBtn: `
-  	fixed top-5 right-5
+  	fixed top-16 md:top-20 right-5
 	w-24
 	text-2xl md:text-3xl
   	p-2 rounded-full shadow-md
@@ -427,7 +426,7 @@ export const styles = {
   friendsListItemStyle: `
 	flex items-center justify-between gap-4 py-4 px-5 mb-4
 	bg-gradient-to-r from-pong-dark-highlight/20 to-pong-dark-highlight/10
-	rounded-2xl border border-pong-dark-highlight/30
+	rounded-xl border border-pong-dark-highlight/30
 	shadow-md hover:shadow-xl transition-all duration-300
 	hover:-translate-y-0.5
   `,

@@ -5,6 +5,7 @@ import { getUserTitle } from "@/utils/get-user-title";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { getCurrentUser } from "@/utils/user-store";
 import { getBlockedUsers } from "@/services/get-blocked-users";
+import { getWelcomeTitle } from "@/components/home/Hero";
 
 let allUsersCache: { id: number; username: string }[] = [];
 
@@ -39,7 +40,7 @@ export async function handleSearchMembers(query: string) {
   const resultList = document.createElement("ul");
   resultList.id = "search-results";
   resultList.className =
-    "absolute top-14 left-0 min-w-[210px] w-full max-h-72 overflow-y-auto animate-fadeInUp bg-pong-dark-custom text-white rounded-xl shadow-lg z-50 border border-pong-dark-highlight/30 backdrop-blur-md";
+    "custom-scrollbar absolute top-14 left-0 min-w-[210px] w-full max-h-72 animate-fadeInUp bg-pong-dark-custom text-white rounded-md shadow-lg z-50 border border-pong-dark-highlight/30 backdrop-blur-md overflow-y-auto";
 
   for (const user of matches) {
     const u = await getUserById(user.id);
@@ -58,8 +59,8 @@ export async function handleSearchMembers(query: string) {
     info.className = "flex flex-col";
 
     const username = document.createElement("span");
-    username.textContent = u.username;
-    username.className = `font-semibold text-pong-dark-primary normal-case ${fontSizes.bodyFontSize}`;
+    username.textContent = getWelcomeTitle(u) + " " + u.username;
+    username.className = `font-semibold text-pong-dark-primary ${fontSizes.bodyFontSize}`;
 
     const title = document.createElement("span");
     title.textContent = getUserTitle(u.rank);

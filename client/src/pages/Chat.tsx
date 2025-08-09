@@ -11,7 +11,6 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { getFriends } from "@/services/get-friends";
 import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { getWelcomeTitle } from "@/components/home/Hero";
-import { FriendsList } from "@/components/friends/FriendsList";
 
 export async function Chat(friendId: number) {
   const friend = await getUserById(friendId);
@@ -97,7 +96,8 @@ export async function Chat(friendId: number) {
     "px-0 md:px-16 pt-16 md:pt-24 md:pb-12 h-[100vh] md:h-[calc(100vh-2rem)] overflow-y-auto flex flex-col items-center gap-6";
 
   const loadingDiv = document.createElement("div");
-  loadingDiv.className = "text-white py-10 text-lg font-semibold";
+  loadingDiv.className =
+    "text-white py-10 text-lg font-semibold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2";
   loadingDiv.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading messages...`;
   main.appendChild(loadingDiv);
 
@@ -112,12 +112,8 @@ export async function Chat(friendId: number) {
   setTimeout(async () => {
     main.removeChild(loadingDiv);
 
-    const friendIds = await getFriends();
-    const isFriend = friendIds.includes(friend.id);
-
     const chatBlock = ChatBlock({
       ...friend,
-      isFriend,
     });
     main.appendChild(chatBlock);
 

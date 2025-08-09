@@ -36,7 +36,7 @@ function createUserLink(user: UserProfile): HTMLDivElement {
   link.href = `/members/${user.id}`;
   link.setAttribute("data-link", "");
   link.className =
-    "text-pong-dark-secondary font-semibold normal-case hover:underline transition";
+    "text-pong-dark-secondary font-semibold hover:underline transition";
   link.textContent = user.username;
 
   const card = createUserHoverCard(user);
@@ -158,7 +158,7 @@ async function renderActivity(
 }
 
 export async function startRecentActivityListener(): Promise<void> {
-  ws = new WebSocket("wss://localhost:9090/game/recent-activity");
+  ws = new WebSocket(`wss://${window.location.host}/game/recent-activity`);
 
   const ul = document.getElementById("recent-activity-list");
   if (!ul) {

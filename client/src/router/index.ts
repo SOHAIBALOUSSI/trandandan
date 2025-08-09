@@ -25,9 +25,14 @@ import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
 import { startNotificationListener } from "@/services/notifications-service";
 import { stopDashboardListener } from "@/services/dashboard-service";
+import {
+  startStatusListener,
+  stopStatusListener,
+} from "@/services/status-service";
 import { getCurrentUser } from "@/utils/user-store";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { TopBar } from "@/components/layout/TopBar";
+import { UserNotFound } from "@/pages/UserNotFound";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
@@ -66,9 +71,6 @@ const publicRoutes: string[] = [
   "verify_login",
 ];
 
-// Game routes that should not display the TopBar
-const gameRoutes: string[] = ["duel", "remote", "tournament", "checkout"];
-
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
@@ -101,26 +103,21 @@ export async function router(): Promise<void> {
     path = "member-profile";
   }
 
-  // Detect /remote with query parameters
-  const remoteMatch = path.match(/^remote(\?.*)?$/);
-  if (remoteMatch) {
-    path = "remote";
-  }
-
   const isPublic = publicRoutes.includes(path);
-  const isGameRoute = gameRoutes.includes(path);
+  const isGameRoute = path === "checkout";
   const render = routes[path];
 
   let authed = false;
   if (!isPublic) {
     authed = await isAuthenticated();
     if (authed) {
-      console.log("helloooooo");
       startNotificationListener();
+      startStatusListener();
     }
     if (!authed) {
       history.replaceState(null, "", "/welcome");
       await router();
+      stopStatusListener();
       return;
     }
   } else {
@@ -164,7 +161,9 @@ export async function router(): Promise<void> {
       return;
     }
     const memberProfileElem = await MemberProfile(memberId);
-    memberProfileElem && appContent.appendChild(memberProfileElem);
+    memberProfileElem
+      ? appContent.appendChild(memberProfileElem)
+      : appContent.appendChild(UserNotFound());
   } else {
     appContent.appendChild(render());
   }

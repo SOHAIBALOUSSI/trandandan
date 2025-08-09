@@ -20,6 +20,7 @@ import { PerformanceMetrics } from "@/components/profile/PerformanceMetrics";
 import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { Loader } from "@/components/common/Loader";
 import { UserProfile } from "types/types";
+import { getWelcomeTitle } from "@/components/home/Hero";
 
 async function renderActions(
   user: UserProfile,
@@ -237,21 +238,7 @@ export async function MemberProfile(id: number) {
     getBlockedUsers(),
   ]);
 
-  if (!user) {
-    container.innerHTML = `
-      <div class="flex flex-col items-center justify-center text-center text-white py-16 px-6 space-y-4">
-        <i class="fa-solid fa-user-xmark text-5xl text-pong-error"></i>
-        <h2 class="text-2xl md:text-3xl font-bold text-pong-error">Member Not Found</h2>
-        <p class="text-sm md:text-base text-pong-dark-primary max-w-md">
-            Alas! The player you seek does not dwell in this hall. Perhaps they’ve chosen anonymity, or vanished into the shadows of unranked history.
-        </p>
-        <a href="/salon" data-link class="${styles.darkPrimaryBtn}">
-            <i class="fa-solid fa-arrow-left"></i> Return to Salon
-        </a>
-      </div>
-    `;
-    return;
-  }
+  if (!user) return;
 
   container.innerHTML = "";
   container.appendChild(NavBar());
@@ -263,18 +250,18 @@ export async function MemberProfile(id: number) {
 
   main.appendChild(
     SecondaryHeader({
-      title: "Member Profile",
+      title: `${getWelcomeTitle(user)} ${user.username}'s Profile`,
       subtitle: "Identity, matches & achievements of this club member.",
     })
   );
 
   const layout = document.createElement("div");
   layout.className =
-    "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 items-center";
+    "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 xl:gap-12";
 
   const left = document.createElement("div");
   left.className =
-    "w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 flex 2xl:self-start flex-col items-center justify-center gap-6";
+    "w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 flex 2xl:self-start flex-col 2xl:flex-col items-center justify-center gap-6";
 
   left.appendChild(MemberCard({ user, showUpdateOptions: false }));
 

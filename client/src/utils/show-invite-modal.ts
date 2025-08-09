@@ -5,6 +5,7 @@ import { UserProfile } from "types/types";
 import { getAvatarUrl } from "./get-avatar-url";
 import { getWelcomeTitle } from "@/components/home/Hero";
 import { navigateTo } from "./navigate-to-link";
+import { getUserStatus } from "@/services/status-service";
 
 export async function showInviteModal(me: UserProfile) {
   const oldModal = document.getElementById("remote-invite-modal");
@@ -45,7 +46,7 @@ export async function showInviteModal(me: UserProfile) {
         Select any club member to challenge for an online match
       </p>
 
-      <ul id="friends-list" class="
+      <ul id="friends-list-modal" class="
         w-full flex flex-col gap-3 mb-2
         max-h-[420px] overflow-y-auto p-1 custom-scrollbar
       ">
@@ -64,7 +65,7 @@ export async function showInviteModal(me: UserProfile) {
     getFriends(),
   ]);
 
-  const list = modal.querySelector("#friends-list");
+  const list = modal.querySelector("#friends-list-modal");
   if (!list) return;
   if (!allUsers.length) {
     list.innerHTML =
@@ -79,6 +80,7 @@ export async function showInviteModal(me: UserProfile) {
       if (!profile) return "";
 
       const isFriend = friendIds.includes(profile.id);
+      const isOnline = getUserStatus(profile.id);
 
       return `
       <li class="
@@ -100,6 +102,11 @@ export async function showInviteModal(me: UserProfile) {
                   border-2 border-pong-accent/50 shadow-sm
 				  group-hover:scale-110 transition-transform duration-300
                 " />
+            <span class="
+              absolute bottom-0 right-0 block w-3 h-3 rounded-full
+              ring-2 ring-[#1f2128]
+              ${isOnline ? "bg-pong-success" : "bg-gray-500"}
+            " title="${isOnline ? "Online" : "Offline"}"></span>
           </div>
           <div class="flex flex-col">
             <span class="font-semibold text-white text-base md:text-lg">
@@ -139,7 +146,7 @@ export async function showInviteModal(me: UserProfile) {
       const userId = target.getAttribute("data-id");
       if (userId) {
         navigateTo(`/members/${userId}`);
-		document.getElementById("remote-invite-modal")?.remove();
+        document.getElementById("remote-invite-modal")?.remove();
       }
     });
   });
@@ -155,8 +162,6 @@ export async function showInviteModal(me: UserProfile) {
 
       (btn as HTMLElement).innerHTML = `<i class="fa-solid fa-check"></i>`;
       (btn as HTMLElement).classList.add("bg-green-500");
-
-      //   setTimeout(() => modal.remove(), 800);
     });
   });
 }

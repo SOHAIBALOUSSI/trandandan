@@ -173,7 +173,7 @@ export function Tournaments() {
   });
 
   function init() {
-    socketLocal = new WebSocket("wss://localhost:9090/game/ws");
+    socketLocal = new WebSocket(`wss://${window.location.host}/game/ws`);
     const keys: { [key: string]: boolean } = {};
 
     window.addEventListener("keydown", (event: KeyboardEvent) => {
@@ -297,7 +297,9 @@ export function Tournaments() {
         // Optionally, reset the game state for a rematch
         gameTab.style.display = "none";
         // You may want to reset scores or re-initialize the game here
-        const newSocket = new WebSocket("wss://localhost:9090/game/ws");
+        const newSocket = new WebSocket(
+          `wss://${window.location.host}/game/ws`
+        );
         flow.setSocketLocal(newSocket);
         newSocket.onmessage = (event: MessageEvent) => {
           flow.updateGameState(event.data);

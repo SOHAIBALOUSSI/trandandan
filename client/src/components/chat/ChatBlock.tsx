@@ -1,8 +1,11 @@
 import { UserProfile } from "types/types";
 import { getUserTitle } from "@/utils/get-user-title";
 import { getWelcomeTitle } from "../home/Hero";
+import { getUserStatus } from "@/services/status-service";
 
-export function ChatBlock(friend: UserProfile & { isFriend?: boolean }) {
+export function ChatBlock(friend: UserProfile) {
+  const isOnline = getUserStatus(friend.id);
+
   return (
     <div className="relative flex flex-col w-full max-w-5xl h-full max-h-[100vh] min-h-[600px] md:rounded-2xl overflow-hidden bg-gradient-to-br from-[#1e1f24] to-[#252830] backdrop-blur-xl border border-pong-accent/20 shadow-[0_4px_30px_rgba(0,0,0,0.35)] transition-all duration-500">
       <div className="sticky top-0 z-10 flex items-center gap-4 bg-gradient-to-br from-[#2b2e34]/80 to-[#363a43]/60 backdrop-blur-md p-4 md:p-6 border-b border-pong-secondary/40">
@@ -30,8 +33,14 @@ export function ChatBlock(friend: UserProfile & { isFriend?: boolean }) {
             <span className="bg-yellow-400/10 text-yellow-300 px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-xs font-semibold shadow-sm">
               {getUserTitle(friend.level)}
             </span>
-            <span className="bg-pong-accent/10 text-pong-accent px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-xs font-semibold shadow-sm">
-              {friend.isFriend ? "Friend" : "Club Member"}
+            <span
+              className={`px-3 py-1.5 md:px-4 md:py-1.5 rounded-full text-xs font-semibold shadow-sm ${
+                isOnline
+                  ? "bg-pong-success/20 text-pong-success"
+                  : "bg-gray-500/20 text-gray-500"
+              }`}
+            >
+              {isOnline ? "Online" : "Offline"}
             </span>
           </div>
         </div>
@@ -40,7 +49,7 @@ export function ChatBlock(friend: UserProfile & { isFriend?: boolean }) {
             id="challenge-button"
             className="relative bg-pong-dark-accent text-white hover:bg-pong-accent/90 px-3 py-2 md:px-4 md:py-2 rounded-lg shadow-md transition group"
           >
-            <span className="normal-case w-24 absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
+            <span className="w-24 absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
               Challenge {friend.username} to a match
             </span>
             <i className="fa-solid fa-table-tennis-paddle-ball text-base md:text-lg"></i>

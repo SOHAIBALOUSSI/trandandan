@@ -47,14 +47,14 @@ import WebSocket from 'ws';
 async function getOnlineStatuses(db, onlineUsers){
 
     const profiles = await fetchAllProfiles(db);
-    console.log("FRIENDS IDS ==> ", profiles);
+    // console.log("FRIENDS IDS ==> ", profiles);
     const actualProfiles = profiles.map(profile => {
-        console.log("Handling userId ", profile.userId)
+        // console.log("Handling userId ", profile.userId)
         if (!onlineUsers.has(profile.userId))
             return { userId: profile.userId, isOnline: false };
         return { userId: profile.userId, isOnline: true };
     })
-    console.log(actualProfiles);
+    // console.log(actualProfiles);
     return actualProfiles;
 
 }

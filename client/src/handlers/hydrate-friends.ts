@@ -9,6 +9,7 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { UserProfile } from "types/types";
 import { hydrateAllMembers } from "./hydrate-all-members";
 import { fontSizes } from "@/styles/fontSizes";
+import { inviteFriend } from "@/services/invite-friend";
 
 export async function hydrateFriends(me: UserProfile) {
   const list = document.getElementById("friends-list") as HTMLUListElement;
@@ -17,7 +18,7 @@ export async function hydrateFriends(me: UserProfile) {
   const friends = await getFriends();
 
   if (!friends.length) {
-    list.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">No friends found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">No clubmates here yet — start making connections!</li>`;
     return;
   }
 
@@ -28,8 +29,10 @@ export async function hydrateFriends(me: UserProfile) {
     if (!user) return;
 
     const li = document.createElement("li");
-    li.className = styles.friendsListItemStyle;
 
+    li.className =
+      styles.friendsListItemStyle +
+      " !flex-col sm:!flex-row !items-start sm:!items-center !gap-2 sm:!gap-4";
     const left = document.createElement("div");
     left.className = "flex items-center gap-4 cursor-pointer group";
     left.onclick = () => navigateTo(`/members/${user.id}`);
@@ -43,7 +46,7 @@ export async function hydrateFriends(me: UserProfile) {
     nameWrapper.className = "flex flex-col";
 
     const name = document.createElement("span");
-    name.className = `${fontSizes.bodyFontSize} font-semibold text-white normal-case group-hover:underline`;
+    name.className = `${fontSizes.bodyFontSize} font-semibold text-white group-hover:underline`;
     name.textContent = `${getWelcomeTitle(user)} ${user.username}`;
 
     const subtitle = document.createElement("span");
@@ -67,8 +70,33 @@ export async function hydrateFriends(me: UserProfile) {
       await hydrateAllMembers(me);
     };
 
+    const chatBtn = document.createElement("button");
+    chatBtn.className =
+      "p-2 rounded-full hover:bg-pong-dark-highlight/20 transition-all duration-200 text-pong-dark-primary hover:text-pong-accent group";
+    chatBtn.innerHTML = `
+		<i class="fa-solid fa-message text-base md:text-lg"></i>
+	`;
+    chatBtn.onclick = () => {
+      navigateTo(`/lounge/${user.id}`);
+    };
+
+    const inviteBtn = document.createElement("button");
+    inviteBtn.className =
+      "p-2 rounded-full hover:bg-pong-dark-highlight/20 transition-all duration-200 text-pong-dark-primary hover:text-pong-accent";
+    inviteBtn.innerHTML = `<i class="fa-solid fa-table-tennis-paddle-ball text-base md:text-lg"></i>`;
+    inviteBtn.onclick = async () => {
+      inviteBtn.disabled = true;
+      await inviteFriend(user.id);
+    };
+
+    const buttonGroup = document.createElement("div");
+    buttonGroup.className = "flex gap-2 md:gap-3";
+    buttonGroup.appendChild(chatBtn);
+    buttonGroup.appendChild(inviteBtn);
+    buttonGroup.appendChild(unfriendBtn);
+
     li.appendChild(left);
-    li.appendChild(unfriendBtn);
+    li.appendChild(buttonGroup);
     list.appendChild(li);
   }
 }

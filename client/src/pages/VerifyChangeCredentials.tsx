@@ -40,7 +40,7 @@ export function VerifyChangeCredentials() {
                 inputMode="numeric"
                 pattern="[0-9]*"
                 maxLength={6}
-                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all normal-case placeholder:capitalize"
+                className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all placeholder:capitalize"
                 placeholder="Enter 6-digit code"
                 autoComplete="off"
               />

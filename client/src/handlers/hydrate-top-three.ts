@@ -40,7 +40,7 @@ export async function hydrateTopThree(me: UserProfile) {
     avatarImg.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
 
     const nameSpan = document.createElement("span");
-    nameSpan.className = "font-semibold text-pong-dark-primary normal-case";
+    nameSpan.className = "font-semibold text-pong-dark-primary";
     nameSpan.innerHTML = `${getWelcomeTitle(user)} ${user.username}`;
 
     const levelSpan = document.createElement("span");

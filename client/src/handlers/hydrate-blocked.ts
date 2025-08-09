@@ -31,7 +31,7 @@ export async function hydrateBlocked() {
     avatar.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
 
     const name = document.createElement("span");
-    name.className = "text-lg font-semibold text-white normal-case";
+    name.className = "text-lg font-semibold text-white";
     name.textContent = user.username;
 
     const left = document.createElement("div");

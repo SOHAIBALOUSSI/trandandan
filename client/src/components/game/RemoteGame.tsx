@@ -412,16 +412,24 @@ class FlowField {
       if (!this.deps.restartButton.disabled) {
         this.deps.restartButton.disabled = true; // Disable button to prevent multiple clicks
         console.log("Restarting match...");
-		window.location.reload();
-		this.deps.restartButton.disabled = false; // Re-enable button
-        // try {
-        //   console.log("sift invite 3wtani");
-        //   console.log("enemy id is: ", this.gameState.enemyId);
-        //   await inviteFriend(this.gameState.enemyId);
-        // } catch (error) {
-        //   console.error("Error sending restart request:", error);
-        // } finally {
-        // }
+        window.location.reload();
+        // this.deps.restartButton.disabled = false; // Re-enable button
+        try {
+          console.log("sift invite 3wtani");
+          console.log("enemy id is: ", this.gameState.enemyId);
+          await fetch("/game/restart-match", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              sender_id: getCurrentUser()?.id,
+              recipient_id: +this.gameState.enemyId,
+            }),
+          });
+        } catch (error) {
+          console.error("Error sending restart request:", error);
+        } finally {
+        }
       }
     });
   }
