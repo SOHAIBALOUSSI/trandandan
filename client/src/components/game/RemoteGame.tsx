@@ -5,6 +5,8 @@ import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { styles } from "@/styles/styles";
 import { inviteFriend } from "@/services/invite-friend";
 
+let socket: WebSocket | null = null;
+
 // let countdownCounter = false;
 export function RemoteGame() {
   setTimeout(() => {
@@ -131,10 +133,23 @@ export function RemoteGame() {
       });
   };
 
-  let socket: WebSocket;
-
   // Initialize the game
   async function init() {
+    console.log("Initializing remote game...");
+    if (
+      socket &&
+      (socket.readyState === WebSocket.OPEN ||
+        socket.readyState === WebSocket.CONNECTING)
+    ) {
+      {
+        console.log(
+          "WebSocket is already active. Closing the existing connection."
+        );
+        // closeRemoteWebSocket();
+        return;
+      }
+    }
+
     const userName: string = userInfo?.username ?? "username";
     const roomdIdentif = await getRoomIdByUserId(userInfo?.id ?? 0);
 
@@ -142,8 +157,9 @@ export function RemoteGame() {
     socket = new WebSocket(
       `wss://${window.location.host}/game/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
     );
+
     exit.addEventListener("click", () => {
-      socket.close();
+      socket?.close();
       navigateTo("/arena");
     });
     let keys: Record<string, boolean> = {};
@@ -170,11 +186,14 @@ export function RemoteGame() {
     });
 
     socket.onopen = () => {
-      console.log("connected");
+      console.log(
+        "Connecting to WebSocket for remote game with roomId:",
+        roomdIdentif
+      );
     };
 
     socket.onclose = () => {
-      console.log("match ended");
+      console.log("Remote game WebSocket connection closed.");
     };
 
     socket.onerror = (err) => {
@@ -407,16 +426,11 @@ class FlowField {
     };
 
     this.deps.restartButton.addEventListener("click", async (event) => {
-      console.log("Restart button clicked");
       event.preventDefault(); // Prevent default behavior
       if (!this.deps.restartButton.disabled) {
         this.deps.restartButton.disabled = true; // Disable button to prevent multiple clicks
-        console.log("Restarting match...");
         window.location.reload();
-        // this.deps.restartButton.disabled = false; // Re-enable button
         try {
-          console.log("sift invite 3wtani");
-          console.log("enemy id is: ", this.gameState.enemyId);
           await fetch("/game/restart-match", {
             method: "POST",
             credentials: "include",
@@ -429,6 +443,7 @@ class FlowField {
         } catch (error) {
           console.error("Error sending restart request:", error);
         } finally {
+          this.deps.restartButton.disabled = false; // Re-enable button
         }
       }
     });
@@ -440,14 +455,9 @@ class FlowField {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(playerData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log('Server response:', data);
-      })
-      .catch((error) => {
-        console.error("Error sending player data:", error);
-      });
+    }).catch((error) => {
+      console.error("Error sending player data:", error);
+    });
   }
 
   private draw(): void {
@@ -664,14 +674,9 @@ class FlowField {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log("User updated successfully:", data);
-      })
-      .catch((error) => {
-        console.error("Error updating user:", error);
-      });
+    }).catch((error) => {
+      console.error("Error updating user:", error);
+    });
   }
 
   public updateGameState(data: string | ArrayBuffer): void {
@@ -854,10 +859,6 @@ class FlowField {
             }
           }
         })();
-        // this.deps.restartButton.addEventListener("click", () => {
-        //     console.log("level", this.gameState.level);
-        //     this.handleRestart(this.gameState.level);
-        // });
       }
     } catch (err) {
       console.error("Error parsing game state:", err);
@@ -873,5 +874,12 @@ class FlowField {
     this.keysFunction();
     this.ballPositionUpdate();
     requestAnimationFrame(this.animate.bind(this));
+  }
+}
+
+export function closeRemoteWebSocket() {
+  if (socket) {
+    socket.close();
+    socket = null;
   }
 }

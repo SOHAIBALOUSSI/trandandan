@@ -10,7 +10,7 @@ let ws: WebSocket | null = null;
 function createUserHoverCard(user: UserProfile): HTMLDivElement {
   const card = document.createElement("div");
   card.className =
-    "absolute z-50 bg-pong-dark-bg rounded-lg shadow-lg p-4 w-48 text-sm hidden group-hover:block animate-fadeInUp";
+    "absolute z-50 bg-pong-dark-bg rounded-lg shadow-lg p-4 w-48 text-sm hidden md:group-hover:block animate-fadeInUp";
 
   card.innerHTML = `
 	<div class="flex items-center gap-2 mb-2">
@@ -133,18 +133,13 @@ function LossActivity(
 async function renderActivity(
   activity: GameActivity
 ): Promise<HTMLLIElement | null> {
-  if (!activity.userId || !activity.enemyId || !activity.gameEndResult) {
-    console.error("Incomplete activity data:", activity);
+  if (!activity.userId || !activity.enemyId || !activity.gameEndResult)
     return null;
-  }
 
   const user = await getUserById(activity.userId);
   const targetUser = await getUserById(activity.enemyId);
 
-  if (!user || !targetUser) {
-    console.error("Missing user or opponent");
-    return null;
-  }
+  if (!user || !targetUser) return null;
 
   switch (activity.gameEndResult) {
     case "Won":
@@ -152,7 +147,6 @@ async function renderActivity(
     case "Lost":
       return LossActivity(user, targetUser, activity);
     default:
-      console.error("Unknown gameEndResult:", activity.gameEndResult);
       return null;
   }
 }
@@ -161,12 +155,7 @@ export async function startRecentActivityListener(): Promise<void> {
   ws = new WebSocket(`wss://${window.location.host}/game/recent-activity`);
 
   const ul = document.getElementById("recent-activity-list");
-  if (!ul) {
-    console.error("Recent activity list not found.");
-    return;
-  }
 
-  // Helper to safely parse stored JSON into an array
   function readStoredActivities(): GameActivity[] {
     const raw = localStorage.getItem("recent-activity");
     if (!raw) return [];
@@ -179,27 +168,27 @@ export async function startRecentActivityListener(): Promise<void> {
     }
   }
 
-  // Helper to save (and cap) stored activities
+  // Helper to save stored activities
   function saveStoredActivities(activities: GameActivity[]) {
     const CAP = 20;
     const sliced = activities.slice(-CAP);
-    try {
-      localStorage.setItem("recent-activity", JSON.stringify(sliced));
-    } catch (err) {
-      console.error("Failed to save recent-activity to localStorage:", err);
-    }
+    localStorage.setItem("recent-activity", JSON.stringify(sliced));
   }
 
   // Render what we already have in localStorage
   const initialActivities = readStoredActivities();
   if (initialActivities.length === 0) {
-    ul.innerHTML = `<li class="text-pong-dark-secondary text-center">No recent activity.</li>`;
+    if (ul) {
+      ul.innerHTML = `<li class="text-pong-dark-secondary text-center">No matches have been played in the BHV Club yet — be the first to serve!</li>`;
+    }
   } else {
-    ul.innerHTML = "";
+    if (ul) {
+      ul.innerHTML = "";
+    }
     for (const activity of initialActivities) {
       try {
         const elem = await renderActivity(activity);
-        if (elem) ul.prepend(elem);
+        if (elem && ul) ul.prepend(elem);
       } catch (err) {
         console.error("Failed to render stored activity:", err);
       }
@@ -211,29 +200,19 @@ export async function startRecentActivityListener(): Promise<void> {
   };
 
   ws.onmessage = async (event: MessageEvent) => {
-    // Event may contain a single activity object or an array of activities.
-    // We'll parse, normalize to array, append to stored activities, save, and render new ones.
-    let incoming: any;
+    let incoming: GameActivity[];
     try {
       incoming = JSON.parse(event.data);
-    } catch (err) {
-      console.error("Unable to parse incoming activity data:", err);
+    } catch {
       return;
     }
 
-    const newActivities: GameActivity[] = Array.isArray(incoming)
-      ? incoming
-      : [incoming];
+    const newActivities: GameActivity[] = incoming;
 
-    if (newActivities.length === 0) {
-      return;
-    }
+    if (newActivities.length === 0) return;
 
-    // Read existing stored activities, append new ones, dedupe (optional)
     const stored = readStoredActivities();
 
-    // Optionally deduplicate by some unique key (e.g. activity.id or timestamp). If no id available, comment out.
-    // Here we'll try to dedupe by JSON string if no better key exists.
     const seen = new Set(stored.map((a) => JSON.stringify(a)));
     const toAppend: GameActivity[] = [];
     for (const act of newActivities) {
@@ -246,39 +225,23 @@ export async function startRecentActivityListener(): Promise<void> {
 
     if (toAppend.length === 0) return;
 
-    const merged = stored.concat(toAppend);
+    const merged = toAppend.concat(stored).slice(0, 20);
     saveStoredActivities(merged);
 
-    // If the "No recent activity." placeholder exists, clear it
-    if (
-      ul.children.length === 1 &&
-      ul.children[0].textContent?.includes("No recent activity")
-    ) {
-      ul.innerHTML = "";
-    }
-
-    // Render only the newly appended activities (in order)
     for (const activity of toAppend) {
-      try {
-        const elem = await renderActivity(activity);
-        if (elem) ul.appendChild(elem);
-      } catch (err) {
-        console.error("Failed to render incoming activity:", err);
-      }
+      const elem = await renderActivity(activity);
+      if (elem && ul) ul.prepend(elem);
     }
   };
 
   ws.onerror = (error) => {
-    console.error("WebSocket error:", error);
-    ul.innerHTML = `<li class="text-pong-error text-center">Unable to load activity feed.</li>`;
+    if (ul) {
+      ul.innerHTML = `<li class="text-pong-error text-center">Unable to load activity feed.</li>`;
+    }
   };
 
   ws.onclose = () => {
     ws = null;
-    console.log("WebSocket connection closed, attempting to reconnect...");
-    setTimeout(() => {
-      startRecentActivityListener();
-    }, 5000);
   };
 }
 
@@ -286,6 +249,5 @@ export function stopRecentActivityListener() {
   if (ws) {
     ws.close();
     ws = null;
-    console.log("Recent Activity WebSocket connection stopped.");
   }
 }

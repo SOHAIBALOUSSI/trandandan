@@ -268,7 +268,6 @@ function TwoFaMode(type: "app" | "email") {
             type="text"
             maxLength={6}
             inputMode="numeric"
-            pattern="[0-9]*"
             className={
               styles.inputFieldDark +
               "tracking-widest placeholder:tracking-normal"

@@ -1,6 +1,6 @@
 import { displayToast } from "@/utils/display-toast";
 import { navigateTo } from "@/utils/navigate-to-link";
-import { VerifyCodeRes } from "@/utils/response-messages";
+import { TokenErrorRes, VerifyCodeRes } from "@/utils/response-messages";
 
 export function verifyOtpCode() {
   const otpForm = document.getElementById(
@@ -8,17 +8,72 @@ export function verifyOtpCode() {
   ) as HTMLFormElement;
   if (!otpForm) return;
 
+  const otpInputs = otpForm.querySelectorAll<HTMLInputElement>(
+    "#lost-pass-otp input"
+  );
+
+  otpInputs.forEach((input, index) => {
+    input.addEventListener("input", () => {
+      if (
+        input.value.match(/^\d$/) &&
+        input.value.length === 1 &&
+        index < otpInputs.length - 1
+      ) {
+        otpInputs[index + 1].focus();
+      }
+
+      if (!/^\d$/.test(input.value)) {
+        input.value = "";
+      }
+
+      const otpCode = Array.from(otpInputs)
+        .map((input) => input.value.trim())
+        .join("");
+
+      if (otpCode.length === 6) {
+        otpForm.requestSubmit();
+      }
+    });
+
+    input.addEventListener("paste", (e: ClipboardEvent) => {
+      const pasted = e.clipboardData?.getData("text") ?? "";
+      const digits = pasted.replace(/\D/g, "").slice(0, otpInputs.length);
+
+      digits.split("").forEach((digit, i) => {
+        if (otpInputs[i]) {
+          otpInputs[i].value = digit;
+        }
+      });
+
+      if (otpInputs[digits.length - 1]) {
+        otpInputs[digits.length - 1].focus();
+      }
+
+      if (digits.length === 6) {
+        otpForm.requestSubmit();
+      }
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace") {
+        const focusedInput = document.activeElement as HTMLInputElement;
+        const focusedIndex = Array.from(otpInputs).indexOf(focusedInput);
+
+        if (focusedIndex > 0 && focusedInput.value === "") {
+          otpInputs[focusedIndex - 1].focus();
+        }
+      }
+    });
+  });
+
   otpForm.addEventListener("submit", async (e: Event) => {
     e.preventDefault();
 
     const submitBtn = otpForm.querySelector<HTMLButtonElement>("#submit-btn");
     const spinner = otpForm.querySelector<HTMLSpanElement>("#spinner");
     const btnLabel = otpForm.querySelector<HTMLSpanElement>("#btn-label");
-    const otpInputs = otpForm.querySelectorAll<HTMLInputElement>(
-      "#lost-pass-otp input"
-    );
 
-    if (!submitBtn || !spinner || !btnLabel || !otpInputs) return;
+    if (!submitBtn || !spinner || !btnLabel) return;
 
     const btnLabelText = btnLabel.textContent;
     const feedbackDelay = 900;
@@ -59,7 +114,9 @@ export function verifyOtpCode() {
       } else {
         setTimeout(() => {
           const errorMsg =
-            VerifyCodeRes[result?.code] ||
+            (response.status === 401
+              ? TokenErrorRes[result?.code]
+              : VerifyCodeRes[result?.code]) ||
             "Error during OTP verification. Please try again.";
           displayToast(errorMsg, "error");
           otpInputs.forEach((input) => {

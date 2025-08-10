@@ -106,12 +106,16 @@ export async function deleteFriendRequestNotification(
 
 // Get count of unread notifications
 export async function getUnreadCount(db, recipientId) {
-  const result = await db.get(
+  const result = await db.all(
     `
-        SELECT COUNT(*) as count 
+        SELECT id 
         FROM notifications 
         WHERE recipient_id = ? AND read = 0`,
     [recipientId]
   );
-  return result.count || 0;
+
+  const count = result.length;
+  const ids = result.map((notif) => notif.id);
+
+  return { count, ids }; // Return both count and IDs
 }

@@ -1,6 +1,6 @@
 import { styles } from "@/styles/styles";
 import { handleVerifyCredentials } from "@/handlers/verify-update-credentials";
-import { NavBar } from "@/components/layout/NavBar";
+
 import { fontSizes } from "@/styles/fontSizes";
 
 export function VerifyChangeCredentials() {
@@ -17,7 +17,6 @@ export function VerifyChangeCredentials() {
 
   return (
     <section className={styles.pageLayoutDark}>
-      <NavBar />
       <div className="w-full relative">
         <main className={styles.pageContent}>
           <div className={styles.darkForm}>
@@ -38,7 +37,6 @@ export function VerifyChangeCredentials() {
                 name="otp"
                 id="otp"
                 inputMode="numeric"
-                pattern="[0-9]*"
                 maxLength={6}
                 className="w-full bg-pong-dark-bg/80 text-pong-dark-primary placeholder:text-pong-dark-primary/50 px-4 py-3 rounded-xl border-2 border-pong-accent/30 focus:outline-none focus:border-pong-accent focus:ring-2 focus:ring-pong-accent transition-all placeholder:capitalize"
                 placeholder="Enter 6-digit code"

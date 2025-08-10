@@ -29,7 +29,7 @@ import {
   startStatusListener,
   stopStatusListener,
 } from "@/services/status-service";
-import { getCurrentUser } from "@/utils/user-store";
+import { getCurrentUser, setCurrentUser } from "@/utils/user-store";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { TopBar } from "@/components/layout/TopBar";
 import { UserNotFound } from "@/pages/UserNotFound";
@@ -47,7 +47,6 @@ const routes: Record<string, (id?: number) => HTMLElement> = {
   chamber: Dashboard,
   lounge: Lounge,
   members: Members,
-  exit: Logout,
   duel: LocalGame,
   remote: RemoteGame,
   tournament: Tournaments,
@@ -71,10 +70,15 @@ const publicRoutes: string[] = [
   "verify_login",
 ];
 
+const remoteMatch = window.location.pathname.match(/^\/?remote\/(\d+)$/);
+
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
-  if (profile) return true;
+  if (profile) {
+    setCurrentUser(profile);
+    return true;
+  }
   return false;
 }
 
@@ -104,7 +108,7 @@ export async function router(): Promise<void> {
   }
 
   const isPublic = publicRoutes.includes(path);
-  const isGameRoute = path === "checkout";
+  const isCheckoutRoute = path === "checkout";
   const render = routes[path];
 
   let authed = false;
@@ -112,7 +116,7 @@ export async function router(): Promise<void> {
     authed = await isAuthenticated();
     if (authed) {
       startNotificationListener();
-      startStatusListener();
+      setTimeout(startStatusListener, 1000);
     }
     if (!authed) {
       history.replaceState(null, "", "/welcome");
@@ -138,11 +142,13 @@ export async function router(): Promise<void> {
     return;
   }
 
-  // Conditionally render the TopBar for private non-game routes
-  if (!isPublic && !isGameRoute && !topBarContainer.hasChildNodes()) {
-    topBarContainer.appendChild(TopBar());
-  } else if ((isPublic || isGameRoute) && topBarContainer.hasChildNodes()) {
-    topBarContainer.innerHTML = "";
+  // Explicitly show the TopBar only in non-public routes
+  if (!isPublic && !isCheckoutRoute) {
+    if (!topBarContainer.hasChildNodes()) {
+      topBarContainer.appendChild(TopBar());
+    }
+  } else {
+    topBarContainer.innerHTML = ""; // Ensure TopBar is cleared for public routes
   }
 
   // Clear the existing app content (excluding the TopBar)
@@ -171,9 +177,8 @@ export async function router(): Promise<void> {
   if (window.location.pathname !== "/dashboard") {
     stopDashboardListener();
   }
-  const remoteMatch = window.location.pathname.match(/^\/?remote\/(\d+)$/);
 
-  if (remoteMatch) {
+  if (!remoteMatch) {
     closeRemoteWebSocket();
   }
 }

@@ -1,5 +1,4 @@
 import { displayToast } from "@/utils/display-toast";
-import { getCurrentUser } from "@/utils/user-store";
 
 export async function inviteFriend(receiverId: number): Promise<Response> {
   try {
@@ -9,10 +8,6 @@ export async function inviteFriend(receiverId: number): Promise<Response> {
       credentials: "include",
       body: JSON.stringify({ receiverId }),
     });
-
-    const data = await res.json();
-
-    console.log("Invite sent successfully:", data);
 
     if (res.ok) {
       displayToast("Challenge issued successfully", "success");

@@ -22,7 +22,7 @@ export const styles = {
   	rounded-3xl border border-pong-accent/30
   	backdrop-blur-md
   	max-w-xl w-full mx-auto 
-  	px-8 py-10 md:py-14
+  	px-4 md:px-8 py-10 md:py-14
   `,
   pageContent: `
     animate-fadeInUp
@@ -329,6 +329,23 @@ export const styles = {
 	text-sm 
 	border border-white/10 
 	animate-glow
+	relative group
+	cursor-pointer
+  `,
+  badgeHoverCard: `
+  	hidden group-hover:block
+  	absolute top-6 -right-4 w-24 h-24 md:w-32 md:h-32 
+	rounded-full shadow-lg bg-pong-secondary
+    transform scale-90 
+    transition-all duration-500 ease-out 
+    group-hover:scale-100
+	animate-opacity
+  `,
+  badgeHoverCardImage: `
+  	w-full h-full object-cover rounded-full shadow-sm
+	hover:shadow-[#facc15]
+    hover:scale-110
+    transition-transform duration-300 ease-out
   `,
   // === End Custom Cards styles ===
 

@@ -68,14 +68,15 @@ wss.on("connection", async (ws, request) => {
 
     // Send all unread notifications
     const notifications = await getAllNotifications(db, ws.userId);
-    const unreadCount = await getUnreadCount(db, ws.userId);
+    const { count, ids } = await getUnreadCount(db, ws.userId);
 
     if (notifications && ws.readyState === WebSocket.OPEN) {
       // Send unread count first
       ws.send(
         JSON.stringify({
           type: "UNREAD_COUNT",
-          count: unreadCount,
+          count,
+          notification_ids: ids, // Include IDs
         })
       );
 
@@ -112,11 +113,12 @@ wss.on("connection", async (ws, request) => {
         }
 
         // Send updated unread count
-        const unreadCount = await getUnreadCount(db, ws.userId);
+        const { count, ids } = await getUnreadCount(db, ws.userId);
         ws.send(
           JSON.stringify({
             type: "UNREAD_COUNT",
-            count: unreadCount,
+            count,
+            notification_ids: ids, // Include IDs
           })
         );
       }

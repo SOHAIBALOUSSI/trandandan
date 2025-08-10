@@ -79,6 +79,7 @@ export async function deleteProfile(db, id) {
 }
 
 export async function fetchAllProfiles(db) {
+//   console.log("Fetching all profiles...");
   return await db.all("SELECT * FROM profile");
 }
 

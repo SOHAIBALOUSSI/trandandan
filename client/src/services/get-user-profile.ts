@@ -14,7 +14,6 @@ export async function getUserProfile() {
     if (!profileRes.ok) return null;
 
     const profile = await profileRes.json();
-    setCurrentUser(profile);
 
     return profile;
   } catch {

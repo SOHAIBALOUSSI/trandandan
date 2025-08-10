@@ -2,3 +2,4 @@
 - show the image badge when hovering the player title in hero section
 - 413: FILE_TOO_LARGE
 - send remote invite to ureself 
+- remove event listeners

@@ -28,7 +28,7 @@ export function RecentActivityFeed(): HTMLDivElement {
 
   setTimeout(() => {
     startRecentActivityListener();
-  }, 100);
+  }, 1000);
 
   return wrapper;
 }

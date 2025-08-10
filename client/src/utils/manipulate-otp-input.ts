@@ -6,7 +6,7 @@ export function manipulateOtpInput(id: string) {
     input.addEventListener("input", () => {
       const value = input.value;
 
-      if (value.length === 1 && index < inputs.length - 1) {
+      if (value.match(/^\d$/) && value.length === 1 && index < inputs.length - 1) {
         inputs[index + 1].focus();
       }
 

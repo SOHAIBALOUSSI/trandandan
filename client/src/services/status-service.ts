@@ -29,19 +29,12 @@ export function startStatusListener(): void {
   };
 
   ws.onerror = () => {
-    displayToast(
-      "The club’s lights are out at the moment. Try again shortly.",
-      "error"
-    );
     console.error("Error in status service WebSocket");
   };
 
   ws.onclose = () => {
     console.log("Connection to status service WebSocket closed");
     ws = null;
-    setTimeout(() => {
-      startStatusListener();
-    }, 5000);
   };
 }
 

@@ -294,12 +294,21 @@ export function startNotificationListener() {
     try {
       const data = JSON.parse(event.data);
 
-      console.log("notif received: ", data);
+      console.log("[Notif] WebSocket message received:", data);
 
       // Handle unread count update
       if (data.type === "UNREAD_COUNT") {
         unseenCount = data.count;
         updateCounter();
+
+        // Mark the received notification IDs as processed
+        if (data.notification_ids) {
+          data.notification_ids.forEach((id: number) => {
+            received.add(id);
+          });
+          saveReceived();
+        }
+
         return;
       }
 
@@ -313,12 +322,16 @@ export function startNotificationListener() {
               li.innerHTML.includes("fa-user-plus") &&
               li.getAttribute("data-sender") === String(data.sender_id)
             ) {
+              console.log(
+                "[Notif] Friend request canceled, removing notification."
+              );
+              console.log("data.sender_id:", data.sender_id);
               li.remove();
+              unseenCount = Math.max(0, unseenCount - 1);
+              updateCounter();
             }
           });
         }
-        unseenCount = Math.max(0, unseenCount - 1);
-        updateCounter();
         return;
       }
 
@@ -327,6 +340,7 @@ export function startNotificationListener() {
         data.notification_id &&
         !received.has(data.notification_id) // Ensure the notification ID is not already processed
       ) {
+        console.log("get in there");
         received.add(data.notification_id); // Mark the notification as processed
         saveReceived(); // Save the updated set to localStorage
         unseenCount++;
@@ -338,7 +352,6 @@ export function startNotificationListener() {
         const notifList = document.getElementById("notif-list");
         if (notifList) {
           if (data.type === "MESSAGE_RECEIVED") {
-            console.log("dkholt hna");
             const existingGroup = document.getElementById(
               `msg-group-${data.sender_id}`
             );
@@ -363,7 +376,6 @@ export function startNotificationListener() {
               );
             }
           } else {
-            console.log("rendering .....");
             notifList.prepend(await renderNotification(data));
           }
 
@@ -384,9 +396,9 @@ export function startNotificationListener() {
 
   ws.onclose = () => {
     ws = null;
-    setTimeout(() => {
-      startNotificationListener();
-    }, 5000);
+    // setTimeout(() => {
+    //   startNotificationListener();
+    // }, 5000);
     console.log("[Notif] WebSocket connection closed. Reconnecting...");
   };
 }
