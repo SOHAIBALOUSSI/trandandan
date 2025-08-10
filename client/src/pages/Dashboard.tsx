@@ -7,6 +7,7 @@ import { dashboardLive } from "@/services/dashboard-service";
 import { UserProfile } from "types/types";
 import { getWelcomeTitle } from "@/components/home/Hero";
 import { getAvatarUrl } from "@/utils/get-avatar-url";
+import { navigateTo } from "@/utils/navigate-to-link";
 
 export function Dashboard() {
   const user = getCurrentUser();
@@ -81,6 +82,14 @@ export function Dashboard() {
     if (progressBar) {
       progressBar.style.width = `${width}%`;
     }
+
+    const profileAvatar = document.getElementById(
+      "profile-avatar"
+    ) as HTMLImageElement;
+
+    profileAvatar && profileAvatar.addEventListener("click", () => {
+      navigateTo(`/my_profile`);
+    });
   }, 0);
 
   return (
@@ -94,7 +103,10 @@ export function Dashboard() {
           />
 
           <div className="w-full max-w-5xl flex flex-col md:flex-row items-center gap-6 bg-pong-dark-highlight/10 rounded-md p-6 shadow-lg border border-pong-dark-highlight/30 backdrop-blur-md">
-            <div className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg">
+            <div
+              id="profile-avatar"
+              className="w-24 h-24 rounded-full p-[3px] bg-gradient-to-br from-pong-accent via-pong-dark-accent to-pong-accent shadow-lg hover:scale-105 transition-transform duration-300 cursor-pointer"
+            >
               <img
                 src={user.avatar_url}
                 alt={`${user.username}'s avatar`}

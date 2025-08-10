@@ -125,7 +125,7 @@ export const styles = {
   InputFieldOne: `
   	normal-case placeholder:capitalize
 	input-field
-	w-full pl-5 pr-12 py-3.5
+	w-full px-5 py-3.5
 	${fontSizes.inputFontSize} 
 	font-semibold tracking-wide
 	bg-pong-secondary/10
@@ -187,7 +187,7 @@ export const styles = {
 	absolute top-1/2 right-3
 	transform translate-y-[-50%] 
 	cursor-pointer 
-	text-pong-primary/80 hover:text-pong-primary
+	text-pong-dark-highlight/80 hover:text-pong-dark-primary
 	transition
   `,
   // === End Input Field styles ===

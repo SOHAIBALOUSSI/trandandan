@@ -49,16 +49,10 @@ export function ChangePassword() {
                   className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="Current password"
                   autoComplete="off"
-				  maxLength={30}
+                  maxLength={30}
                   autofocus
                 />
-                <i
-                  className={
-                    styles.showPassIcon +
-                    " text-pong-dark-primary/80 hover:text-pong-dark-primary"
-                  }
-                  id={showPasswordIconId}
-                ></i>
+                <i className={styles.showPassIcon} id={showPasswordIconId}></i>
               </div>
               <div className="relative w-full">
                 <input
@@ -68,13 +62,10 @@ export function ChangePassword() {
                   className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="New password"
                   autoComplete="off"
-				  maxLength={30}
+                  maxLength={30}
                 />
                 <i
-                  className={
-                    styles.showPassIcon +
-                    " text-pong-dark-primary/80 hover:text-pong-dark-primary"
-                  }
+                  className={styles.showPassIcon}
                   id={showNewPasswordIconId}
                 ></i>
               </div>
@@ -86,13 +77,10 @@ export function ChangePassword() {
                   className={styles.inputFieldDark + " mb-0 h-full"}
                   placeholder="Confirm new password"
                   autoComplete="off"
-				  maxLength={30}
+                  maxLength={30}
                 />
                 <i
-                  className={
-                    styles.showPassIcon +
-                    " text-pong-dark-primary/80 hover:text-pong-dark-primary"
-                  }
+                  className={styles.showPassIcon}
                   id={showConfirmPasswordIconId}
                 ></i>
               </div>

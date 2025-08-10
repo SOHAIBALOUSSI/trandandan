@@ -37,41 +37,18 @@ export async function getAllNotifications(db, recipientId) {
     [recipientId]
   );
 
-  // Group notifications by sender_id and type
-  const grouped = {};
-  const individual = [];
+  // Process notifications individually
+  const notifications = result.map((notif) => ({
+    notification_id: notif.id,
+    sender_id: notif.sender_id,
+    recipient_id: recipientId,
+    type: notif.type,
+    created_at: notif.created_at,
+    read: notif.read,
+    delivered: notif.delivered,
+  }));
 
-  result.forEach((notif) => {
-    const key = `${notif.sender_id}_${notif.type}`;
-    if (notif.type === "MESSAGE_RECEIVED") {
-      if (!grouped[key]) {
-        grouped[key] = {
-          type: notif.type,
-          sender_id: notif.sender_id,
-          recipient_id: recipientId,
-          notifications_count: 0,
-          notification_ids: [],
-          last_notification_at: notif.created_at,
-        };
-      }
-      grouped[key].notifications_count++;
-      grouped[key].notification_ids.push(notif.id);
-      if (notif.created_at > grouped[key].last_notification_at) {
-        grouped[key].last_notification_at = notif.created_at;
-      }
-    } else {
-      // Individual notifications for non-message types
-      individual.push({
-        notification_id: notif.id,
-        sender_id: notif.sender_id,
-        recipient_id: recipientId,
-        type: notif.type,
-        created_at: notif.created_at,
-      });
-    }
-  });
-
-  return [...Object.values(grouped), ...individual];
+  return notifications;
 }
 
 export async function deleteNotifications(db, id) {

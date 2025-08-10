@@ -40,6 +40,7 @@ export function ResetPassword() {
               placeholder="secret code"
               autoComplete="off"
               className={styles.InputFieldOne}
+              maxLength={30}
             />
             <i className={styles.showPassIcon} id={showPasswordIconId}></i>
           </div>
@@ -51,6 +52,7 @@ export function ResetPassword() {
               placeholder="secret code"
               autoComplete="off"
               className={styles.InputFieldOne}
+              maxLength={30}
             />
             <i
               className={styles.showPassIcon}

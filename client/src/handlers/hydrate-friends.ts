@@ -70,29 +70,7 @@ export async function hydrateFriends(me: UserProfile) {
       await hydrateAllMembers(me);
     };
 
-    const chatBtn = document.createElement("button");
-    chatBtn.className =
-      "p-2 rounded-full hover:bg-pong-dark-highlight/20 transition-all duration-200 text-pong-dark-primary hover:text-pong-accent group";
-    chatBtn.innerHTML = `
-		<i class="fa-solid fa-message text-base md:text-lg"></i>
-	`;
-    chatBtn.onclick = () => {
-      navigateTo(`/lounge/${user.id}`);
-    };
-
-    const inviteBtn = document.createElement("button");
-    inviteBtn.className =
-      "p-2 rounded-full hover:bg-pong-dark-highlight/20 transition-all duration-200 text-pong-dark-primary hover:text-pong-accent";
-    inviteBtn.innerHTML = `<i class="fa-solid fa-table-tennis-paddle-ball text-base md:text-lg"></i>`;
-    inviteBtn.onclick = async () => {
-      inviteBtn.disabled = true;
-      await inviteFriend(user.id);
-    };
-
     const buttonGroup = document.createElement("div");
-    buttonGroup.className = "flex gap-2 md:gap-3";
-    buttonGroup.appendChild(chatBtn);
-    buttonGroup.appendChild(inviteBtn);
     buttonGroup.appendChild(unfriendBtn);
 
     li.appendChild(left);

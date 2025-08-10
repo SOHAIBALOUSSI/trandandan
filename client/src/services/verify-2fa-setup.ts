@@ -13,7 +13,16 @@ export async function verify2FASetup(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ otpCode }),
     });
+
     const data = await response.json();
+
+    console.log(
+      "Verify response status:",
+      response.status,
+      " data:",
+      data.code
+    );
+
     if (response.status === 200) {
       if (onSuccess) onSuccess();
     } else {

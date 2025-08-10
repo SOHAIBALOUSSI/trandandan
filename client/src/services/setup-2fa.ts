@@ -58,6 +58,17 @@ export async function setup2FA(mode: "app" | "email") {
         e.preventDefault();
         if (!otpInput.value) {
           displayToast("Please enter the 6-digit code.", "error");
+		  otpInput.focus();
+          return;
+        }
+        if (otpInput.value.length !== 6) {
+          displayToast("Please enter a valid 6-digit code.", "error");
+          otpInput.focus();
+          return;
+        }
+        if (!/^\d{6}$/.test(otpInput.value)) {
+          displayToast("The code must contain only digits.", "error");
+          otpInput.focus();
           return;
         }
         verify2FASetup(otpInput.value, mode, () => {

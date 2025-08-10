@@ -21,6 +21,7 @@ import { SecondaryHeader } from "@/components/common/SecondaryHeader";
 import { Loader } from "@/components/common/Loader";
 import { UserProfile } from "types/types";
 import { getWelcomeTitle } from "@/components/home/Hero";
+import { fontSizes } from "@/styles/fontSizes";
 
 async function renderActions(
   user: UserProfile,
@@ -238,7 +239,19 @@ export async function MemberProfile(id: number) {
     getBlockedUsers(),
   ]);
 
-  if (!user) return;
+  if (!user) {
+    return Loader({ text: "Checking user profile..." });
+  }
+
+  const hasPerformanceData = user.matches_played > 0;
+
+  const containerClassName = hasPerformanceData
+    ? "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 md:gap-12"
+    : "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col gap-8 xl:gap-12";
+
+  const userDataClassName = hasPerformanceData
+    ? "w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 flex 2xl:self-start flex-col 2xl:flex-col items-center justify-center gap-6"
+    : "w-full flex flex-col items-center justify-center gap-6";
 
   container.innerHTML = "";
   container.appendChild(NavBar());
@@ -256,12 +269,10 @@ export async function MemberProfile(id: number) {
   );
 
   const layout = document.createElement("div");
-  layout.className =
-    "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 xl:gap-12";
+  layout.className = containerClassName;
 
   const left = document.createElement("div");
-  left.className =
-    "w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 flex 2xl:self-start flex-col 2xl:flex-col items-center justify-center gap-6";
+  left.className = userDataClassName;
 
   left.appendChild(MemberCard({ user, showUpdateOptions: false }));
 
@@ -281,17 +292,23 @@ export async function MemberProfile(id: number) {
 
   const isBlocked = blocked.includes(user.id);
 
-  if (!isBlocked) {
-    right.appendChild(PerformanceMetrics({ user }));
-    right.appendChild(MatchHistory({ user }));
-  } else {
-    const blockedMsg = document.createElement("div");
-    blockedMsg.className =
-      "w-full text-center text-pong-error text-lg font-semibold py-10";
-    blockedMsg.innerHTML =
-      '<i class="fa-solid fa-ban mr-2"></i>This member is blocked. Unblock to view stats and history.';
-    right.appendChild(blockedMsg);
-  }
+if (isBlocked) {
+	const blockedMsg = document.createElement("div");
+	blockedMsg.className =
+		"w-full text-center text-pong-error text-lg font-semibold py-10";
+	blockedMsg.innerHTML =
+		'<i class="fa-solid fa-ban mr-2"></i>This member is blocked. Unblock to view stats and history.';
+	right.appendChild(blockedMsg);
+} else if (!hasPerformanceData) {
+	const noDataMsg = document.createElement("p");
+	noDataMsg.className = `text-center text-pong-dark-secondary ${fontSizes.bodyFontSize} leading-relaxed`;
+	noDataMsg.textContent =
+		"This member has no performance data available yet.";
+	right.appendChild(noDataMsg);
+} else {
+	right.appendChild(PerformanceMetrics({ user }));
+	right.appendChild(MatchHistory({ user }));
+}
 
   layout.appendChild(left);
   layout.appendChild(right);

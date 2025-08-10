@@ -17,3 +17,6 @@ logs-%:
 
 logs:
 	@docker compose logs -f
+
+error:
+	@docker compose logs -f | grep -i error

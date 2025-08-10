@@ -69,10 +69,20 @@ export function LocalGame() {
   const startMessage = document.createElement("div");
   startMessage.id = "startMessage";
   startMessage.className =
-    "backdrop-blur-md absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50 text-center text-2xl md:text-3xl font-bold text-pong-sport-muted px-6 py-4 rounded-xl shadow-lg";
+    "backdrop-blur-md absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 z-50 text-center text-2xl md:text-3xl font-bold text-pong-sport-muted px-6 py-4 rounded-xl shadow-lg flex flex-col gap-3 items-center justify-center";
   startMessage.innerHTML = `
   <p>Press <span class="text-pong-dark-accent">F</span> to Serve</p>
   <p class="text-sm mt-2 font-normal">Welcome to the BHV Lounge — let the rally begin.</p>
+  <p class="text-lg text-pong-secondary">
+    <span class="inline-block bg-pong-dark-accent/20 text-pong-dark-accent font-bold px-2 py-1 rounded-md shadow-sm">W</span> / 
+    <span class="inline-block bg-pong-dark-accent/20 text-pong-dark-accent font-bold px-2 py-1 rounded-md shadow-sm">S</span> 
+    <span class="ml-1">Move Left Paddle</span>
+  </p>
+  <p class="text-lg text-pong-secondary">
+    <span class="inline-block bg-pong-dark-accent/20 text-pong-dark-accent font-bold px-2 py-1 rounded-md shadow-sm">↑</span> / 
+    <span class="inline-block bg-pong-dark-accent/20 text-pong-dark-accent font-bold px-2 py-1 rounded-md shadow-sm">↓</span> 
+    <span class="ml-1">Move Right Paddle</span>
+  </p>
 `;
   container.appendChild(startMessage);
 

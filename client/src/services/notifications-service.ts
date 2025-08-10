@@ -3,7 +3,6 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { displayToast } from "@/utils/display-toast";
 import { getUserById } from "@/services/get-user-by-id";
 import { showInviteNotification } from "@/utils/show-invite-notif";
-import { getRoomId } from "@/services/get-room-id";
 import { acceptInvite } from "@/services/accept-invite";
 import { getWelcomeTitle } from "@/components/home/Hero";
 
@@ -42,7 +41,7 @@ function updateCounter() {
 }
 
 // --- Render Single Notification ---
-async function renderNotification(notif: Notification, groupedIds?: number[]) {
+async function renderNotification(notif: Notification) {
   const li = document.createElement("li");
   li.className = `
     text-sm text-left text-white p-3 rounded-md shadow-lg border border-pong-dark-primary/40
@@ -118,31 +117,26 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
           </span>
         </div>
       `;
-      if (!groupedIds) {
-        setTimeout(() => {
-          showInviteNotification(
-            sender?.username || "Unknown",
-            async () => {
-              //   const roomId = await getRoomId(notif.sender_id || 0);
-              //   if (roomId) {
-              await acceptInvite(
-                notif.roomId || "",
-                notif.sender_id || 0,
-                notif.recipient_id || 0
-              );
-              markNotificationsAsRead([notif.notification_id]);
-              li.remove();
-              navigateTo(`/remote?roomId=${notif.roomId}`);
-              //   }
-            },
-            () => {
-              markNotificationsAsRead([notif.notification_id]);
-              li.remove();
-              displayToast("Invitation declined — match cancelled.", "warning");
-            }
-          );
-        }, 0);
-      }
+      setTimeout(() => {
+        showInviteNotification(
+          sender?.username || "Unknown",
+          async () => {
+            await acceptInvite(
+              notif.roomId || "",
+              notif.sender_id || 0,
+              notif.recipient_id || 0
+            );
+            markNotificationsAsRead([notif.notification_id]);
+            li.remove();
+            navigateTo(`/remote?roomId=${notif.roomId}`);
+          },
+          () => {
+            markNotificationsAsRead([notif.notification_id]);
+            li.remove();
+            displayToast("Invitation declined — match cancelled.", "warning");
+          }
+        );
+      }, 0);
       route = `/members/${notif.sender_id}`;
       break;
 
@@ -157,12 +151,10 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
           </span>
         </div>
       `;
-      if (!groupedIds) {
-        setTimeout(() => {
-          displayToast("player want to play again", "success");
-          markNotificationsAsRead([notif.notification_id]);
-        }, 0);
-      }
+      setTimeout(() => {
+        displayToast("player want to play again", "success");
+        markNotificationsAsRead([notif.notification_id]);
+      }, 0);
       route = `/members/${notif.sender_id}`;
       break;
 
@@ -189,7 +181,7 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
   li.innerHTML = label;
 
   li.onclick = () => {
-    const ids = groupedIds?.length ? groupedIds : [notif.notification_id];
+    const ids = [notif.notification_id];
 
     if (ids.length > 0) {
       markNotificationsAsRead(ids);
@@ -205,10 +197,7 @@ async function renderNotification(notif: Notification, groupedIds?: number[]) {
     if (notifList && notifList.contains(li)) {
       try {
         notifList.removeChild(li);
-      } catch (e) {
-        // Element might have been removed already
-        console.warn("Element already removed from DOM");
-      }
+      } catch {}
     }
 
     // Navigate after DOM update using requestAnimationFrame to ensure DOM changes are processed
@@ -235,7 +224,7 @@ async function renderGroupedMessageNotification(
   `;
   li.id = `msg-group-${notif.sender_id}`;
   li.setAttribute("data-sender", String(notif.sender_id));
-  li.dataset.groupedIds = JSON.stringify(groupedIds); // store all IDs here
+  li.dataset.groupedIds = JSON.stringify(groupedIds);
 
   const sender = await getUserById(notif.sender_id || 0);
 
@@ -336,15 +325,12 @@ export function startNotificationListener() {
       }
 
       // Increment unseen count only for *new* notification IDs
-      if (
-        data.notification_id &&
-        !received.has(data.notification_id) // Ensure the notification ID is not already processed
-      ) {
+      if (data.notification_id && !received.has(data.notification_id)) {
         console.log("get in there");
-        received.add(data.notification_id); // Mark the notification as processed
-        saveReceived(); // Save the updated set to localStorage
         unseenCount++;
         updateCounter();
+        received.add(data.notification_id);
+        saveReceived();
       }
 
       // Handle rendering notifications
@@ -352,10 +338,15 @@ export function startNotificationListener() {
         const notifList = document.getElementById("notif-list");
         if (notifList) {
           if (data.type === "MESSAGE_RECEIVED") {
+            console.log("Message received notification");
             const existingGroup = document.getElementById(
               `msg-group-${data.sender_id}`
             );
             if (existingGroup) {
+              console.log(
+                "[Notif] Grouped message notification found, updating count."
+              );
+              // Update existing group with new count
               const badge = existingGroup.querySelector(
                 ".msg-count"
               ) as HTMLSpanElement;
@@ -369,6 +360,8 @@ export function startNotificationListener() {
               ids.push(data.notification_id);
               existingGroup.dataset.groupedIds = JSON.stringify(ids);
             } else {
+				console.log("[Notif] No existing group found, creating new one.");
+			  // Create a new grouped message notification
               notifList.prepend(
                 await renderGroupedMessageNotification(data, 1, [
                   data.notification_id,
@@ -396,9 +389,6 @@ export function startNotificationListener() {
 
   ws.onclose = () => {
     ws = null;
-    // setTimeout(() => {
-    //   startNotificationListener();
-    // }, 5000);
     console.log("[Notif] WebSocket connection closed. Reconnecting...");
   };
 }
@@ -467,6 +457,7 @@ export function markNotificationsAsRead(ids: (number | null | undefined)[]) {
     cleanIds.forEach((id) => seenIds.add(id));
     saveSeen();
 
+    console.log("[Notif] Marking notifications as read:", cleanIds);
     ws.send(
       JSON.stringify({
         type: "NOTIFICATION_READ",

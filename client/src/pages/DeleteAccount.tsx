@@ -24,7 +24,7 @@ export function DeleteAccount() {
 
           <div className="flex flex-col gap-8 w-full max-w-5xl items-center px-8 md:px-10">
             <p
-              className={`text-center text-pong-dark-primary font-medium ${fontSizes.bodyFontSize} leading-relaxed max-w-xl`}
+              className={`text-center text-pong-dark-secondary font-medium ${fontSizes.bodyFontSize} leading-relaxed max-w-xl`}
             >
               Share a final note with the club. Your words will remain in the
               memories of those who played alongside you.
@@ -35,8 +35,8 @@ export function DeleteAccount() {
               id="farewell-message"
               placeholder="Write your farewell message here..."
               className={`
-                w-full max-w-xl h-36 p-5 rounded-lg bg-pong-dark-highlight/10
-                text-white placeholder-pong-secondary/40 shadow-md border border-white/10
+                w-full max-w-xl h-48 p-5 rounded-lg bg-pong-dark-highlight/10
+                text-white placeholder-pong-dark-primary/40 shadow-md border border-white/10
                 focus:outline-none focus:ring-2 focus:ring-pong-accent transition ${fontSizes.bodyFontSize}
               `}
               autoFocus
@@ -47,7 +47,7 @@ export function DeleteAccount() {
                 <i className="fa-solid fa-triangle-exclamation"></i>
                 This action is permanent
               </p>
-              <ul className="text-pong-dark-primary/80 text-sm list-disc list-inside space-y-1">
+              <ul className="text-pong-dark-primary/80 text-base list-disc list-inside space-y-1">
                 <li>Your profile will be deleted</li>
                 <li>Match history and stats will be erased</li>
                 <li>You will lose access to the BHV Club</li>
