@@ -27,7 +27,6 @@ export async function handleLogout(): Promise<void> {
     stopStatusListener();
     localStorage.clear();
     sessionStorage.clear();
-    history.replaceState(null, "", "/welcome");
     await router();
   }
 }

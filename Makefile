@@ -1,5 +1,5 @@
 up:
-	@docker compose up --build
+	@docker compose up --build -d
 
 down:
 	@docker compose down
@@ -12,3 +12,6 @@ re :
 
 logs-%:
 	@docker compose logs -f $*
+
+logs:
+	@docker compose logs -f

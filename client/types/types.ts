@@ -28,8 +28,8 @@ export type UserHistory = {
   enemy_id: number;
   user_id: number;
   player_id: 1 | 2; // 1 for left player, 2 for right player
-  left_player_score: number; // my score
-  right_player_score: number; // my enemy's score
+  left_player_score: number;
+  right_player_score: number;
   game_duration: number;
   game_end_result: "Won" | "Lost";
   left_player_ball_hit: number;

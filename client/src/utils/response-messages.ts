@@ -240,3 +240,14 @@ export const FriendUnblockRes: Record<string, string> = {
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };
+
+export const TokenErrorRes: Record<string, string> = {
+  TOKEN_REQUIRED: "Authentication token required to continue.",
+  TEMP_TOKEN_EXPIRED:
+    "Your temporary access token has expired. Please request a new one.",
+  TEMP_TOKEN_INVALID:
+    "Invalid temporary access token. Please verify and try again.",
+  ACCESS_TOKEN_EXPIRED: "Your session has expired. Please log in to continue.",
+  ACCESS_TOKEN_INVALID:
+    "Invalid access token. Please log in again to refresh your session.",
+};

@@ -8,7 +8,7 @@ export function Logout() {
     hasLoggedOut = true;
     setTimeout(() => {
       handleLogout();
-    }, 1800);
+    }, 1200);
   }
 
   return (
