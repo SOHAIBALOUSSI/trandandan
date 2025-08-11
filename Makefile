@@ -1,5 +1,5 @@
 up:
-	@docker compose up --build
+	@docker compose up --build -d
 
 down:
 	@docker compose down
@@ -10,7 +10,7 @@ fclean:
 	./rm.sh
 
 re :
-	docker compose down -v && docker compose up --build
+	docker compose down -v && docker compose up --build -d
 
 logs-%:
 	@docker compose logs -f $*
