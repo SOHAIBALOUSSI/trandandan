@@ -320,7 +320,7 @@ export async function updateCredentialsHandler(request, reply) {
         if (newPassword || confirmNewPassword || oldPassword) {
             if (!newPassword || !confirmNewPassword || !oldPassword)
                 return reply.code(400).send(createResponse(400, 'PASSWORDS_REQUIRED'));
-            const matched = await compare(oldPassword, user.password);
+            let matched = await compare(oldPassword, user.password);
             if (!matched)
                 return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
             if (newPassword !== confirmNewPassword)
@@ -328,6 +328,9 @@ export async function updateCredentialsHandler(request, reply) {
             if (!validatePassword(newPassword))
                 return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
             hashedPassword = await hash(newPassword, 10);
+            matched = await compare(hashedPassword, user.password);
+            if (matched)
+                return reply.code(400).send(createResponse(400, 'SAME_PASSWORD'));
             toUpdate = "password";
         }
 
