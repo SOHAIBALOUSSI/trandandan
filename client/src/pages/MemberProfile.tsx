@@ -22,6 +22,7 @@ import { Loader } from "@/components/common/Loader";
 import { UserProfile } from "types/types";
 import { getWelcomeTitle } from "@/components/home/Hero";
 import { fontSizes } from "@/styles/fontSizes";
+import { NoPerformanceData } from "@/components/profile/NoPerformanceData";
 
 async function renderActions(
   user: UserProfile,
@@ -292,23 +293,24 @@ export async function MemberProfile(id: number) {
 
   const isBlocked = blocked.includes(user.id);
 
-if (isBlocked) {
-	const blockedMsg = document.createElement("div");
-	blockedMsg.className =
-		"w-full text-center text-pong-error text-lg font-semibold py-10";
-	blockedMsg.innerHTML =
-		'<i class="fa-solid fa-ban mr-2"></i>This member is blocked. Unblock to view stats and history.';
-	right.appendChild(blockedMsg);
-} else if (!hasPerformanceData) {
-	const noDataMsg = document.createElement("p");
-	noDataMsg.className = `text-center text-pong-dark-secondary ${fontSizes.bodyFontSize} leading-relaxed`;
-	noDataMsg.textContent =
-		"This member has no performance data available yet.";
-	right.appendChild(noDataMsg);
-} else {
-	right.appendChild(PerformanceMetrics({ user }));
-	right.appendChild(MatchHistory({ user }));
-}
+  if (isBlocked) {
+    const blockedMsg = document.createElement("div");
+    blockedMsg.className =
+      "w-full text-center text-pong-error text-lg font-semibold py-10";
+    blockedMsg.innerHTML =
+      '<i class="fa-solid fa-ban mr-2"></i>This member is blocked. Unblock to view stats and history.';
+    right.appendChild(blockedMsg);
+  } else if (!hasPerformanceData) {
+    right.appendChild(
+      NoPerformanceData({
+        spanText: "This player hasn’t stepped onto the BHV court yet.",
+        isMember: true,
+      })
+    );
+  } else {
+    right.appendChild(PerformanceMetrics({ user }));
+    right.appendChild(MatchHistory({ user }));
+  }
 
   layout.appendChild(left);
   layout.appendChild(right);

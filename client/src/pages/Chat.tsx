@@ -11,6 +11,8 @@ import { navigateTo } from "@/utils/navigate-to-link";
 import { getFriends } from "@/services/get-friends";
 import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { getWelcomeTitle } from "@/components/home/Hero";
+import { getUserStatus } from "@/services/status-service";
+import { Profile } from "./Profile";
 
 export async function Chat(friendId: number) {
   const friend = await getUserById(friendId);
@@ -39,7 +41,7 @@ export async function Chat(friendId: number) {
   usersSideBar.className = `
     hidden md:flex flex-col
     w-64 min-w-48 max-w-xs
-    bg-pong-dark-custom border-l border-pong-dark-accent/30
+    bg-gradient-to-br from-[#2b2e34]/80 to-[#363a43]/60 backdrop-blur-md border-l border-pong-dark-accent/30
     h-[calc(100vh-4rem)]
     overflow-y-auto
     py-6 px-4 gap-3 mt-16
@@ -70,13 +72,21 @@ export async function Chat(friendId: number) {
       }
     }
     for (const user of friendProfiles) {
+      const isOnline = getUserStatus(user.id);
       const userBtn = document.createElement("button");
       userBtn.className =
         "flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-pong-dark-accent/20 transition-colors";
       userBtn.innerHTML = `
-        <img src="${getAvatarUrl(user)}" alt="${
+	  	<div class="relative">
+		  <img src="${getAvatarUrl(user)}" alt="${
         user.username
-      }" class="w-8 h-8 rounded-full object-cover" />
+      }" class="w-10 h-10 rounded-full object-cover" />
+		  <span class="
+			absolute bottom-0 right-0 block w-2 h-2 rounded-full
+			ring-1 ring-[#1f2128]
+			${isOnline ? "bg-pong-success" : "bg-gray-500"}">
+		  </span>
+		</div>
         <span class="text-white font-medium">${getWelcomeTitle(user)} ${
         user.username
       }</span>
@@ -93,7 +103,7 @@ export async function Chat(friendId: number) {
 
   const main = document.createElement("main");
   main.className =
-    "px-0 md:px-16 pt-16 md:pt-24 md:pb-12 h-[100vh] md:h-[calc(100vh-2rem)] overflow-y-auto flex flex-col items-center gap-6";
+    "px-0 md:pl-16 md:pr-4 pt-16 md:pt-24 md:pb-12 h-[100vh] md:h-[calc(100vh-2rem)] overflow-y-auto flex flex-col items-center gap-6";
 
   const loadingDiv = document.createElement("div");
   loadingDiv.className =
@@ -143,10 +153,11 @@ export async function Chat(friendId: number) {
           isMe ? "items-end" : "items-start"
         }`;
         msgDiv.innerHTML = `
-      <span class="${isMe ? "bg-pong-dark-primary" : "bg-[#BFBEAE]"} 
-                      text-black px-4 py-2 rounded-lg shadow-sm max-w-[70%] normal-case">
-        ${msg.content}
-      </span>
+	  <span class="${isMe ? "bg-pong-dark-primary" : "bg-[#BFBEAE]"} 
+	                  text-pong-primary px-4 py-2 rounded-lg shadow-sm max-w-[70%] break-words overflow-hidden text-wrap normal-case">
+	    ${msg.content}
+	  </span>
+
       <span class="text-xs text-pong-highlight ${isMe ? "mr-2" : "ml-2"} mt-1">
         ${isMe ? "You" : friend?.username} • ${new Date().toLocaleTimeString(
           "en-US",

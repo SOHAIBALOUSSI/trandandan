@@ -51,6 +51,7 @@ function update2FAUI(methods: TwoFAMethod[]) {
         "mb-2 ml-2 md:mb-0 px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700";
       toggleEnableBtn.textContent = "Disable";
       if (method.is_primary) {
+        console.log("primary method here");
         primaryLabel.classList.remove("hidden");
         primaryLabel.textContent = "Primary";
         primaryLabel.className =
@@ -210,14 +211,8 @@ function TwoFaMode(type: "app" | "email") {
                 {isApp ? "Authenticator App" : "Email OTP"}
               </span>
               <div className="flex gap-2 mt-2 md:mt-0">
-                <span
-                  id={`${type}-status-label`}
-                  className="px-2 py-1 text-xs font-bold rounded-full"
-                ></span>
-                <span
-                  id={`${type}-primary-label`}
-                  className="px-2 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700"
-                ></span>
+                <span id={`${type}-status-label`}></span>
+                <span id={`${type}-primary-label`}></span>
               </div>
             </div>
             <span

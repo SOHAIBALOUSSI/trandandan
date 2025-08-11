@@ -10,7 +10,6 @@ export function MatchHistory(props: { user: UserProfile }) {
   return (
     <div
       className="
-        relative 
         bg-pong-dark-custom
         border border-pong-dark-highlight/30 
         rounded-lg shadow-xl 
@@ -19,8 +18,6 @@ export function MatchHistory(props: { user: UserProfile }) {
         backdrop-blur-md
       "
     >
-      <span className="absolute top-0 left-0 w-2 h-full bg-pong-dark-accent rounded-l-lg"></span>
-
       <h2
         className={`
           flex items-center gap-3
@@ -37,6 +34,7 @@ export function MatchHistory(props: { user: UserProfile }) {
         className={`
           ${fontSizes.bodyFontSize} 
           max-h-[600px] overflow-y-auto pr-2 md:pr-4
+		  custom-scrollbar
         `}
       ></ul>
     </div>

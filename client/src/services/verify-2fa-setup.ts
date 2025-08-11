@@ -4,7 +4,7 @@ import { displayToast } from "@/utils/display-toast";
 export async function verify2FASetup(
   otpCode: string,
   mode: "app" | "email",
-  onSuccess?: () => void
+  onSuccess?: (isPrimary: boolean) => void
 ) {
   try {
     const response = await fetch(`/2fa/${mode}/verify-setup`, {
@@ -16,15 +16,12 @@ export async function verify2FASetup(
 
     const data = await response.json();
 
-    console.log(
-      "Verify response status:",
-      response.status,
-      " data:",
-      data.code
-    );
+    console.log("2fa data: ", data);
+
+    const isPrimary = data.data.isPrimary === true;
 
     if (response.status === 200) {
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(isPrimary);
     } else {
       displayToast(Verify2FaRes[data.code], "error");
     }

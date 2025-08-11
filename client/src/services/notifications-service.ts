@@ -152,7 +152,10 @@ async function renderNotification(notif: Notification) {
         </div>
       `;
       setTimeout(() => {
-        displayToast("player want to play again", "success");
+        displayToast(
+          "Your opponent’s ready for a rematch — time to rally!",
+          "success"
+        );
         markNotificationsAsRead([notif.notification_id]);
       }, 0);
       route = `/members/${notif.sender_id}`;
@@ -360,8 +363,8 @@ export function startNotificationListener() {
               ids.push(data.notification_id);
               existingGroup.dataset.groupedIds = JSON.stringify(ids);
             } else {
-				console.log("[Notif] No existing group found, creating new one.");
-			  // Create a new grouped message notification
+              console.log("[Notif] No existing group found, creating new one.");
+              // Create a new grouped message notification
               notifList.prepend(
                 await renderGroupedMessageNotification(data, 1, [
                   data.notification_id,

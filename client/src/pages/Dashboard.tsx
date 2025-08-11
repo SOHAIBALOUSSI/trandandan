@@ -45,13 +45,13 @@ export function Dashboard() {
 				<td class="p-4 flex items-center gap-3">
                   <img src="${getAvatarUrl(p)}" alt="${p.username}"
                     class="w-10 h-10 rounded-full object-cover border border-pong-accent/40" />
-                  <span class="font-semibold text-pong-dark-secondary">${getWelcomeTitle(
-                    p
-                  )} <a href="${
+                  <a href="${
           user.id === p.id ? "/my_profile" : `/members/${p.id}`
-        }" data-link class="text-pong-dark-primary font-semibold hover:underline cursor-pointer">${
+        }" data-link class="font-semibold text-pong-dark-secondary hover:underline cursor-pointer">${getWelcomeTitle(
+                    p
+                  )} <span class="text-pong-dark-primary font-semibold">${
           p.username
-        }</a></span>
+        }</span></a>
                 </td>
 				<td class="p-4">${rankIcon}</td>
 				<td class="p-4">Lv. ${p.level}</td>

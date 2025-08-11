@@ -242,7 +242,7 @@ export function Tournaments() {
       if (!enteredList) {
         enteredList = document.createElement("ul");
         enteredList.id = "entered-players-list";
-        enteredList.className = "mt-4 mb-2 flex flex-wrap gap-3 justify-center";
+        enteredList.className = "mt-4 mb-2 flex flex-wrap gap-3 justify-center normale-case";
         inputPlayers.appendChild(enteredList);
       }
       enteredList.innerHTML = Players.map(

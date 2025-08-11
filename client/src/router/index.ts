@@ -25,14 +25,12 @@ import { Tournaments } from "@/components/game/Tournaments";
 import { getUserProfile } from "@/services/get-user-profile";
 import { startNotificationListener } from "@/services/notifications-service";
 import { stopDashboardListener } from "@/services/dashboard-service";
-import {
-  startStatusListener,
-  stopStatusListener,
-} from "@/services/status-service";
+import { startStatusListener } from "@/services/status-service";
 import { getCurrentUser, setCurrentUser } from "@/utils/user-store";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { TopBar } from "@/components/layout/TopBar";
 import { UserNotFound } from "@/pages/UserNotFound";
+import { startRecentActivityListener } from "@/services/recent-activity-service";
 
 // Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
@@ -121,7 +119,6 @@ export async function router(): Promise<void> {
     if (!authed) {
       history.replaceState(null, "", "/welcome");
       await router();
-      stopStatusListener();
       return;
     }
   } else {

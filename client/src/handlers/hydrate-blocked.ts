@@ -3,6 +3,10 @@ import { getUserById } from "@/services/get-user-by-id";
 import { unblockFriend } from "@/services/unblock-friend";
 import { getAvatarUrl } from "@/utils/get-avatar-url";
 import { styles } from "@/styles/styles";
+import { navigateTo } from "@/utils/navigate-to-link";
+import { fontSizes } from "@/styles/fontSizes";
+import { getWelcomeTitle } from "@/components/home/Hero";
+import { getUserTitle } from "@/utils/get-user-title";
 
 export async function hydrateBlocked() {
   const list = document.getElementById("muted-list") as HTMLUListElement;
@@ -11,7 +15,7 @@ export async function hydrateBlocked() {
   const blocked = await getBlockedUsers();
 
   if (!blocked.length) {
-    list.innerHTML = `<li class="text-pong-dark-secondary text-center">No blocked users found.</li>`;
+    list.innerHTML = `<li class="text-pong-dark-secondary text-center py-2 text-sm md:text-lg">Your blocklist is as clear as the BHV hotel pool.</li>`;
     return;
   }
 
@@ -22,34 +26,42 @@ export async function hydrateBlocked() {
     if (!user) return;
 
     const li = document.createElement("li");
-    li.className =
-      "flex items-center justify-between p-4 md:p-5 rounded-xl bg-pong-sport-bg-light/40 dark:bg-pong-dark-bg/70 shadow-sm border border-pong-sport-accent/10 hover:shadow-md transition-all";
+    li.className = styles.friendsListItemStyle;
+
+    const left = document.createElement("div");
+    left.className = "flex items-center gap-4 cursor-pointer group";
+    left.onclick = () => navigateTo(`/members/${user.id}`);
 
     const avatar = document.createElement("img");
     avatar.src = getAvatarUrl(user);
     avatar.alt = `${user.username}'s avatar`;
-    avatar.className = "w-8 h-8 md:w-10 md:h-10 rounded-full";
+    avatar.className = styles.friendsAvatarStyle;
+
+    const nameWrapper = document.createElement("div");
+    nameWrapper.className = "flex flex-col";
 
     const name = document.createElement("span");
-    name.className = "text-lg font-semibold text-white";
-    name.textContent = user.username;
+    name.className = `${fontSizes.bodyFontSize} font-semibold text-white group-hover:underline`;
+    name.textContent = `${getWelcomeTitle(user)} ${user.username}`;
 
-    const left = document.createElement("div");
-    left.className = "flex items-center gap-4";
+    const subtitle = document.createElement("span");
+    subtitle.className = "text-xs md:text-sm text-pong-dark-secondary";
+    subtitle.textContent = getUserTitle(user.rank);
+
+    nameWrapper.appendChild(name);
+    nameWrapper.appendChild(subtitle);
+
     left.appendChild(avatar);
-    left.appendChild(name);
+    left.appendChild(nameWrapper);
 
     const unmuteBtn = document.createElement("button");
-    unmuteBtn.className = styles.darkPrimaryBtn;
-    unmuteBtn.textContent = "Unmute";
+    unmuteBtn.className =
+      "p-2 rounded-full hover:bg-pong-dark-highlight/20 transition-all duration-200 text-pong-dark-primary hover:text-pong-accent";
+
+    unmuteBtn.innerHTML = `<i class="fas fa-unlock-alt"></i>`;
     unmuteBtn.onclick = async () => {
-      unmuteBtn.disabled = true;
-      unmuteBtn.textContent = "Unmuting...";
-      unmuteBtn.style.backgroundColor = "#4a5568";
-      const success = await unblockFriend(user.id);
-      if (success) {
-        li.remove();
-      }
+      await unblockFriend(user.id);
+      await hydrateBlocked();
     };
 
     li.appendChild(left);

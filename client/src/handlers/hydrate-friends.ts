@@ -70,11 +70,8 @@ export async function hydrateFriends(me: UserProfile) {
       await hydrateAllMembers(me);
     };
 
-    const buttonGroup = document.createElement("div");
-    buttonGroup.appendChild(unfriendBtn);
-
     li.appendChild(left);
-    li.appendChild(buttonGroup);
+    li.appendChild(unfriendBtn);
     list.appendChild(li);
   }
 }

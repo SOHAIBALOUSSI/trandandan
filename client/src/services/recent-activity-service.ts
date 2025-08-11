@@ -152,18 +152,22 @@ async function renderActivity(
 }
 
 export async function startRecentActivityListener(): Promise<void> {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    console.warn("Recent activity listener already started.");
+    return;
+  }
+
   ws = new WebSocket(`wss://${window.location.host}/game/recent-activity`);
 
   const ul = document.getElementById("recent-activity-list");
 
   function readStoredActivities(): GameActivity[] {
-    const raw = localStorage.getItem("recent-activity");
+    const raw = sessionStorage.getItem("recent-activity");
     if (!raw) return [];
     try {
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed : [];
     } catch (err) {
-      console.warn("Corrupt recent-activity in localStorage, resetting.", err);
       return [];
     }
   }
@@ -172,10 +176,10 @@ export async function startRecentActivityListener(): Promise<void> {
   function saveStoredActivities(activities: GameActivity[]) {
     const CAP = 20;
     const sliced = activities.slice(-CAP);
-    localStorage.setItem("recent-activity", JSON.stringify(sliced));
+    sessionStorage.setItem("recent-activity", JSON.stringify(sliced));
   }
 
-  // Render what we already have in localStorage
+  // Render what we already have in sessionStorage
   const initialActivities = readStoredActivities();
   if (initialActivities.length === 0) {
     if (ul) {
@@ -213,14 +217,14 @@ export async function startRecentActivityListener(): Promise<void> {
 
     const stored = readStoredActivities();
 
-    const seen = new Set(stored.map((a) => JSON.stringify(a)));
+    // const seen = new Set(stored.map((a) => JSON.stringify(a)));
     const toAppend: GameActivity[] = [];
     for (const act of newActivities) {
-      const key = JSON.stringify(act);
-      if (!seen.has(key)) {
-        seen.add(key);
-        toAppend.push(act);
-      }
+      //   const key = JSON.stringify(act);
+      //   if (!seen.has(key)) {
+      // seen.add(key);
+      toAppend.push(act);
+      //   }
     }
 
     if (toAppend.length === 0) return;
@@ -231,6 +235,13 @@ export async function startRecentActivityListener(): Promise<void> {
     for (const activity of toAppend) {
       const elem = await renderActivity(activity);
       if (elem && ul) ul.prepend(elem);
+    }
+
+    // Remove excess activities from the bottom of the list
+    if (ul) {
+      while (ul.children.length > 20) {
+        ul.removeChild(ul.lastChild!);
+      }
     }
   };
 

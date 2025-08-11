@@ -18,7 +18,6 @@ export function TopBar() {
         badge.classList.remove("text-white", "bg-pong-accent");
       }
 
-      // Toggle "Clear All" button visibility
       const clearAllBtn = document.getElementById("clear-all-notifs");
       if (clearAllBtn) {
         clearAllBtn.style.display = count > 0 ? "block" : "none";
@@ -39,7 +38,6 @@ export function TopBar() {
         clearAllNotifications();
       });
 
-      // Initially hide the "Clear All" button if there are no notifications
       const notifList = document.getElementById("notif-list");
       if (notifList && notifList.children.length === 0) {
         clearAllBtn.style.display = "none";
@@ -48,6 +46,14 @@ export function TopBar() {
 
     btn.addEventListener("click", () => {
       notifContainer.classList.toggle("hidden");
+    });
+    document.addEventListener("click", (e) => {
+      if (
+        !btn.contains(e.target as Node) &&
+        !notifContainer.contains(e.target as Node)
+      ) {
+        notifContainer.classList.add("hidden");
+      }
     });
 
     const searchBar = document.getElementById("search-bar") as HTMLInputElement;
@@ -96,7 +102,7 @@ export function TopBar() {
           id="search-close-icon"
           type="button"
           className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-pong-dark-primary/30 hover:bg-pong-dark-accent/40 text-pong-dark-secondary hover:text-white transition-all duration-200"
-          style={{ display: "none" }}
+        //   style={{ display: "none" }}
           tabIndex={-1}
           aria-label="Clear search"
         >
@@ -119,7 +125,7 @@ export function TopBar() {
           </span>
           <div
             id="notif-container"
-            className="animate-fadeInUp absolute bg-pong-dark-bg text-pong-dark-primary w-[300px] md:w-[450px] max-h-[480px] hidden right-0 shadow-2xl rounded-xl p-4 mt-2 z-50 border border-pong-dark-primary"
+            className="animate-fadeInUp absolute bg-pong-dark-bg text-pong-dark-primary w-[300px] md:w-[430px] lg:w-[480px] max-h-[480px] hidden right-0 shadow-2xl rounded-xl p-4 mt-2 z-50 border border-pong-dark-highlight/30"
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-lg lg:text-xl text-pong-secondary flex items-center gap-2">
@@ -136,7 +142,7 @@ export function TopBar() {
             </div>
             <ul
               id="notif-list"
-              className="list-none p-0 m-0 space-y-2 max-h-[220px] overflow-y-auto"
+              className="list-none px-1 m-0 space-y-2 max-h-[220px] overflow-y-auto custom-scrollbar"
             ></ul>
           </div>
         </button>

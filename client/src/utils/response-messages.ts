@@ -124,6 +124,8 @@ export const UpdateCredentialsRes: Record<string, string> = {
     "Hmm… that old password doesn’t match your past swings. Give it another go.",
   UNMATCHED_PASSWORDS:
     "Your new passwords aren’t syncing. Adjust your aim and try again.",
+  SAME_PASSWORD:
+    "Your new password is the same as the old one. No need to change it.",
   PASSWORD_POLICY:
     "Your password needs more finesse: at least 8 characters with uppercase, lowercase, a number, and a special shot.",
   EMAIL_EXISTS:

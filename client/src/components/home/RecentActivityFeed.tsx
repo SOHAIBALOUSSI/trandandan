@@ -26,9 +26,5 @@ export function RecentActivityFeed(): HTMLDivElement {
 
   wrapper.appendChild(ul);
 
-  setTimeout(() => {
-    startRecentActivityListener();
-  }, 1000);
-
   return wrapper;
 }

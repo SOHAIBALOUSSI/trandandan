@@ -58,7 +58,7 @@ export async function setup2FA(mode: "app" | "email") {
         e.preventDefault();
         if (!otpInput.value) {
           displayToast("Please enter the 6-digit code.", "error");
-		  otpInput.focus();
+          otpInput.focus();
           return;
         }
         if (otpInput.value.length !== 6) {
@@ -67,13 +67,16 @@ export async function setup2FA(mode: "app" | "email") {
           return;
         }
         if (!/^\d{6}$/.test(otpInput.value)) {
-          displayToast("The code must contain only digits.", "error");
+          displayToast(
+            "Enter match-point digits only — no letters or symbols allowed.",
+            "error"
+          );
           otpInput.focus();
           return;
         }
-        verify2FASetup(otpInput.value, mode, () => {
+        verify2FASetup(otpInput.value, mode, (isPrimary) => {
           verifySection.classList.add("hidden");
-          displayToast("2FA setup successful!", "success");
+          displayToast("Security serve! Your 2FA is now active.", "success");
           setupBtn.classList.add("hidden");
           setPrimaryBtn.classList.remove("hidden");
           toggleEnableBtn.classList.remove("hidden");
@@ -84,6 +87,7 @@ export async function setup2FA(mode: "app" | "email") {
           primaryLabel.textContent = "Primary";
           primaryLabel.className =
             "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-blue-200 text-blue-700";
+          isPrimary && primaryLabel.classList.add("hidden");
           setPrimaryBtn.setAttribute("disable", "true");
         });
       });

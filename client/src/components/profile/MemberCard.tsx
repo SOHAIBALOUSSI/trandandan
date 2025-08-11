@@ -94,7 +94,7 @@ export function MemberCard(props: {
                 updateBtn.classList.remove("hidden");
               });
           } else {
-            displayToast("No changes made.", "warning");
+            displayToast("No updates made — your name’s already match-ready!", "warning");
             usernameEl.removeAttribute("contenteditable");
             saveBtn.classList.add("hidden");
             cancelBtn.style.display = "none";

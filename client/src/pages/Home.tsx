@@ -6,12 +6,17 @@ import { styles } from "@/styles/styles";
 import { getCurrentUser } from "@/utils/user-store";
 import { Loader } from "@/components/common/Loader";
 import { QuickStatsCards } from "@/components/home/QuickStatsCards";
+import { startRecentActivityListener } from "@/services/recent-activity-service";
 
 export function Home() {
   const user = getCurrentUser();
   if (!user) {
     return <Loader text="Preparing your club profile..." />;
   }
+
+  setTimeout(() => {
+    startRecentActivityListener();
+  }, 1000);
 
   return (
     <section className={styles.pageLayoutDark}>

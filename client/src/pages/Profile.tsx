@@ -8,6 +8,7 @@ import { MatchHistory } from "@/components/profile/MatchHistory";
 import { PerformanceMetrics } from "@/components/profile/PerformanceMetrics";
 import { QuickLinks } from "@/components/profile/QuickLinks";
 import { fontSizes } from "@/styles/fontSizes";
+import { NoPerformanceData } from "@/components/profile/NoPerformanceData";
 
 export function Profile() {
   const user = getCurrentUser();
@@ -19,11 +20,11 @@ export function Profile() {
 
   const containerClassName = hasPerformanceData
     ? "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 md:gap-12"
-    : "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col gap-8 xl:gap-12";
+    : "w-full md:w-[90%] xl:w-[95%] mx-auto flex flex-col 2xl:flex-row gap-8 md:gap-12 justify-center";
 
   const userDataClassName = hasPerformanceData
     ? "w-full 2xl:w-1/3 2xl:sticky 2xl:top-24 flex 2xl:self-start flex-col 2xl:flex-col items-center justify-center gap-6"
-    : "w-full flex flex-col items-center justify-center gap-6";
+    : "w-full 2xl:w-1/3 flex 2xl:self-start flex-col 2xl:flex-col items-center justify-center gap-6";
 
   return (
     <section className={`${styles.pageLayoutDark} relative`}>
@@ -47,12 +48,10 @@ export function Profile() {
                 <MatchHistory user={user} />
               </div>
             ) : (
-              <p
-                className={`text-center text-pong-dark-secondary ${fontSizes.bodyFontSize} leading-relaxed`}
-              >
-                No performance data available yet. Start playing and defeat your
-                friends to build your stats!
-              </p>
+              <NoPerformanceData
+                spanText="The club’s leaderboard awaits you! Play your first match to start building your stats, earn XP, and unlock exclusive BHV achievements."
+                isMember={false}
+              />
             )}
           </div>
         </main>
