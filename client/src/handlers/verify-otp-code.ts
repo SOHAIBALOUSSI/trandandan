@@ -111,7 +111,13 @@ export function verifyOtpCode() {
             navigateTo("/password_update");
           }, redirectDelay);
         }, feedbackDelay);
-      } else {
+      } else if (response.status === 429) {
+        setTimeout(() => {
+          displayToast(
+            "Easy, champ! Let’s give it a second to catch up.",
+            "error"
+          );
+        }, feedbackDelay); } else {
         setTimeout(() => {
           const errorMsg =
             (response.status === 401

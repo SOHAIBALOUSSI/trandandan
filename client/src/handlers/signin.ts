@@ -72,7 +72,14 @@ export function handleSignIn() {
             navigateTo("/salon");
           }, redirectDelay);
         }, feedbackDelay);
-      } else if (response.ok && result.statusCode === 206) {
+      } else if (response.status === 429) {
+        setTimeout(() => {
+          displayToast(
+            "Easy, champ! Let’s give it a second to catch up.",
+            "error"
+          );
+        }, feedbackDelay);
+       } else if (response.ok && result.statusCode === 206) {
         localStorage.removeItem("loginInput");
 
         sessionStorage.setItem("2faMode", result.data?.twoFaType);

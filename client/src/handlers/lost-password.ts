@@ -70,7 +70,13 @@ export function handleLostPassword() {
           otpForm.classList.add("flex");
           otpForm.querySelector("input")?.focus();
         }, feedbackDelay);
-      } else {
+      } else if (response.status === 429) {
+        setTimeout(() => {
+          displayToast(
+            "Easy, champ! Let’s give it a second to catch up.",
+            "error"
+          );
+        }, feedbackDelay); } else {
         setTimeout(() => {
           const errorMsg =
             LostPasswordRes[result?.code] ||

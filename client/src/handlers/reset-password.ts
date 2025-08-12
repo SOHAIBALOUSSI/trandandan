@@ -74,7 +74,13 @@ export function handleResetPassword() {
             navigateTo("/login");
           }, redirectDelay);
         }, feedbackDelay);
-      } else {
+      } else if (response.status === 429) {
+        setTimeout(() => {
+          displayToast(
+            "Easy, champ! Let’s give it a second to catch up.",
+            "error"
+          );
+        }, feedbackDelay); } else {
         setTimeout(() => {
           const errorMsg =
             UpdatePasswordRes[result?.code] ||
