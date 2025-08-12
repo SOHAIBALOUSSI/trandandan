@@ -97,8 +97,8 @@ export async function uploadAvatarUrl(request, reply) {
             return reply.code(400).send(createResponse(400, 'FILE_REQUIRED'));
         
         const ext = path.extname(data.filename);
-        if (ext === "svg")
-            return reply.code(400).send(createResponse(400, 'SVG_UNSUPPORTED'));
+        if (ext !== '.webp' && ext !== '.jpeg' && ext !== '.jpg' && ext !== '.png')
+            return reply.code(400).send(createResponse(400, 'UNSUPPORTED_FILE_TYPE'));
         const fileName = `${userId}_${Date.now()}${ext}`;
         const uploadPath = path.join(process.cwd(), 'uploads', 'avatars', fileName);
         console.log("Upload path: ", uploadPath);
