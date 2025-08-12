@@ -33,6 +33,7 @@ async function getPlayersData(redis, rabbit, socket) {
                     userId: player.userId,
                     rank: rank + 1
                 }, 'profile.rank.update')
+                player.rank = rank + 1;
             }
         });
     }
