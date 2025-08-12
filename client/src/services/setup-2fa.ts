@@ -1,6 +1,8 @@
 import { Setup2FaRes } from "@/utils/response-messages";
 import { displayToast } from "@/utils/display-toast";
 import { verify2FASetup } from "@/services/verify-2fa-setup";
+import { check2FA } from "./check-2fa";
+import { update2FAUI } from "@/components/settings/TwoFa";
 
 export async function setup2FA(mode: "app" | "email") {
   const isAppMode = mode === "app";
@@ -89,6 +91,7 @@ export async function setup2FA(mode: "app" | "email") {
             "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-blue-200 text-blue-700";
           if (!isPrimary) primaryLabel.classList.add("hidden");
           setPrimaryBtn.setAttribute("disable", "true");
+          check2FA().then(update2FAUI);
         });
       });
     } else if (response.status === 429) {

@@ -7,7 +7,7 @@ import { check2FA } from "@/services/check-2fa";
 import { fontSizes } from "@/styles/fontSizes";
 import { TwoFAMethod } from "types/types";
 
-function update2FAUI(methods: TwoFAMethod[]) {
+export function update2FAUI(methods: TwoFAMethod[]) {
   ["app", "email"].forEach((type) => {
     const setupBtn = document.getElementById(`${type}-setup-btn`);
     const toggleEnableBtn = document.getElementById(`${type}-toggle-enable`);
