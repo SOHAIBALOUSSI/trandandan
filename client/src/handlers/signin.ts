@@ -79,7 +79,7 @@ export function handleSignIn() {
             "error"
           );
         }, feedbackDelay);
-       } else if (response.ok && result.statusCode === 206) {
+      } else if (response.ok && result.statusCode === 206) {
         localStorage.removeItem("loginInput");
 
         sessionStorage.setItem("2faMode", result.data?.twoFaType);

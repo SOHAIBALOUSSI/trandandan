@@ -68,11 +68,21 @@ export function handleVerifyCredentials() {
             }
           }, redirectDelay);
         }, feedbackDelay);
+      } else if (response.status === 429) {
+        setTimeout(() => {
+          displayToast(
+            "Easy, champ! Let’s give it a second to catch up.",
+            "error"
+          );
+        }, feedbackDelay);
+        codeInput.value = "";
+        codeInput.focus();
       } else {
         const errorMsg =
           VerifyUpdateCredentialsRes[result.code] ||
           "Failed to verify credentials. Please try again.";
         displayToast(errorMsg, "error");
+        codeInput.value = "";
         codeInput.focus();
       }
     } catch (err) {

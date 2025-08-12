@@ -91,6 +91,9 @@ export async function setup2FA(mode: "app" | "email") {
           setPrimaryBtn.setAttribute("disable", "true");
         });
       });
+    } else if (response.status === 429) {
+      verifySection.classList.add("hidden");
+      displayToast("Easy, champ! Let’s give it a second to catch up.", "error");
     } else {
       verifySection.classList.add("hidden");
       displayToast(Setup2FaRes[data.code] || "Failed to enable 2FA.", "error");

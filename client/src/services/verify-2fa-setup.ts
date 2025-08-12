@@ -20,6 +20,8 @@ export async function verify2FASetup(
 
     if (response.status === 200) {
       if (onSuccess) onSuccess(isPrimary);
+    } else if (response.status === 429) {
+      displayToast("Easy, champ! Let’s give it a second to catch up.", "error");
     } else {
       displayToast(Verify2FaRes[data.code], "error");
     }

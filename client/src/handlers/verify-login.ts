@@ -111,6 +111,11 @@ export function verifyLogin(mode: string | null) {
             navigateTo("/salon");
           }, redirectDelay);
         }, feedbackDelay);
+      } else if (response.status === 429) {
+        displayToast(
+          "Easy, champ! Let’s give it a second to catch up.",
+          "error"
+        );
       } else {
         setTimeout(() => {
           const errorMsg =

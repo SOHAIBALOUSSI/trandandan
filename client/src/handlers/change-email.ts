@@ -77,6 +77,14 @@ export function handleChangeEmail() {
             navigateTo("/verification");
           }, redirectDelay);
         }, feedbackDelay);
+      } else if (response.status === 429) {
+        setTimeout(() => {
+          displayToast(
+            "Easy, champ! Let’s give it a second to catch up.",
+            "error"
+          );
+          emailInput.focus();
+        }, feedbackDelay);
       } else {
         const errorMsg =
           UpdateCredentialsRes[result.code] || "Failed to update email.";

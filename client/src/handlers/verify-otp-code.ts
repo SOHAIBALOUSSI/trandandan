@@ -117,7 +117,12 @@ export function verifyOtpCode() {
             "Easy, champ! Let’s give it a second to catch up.",
             "error"
           );
-        }, feedbackDelay); } else {
+          otpInputs.forEach((input) => {
+            input.value = "";
+          });
+          otpInputs[0].focus();
+        }, feedbackDelay);
+      } else {
         setTimeout(() => {
           const errorMsg =
             (response.status === 401

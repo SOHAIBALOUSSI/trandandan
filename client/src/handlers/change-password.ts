@@ -101,6 +101,13 @@ export function handleChangePassword() {
             navigateTo("/verification");
           }, redirectDelay);
         }, feedbackDelay);
+      } else if (response.status === 429) {
+        setTimeout(() => {
+          displayToast(
+            "Easy, champ! Let’s give it a second to catch up.",
+            "error"
+          );
+        }, feedbackDelay);
       } else {
         setTimeout(() => {
           const errorMsg =

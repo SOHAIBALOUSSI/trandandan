@@ -143,7 +143,7 @@ export function Tournaments() {
         <div class="flex flex-col items-center justify-center gap-6">
           <h2 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-center">Enter Challenger Usernames</h2>
           <div class="flex items-center justify-center gap-6">
-            <input type="text" id="playerIdField" placeholder="Username" class="focus:outline-none normal-case placeholder:capitalize text-md rounded-lg p-3 placeholder-pong-sport-muted" maxlength="15" />
+            <input type="text" id="playerIdField" placeholder="Username" class="focus:outline-none normal-case placeholder:capitalize text-md rounded-lg p-3 placeholder-pong-sport-muted" maxlength="8" pattern="[A-Za-z0-9]{8}" />
             <button id="addPlayerBtn" class="capitalize game-btn text-white font-bold py-3 px-8 rounded-xl text-md shadow-md tracking-wide transition-all duration-300">Add Player</button>
           </div>
         </div>
@@ -263,6 +263,12 @@ export function Tournaments() {
         playerIdField.focus();
         return;
       }
+      if (!playerIdField.value.match(/^[a-zA-Z0-9]+$/)) {
+        displayToast("Invalid username!", "error");
+        playerIdField.value = "";
+        playerIdField.focus();
+        return;
+      }
       if (Players.includes(username)) {
         displayToast("Player already exists!", "error");
         playerIdField.value = "";
@@ -278,8 +284,7 @@ export function Tournaments() {
       if (!enteredList) {
         enteredList = document.createElement("ul");
         enteredList.id = "entered-players-list";
-        enteredList.className =
-          "mt-4 mb-2 flex flex-wrap gap-3 justify-center";
+        enteredList.className = "mt-4 mb-2 flex flex-wrap gap-3 justify-center";
         inputPlayers.appendChild(enteredList);
       }
       enteredList.innerHTML = Players.map(

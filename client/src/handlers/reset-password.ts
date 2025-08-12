@@ -80,7 +80,8 @@ export function handleResetPassword() {
             "Easy, champ! Let’s give it a second to catch up.",
             "error"
           );
-        }, feedbackDelay); } else {
+        }, feedbackDelay);
+      } else {
         setTimeout(() => {
           const errorMsg =
             UpdatePasswordRes[result?.code] ||
