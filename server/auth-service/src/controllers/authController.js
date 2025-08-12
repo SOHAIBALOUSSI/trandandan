@@ -45,6 +45,7 @@ const compare = bcrypt.compare;
 export async function lostPasswordHandler(request, reply) {
     
     try {
+        clearAuthCookies(reply);
         
         const { email } = request.body;
         
@@ -64,7 +65,6 @@ export async function lostPasswordHandler(request, reply) {
         await this.sendMail(otpCode, user.email);
 
         const tempToken = this.jwt.signTT({ id: user.id });
-        clearAuthCookies(reply);
         setTempAuthToken(reply, tempToken);
         return reply.code(200).send(createResponse(200, 'CODE_SENT'));
     } catch (error) {
@@ -156,6 +156,7 @@ export async function updatePasswordHandler(request, reply) {
 export async function loginHandler(request, reply) {
     
     try {
+        clearAuthCookies(reply);
         const { username, email, password } = request.body;
         const user = await findUser(this.db, username, email);
         if (!user)
@@ -177,7 +178,6 @@ export async function loginHandler(request, reply) {
                 await updateOtpCode(this.db, otpCode, user.id, 'email');
                 await this.sendMail(otpCode, user.email);
             }
-            clearAuthCookies(reply);
             setTempAuthToken(reply, tempToken);
             return reply.code(206).send(createResponse(206, 'TWOFA_REQUIRED', { twoFaType: twoFa.type  }));
         }
@@ -190,7 +190,6 @@ export async function loginHandler(request, reply) {
             refreshToken = this.jwt.signRT({ id: user.id });
             await addToken(this.db, refreshToken, user.id);
         }
-        clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_IN'));
     } catch (error) {
@@ -223,7 +222,7 @@ export async function registerHandler(request, reply) {
             gender: gender
         },
         'profile.user.created'
-    );
+        );
         
         return reply.code(201).send(createResponse(201, 'USER_REGISTERED'));
     } catch (error) {
@@ -235,6 +234,7 @@ export async function registerHandler(request, reply) {
 export async function logoutHandler(request, reply) {
     
     try {
+        clearAuthCookies(reply);
         const userId = request.user?.id;
         
         const user = await findUserById(this.db, userId);
@@ -250,7 +250,6 @@ export async function logoutHandler(request, reply) {
             return reply.code(401).send(createResponse(401, 'REFRESH_TOKEN_INVALID'));
         
         await revokeToken(this.db, tokens.refreshToken);
-        clearAuthCookies(reply);
         return reply.code(200).send(createResponse(200, 'USER_LOGGED_OUT'));
     } catch (error) {
         console.log(error);
@@ -320,6 +319,8 @@ export async function updateCredentialsHandler(request, reply) {
         if (newPassword || confirmNewPassword || oldPassword) {
             if (!newPassword || !confirmNewPassword || !oldPassword)
                 return reply.code(400).send(createResponse(400, 'PASSWORDS_REQUIRED'));
+            if (newPassword === oldPassword)
+                return reply.code(400).send(createResponse(400, 'SAME_PASSWORD'));
             let matched = await compare(oldPassword, user.password);
             if (!matched)
                 return reply.code(400).send(createResponse(400, 'INVALID_PASSWORD'));
@@ -327,10 +328,6 @@ export async function updateCredentialsHandler(request, reply) {
                 return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
             if (!validatePassword(newPassword))
                 return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
-            hashedPassword = await hash(newPassword, 10);
-            matched = await compare(hashedPassword, user.password);
-            if (matched)
-                return reply.code(400).send(createResponse(400, 'SAME_PASSWORD'));
             toUpdate = "password";
         }
 

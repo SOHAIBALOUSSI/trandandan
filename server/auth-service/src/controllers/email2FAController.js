@@ -71,7 +71,7 @@ export async function verify2FAEmailSetup(request, reply) {
         const hasPrimary = await findPrimaryTwoFaByUid(this.db, user.id);
         if (!hasPrimary)
             await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'email');
-        return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
+        return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED', { isPrimary: ( hasPrimary ? false : true ) }));
     } catch (error) {
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
@@ -101,7 +101,7 @@ export async function verify2FALogin(request, reply) {
             return reply.code(401).send(createResponse(401, 'OTP_INVALID'));
         
         await clearOtpCode(this.db, user.id, twoFa.type);
-
+        
         const accessToken = await this.jwt.signAT({ id: userId });
         const tokenExist = await findValidTokenByUid(this.db, user.id);
         let refreshToken;

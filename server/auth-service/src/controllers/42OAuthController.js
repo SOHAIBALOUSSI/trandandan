@@ -26,10 +26,11 @@ export async function   fortyTwoSetupHandler(request, reply) {
 
 export async function fortyTwoLoginHandler(request, reply) {
     
-    const { code } = request.query;
-    if (!code)
-        return reply.redirect(process.env.FRONT_END_URL);
     try {
+        clearAuthCookies(reply);
+        const { code } = request.query;
+        if (!code)
+            return reply.redirect(process.env.FRONT_END_URL);
         const tokens = await fetch('https://api.intra.42.fr/oauth/token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -101,7 +102,6 @@ export async function fortyTwoLoginHandler(request, reply) {
             refreshToken = this.jwt.signRT({ id: user.id });
             await addToken(this.db, refreshToken, user.id);
         }
-        clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
         await this.redis.sAdd(`userIds`, `${user.id}`);
         

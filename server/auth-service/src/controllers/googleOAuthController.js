@@ -11,10 +11,11 @@ export async function   googleSetupHandler(request, reply) {
 
 export async function googleLoginHandler(request, reply) {
     
-    const { code } = request.query;
-    if (!code)
-        return reply.redirect(process.env.FRONT_END_URL);
     try {
+        clearAuthCookies(reply);
+        const { code } = request.query;
+        if (!code)
+            return reply.redirect(process.env.FRONT_END_URL);
         const tokens = await fetch('https://oauth2.googleapis.com/token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -85,7 +86,6 @@ export async function googleLoginHandler(request, reply) {
             refreshToken = this.jwt.signRT({ id: user.id });
             await addToken(this.db, refreshToken, user.id);
         }
-        clearAuthCookies(reply);
         setAuthCookies(reply, accessToken, refreshToken);
         await this.redis.sAdd(`userIds`, `${user.id}`);
         

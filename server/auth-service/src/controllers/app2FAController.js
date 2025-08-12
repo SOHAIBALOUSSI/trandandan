@@ -81,8 +81,8 @@ export async function verify2FAAppSetup(request, reply) {
         const hasPrimary = await findPrimaryTwoFaByUid(this.db, user.id);
         if (!hasPrimary)
             await makeTwoFaPrimaryByUidAndType(this.db, user.id, 'app');
-
-        return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED'));
+        
+        return reply.code(200).send(createResponse(200, 'TWOFA_ENABLED', { isPrimary: ( hasPrimary ? false : true ) }));
     } catch (error) {   
         console.log(error);
         return reply.code(500).send(createResponse(500, 'INTERNAL_SERVER_ERROR'));
