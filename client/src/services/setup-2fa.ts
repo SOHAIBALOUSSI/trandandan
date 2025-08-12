@@ -87,7 +87,7 @@ export async function setup2FA(mode: "app" | "email") {
           primaryLabel.textContent = "Primary";
           primaryLabel.className =
             "ml-2 px-2 py-1 text-xs font-bold rounded-full bg-blue-200 text-blue-700";
-          isPrimary && primaryLabel.classList.add("hidden");
+          if (!isPrimary) primaryLabel.classList.add("hidden");
           setPrimaryBtn.setAttribute("disable", "true");
         });
       });

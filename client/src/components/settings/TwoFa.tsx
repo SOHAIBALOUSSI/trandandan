@@ -210,8 +210,14 @@ function TwoFaMode(type: "app" | "email") {
                 {isApp ? "Authenticator App" : "Email OTP"}
               </span>
               <div className="flex gap-2 mt-2 md:mt-0">
-                <span id={`${type}-status-label`}></span>
-                <span id={`${type}-primary-label`}></span>
+                <span
+                  id={`${type}-status-label`}
+                  className="px-2 py-1 text-xs font-bold rounded-full"
+                ></span>
+                <span
+                  id={`${type}-primary-label`}
+                  className="px-2 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700"
+                ></span>
               </div>
             </div>
             <span
