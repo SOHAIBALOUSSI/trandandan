@@ -6,10 +6,6 @@ let ws: WebSocket | null = null;
 export function startChatListener(onMessage: (msg: MessageSent) => void) {
   ws = new WebSocket("/chat");
 
-  ws.onopen = () => {
-    console.log("Chat Websocket connection established.");
-  };
-
   ws.onmessage = (event: MessageEvent) => {
     try {
       const message: MessageSent = JSON.parse(event.data);
@@ -30,7 +26,6 @@ export function startChatListener(onMessage: (msg: MessageSent) => void) {
   };
 
   ws.onclose = () => {
-    console.log("Chat Websocket connection closed.");
     ws = null;
   };
 }

@@ -152,11 +152,6 @@ async function renderActivity(
 }
 
 export async function startRecentActivityListener(): Promise<void> {
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    console.warn("Recent activity listener already started.");
-    return;
-  }
-
   ws = new WebSocket(`wss://${window.location.host}/game/recent-activity`);
 
   const ul = document.getElementById("recent-activity-list");
@@ -172,14 +167,12 @@ export async function startRecentActivityListener(): Promise<void> {
     }
   }
 
-  // Helper to save stored activities
   function saveStoredActivities(activities: GameActivity[]) {
     const CAP = 20;
     const sliced = activities.slice(-CAP);
     sessionStorage.setItem("recent-activity", JSON.stringify(sliced));
   }
 
-  // Render what we already have in sessionStorage
   const initialActivities = readStoredActivities();
   if (initialActivities.length === 0) {
     if (ul) {
@@ -199,10 +192,6 @@ export async function startRecentActivityListener(): Promise<void> {
     }
   }
 
-  ws.onopen = () => {
-    console.log("WebSocket connected for activity feed.");
-  };
-
   ws.onmessage = async (event: MessageEvent) => {
     let incoming: GameActivity[];
     try {
@@ -211,20 +200,13 @@ export async function startRecentActivityListener(): Promise<void> {
       return;
     }
 
-    const newActivities: GameActivity[] = incoming;
-
-    if (newActivities.length === 0) return;
+    if (incoming.length === 0) return;
 
     const stored = readStoredActivities();
 
-    // const seen = new Set(stored.map((a) => JSON.stringify(a)));
     const toAppend: GameActivity[] = [];
-    for (const act of newActivities) {
-      //   const key = JSON.stringify(act);
-      //   if (!seen.has(key)) {
-      // seen.add(key);
+    for (const act of incoming) {
       toAppend.push(act);
-      //   }
     }
 
     if (toAppend.length === 0) return;
@@ -237,7 +219,6 @@ export async function startRecentActivityListener(): Promise<void> {
       if (elem && ul) ul.prepend(elem);
     }
 
-    // Remove excess activities from the bottom of the list
     if (ul) {
       while (ul.children.length > 20) {
         ul.removeChild(ul.lastChild!);

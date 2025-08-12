@@ -135,7 +135,6 @@ export function RemoteGame() {
 
   // Initialize the game
   async function init() {
-    console.log("Initializing remote game...");
     if (
       socket &&
       (socket.readyState === WebSocket.OPEN ||
@@ -153,7 +152,6 @@ export function RemoteGame() {
     const userName: string = userInfo?.username ?? "username";
     const roomdIdentif = await getRoomIdByUserId(userInfo?.id ?? 0);
 
-    console.log("host: ", window.location.host);
     socket = new WebSocket(
       `wss://${window.location.host}/game/remoteGame?token=${userInfo?.id}&roomId=${roomdIdentif}`
     );

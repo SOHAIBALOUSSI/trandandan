@@ -16,7 +16,7 @@ export function Home() {
 
   setTimeout(() => {
     startRecentActivityListener();
-  }, 1000);
+  }, 1500);
 
   return (
     <section className={styles.pageLayoutDark}>

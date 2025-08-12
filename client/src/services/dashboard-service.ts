@@ -8,10 +8,6 @@ export function dashboardLive(onData: (data: UserProfile[]) => void) {
 
   ws = new WebSocket("/dashboard/live");
 
-  ws.onopen = () => {
-    console.log("Dashboard Websocket connection established.");
-  };
-
   ws.onmessage = (e: MessageEvent) => {
     const dashboardData = JSON.parse(e.data);
     onData(dashboardData);
@@ -19,7 +15,6 @@ export function dashboardLive(onData: (data: UserProfile[]) => void) {
 
   ws.onclose = () => {
     ws = null;
-    console.log("Dashboard Websocket connection closed.");
   };
 
   ws.onerror = () => {

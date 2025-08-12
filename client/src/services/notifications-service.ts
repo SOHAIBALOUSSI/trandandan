@@ -9,19 +9,31 @@ import { getWelcomeTitle } from "@/components/home/Hero";
 let ws: WebSocket | null = null;
 let unseenCount = 0;
 const seenIds = new Set<number>(
-  JSON.parse(localStorage.getItem("seenNotifs") || "[]")
+  JSON.parse(sessionStorage.getItem("seenNotifs") || "[]")
 );
 
 function saveSeen() {
-  localStorage.setItem("seenNotifs", JSON.stringify(Array.from(seenIds)));
+  sessionStorage.setItem("seenNotifs", JSON.stringify(Array.from(seenIds)));
 }
 
 const received = new Set<number>(
-  JSON.parse(localStorage.getItem("receivedNotifs") || "[]")
+  JSON.parse(sessionStorage.getItem("receivedNotifs") || "[]")
 );
 function saveReceived() {
-  localStorage.setItem("receivedNotifs", JSON.stringify(Array.from(received)));
+  sessionStorage.setItem(
+    "receivedNotifs",
+    JSON.stringify(Array.from(received))
+  );
 }
+
+// pending groups tracker for MESSAGE_RECEIVED notifications
+const pendingMessageGroups = new Map<
+  number,
+  {
+    notifications: Notification[];
+    timeout: number | null;
+  }
+>();
 
 function updateCounter() {
   const badge = document.getElementById("notif-badge") as HTMLSpanElement;
@@ -38,6 +50,51 @@ function updateCounter() {
   window.dispatchEvent(
     new CustomEvent("notification-count", { detail: unseenCount })
   );
+}
+
+async function processPendingMessageGroup(senderId: number) {
+  const groupData = pendingMessageGroups.get(senderId);
+  if (!groupData || groupData.notifications.length === 0) return;
+
+  const notifList = document.getElementById("notif-list");
+  if (!notifList) return;
+
+  if (groupData.timeout) {
+    clearTimeout(groupData.timeout);
+  }
+
+  const existingGroup = document.getElementById(`msg-group-${senderId}`);
+
+  if (existingGroup) {
+    const badge = existingGroup.querySelector(".msg-count") as HTMLSpanElement;
+    if (badge) {
+      const currentCount = parseInt(badge.textContent || "0");
+      const newCount = currentCount + groupData.notifications.length;
+      badge.textContent = String(newCount);
+    }
+
+    const existingIds = JSON.parse(existingGroup.dataset.groupedIds || "[]");
+    const newIds = groupData.notifications.map((n) => n.notification_id);
+    existingGroup.dataset.groupedIds = JSON.stringify([
+      ...existingIds,
+      ...newIds,
+    ]);
+  } else {
+    const firstNotif = groupData.notifications[0];
+    const allIds = groupData.notifications.map((n) => n.notification_id);
+    const groupedElement = await renderGroupedMessageNotification(
+      firstNotif,
+      groupData.notifications.length,
+      allIds
+    );
+    notifList.prepend(groupedElement);
+  }
+
+  pendingMessageGroups.delete(senderId);
+
+  while (notifList.children.length > 20) {
+    notifList.removeChild(notifList.lastChild!);
+  }
 }
 
 // --- Render Single Notification ---
@@ -153,7 +210,7 @@ async function renderNotification(notif: Notification) {
       `;
       setTimeout(() => {
         displayToast(
-          "Your opponent’s ready for a rematch — time to rally!",
+          "Your opponent's ready for a rematch — time to rally!",
           "success"
         );
         markNotificationsAsRead([notif.notification_id]);
@@ -203,7 +260,7 @@ async function renderNotification(notif: Notification) {
       } catch {}
     }
 
-    // Navigate after DOM update using requestAnimationFrame to ensure DOM changes are processed
+    // Navigate after DOM update to ensure DOM changes are processed
     if (routeToNavigate) {
       requestAnimationFrame(() => {
         navigateTo(routeToNavigate);
@@ -273,20 +330,15 @@ async function renderGroupedMessageNotification(
 // --- Start Notification Listener ---
 export function startNotificationListener() {
   if (ws && ws.readyState === WebSocket.OPEN) {
+    console.warn("[notif] WebSocket connection is already open");
     return;
   }
 
   ws = new WebSocket("/notifications");
 
-  ws.onopen = () => {
-    console.log("[Notif] WebSocket connection established.");
-  };
-
   ws.onmessage = async (event: MessageEvent) => {
     try {
       const data = JSON.parse(event.data);
-
-      console.log("[Notif] WebSocket message received:", data);
 
       // Handle unread count update
       if (data.type === "UNREAD_COUNT") {
@@ -314,10 +366,6 @@ export function startNotificationListener() {
               li.innerHTML.includes("fa-user-plus") &&
               li.getAttribute("data-sender") === String(data.sender_id)
             ) {
-              console.log(
-                "[Notif] Friend request canceled, removing notification."
-              );
-              console.log("data.sender_id:", data.sender_id);
               li.remove();
               unseenCount = Math.max(0, unseenCount - 1);
               updateCounter();
@@ -329,7 +377,6 @@ export function startNotificationListener() {
 
       // Increment unseen count only for *new* notification IDs
       if (data.notification_id && !received.has(data.notification_id)) {
-        console.log("get in there");
         unseenCount++;
         updateCounter();
         received.add(data.notification_id);
@@ -341,43 +388,34 @@ export function startNotificationListener() {
         const notifList = document.getElementById("notif-list");
         if (notifList) {
           if (data.type === "MESSAGE_RECEIVED") {
-            console.log("Message received notification");
-            const existingGroup = document.getElementById(
-              `msg-group-${data.sender_id}`
-            );
-            if (existingGroup) {
-              console.log(
-                "[Notif] Grouped message notification found, updating count."
-              );
-              // Update existing group with new count
-              const badge = existingGroup.querySelector(
-                ".msg-count"
-              ) as HTMLSpanElement;
-              if (badge) {
-                const currentCount = parseInt(badge.textContent || "0");
-                badge.textContent = String(currentCount + 1);
-              }
+            const senderId = data.sender_id;
 
-              // Append new ID to stored groupedIds
-              const ids = JSON.parse(existingGroup.dataset.groupedIds || "[]");
-              ids.push(data.notification_id);
-              existingGroup.dataset.groupedIds = JSON.stringify(ids);
+            // Check if there's already a pending group for this sender
+            if (pendingMessageGroups.has(senderId)) {
+              const groupData = pendingMessageGroups.get(senderId)!;
+              if (groupData.timeout) {
+                clearTimeout(groupData.timeout);
+              }
+              groupData.notifications.push(data);
             } else {
-              console.log("[Notif] No existing group found, creating new one.");
-              // Create a new grouped message notification
-              notifList.prepend(
-                await renderGroupedMessageNotification(data, 1, [
-                  data.notification_id,
-                ])
-              );
+              // Create new pending group
+              pendingMessageGroups.set(senderId, {
+                notifications: [data],
+                timeout: null,
+              });
             }
+
+            // Set a timeout to process the group
+            const groupData = pendingMessageGroups.get(senderId)!;
+            groupData.timeout = setTimeout(() => {
+              processPendingMessageGroup(senderId);
+            }, 50);
           } else {
             notifList.prepend(await renderNotification(data));
-          }
 
-          // Limit displayed notifications
-          while (notifList.children.length > 20) {
-            notifList.removeChild(notifList.lastChild!);
+            while (notifList.children.length > 20) {
+              notifList.removeChild(notifList.lastChild!);
+            }
           }
         }
       }
@@ -392,7 +430,13 @@ export function startNotificationListener() {
 
   ws.onclose = () => {
     ws = null;
-    console.log("[Notif] WebSocket connection closed. Reconnecting...");
+    // Clear any pending message groups when connection closes
+    pendingMessageGroups.forEach((groupData) => {
+      if (groupData.timeout) {
+        clearTimeout(groupData.timeout);
+      }
+    });
+    pendingMessageGroups.clear();
   };
 }
 
@@ -402,7 +446,16 @@ export function stopNotificationListener() {
     ws.close();
     ws = null;
   }
-  localStorage.removeItem("seenNotifs");
+
+  // Clear pending message groups
+  pendingMessageGroups.forEach((groupData) => {
+    if (groupData.timeout) {
+      clearTimeout(groupData.timeout);
+    }
+  });
+  pendingMessageGroups.clear();
+
+  sessionStorage.removeItem("seenNotifs");
   unseenCount = 0;
   updateCounter();
   seenIds.clear();
@@ -421,7 +474,6 @@ export function clearAllNotifications() {
         if (notifId) {
           allNotifIds.push(parseInt(notifId));
         }
-        // Handle grouped notifications
         if (li.id.startsWith("msg-group-")) {
           const groupedIdsStr = li.getAttribute("data-grouped-ids");
           if (groupedIdsStr) {
@@ -444,6 +496,14 @@ export function clearAllNotifications() {
     }
   }
 
+  // Clear any pending message groups
+  pendingMessageGroups.forEach((groupData) => {
+    if (groupData.timeout) {
+      clearTimeout(groupData.timeout);
+    }
+  });
+  pendingMessageGroups.clear();
+
   unseenCount = 0;
   updateCounter();
   seenIds.clear();
@@ -460,7 +520,6 @@ export function markNotificationsAsRead(ids: (number | null | undefined)[]) {
     cleanIds.forEach((id) => seenIds.add(id));
     saveSeen();
 
-    console.log("[Notif] Marking notifications as read:", cleanIds);
     ws.send(
       JSON.stringify({
         type: "NOTIFICATION_READ",

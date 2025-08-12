@@ -30,9 +30,7 @@ import { getCurrentUser, setCurrentUser } from "@/utils/user-store";
 import { navigateTo } from "@/utils/navigate-to-link";
 import { TopBar } from "@/components/layout/TopBar";
 import { UserNotFound } from "@/pages/UserNotFound";
-import { startRecentActivityListener } from "@/services/recent-activity-service";
 
-// Routes and their corresponding components
 const routes: Record<string, (id?: number) => HTMLElement> = {
   welcome: Welcome,
   login: Signin,
@@ -68,8 +66,6 @@ const publicRoutes: string[] = [
   "verify_login",
 ];
 
-const remoteMatch = window.location.pathname.match(/^\/?remote\/(\d+)$/);
-
 // Check if a user is authenticated
 async function isAuthenticated(): Promise<boolean> {
   const profile = await getUserProfile();
@@ -87,22 +83,30 @@ export async function router(): Promise<void> {
   if (!appContent || !topBarContainer) return;
 
   let path = location.pathname.slice(1);
+  let routeParams: {
+    chatRoom?: number;
+    memberId?: number;
+    remoteRoomId?: string;
+  } = {};
 
-  let chatRoom: number | undefined;
-  let memberId: number | undefined;
-
-  // Detect /chat/:id
+  // Parse dynamic routes
   const chatMatch = path.match(/^lounge\/(\d+)$/);
   if (chatMatch) {
-    chatRoom = Number(chatMatch[1]);
-    path = "chat-room";
+    routeParams.chatRoom = Number(chatMatch[1]);
+    path = "lounge";
   }
 
-  // Detect /members/:id
   const profileMatch = path.match(/^members\/(\d+)$/);
   if (profileMatch) {
-    memberId = Number(profileMatch[1]);
-    path = "member-profile";
+    routeParams.memberId = Number(profileMatch[1]);
+    path = "members";
+  }
+
+  // Handle remote game with room ID
+  const remoteMatch = path.match(/^remote(?:\/(.+))?$/);
+  if (remoteMatch) {
+    routeParams.remoteRoomId = remoteMatch[1];
+    path = "remote";
   }
 
   const isPublic = publicRoutes.includes(path);
@@ -115,15 +119,16 @@ export async function router(): Promise<void> {
     if (authed) {
       startNotificationListener();
       setTimeout(startStatusListener, 1000);
-    }
-    if (!authed) {
-      history.replaceState(null, "", "/welcome");
-      await router();
-      return;
+    } else {
+      if (location.pathname !== "/welcome") {
+        history.replaceState(null, "", "/welcome");
+        await router();
+        return;
+      }
     }
   } else {
     const profile = await getUserProfile();
-    if (profile) {
+    if (profile && location.pathname !== "/checkout") {
       history.replaceState(null, "", "/salon");
       await router();
       return;
@@ -131,51 +136,62 @@ export async function router(): Promise<void> {
   }
 
   // Handle unknown routes
-  if (!render && path !== "member-profile" && path !== "chat-room") {
-    isPublic
-      ? history.replaceState(null, "", "/welcome")
-      : history.replaceState(null, "", "/salon");
-    await router();
+  if (!render) {
+    const fallbackRoute = isPublic ? "/welcome" : "/salon";
+    if (location.pathname !== fallbackRoute) {
+      history.replaceState(null, "", fallbackRoute);
+      await router();
+      return;
+    }
+    console.error(`Route not found: ${path}`);
     return;
   }
 
-  // Explicitly show the TopBar only in non-public routes
+  // Handle TopBar visibility
   if (!isPublic && !isCheckoutRoute) {
     if (!topBarContainer.hasChildNodes()) {
       topBarContainer.appendChild(TopBar());
     }
   } else {
-    topBarContainer.innerHTML = ""; // Ensure TopBar is cleared for public routes
+    topBarContainer.innerHTML = "";
   }
 
-  // Clear the existing app content (excluding the TopBar)
+  // Clear existing app content
   while (appContent.firstChild) {
     appContent.removeChild(appContent.firstChild);
   }
 
-  // Render the current route's component
-  if (path === "chat-room" && chatRoom) {
-    const chatView = await Chat(chatRoom);
-    appContent.appendChild(chatView);
-  } else if (path === "member-profile" && memberId) {
-    const currentUser = getCurrentUser();
-    if (currentUser && currentUser.id === memberId) {
-      navigateTo("/my_profile");
-      return;
+  // Render the appropriate component based on route and parameters
+  try {
+    let componentToRender: HTMLElement;
+
+    if (path === "lounge" && routeParams.chatRoom) {
+      componentToRender = await Chat(routeParams.chatRoom);
+    } else if (path === "members" && routeParams.memberId) {
+      const currentUser = getCurrentUser();
+      if (currentUser && currentUser.id === routeParams.memberId) {
+        navigateTo("/my_profile");
+        return;
+      }
+      const memberProfileElem = await MemberProfile(routeParams.memberId);
+      componentToRender = memberProfileElem || UserNotFound();
+    } else if (path === "remote" && routeParams.remoteRoomId) {
+      componentToRender = render(undefined);
+    } else {
+      componentToRender = render();
     }
-    const memberProfileElem = await MemberProfile(memberId);
-    memberProfileElem
-      ? appContent.appendChild(memberProfileElem)
-      : appContent.appendChild(UserNotFound());
-  } else {
-    appContent.appendChild(render());
+
+    appContent.appendChild(componentToRender);
+  } catch (error) {
+    console.error("Error rendering component:", error);
+    appContent.appendChild(document.createTextNode("Error loading page"));
   }
 
-  if (window.location.pathname !== "/dashboard") {
+  if (path !== "chamber") {
     stopDashboardListener();
   }
 
-  if (!remoteMatch) {
+  if (path !== "remote") {
     closeRemoteWebSocket();
   }
 }

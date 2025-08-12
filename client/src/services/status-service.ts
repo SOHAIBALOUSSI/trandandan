@@ -33,7 +33,6 @@ export function startStatusListener(): void {
   };
 
   ws.onclose = () => {
-    console.log("Connection to status service WebSocket closed");
     ws = null;
   };
 }
@@ -42,6 +41,5 @@ export function stopStatusListener(): void {
   if (ws) {
     ws.close();
     ws = null;
-    console.log("Status service WebSocket connection stopped.");
   }
 }

@@ -40,11 +40,6 @@ export async function uploadAvatar(): Promise<boolean> {
 
       const data = await res.json();
 
-      console.log("Upload response:", data.code);
-
-      if (res.status === 413) {
-        displayToast(UploadAvatarRes.FILE_TOO_LARGE, "error");
-      }
       if (res.ok && data?.data?.avatar_url) {
         const fileName = data.data.avatar_url;
         const avatarUrl = `/profile/avatar/${fileName}`;

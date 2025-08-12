@@ -51,7 +51,6 @@ function update2FAUI(methods: TwoFAMethod[]) {
         "mb-2 ml-2 md:mb-0 px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700";
       toggleEnableBtn.textContent = "Disable";
       if (method.is_primary) {
-        console.log("primary method here");
         primaryLabel.classList.remove("hidden");
         primaryLabel.textContent = "Primary";
         primaryLabel.className =
