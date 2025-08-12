@@ -62,7 +62,7 @@ export function RemoteGame() {
       </div>
   	</div>
 
-    <div id="controls-guide" class="flex flex-col items-center justify-center mt-4">
+    <div id="controls-guide" class="flex flex-col items-center justify-center mt-4 z-50">
       <h3 class="text-lg font-bold mb-2">Controls</h3>
       <ul class="text-base space-y-1 font-orbitron">
         <li><strong>W</strong>: Move Paddle Up</li>

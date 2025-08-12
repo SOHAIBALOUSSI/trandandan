@@ -328,6 +328,7 @@ export async function updateCredentialsHandler(request, reply) {
                 return reply.code(400).send(createResponse(400, 'UNMATCHED_PASSWORDS'));
             if (!validatePassword(newPassword))
                 return reply.code(400).send(createResponse(400, 'PASSWORD_POLICY'));
+            hashedPassword = await hash(newPassword, 10);
             toUpdate = "password";
         }
 

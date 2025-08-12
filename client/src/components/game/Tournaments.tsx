@@ -279,12 +279,12 @@ export function Tournaments() {
         enteredList = document.createElement("ul");
         enteredList.id = "entered-players-list";
         enteredList.className =
-          "mt-4 mb-2 flex flex-wrap gap-3 justify-center normale-case";
+          "mt-4 mb-2 flex flex-wrap gap-3 justify-center";
         inputPlayers.appendChild(enteredList);
       }
       enteredList.innerHTML = Players.map(
         (name, idx) =>
-          `<li class="entered-players px-3 py-1 rounded-lg font-semibold text-lg">${
+          `<li class="entered-players px-3 py-1 rounded-lg font-semibold text-lg normal-case">${
             idx + 1
           }. ${name}</li>`
       ).join("");
