@@ -29,7 +29,7 @@ export function startStatusListener(): void {
   };
 
   ws.onerror = () => {
-    console.error("Error in status service WebSocket");
+    // console.error("Error in status service WebSocket");
   };
 
   ws.onclose = () => {

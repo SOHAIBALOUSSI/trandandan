@@ -146,11 +146,11 @@ export function LocalGame() {
     };
 
     socketLocal.onclose = () => {
-      console.log("[client] Disconnected from server");
+      //   console.log("[client] Disconnected from server");
     };
 
     socketLocal.onerror = (err: Event) => {
-      console.error("[client] WebSocket error:", err);
+      // console.error("[client] WebSocket error:", err);
     };
 
     flow.animate();

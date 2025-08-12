@@ -314,7 +314,7 @@ async function renderGroupedMessageNotification(
         notifList.removeChild(li);
       } catch (e) {
         // Element might have been removed already
-        console.warn("Element already removed from DOM");
+        // console.warn("Element already removed from DOM");
       }
     }
 
@@ -330,7 +330,7 @@ async function renderGroupedMessageNotification(
 // --- Start Notification Listener ---
 export function startNotificationListener() {
   if (ws && ws.readyState === WebSocket.OPEN) {
-    console.warn("[notif] WebSocket connection is already open");
+    // console.warn("[notif] WebSocket connection is already open");
     return;
   }
 
@@ -456,7 +456,7 @@ export function startNotificationListener() {
         "The club's lights are out at the moment. Try again shortly.",
         "error"
       );
-      console.error("[Notif] Error handling notification:", err);
+      // console.error("[Notif] Error handling notification:", err);
     }
   };
 
@@ -513,7 +513,7 @@ export function clearAllNotifications() {
               const groupedIds = JSON.parse(groupedIdsStr);
               allNotifIds.push(...groupedIds);
             } catch (e) {
-              console.warn("[Notif] Failed to parse grouped IDs");
+              // console.warn("[Notif] Failed to parse grouped IDs");
             }
           }
         }

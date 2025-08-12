@@ -17,7 +17,7 @@ export async function getUserProfile() {
 
     return profile;
   } catch {
-    console.error("Error fetching user profile");
+    // console.error("Error fetching user profile");
     return null;
   }
 }

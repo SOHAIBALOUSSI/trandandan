@@ -319,10 +319,10 @@ export function Tournaments() {
       flow.updateGameState(event.data);
     };
     socketLocal.onclose = () => {
-      console.log("[client] Disconnected from server");
+      //   console.log("[client] Disconnected from server");
     };
     socketLocal.onerror = (err: Event) => {
-      console.error("[client] WebSocket error:", err);
+      // console.error("[client] WebSocket error:", err);
     };
 
     // --- Add these listeners only once ---
@@ -594,7 +594,7 @@ class FlowFieldLocal {
         this.setInitialStat();
       }
     } catch (err) {
-      console.error("Error updating game state:", err);
+      // console.error("Error updating game state:", err);
     }
   }
 

@@ -7,13 +7,13 @@ export async function getAllUsers() {
     const data = await res.json();
 
     if (!res.ok) {
-      console.error("Failed to fetch users");
+      // console.error("Failed to fetch users");
       return [];
     }
 
     return data.data.profiles;
   } catch {
-    console.error("Error fetching all users");
+    // console.error("Error fetching all users");
     return [];
   }
 }

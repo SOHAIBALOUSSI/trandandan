@@ -22,7 +22,7 @@ export function dashboardLive(onData: (data: UserProfile[]) => void) {
       "The club’s lights are out at the moment. Try again shortly.",
       "error"
     );
-    console.error("Error in Dashboard Websocket connection.");
+    // console.error("Error in Dashboard Websocket connection.");
     ws = null;
   };
 }

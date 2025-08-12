@@ -128,7 +128,7 @@ export function RemoteGame() {
         return data.roomData; // return the roomData string
       })
       .catch((err) => {
-        console.error("Fetch error:", err);
+        // // console.error("Fetch error:", err);
         return null; // or handle error how you want
       });
   };
@@ -141,9 +141,9 @@ export function RemoteGame() {
         socket.readyState === WebSocket.CONNECTING)
     ) {
       {
-        console.log(
-          "WebSocket is already active. Closing the existing connection."
-        );
+        // console.log(
+        //   "WebSocket is already active. Closing the existing connection."
+        // );
         // closeRemoteWebSocket();
         return;
       }
@@ -184,18 +184,18 @@ export function RemoteGame() {
     });
 
     socket.onopen = () => {
-      console.log(
-        "Connecting to WebSocket for remote game with roomId:",
-        roomdIdentif
-      );
+      //   console.log(
+      //     "Connecting to WebSocket for remote game with roomId:",
+      //     roomdIdentif
+      //   );
     };
 
     socket.onclose = () => {
-      console.log("Remote game WebSocket connection closed.");
+      //   console.log("Remote game WebSocket connection closed.");
     };
 
     socket.onerror = (err) => {
-      console.error("[client] WebSocket error:", err);
+      // console.error("[client] WebSocket error:", err);
     };
 
     socket.onmessage = (event: MessageEvent) => {
@@ -439,7 +439,7 @@ class FlowField {
             }),
           });
         } catch (error) {
-          console.error("Error sending restart request:", error);
+          // console.error("Error sending restart request:", error);
         } finally {
           this.deps.restartButton.disabled = false; // Re-enable button
         }
@@ -454,7 +454,7 @@ class FlowField {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(playerData),
     }).catch((error) => {
-      console.error("Error sending player data:", error);
+      // console.error("Error sending player data:", error);
     });
   }
 
@@ -673,7 +673,7 @@ class FlowField {
       },
       body: JSON.stringify(payload),
     }).catch((error) => {
-      console.error("Error updating user:", error);
+      // console.error("Error updating user:", error);
     });
   }
 
@@ -720,9 +720,9 @@ class FlowField {
           const getOldDataOfCurrentUserData = getCurrentUser();
           const cuurrUser = getOldDataOfCurrentUserData?.userId;
           if (!getOldDataOfCurrentUserData) {
-            console.warn(
-              "No previous match data found. Initializing defaults."
-            );
+            // console.warn(
+            //   "No previous match data found. Initializing defaults."
+            // );
             const playerData: PlayerData = {
               userName: this.deps.userName,
               matchId: this.gameState.matchId,
@@ -859,7 +859,7 @@ class FlowField {
         })();
       }
     } catch (err) {
-      console.error("Error parsing game state:", err);
+      // console.error("Error parsing game state:", err);
       this.deps.disconnectedResult.style.display = "block";
       setTimeout(() => {
         navigateTo("/arena");

@@ -187,7 +187,7 @@ export async function startRecentActivityListener(): Promise<void> {
         const elem = await renderActivity(activity);
         if (elem && ul) ul.prepend(elem);
       } catch (err) {
-        console.error("Failed to render stored activity:", err);
+        // console.error("Failed to render stored activity:", err);
       }
     }
   }

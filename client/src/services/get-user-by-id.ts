@@ -15,7 +15,7 @@ export async function getUserById(id: number): Promise<UserProfile | null> {
     user.avatar_url = getAvatarUrl(user);
     return user;
   } catch {
-    console.error(`Error fetching user with ID ${id}:`);
+    // console.error(`Error fetching user with ID ${id}:`);
     return null;
   }
 }

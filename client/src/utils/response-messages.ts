@@ -184,7 +184,8 @@ export const UploadAvatarRes: Record<string, string> = {
   FILE_REQUIRED: "No avatar selected — please upload your signature look.",
   AVATAR_UPLOADED: "Your avatar has been added. Looking sharp, champ!",
   FILE_TOO_LARGE: "That file is too hefty — please choose a smaller image.",
-  UNSUPPORTED_FILE_TYPE: "this file type is unsupported",
+  UNSUPPORTED_FILE_TYPE:
+    "File not up to BHV Club standards — choose a supported format.",
   INTERNAL_SERVER_ERROR:
     "The club’s lights are out at the moment. Try again shortly.",
 };

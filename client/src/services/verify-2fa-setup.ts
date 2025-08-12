@@ -16,7 +16,7 @@ export async function verify2FASetup(
 
     const data = await response.json();
 
-	console.log("2FA Setup Response:", data);
+	// console.log("2FA Setup Response:", data);
 
     const isPrimary = data.data.isPrimary === true;
 

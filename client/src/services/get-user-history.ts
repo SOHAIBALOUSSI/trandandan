@@ -5,19 +5,19 @@ export async function getUserHistory(userId: number): Promise<UserHistory[]> {
     const response = await fetch("/game/user-history", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-	  credentials: "include",
+      credentials: "include",
       body: JSON.stringify({ userId }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Error fetching user history:", data);
+      // console.error("Error fetching user history:", data);
       return [];
     }
     return data;
   } catch (error) {
-    console.error("Error fetching user history:", error);
+    // console.error("Error fetching user history:", error);
     return [];
   }
 }

@@ -17,9 +17,9 @@ export async function acceptInvite(
       }),
     });
     if (!res.ok) {
-      console.error("Failed to accept invite");
+      // console.error("Failed to accept invite");
     }
   } catch (error) {
-    console.error("Error accepting invite:", error);
+    // console.error("Error accepting invite:", error);
   }
 }

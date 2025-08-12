@@ -143,7 +143,7 @@ export async function router(): Promise<void> {
       await router();
       return;
     }
-    console.error(`Route not found: ${path}`);
+    // console.error(`Route not found: ${path}`);
     return;
   }
 
@@ -183,7 +183,7 @@ export async function router(): Promise<void> {
 
     appContent.appendChild(componentToRender);
   } catch (error) {
-    console.error("Error rendering component:", error);
+    // console.error("Error rendering component:", error);
     appContent.appendChild(document.createTextNode("Error loading page"));
   }
 

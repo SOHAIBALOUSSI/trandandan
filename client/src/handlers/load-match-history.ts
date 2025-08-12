@@ -18,7 +18,7 @@ export async function loadMatchHistory(user: UserProfile) {
 
   let history: UserHistory[] = await getUserHistory(user.id);
 
-  console.log("history: ", history);
+//   console.log("history: ", history);
 
   if (!history || history.length === 0) {
     const li = document.createElement("li");
