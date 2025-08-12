@@ -399,6 +399,7 @@ export const styles = {
   	flex flex-col items-center justify-center
   	w-full min-h-screen
 	pt-20 md:pt-24 pb-8 md:pb-12
+	relative
   `,
   gameExitBtn: `
   	fixed top-16 md:top-20 left-5

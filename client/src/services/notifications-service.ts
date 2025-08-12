@@ -375,6 +375,38 @@ export function startNotificationListener() {
         return;
       }
 
+      if (data.type === "INVITE_SENT") {
+        const notifList = document.getElementById("notif-list");
+        if (notifList) {
+          const toMarkRead: number[] = [];
+          Array.from(notifList.children).forEach((li) => {
+            if (
+              li instanceof HTMLElement &&
+              li.getAttribute("data-sender") === String(data.sender_id) &&
+              li.innerHTML.includes("fa-gamepad")
+            ) {
+              const prevId = li.getAttribute("data-id");
+              if (prevId) {
+                toMarkRead.push(Number(prevId));
+              }
+              li.remove();
+            }
+          });
+
+          if (toMarkRead.length > 0) {
+            markNotificationsAsRead(toMarkRead);
+            unseenCount = Math.max(0, unseenCount - toMarkRead.length);
+            updateCounter();
+          }
+
+          notifList.prepend(await renderNotification(data));
+          while (notifList.children.length > 20) {
+            notifList.removeChild(notifList.lastChild!);
+          }
+        }
+        return;
+      }
+
       // Increment unseen count only for *new* notification IDs
       if (data.notification_id && !received.has(data.notification_id)) {
         unseenCount++;
