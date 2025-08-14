@@ -1,12 +1,16 @@
 import { navigateTo } from "@/utils/navigate-to-link";
-import { getCurrentUser } from "@/utils/user-store";
-import { UserProfile } from "types/types";
 import { initGameThemeToggle } from "@/utils/game-theme-toggle";
 import { styles } from "@/styles/styles";
 
 export function LocalGame() {
   setTimeout(() => {
     initGameThemeToggle();
+    document.getElementById("controlsToggle")?.addEventListener("click", () => {
+      const panel = document.getElementById("controlsGuide");
+      panel?.classList.toggle("opacity-0");
+      panel?.classList.toggle("pointer-events-none");
+      panel?.classList.toggle("translate-y-[20px]");
+    });
   }, 0);
 
   const vw = Math.max(
@@ -27,6 +31,34 @@ export function LocalGame() {
   container.dataset.theme = localStorage.getItem("gameTheme") || "dark";
 
   container.innerHTML = `
+    <div class="absolute bottom-4 right-4 z-50">
+		<button id="controlsToggle" class="flex items-center gap-2 bg-pong-dark-accent text-white px-4 py-2 rounded-lg shadow-lg hover:bg-pong-sport-accent transition-all duration-300">
+		<i class="fa-solid fa-gamepad"></i>
+		Controls
+		</button>
+    </div>
+
+    <div id="controlsGuide" class="absolute z-50 text-center bottom-16 right-4 w-72 rounded-xl shadow-xl p-4 space-y-3 border border-pong-dark-secondary opacity-0 translate-y-[20px] pointer-events-none transition-all duration-300">
+		<h3 class="text-lg font-bold flex items-center gap-2">
+		<i class="fa-solid fa-joystick"></i> Game Controls
+		</h3>
+		<div id="control" class="flex flex-col gap-2 text-sm">
+			<div>
+				<strong class="left">Left Player:</strong> 
+				<span class="bg-blue-500/20 px-2 py-1 rounded">W</span> (Up), 
+				<span class="bg-blue-500/20 px-2 py-1 rounded">S</span> (Down)
+			</div>
+			<div>
+				<strong class="right">Right Player:</strong> 
+				<span class="bg-yellow-400/20 px-2 py-1 rounded">↑</span> (Up), 
+				<span class="bg-yellow-400/20 px-2 py-1 rounded">↓</span> (Down)
+			</div>
+		</div>
+		<p class="text-xs text-pong-dark-muted mt-2">
+		Use your keyboard to move your paddle and dominate the match!
+		</p>
+    </div>
+
   	<button id="exit" class="${styles.gameExitBtn} group" title="Leave Lounge">
       <i class="fa-solid fa-arrow-left"></i>
 	  <span class="absolute text-xs bg-black/80 text-white px-2 py-0.5 rounded left-1/2 -translate-x-1/2 top-full mt-1 opacity-0 group-hover:opacity-100 transition">
@@ -73,16 +105,6 @@ export function LocalGame() {
   startMessage.innerHTML = `
   <p>Press <span class="text-pong-dark-accent">F</span> to Serve</p>
   <p class="text-sm mt-2 font-normal">Welcome to the BHV Lounge — let the rally begin.</p>
-  <p class="text-lg text-pong-secondary">
-    <span class="inline-block bg-pong-dark-accent/20 text-pong-dark-accent font-bold px-2 py-1 rounded-md shadow-sm">W</span> / 
-    <span class="inline-block bg-pong-dark-accent/20 text-pong-dark-accent font-bold px-2 py-1 rounded-md shadow-sm">S</span> 
-    <span class="ml-1">Move Left Paddle</span>
-  </p>
-  <p class="text-lg text-pong-secondary">
-    <span class="inline-block bg-pong-dark-accent/20 text-pong-dark-accent font-bold px-2 py-1 rounded-md shadow-sm">↑</span> / 
-    <span class="inline-block bg-pong-dark-accent/20 text-pong-dark-accent font-bold px-2 py-1 rounded-md shadow-sm">↓</span> 
-    <span class="ml-1">Move Right Paddle</span>
-  </p>
 `;
   container.appendChild(startMessage);
 

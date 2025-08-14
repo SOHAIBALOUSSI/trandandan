@@ -361,4 +361,34 @@ a {
 #game-screen[data-theme="light"] #controls-guide ul {
   color: theme("colors.pong-sport-primary-light");
 }
+#game-screen[data-theme="dark"] #controlsGuide {
+  background-color: theme("colors.pong-dark-bg/90");
+}
+#game-screen[data-theme="light"] #controlsGuide {
+  background-color: theme("colors.pong-bg/90");
+}
+#game-screen[data-theme="dark"] #controlsGuide h3 {
+  color: theme("colors.pong-dark-accent");
+}
+#game-screen[data-theme="light"] #controlsGuide h3 {
+  color: theme("colors.pong-accent");
+}
+#game-screen[data-theme="dark"] #control {
+  color: theme("colors.pong-dark-primary");
+}
+#game-screen[data-theme="light"] #control {
+  color: theme("colors.pong-primary");
+}
+#game-screen[data-theme="dark"] #control .left {
+  color: rgb(96, 165, 250);
+}
+#game-screen[data-theme="light"] #control .left {
+  color: rgb(59, 130, 246);
+}
+#game-screen[data-theme="dark"] #control .right {
+  color: rgb(250, 204, 21);
+}
+#game-screen[data-theme="light"] #control .right {
+  color: rgb(234, 179, 8);
+}
 /* End Game Design */

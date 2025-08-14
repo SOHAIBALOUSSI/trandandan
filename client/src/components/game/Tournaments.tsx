@@ -62,34 +62,33 @@ export function Tournaments() {
   container.id = "game-screen";
   container.dataset.theme = localStorage.getItem("gameTheme") || "dark";
   container.innerHTML = `
-
-   <div class="absolute bottom-4 right-4 z-50">
-    <button id="controlsToggle" class="flex items-center gap-2 bg-pong-dark-accent text-white px-4 py-2 rounded-lg shadow-lg hover:bg-pong-sport-accent transition-all duration-300">
-      <i class="fa-solid fa-gamepad"></i>
-      Controls
-    </button>
-  </div>
-
-  <div id="controlsGuide" class="absolute text-center bottom-16 right-4 w-72 bg-pong-dark-bg/90 rounded-xl shadow-xl p-4 space-y-3 border border-pong-dark-secondary opacity-0 translate-y-[20px] pointer-events-none transition-all duration-300">
-    <h3 class="text-lg font-bold text-pong-dark-accent flex items-center gap-2">
-      <i class="fa-solid fa-joystick"></i> Game Controls
-    </h3>
-    <div class="flex flex-col gap-2 text-sm text-pong-dark-secondary">
-      <div>
-        <strong class="text-blue-400">Left Player:</strong> 
-        <span class="bg-blue-500/20 px-2 py-1 rounded">W</span> (Up), 
-        <span class="bg-blue-500/20 px-2 py-1 rounded">S</span> (Down)
-      </div>
-      <div>
-        <strong class="text-yellow-400">Right Player:</strong> 
-        <span class="bg-yellow-400/20 px-2 py-1 rounded">↑</span> (Up), 
-        <span class="bg-yellow-400/20 px-2 py-1 rounded">↓</span> (Down)
-      </div>
+    <div class="absolute bottom-4 right-4 z-50">
+		<button id="controlsToggle" class="flex items-center gap-2 bg-pong-dark-accent text-white px-4 py-2 rounded-lg shadow-lg hover:bg-pong-sport-accent transition-all duration-300">
+		<i class="fa-solid fa-gamepad"></i>
+		Controls
+		</button>
     </div>
-    <p class="text-xs text-pong-dark-muted mt-2">
-      Use your keyboard to move your paddle and dominate the match!
-    </p>
-  </div>
+
+    <div id="controlsGuide" class="absolute z-50 text-center bottom-16 right-4 w-72 rounded-xl shadow-xl p-4 space-y-3 border border-pong-dark-secondary opacity-0 translate-y-[20px] pointer-events-none transition-all duration-300">
+		<h3 class="text-lg font-bold flex items-center gap-2">
+		<i class="fa-solid fa-joystick"></i> Game Controls
+		</h3>
+		<div id="control" class="flex flex-col gap-2 text-sm">
+			<div>
+				<strong class="left">Left Player:</strong> 
+				<span class="bg-blue-500/20 px-2 py-1 rounded">W</span> (Up), 
+				<span class="bg-blue-500/20 px-2 py-1 rounded">S</span> (Down)
+			</div>
+			<div>
+				<strong class="right">Right Player:</strong> 
+				<span class="bg-yellow-400/20 px-2 py-1 rounded">↑</span> (Up), 
+				<span class="bg-yellow-400/20 px-2 py-1 rounded">↓</span> (Down)
+			</div>
+		</div>
+		<p class="text-xs text-pong-dark-muted mt-2">
+		Use your keyboard to move your paddle and dominate the match!
+		</p>
+    </div>
 
     <button id="exit" class="${styles.gameExitBtn} group" title="Exit Lounge">
       <i class="fa-solid fa-arrow-left"></i>
