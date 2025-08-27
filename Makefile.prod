@@ -1,0 +1,234 @@
+# Production Makefile for Transcendence Project
+# Provides useful commands for production management
+
+.PHONY: help build up down restart logs status health backup clean monitor deploy
+
+# Default target
+help:
+	@echo "🚀 Transcendence Production Management"
+	@echo ""
+	@echo "Available commands:"
+	@echo "  build     - Build all production services"
+	@echo "  up        - Start all production services"
+	@echo "  down      - Stop all production services"
+	@echo "  restart   - Restart all production services"
+	@echo "  logs      - View service logs"
+	@echo "  status    - Check service status"
+	@echo "  health    - Check service health"
+	@echo "  backup    - Create backup of application"
+	@echo "  clean     - Clean up Docker resources"
+	@echo "  monitor   - Run comprehensive monitoring"
+	@echo "  deploy    - Full production deployment"
+	@echo "  ssl       - Setup SSL certificates"
+	@echo "  update    - Update application from git"
+	@echo "  scale     - Scale specific services"
+	@echo ""
+
+# Build all production services
+build:
+	@echo "🔨 Building production services..."
+	docker-compose -f docker-compose.prod.yml build --no-cache
+
+# Start all production services
+up:
+	@echo "🚀 Starting production services..."
+	docker-compose -f docker-compose.prod.yml up -d
+
+# Stop all production services
+down:
+	@echo "🛑 Stopping production services..."
+	docker-compose -f docker-compose.prod.yml down
+
+# Restart all production services
+restart:
+	@echo "🔄 Restarting production services..."
+	docker-compose -f docker-compose.prod.yml restart
+
+# View service logs
+logs:
+	@echo "📋 Service logs (press Ctrl+C to exit)..."
+	docker-compose -f docker-compose.prod.yml logs -f
+
+# Check service status
+status:
+	@echo "📊 Service status:"
+	docker-compose -f docker-compose.prod.yml ps
+
+# Check service health
+health:
+	@echo "🏥 Checking service health..."
+	@if [ -f .env.prod ]; then \
+		DOMAIN=$$(grep '^APP_URL=' .env.prod | cut -d'=' -f2 | sed 's|https://||' | sed 's|/||g'); \
+		if [ "$$DOMAIN" != "" ]; then \
+			echo "Checking external health at https://$$DOMAIN/health"; \
+			curl -f "https://$$DOMAIN/health" || echo "External health check failed"; \
+		else \
+			echo "Checking local health at http://localhost/health"; \
+			curl -f "http://localhost/health" || echo "Local health check failed"; \
+		fi; \
+	else \
+		echo "No .env.prod file found"; \
+	fi
+
+# Create backup of application
+backup:
+	@echo "💾 Creating backup..."
+	@if [ -f backup.sh ]; then \
+		./backup.sh; \
+	else \
+		echo "Backup script not found"; \
+	fi
+
+# Clean up Docker resources
+clean:
+	@echo "🧹 Cleaning up Docker resources..."
+	docker system prune -f
+	docker volume prune -f
+	docker network prune -f
+
+# Run comprehensive monitoring
+monitor:
+	@echo "🔍 Running comprehensive monitoring..."
+	@if [ -f monitor.sh ]; then \
+		./monitor.sh; \
+	else \
+		echo "Monitoring script not found"; \
+	fi
+
+# Full production deployment
+deploy: build up
+	@echo "✅ Production deployment completed!"
+	@echo "Check status with: make status"
+	@echo "Check health with: make health"
+	@echo "View logs with: make logs"
+
+# Setup SSL certificates
+ssl:
+	@echo "🔒 Setting up SSL certificates..."
+	@if [ -f deploy-ec2.sh ]; then \
+		echo "SSL setup is handled by the deployment script"; \
+		echo "Run: ./deploy-ec2.sh your-domain.com your-email@domain.com"; \
+	else \
+		echo "Deployment script not found"; \
+	fi
+
+# Update application from git
+update:
+	@echo "📥 Updating application from git..."
+	git pull origin main
+	@echo "🔄 Rebuilding and restarting services..."
+	$(MAKE) build
+	$(MAKE) restart
+
+# Scale specific services
+scale:
+	@echo "📈 Scaling services..."
+	@echo "Usage: make scale SERVICE=auth REPLICAS=3"
+	@if [ "$(SERVICE)" != "" ] && [ "$(REPLICAS)" != "" ]; then \
+		docker-compose -f docker-compose.prod.yml up -d --scale $(SERVICE)=$(REPLICAS); \
+	else \
+		echo "Please specify SERVICE and REPLICAS"; \
+		echo "Example: make scale SERVICE=auth REPLICAS=3"; \
+	fi
+
+# Show resource usage
+resources:
+	@echo "📊 Docker resource usage:"
+	docker stats --no-stream
+
+# Show disk usage
+disk:
+	@echo "💾 Disk usage:"
+	df -h
+	@echo ""
+	@echo "Docker disk usage:"
+	docker system df
+
+# Show network status
+network:
+	@echo "🌐 Network status:"
+	docker network ls
+	@echo ""
+	@echo "Active connections:"
+	ss -tuln | grep LISTEN
+
+# Emergency stop
+emergency-stop:
+	@echo "🚨 EMERGENCY STOP - Stopping all services..."
+	docker-compose -f docker-compose.prod.yml down --remove-orphans
+	docker stop $$(docker ps -q) 2>/dev/null || true
+	@echo "All services stopped"
+
+# Emergency start
+emergency-start:
+	@echo "🚨 EMERGENCY START - Starting all services..."
+	$(MAKE) up
+	@echo "Services started, checking health..."
+	$(MAKE) health
+
+# Show environment variables
+env:
+	@echo "🔧 Environment variables:"
+	@if [ -f .env.prod ]; then \
+		cat .env.prod | grep -v PASSWORD | grep -v SECRET | grep -v KEY; \
+	else \
+		echo "No .env.prod file found"; \
+	fi
+
+# Test configuration
+test-config:
+	@echo "🧪 Testing Docker Compose configuration..."
+	docker-compose -f docker-compose.prod.yml config
+
+# Show service dependencies
+deps:
+	@echo "🔗 Service dependencies:"
+	docker-compose -f docker-compose.prod.yml config | grep -A 10 -B 5 "depends_on"
+
+# Performance check
+perf:
+	@echo "⚡ Performance check:"
+	@echo "CPU usage:"
+	top -bn1 | grep "Cpu(s)"
+	@echo ""
+	@echo "Memory usage:"
+	free -h
+	@echo ""
+	@echo "Load average:"
+	uptime
+	@echo ""
+	@echo "Docker stats:"
+	docker stats --no-stream --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
+
+# Security check
+security:
+	@echo "🔒 Security check:"
+	@echo "Firewall status:"
+	sudo ufw status
+	@echo ""
+	@echo "Fail2ban status:"
+	sudo fail2ban-client status 2>/dev/null || echo "Fail2ban not installed"
+	@echo ""
+	@echo "Open ports:"
+	ss -tuln | grep LISTEN
+	@echo ""
+	@echo "Docker security:"
+	docker info | grep -i security
+
+# Backup verification
+verify-backup:
+	@echo "🔍 Verifying latest backup..."
+	@if [ -d backups ]; then \
+		LATEST_BACKUP=$$(ls -t backups/backup_*.tar.gz 2>/dev/null | head -1); \
+		if [ "$$LATEST_BACKUP" != "" ]; then \
+			echo "Latest backup: $$LATEST_BACKUP"; \
+			echo "Backup size: $$(du -h "$$LATEST_BACKUP" | cut -f1)"; \
+			echo "Backup age: $$(find "$$LATEST_BACKUP" -printf '%AY-%Am-%Ad %AH:%AM\n')"; \
+			echo "Testing backup integrity..."; \
+			tar -tzf "$$LATEST_BACKUP" > /dev/null && echo "✅ Backup integrity verified" || echo "❌ Backup integrity check failed"; \
+		else \
+			echo "No backups found"; \
+		fi; \
+	else \
+		echo "Backups directory not found"; \
+	fi
