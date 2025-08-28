@@ -158,23 +158,6 @@ services:
       - trandenden-net
     restart: always
 
-  # client-dev:
-  #   container_name: client-dev
-  #   build:
-  #     context: ./client
-  #     dockerfile: Dockerfile
-  #   working_dir: /app
-  #   command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
-  #   ports:
-  #     - "5173:5173"
-  #   volumes:
-  #     - ./client:/app
-  #     - /app/node_modules
-  #   environment:
-  #     - CHOKIDAR_USEPOLLING=1
-  #   networks:
-  #     - trandenden-net
-
 networks:
   trandenden-net:
     name: trandenden-net

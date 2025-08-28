@@ -6,4 +6,5 @@ server/profile-service/profile.db.sqlite
 server/notifications-service/notifications.db.sqlite
 server/chat-service/messages.db.sqlite
 server/game-service/db/game.db.sqlite
-    
+server/.env
+.DS_Store
